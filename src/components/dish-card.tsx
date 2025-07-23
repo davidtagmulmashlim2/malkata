@@ -87,14 +87,6 @@ export function DishCard({ dish }: DishCardProps) {
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
 
-  const displayImages = useMemo(() => {
-      if (isClient && allImages.length > 0) {
-          return allImages;
-      }
-      return Array(3).fill(null);
-  }, [isClient, allImages]);
-
-
   useEffect(() => {
     if (!api) return;
     setCurrent(api.selectedScrollSnap() + 1);
@@ -155,13 +147,14 @@ export function DishCard({ dish }: DishCardProps) {
             <div className="w-full">
                 <Carousel setApi={setApi} className="w-full relative">
                     <CarouselContent>
-                        {displayImages.map((imgKey, i) => (
-                            <CarouselItem key={imgKey ? imgKey : `skeleton-${i}`}>
-                               {imgKey ? (
-                                    <CarouselDishImage imageKey={imgKey} alt={`${dish.name} - תמונה ${i+1}`} />
-                               ) : (
-                                    <Skeleton className="w-full aspect-square" />
-                               )}
+                         {!isClient && Array(3).fill(0).map((_, i) => (
+                            <CarouselItem key={`skeleton-${i}`}>
+                                <Skeleton className="w-full aspect-square" />
+                            </CarouselItem>
+                        ))}
+                        {isClient && allImages.map((imgKey, i) => (
+                            <CarouselItem key={imgKey ? imgKey : `item-${i}`}>
+                                <CarouselDishImage imageKey={imgKey} alt={`${dish.name} - תמונה ${i+1}`} />
                             </CarouselItem>
                         ))}
                     </CarouselContent>

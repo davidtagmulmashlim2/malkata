@@ -26,14 +26,6 @@ export default function Home() {
     return recommended.length > 0 ? recommended : dishes.slice(0, 3);
   }, [dishes, isClient]);
 
-  const displayTestimonials = useMemo(() => {
-    if (isClient && testimonials.length > 0) {
-      return testimonials;
-    }
-    // Return a dummy array for skeletons
-    return Array(3).fill({ id: '', name: '', quote: '' });
-  }, [isClient, testimonials]);
-  
   const textSizeClasses: { [key: string]: string } = {
       'xs': 'text-xs', 'sm': 'text-sm', 'base': 'text-base', 'lg': 'text-lg', 'xl': 'text-xl', 
       '2xl': 'text-2xl', '3xl': 'text-3xl', '4xl': 'text-4xl', '5xl': 'text-5xl', 
@@ -118,22 +110,25 @@ export default function Home() {
           }}
         >
           <CarouselContent>
-            {displayTestimonials.map((testimonial, index) => (
-              <CarouselItem key={isClient && testimonial.id ? testimonial.id : `skeleton-${index}`}>
+            {!isClient && Array(3).fill(0).map((_, index) => (
+               <CarouselItem key={`skeleton-${index}`}>
+                 <div className="p-1">
+                   <Card>
+                     <CardContent className="flex flex-col items-center justify-center p-6 text-center h-48">
+                        <Skeleton className="h-6 w-3/4 mx-auto" />
+                        <Skeleton className="h-5 w-1/4 mx-auto mt-4" />
+                     </CardContent>
+                   </Card>
+                 </div>
+               </CarouselItem>
+            ))}
+            {isClient && testimonials.map((testimonial) => (
+              <CarouselItem key={testimonial.id}>
                 <div className="p-1">
                   <Card>
                     <CardContent className="flex flex-col items-center justify-center p-6 text-center h-48">
-                      {isClient && testimonial.id ? (
-                        <>
-                          <p className="text-lg italic mb-4 flex-grow">"{testimonial.quote}"</p>
-                          <p className="font-bold text-primary">- {testimonial.name}</p>
-                        </>
-                      ) : (
-                        <>
-                          <Skeleton className="h-6 w-3/4 mx-auto" />
-                          <Skeleton className="h-5 w-1/4 mx-auto mt-4" />
-                        </>
-                      )}
+                      <p className="text-lg italic mb-4 flex-grow">"{testimonial.quote}"</p>
+                      <p className="font-bold text-primary">- {testimonial.name}</p>
                     </CardContent>
                   </Card>
                 </div>
