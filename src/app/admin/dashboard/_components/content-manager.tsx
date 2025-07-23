@@ -64,30 +64,16 @@ export default function ContentManager() {
 
   const form = useForm<z.infer<typeof contentSchema>>({
     resolver: zodResolver(contentSchema),
-    defaultValues: DEFAULT_APP_STATE.siteContent
+    defaultValues: DEFAULT_APP_STATE.siteContent,
   });
 
   useEffect(() => {
     if (siteContent) {
-      // Create a complete object by merging saved data with defaults
       const completeSiteContent = {
-        ...DEFAULT_APP_STATE.siteContent,
         ...siteContent,
         hero: {
           ...DEFAULT_APP_STATE.siteContent.hero,
           ...siteContent.hero,
-        },
-        about: {
-          ...DEFAULT_APP_STATE.siteContent.about,
-          ...siteContent.about,
-        },
-        contact: {
-          ...DEFAULT_APP_STATE.siteContent.contact,
-          ...siteContent.contact,
-        },
-        menu: {
-          ...DEFAULT_APP_STATE.siteContent.menu,
-          ...siteContent.menu,
         },
       };
       form.reset(completeSiteContent);
@@ -315,3 +301,5 @@ export default function ContentManager() {
     </Card>
   );
 }
+
+    
