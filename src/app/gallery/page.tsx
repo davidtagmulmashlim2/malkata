@@ -1,6 +1,7 @@
+
 'use client';
 import { useApp } from '@/context/app-context';
-import Image from 'next/image';
+import { AsyncImage } from '@/components/async-image';
 import { cn } from '@/lib/utils';
 import { Card } from '@/components/ui/card';
 import { useIsClient } from '@/hooks/use-is-client';
@@ -21,8 +22,8 @@ export default function GalleryPage() {
                     <Card key={isClient ? image.id : index} className="overflow-hidden group aspect-square">
                         {isClient ? (
                             <div className="relative w-full h-full">
-                                <Image
-                                    src={image.src}
+                                <AsyncImage
+                                    imageKey={image.src}
                                     alt={image.alt}
                                     layout="fill"
                                     objectFit="cover"

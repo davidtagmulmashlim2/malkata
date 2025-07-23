@@ -50,7 +50,7 @@ const LS_KEYS = {
     TESTIMONIALS: 'malkata_testimonials',
     DESIGN: 'malkata_design',
     CART: 'malkata_cart',
-    // Image store is managed separately
+    // Image store is managed separately in IndexedDB
 };
 
 const ADMIN_PASSWORD = 'admin'; // In a real app, use a more secure method.
@@ -62,31 +62,22 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const isClient = useIsClient();
   
   const enhancedDispatch = (action: Action) => {
+    dispatch(action);
     const newState = appReducer(state, action);
-     // We avoid saving images here to prevent quota errors. Images are saved separately.
+     
     if (isClient) {
         try {
-            const stateToSave = {
-                siteContent: newState.siteContent,
-                dishes: newState.dishes,
-                categories: newState.categories,
-                gallery: newState.gallery,
-                testimonials: newState.testimonials,
-                design: newState.design,
-            };
-
-            localStorage.setItem(LS_KEYS.SITE_CONTENT, JSON.stringify(stateToSave.siteContent));
-            localStorage.setItem(LS_KEYS.DISHES, JSON.stringify(stateToSave.dishes));
-            localStorage.setItem(LS_KEYS.CATEGORIES, JSON.stringify(stateToSave.categories));
-            localStorage.setItem(LS_KEYS.GALLERY, JSON.stringify(stateToSave.gallery));
-            localStorage.setItem(LS_KEYS.TESTIMONIALS, JSON.stringify(stateToSave.testimonials));
-            localStorage.setItem(LS_KEYS.DESIGN, JSON.stringify(stateToSave.design));
-
+            // Save state to localStorage, but images are in IndexedDB so this won't overflow.
+            if (action.type === 'UPDATE_CONTENT') localStorage.setItem(LS_KEYS.SITE_CONTENT, JSON.stringify(action.payload));
+            if (['ADD_DISH', 'UPDATE_DISH', 'DELETE_DISH'].includes(action.type)) localStorage.setItem(LS_KEYS.DISHES, JSON.stringify(newState.dishes));
+            if (['ADD_CATEGORY', 'UPDATE_CATEGORY', 'DELETE_CATEGORY'].includes(action.type)) localStorage.setItem(LS_KEYS.CATEGORIES, JSON.stringify(newState.categories));
+            if (['ADD_GALLERY_IMAGE', 'DELETE_GALLERY_IMAGE'].includes(action.type)) localStorage.setItem(LS_KEYS.GALLERY, JSON.stringify(newState.gallery));
+            if (['ADD_TESTIMONIAL', 'UPDATE_TESTIMONIAL', 'DELETE_TESTIMONIAL'].includes(action.type)) localStorage.setItem(LS_KEYS.TESTIMONIALS, JSON.stringify(newState.testimonials));
+            if (action.type === 'UPDATE_DESIGN') localStorage.setItem(LS_KEYS.DESIGN, JSON.stringify(action.payload));
         } catch (error) {
             console.error("Failed to save state to localStorage", error);
         }
     }
-    dispatch(action);
   };
 
 
@@ -112,6 +103,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         if (Object.keys(loadedState).length > 0) {
             dispatch({ type: 'SET_STATE', payload: loadedState });
         } else {
+             // If nothing is in local storage, initialize with default state
              dispatch({ type: 'SET_STATE', payload: DEFAULT_APP_STATE });
         }
 

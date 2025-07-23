@@ -1,5 +1,6 @@
+
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -12,6 +13,8 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { toast } from '@/hooks/use-toast';
 import Image from 'next/image';
 import { Trash2 } from 'lucide-react';
+import { storeImage, getImage, deleteImage as deleteImageFromStore } from '@/lib/image-store';
+
 
 const gallerySchema = z.object({
   src: z.string().min(1, 'חובה להעלות תמונה'),
@@ -23,14 +26,28 @@ const readFileAsDataURL = (file: File): Promise<string> => {
         const reader = new FileReader();
         reader.onload = () => resolve(reader.result as string);
         reader.onerror = (error) => reject(error);
-        reader.readAsDataURL(file);
     });
 };
+
+const GalleryImagePreview = ({ imageKey, alt }: { imageKey: string, alt: string }) => {
+    const [src, setSrc] = useState('https://placehold.co/200x200');
+
+    useEffect(() => {
+        if (imageKey) {
+            getImage(imageKey).then(imageSrc => {
+                if (imageSrc) setSrc(imageSrc);
+            });
+        }
+    }, [imageKey]);
+
+    return <Image src={src} alt={alt} width={200} height={200} className="rounded-md object-cover aspect-square" />;
+}
+
 
 export default function GalleryManager() {
   const { state, dispatch } = useApp();
   const { gallery } = state;
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [imagePreviewKey, setImagePreviewKey] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof gallerySchema>>({
     resolver: zodResolver(gallerySchema),
@@ -41,10 +58,11 @@ export default function GalleryManager() {
     dispatch({ type: 'ADD_GALLERY_IMAGE', payload: { ...values, id: Date.now().toString() } });
     toast({ title: 'תמונה נוספה לגלריה!' });
     form.reset();
-    setImagePreview(null);
+    setImagePreviewKey(null);
   };
 
-  const deleteImage = (id: string) => {
+  const deleteImage = (id: string, srcKey: string) => {
+    deleteImageFromStore(srcKey);
     dispatch({ type: 'DELETE_GALLERY_IMAGE', payload: id });
     toast({ title: 'התמונה נמחקה מהגלריה.' });
   };
@@ -54,8 +72,9 @@ export default function GalleryManager() {
       if (file) {
           try {
               const dataUrl = await readFileAsDataURL(file);
-              field.onChange(dataUrl);
-              setImagePreview(dataUrl);
+              const imageKey = await storeImage(dataUrl);
+              field.onChange(imageKey);
+              setImagePreviewKey(imageKey);
           } catch (error) {
               console.error("Error reading file:", error);
               toast({ title: "שגיאה בקריאת הקובץ", variant: "destructive" });
@@ -75,7 +94,7 @@ export default function GalleryManager() {
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
               {gallery.map(image => (
                 <div key={image.id} className="relative group">
-                  <Image src={image.src} alt={image.alt} width={200} height={200} className="rounded-md object-cover aspect-square" />
+                  <GalleryImagePreview imageKey={image.src} alt={image.alt} />
                   <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                      <AlertDialog>
                         <AlertDialogTrigger asChild>
@@ -87,7 +106,7 @@ export default function GalleryManager() {
                           <AlertDialogHeader><AlertDialogTitle>האם אתה בטוח?</AlertDialogTitle><AlertDialogDescription>פעולה זו תמחק את התמונה לצמיתות.</AlertDialogDescription></AlertDialogHeader>
                           <AlertDialogFooter>
                             <AlertDialogCancel>ביטול</AlertDialogCancel>
-                            <AlertDialogAction onClick={() => deleteImage(image.id)}>מחק</AlertDialogAction>
+                            <AlertDialogAction onClick={() => deleteImage(image.id, image.src)}>מחק</AlertDialogAction>
                           </AlertDialogFooter>
                         </AlertDialogContent>
                     </AlertDialog>
@@ -115,7 +134,7 @@ export default function GalleryManager() {
                       <FormLabel>קובץ תמונה</FormLabel>
                       <FormControl><Input type="file" accept="image/*" onChange={handleFileChange(field)} /></FormControl>
                       <FormMessage />
-                      {imagePreview && <img src={imagePreview} alt="Preview" className="mt-2 h-20 rounded-md" />}
+                      {imagePreviewKey && <GalleryImagePreview imageKey={imagePreviewKey} alt="Preview" />}
                     </FormItem>
                   )}
                 />

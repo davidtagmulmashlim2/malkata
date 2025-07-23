@@ -13,8 +13,10 @@ import { toast } from '@/hooks/use-toast';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Slider } from '@/components/ui/slider';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { DEFAULT_APP_STATE } from '@/lib/data';
+import { storeImage, getImage } from '@/lib/image-store';
+import Image from 'next/image';
 
 const contentSchema = z.object({
   hero: z.object({
@@ -59,6 +61,21 @@ const readFileAsDataURL = (file: File): Promise<string> => {
     });
 };
 
+const ImagePreview = ({ imageKey, alt }: { imageKey: string, alt: string }) => {
+    const [src, setSrc] = useState('https://placehold.co/80x80');
+
+    useEffect(() => {
+        if (imageKey) {
+            getImage(imageKey).then(imageSrc => {
+                if (imageSrc) setSrc(imageSrc);
+            });
+        }
+    }, [imageKey]);
+
+    return <Image src={src} alt={alt} width={80} height={80} className="mt-2 h-20 w-20 rounded-md object-cover" />;
+}
+
+
 export default function ContentManager() {
   const { state, dispatch } = useApp();
   const { siteContent } = state;
@@ -92,7 +109,8 @@ export default function ContentManager() {
       if (file) {
           try {
               const dataUrl = await readFileAsDataURL(file);
-              field.onChange(dataUrl);
+              const imageKey = await storeImage(dataUrl);
+              field.onChange(imageKey);
           } catch (error) {
               console.error("Error reading file:", error);
               toast({ title: "שגיאה בקריאת הקובץ", variant: "destructive" });
@@ -209,7 +227,7 @@ export default function ContentManager() {
                         <Input type="file" accept="image/*" onChange={handleFileChange(field)} />
                       </FormControl>
                       <FormMessage />
-                       {field.value && <img src={field.value} alt="Preview" className="mt-2 h-20 rounded-md" />}
+                       {field.value && <ImagePreview imageKey={field.value} alt="תמונת רקע" />}
                     </FormItem>
                   )} />
                 </AccordionContent>
@@ -239,7 +257,7 @@ export default function ContentManager() {
                         <Input type="file" accept="image/*" onChange={handleFileChange(field)} />
                       </FormControl>
                       <FormMessage />
-                      {field.value && <img src={field.value} alt="Preview" className="mt-2 h-20 rounded-md" />}
+                      {field.value && <ImagePreview imageKey={field.value} alt="אודות" />}
                     </FormItem>
                   )} />
                 </AccordionContent>
@@ -255,7 +273,7 @@ export default function ContentManager() {
                         <Input type="file" accept="image/*" onChange={handleFileChange(field)} />
                       </FormControl>
                       <FormMessage />
-                      {field.value && <img src={field.value} alt="Preview" className="mt-2 h-20 rounded-md" />}
+                      {field.value && <ImagePreview imageKey={field.value} alt="באנר תפריט" />}
                     </FormItem>
                   )} />
                 </AccordionContent>
@@ -310,5 +328,3 @@ export default function ContentManager() {
     </Card>
   );
 }
-
-    

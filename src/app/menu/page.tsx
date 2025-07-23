@@ -1,8 +1,9 @@
+
 'use client';
 import { useApp } from '@/context/app-context';
 import { DishCard } from '@/components/dish-card';
 import { cn } from '@/lib/utils';
-import Image from 'next/image';
+import { AsyncImage } from '@/components/async-image';
 import { useIsClient } from '@/hooks/use-is-client';
 import { Skeleton } from '@/components/ui/skeleton';
 
@@ -14,13 +15,14 @@ export default function MenuPage() {
     return (
         <div>
             <div className="relative h-64 w-full">
-                <Image
-                    src={isClient ? siteContent.menu.mainImage : "https://placehold.co/1600x400"}
+                <AsyncImage
+                    imageKey={siteContent.menu.mainImage}
                     alt="תפריט"
                     layout="fill"
                     objectFit="cover"
                     className="brightness-50"
                     data-ai-hint="food arrangement"
+                    skeletonClassName="w-full h-full"
                 />
                 <div className="absolute inset-0 flex items-center justify-center">
                     <h1 className="text-5xl font-headline font-bold text-white drop-shadow-lg">

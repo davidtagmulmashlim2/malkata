@@ -84,6 +84,7 @@ export default function MenuManager() {
   const [isCategoryDialogOpen, setIsCategoryDialogOpen] = useState(false)
   const [editingDish, setEditingDish] = useState<Dish | null>(null)
   const [editingCategory, setEditingCategory] = useState<Category | null>(null)
+  const [categoryImagePreview, setCategoryImagePreview] = useState<string | null>(null);
 
   const dishForm = useForm<z.infer<typeof dishSchema>>({ resolver: zodResolver(dishSchema) })
   const categoryForm = useForm<z.infer<typeof categorySchema>>({ resolver: zodResolver(categorySchema) })
@@ -105,6 +106,13 @@ export default function MenuManager() {
     }
 }, [editingDish, dishForm]);
 
+  useEffect(() => {
+      if (editingCategory && editingCategory.image) {
+          getImage(editingCategory.image).then(src => setCategoryImagePreview(src));
+      } else {
+          setCategoryImagePreview(null);
+      }
+  }, [editingCategory]);
 
   const openDishDialog = (dish: Dish | null = null) => {
     setEditingDish(dish)
@@ -152,6 +160,10 @@ export default function MenuManager() {
   }
 
   const deleteCategory = (id: string) => {
+    const categoryToDelete = categories.find(c => c.id === id);
+    if (categoryToDelete && categoryToDelete.image) {
+        deleteImageFromStore(categoryToDelete.image);
+    }
     dispatch({ type: 'DELETE_CATEGORY', payload: id })
     toast({ title: 'קטגוריה נמחקה' })
   }
@@ -173,10 +185,10 @@ export default function MenuManager() {
    const handleMultiFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = e.target.files;
         if (files) {
+            const currentImages = dishForm.getValues('galleryImages') || [];
             try {
                 const dataUrls = await Promise.all(Array.from(files).map(file => readFileAsDataURL(file)));
                 const imageKeys = await Promise.all(dataUrls.map(url => storeImage(url)));
-                const currentImages = dishForm.getValues('galleryImages') || [];
                 dishForm.setValue('galleryImages', [...currentImages, ...imageKeys], { shouldValidate: true });
             } catch (error) {
                 console.error("Error reading files:", error);
@@ -192,19 +204,6 @@ export default function MenuManager() {
         const newImages = [...currentImages];
         newImages.splice(index, 1);
         dishForm.setValue('galleryImages', newImages, { shouldValidate: true });
-    };
-
-    const handleCategoryFileChange = (field: any) => async (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (file) {
-            try {
-                const dataUrl = await readFileAsDataURL(file);
-                field.onChange(dataUrl);
-            } catch (error) {
-                console.error("Error reading file:", error);
-                toast({ title: "שגיאה בקריאת הקובץ", variant: "destructive" });
-            }
-        }
     };
 
   return (
@@ -438,9 +437,9 @@ export default function MenuManager() {
                     <FormField name="image" control={categoryForm.control} render={({ field }) => (
                       <FormItem>
                         <FormLabel>תמונת באנר</FormLabel>
-                         <FormControl><Input type="file" accept="image/*" onChange={handleCategoryFileChange(field)} /></FormControl>
+                         <FormControl><Input type="file" accept="image/*" onChange={handleFileChange(field)} /></FormControl>
                         <FormMessage />
-                         {field.value && <img src={field.value} alt="Preview" className="mt-2 h-20 rounded-md" />}
+                         {categoryForm.watch('image') && <ImagePreview imageKey={categoryForm.watch('image')} alt="תמונת קטגוריה" />}
                       </FormItem>
                     )} />
                     <DialogFooter>

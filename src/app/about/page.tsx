@@ -1,6 +1,7 @@
+
 'use client';
 import { useApp } from '@/context/app-context';
-import Image from 'next/image';
+import { AsyncImage } from '@/components/async-image';
 import { cn } from '@/lib/utils';
 import { useIsClient } from '@/hooks/use-is-client';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -17,8 +18,8 @@ export default function AboutPage() {
                     {isClient ? "הסיפור של מלכתא" : <Skeleton className="h-12 w-80 mx-auto" />}
                 </h1>
                 <div className="relative w-full h-96 rounded-lg overflow-hidden shadow-xl mb-12">
-                     <Image
-                        src={isClient ? about.image : "https://placehold.co/800x600"}
+                     <AsyncImage
+                        imageKey={about.image}
                         alt="אודות מסעדת מלכתא"
                         layout="fill"
                         objectFit="cover"

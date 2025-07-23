@@ -17,7 +17,7 @@ export interface Category {
   name: string;
   slug: string;
   description: string;
-  image: string; // Can remain data URI as it's one per category
+  image: string; // This will now be an image key
 }
 
 export interface Testimonial {
@@ -28,7 +28,7 @@ export interface Testimonial {
 
 export interface GalleryImage {
   id: string;
-  src: string; // Can remain data URI for simplicity in gallery management
+  src: string; // This will now be an image key
   alt: string;
 }
 
@@ -37,7 +37,7 @@ export interface SiteContent {
     titleFirstWord: string;
     titleRest: string;
     subtitle: string;
-    image: string;
+    image: string; // This will now be an image key
     titleFirstWordColor: string;
     titleFirstWordFontSize: string;
     titleFirstWordOpacity: number;
@@ -50,7 +50,7 @@ export interface SiteContent {
   about: {
     short: string;
     long: string;
-    image: string;
+    image: string; // This will now be an image key
   };
   contact: {
     address: string;
@@ -60,7 +60,7 @@ export interface SiteContent {
     hours: string;
   };
   menu: {
-    mainImage: string;
+    mainImage: string; // This will now be an image key
   };
 }
 

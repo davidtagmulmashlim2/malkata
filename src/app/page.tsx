@@ -14,6 +14,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 import { useEffect, useMemo, useState } from 'react';
 import type { Testimonial } from '@/lib/types';
+import { AsyncImage } from '@/components/async-image';
 
 export default function Home() {
   const { state } = useApp();
@@ -22,18 +23,14 @@ export default function Home() {
   const [api, setApi] = useState<CarouselApi>();
   const [typewriterKey, setTypewriterKey] = useState(0);
 
-  useEffect(() => {
+   useEffect(() => {
     if (!api) return;
     
-    const onSelect = () => {
-      // Do something on select
-    };
-    api.on("select", onSelect);
+    // This is a workaround to force re-initialization on data change
+    api.reInit();
 
-    return () => {
-        api.off("select", onSelect);
-    }
-  }, [api]);
+  }, [api, testimonials]);
+
 
   useEffect(() => {
     if (isClient && siteContent.hero.animationInterval > 0) {
@@ -62,14 +59,15 @@ export default function Home() {
     <div className="space-y-16 md:space-y-24">
       {/* Hero Section */}
       <section className="relative h-[60vh] md:h-[80vh] w-full flex items-center justify-center text-center text-white">
-        <Image
-          src={isClient ? siteContent.hero.image : "https://placehold.co/1920x1080"}
+        <AsyncImage
+          imageKey={siteContent.hero.image}
           alt="רקע של אוכל ביתי"
           layout="fill"
           objectFit="cover"
           className="z-0 brightness-50"
           priority
           data-ai-hint="warm food"
+          skeletonClassName="w-full h-full"
         />
         <div className="z-10 p-4">
           <h1 className="font-headline font-bold drop-shadow-lg">
@@ -113,8 +111,8 @@ export default function Home() {
             </Button>
           </div>
           <div className="w-full h-80 relative rounded-lg overflow-hidden shadow-xl">
-             <Image
-                src={isClient ? siteContent.about.image : "https://placehold.co/600x400"}
+             <AsyncImage
+                imageKey={siteContent.about.image}
                 alt="אודות מסעדת מלכתא"
                 layout="fill"
                 objectFit="cover"
@@ -132,7 +130,7 @@ export default function Home() {
               setApi={setApi}
               className="w-full max-w-xl mx-auto" 
               dir="rtl"
-              opts={{
+               opts={{
                 align: "start",
                 loop: true,
               }}
