@@ -18,7 +18,8 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { PlusCircle, Edit, Trash2, X } from 'lucide-react'
 import { toast } from '@/hooks/use-toast'
 import type { Dish, Category } from '@/lib/types'
-import Image from 'next/image';
+import { storeImage } from '@/lib/image-store';
+import { AsyncImage } from '@/components/async-image'
 
 const slugify = (text: string) => text.toLowerCase().replace(/[\s\W-]+/g, '-')
 
@@ -28,8 +29,8 @@ const dishSchema = z.object({
   shortDescription: z.string().min(1, 'תיאור קצר הוא שדה חובה'),
   fullDescription: z.string().min(1, 'תיאור מלא הוא שדה חובה'),
   price: z.coerce.number().min(0, 'המחיר חייב להיות חיובי'),
-  mainImage: z.string().url('חובה להזין כתובת URL חוקית').min(1, "חובה להזין כתובת URL"),
-  galleryImages: z.array(z.string().url('חובה להזין כתובת URL חוקית')),
+  mainImage: z.string().min(1, "חובה להעלות תמונה ראשית"),
+  galleryImages: z.array(z.string()),
   categoryId: z.string().min(1, 'חובה לבחור קטגוריה'),
   isAvailable: z.boolean(),
   isRecommended: z.boolean().optional(),
@@ -40,13 +41,21 @@ const categorySchema = z.object({
   id: z.string().optional(),
   name: z.string().min(1, 'שם הקטגוריה הוא שדה חובה'),
   description: z.string().min(1, 'תיאור הוא שדה חובה'),
-  image: z.string().url('חובה להזין כתובת URL חוקית').min(1, 'חובה להזין כתובת URL'),
+  image: z.string().min(1, 'חובה להעלות תמונה'),
 })
 
+const fileToDataUrl = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+    });
+};
 
-const ImagePreview = ({ src, alt }: { src: string, alt: string }) => {
-    if (!src) return null;
-    return <Image src={src} alt={alt} width={96} height={96} className="h-24 w-24 rounded-md object-cover" />;
+const ImagePreview = ({ imageKey, alt }: { imageKey: string, alt: string }) => {
+    if (!imageKey) return null;
+    return <AsyncImage imageKey={imageKey} alt={alt} width={96} height={96} className="h-24 w-24 rounded-md object-cover" />;
 };
 
 
@@ -57,8 +66,8 @@ export default function MenuManager() {
   const [isCategoryDialogOpen, setIsCategoryDialogOpen] = useState(false)
   const [editingDish, setEditingDish] = useState<Dish | null>(null)
   const [editingCategory, setEditingCategory] = useState<Category | null>(null)
-  const [newGalleryImageUrl, setNewGalleryImageUrl] = useState('');
-  
+  const [newGalleryImageFile, setNewGalleryImageFile] = useState<File | null>(null);
+
   const dishForm = useForm<z.infer<typeof dishSchema>>({ 
     resolver: zodResolver(dishSchema),
     defaultValues: {
@@ -122,6 +131,21 @@ export default function MenuManager() {
     }
     setIsCategoryDialogOpen(false)
   }
+  
+    const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>, onChange: (value: string) => void) => {
+        const file = event.target.files?.[0];
+        if (!file) return;
+
+        try {
+            const dataUrl = await fileToDataUrl(file);
+            const imageKey = await storeImage(dataUrl);
+            onChange(imageKey);
+        } catch (error) {
+            console.error("Error uploading image:", error);
+            toast({ title: 'שגיאה בהעלאת תמונה', variant: 'destructive' });
+        }
+    };
+
 
   const deleteDish = (id: string) => {
     dispatch({ type: 'DELETE_DISH', payload: id })
@@ -133,14 +157,19 @@ export default function MenuManager() {
     toast({ title: 'קטגוריה נמחקה' })
   }
 
-  const addGalleryImage = () => {
-    const currentImages = dishForm.getValues('galleryImages') || [];
-    // Basic URL validation
-    if (newGalleryImageUrl && newGalleryImageUrl.startsWith('http')) {
-        dishForm.setValue('galleryImages', [...currentImages, newGalleryImageUrl], { shouldValidate: true });
-        setNewGalleryImageUrl('');
-    } else {
-        toast({title: "יש להזין כתובת URL חוקית", variant: "destructive"})
+  const addGalleryImage = async () => {
+    if (!newGalleryImageFile) return;
+
+    try {
+        const dataUrl = await fileToDataUrl(newGalleryImageFile);
+        const imageKey = await storeImage(dataUrl);
+        const currentImages = dishForm.getValues('galleryImages') || [];
+        dishForm.setValue('galleryImages', [...currentImages, imageKey], { shouldValidate: true });
+        setNewGalleryImageFile(null); 
+        const fileInput = document.getElementById('gallery-file-input') as HTMLInputElement;
+        if(fileInput) fileInput.value = '';
+    } catch (error) {
+        toast({title: "שגיאה בהעלאת תמונת גלריה", variant: "destructive"});
     }
   };
 
@@ -204,31 +233,41 @@ export default function MenuManager() {
                         <FormMessage />
                       </FormItem>
                     )} />
-                    <FormField name="mainImage" control={dishForm.control} render={({ field }) => (
-                       <FormItem>
-                        <FormLabel>כתובת URL של תמונה ראשית</FormLabel>
-                         <FormControl>
-                            <Input placeholder="https://example.com/image.png" {...field} />
-                         </FormControl>
-                        <FormMessage />
-                        {dishMainImageValue && <ImagePreview src={dishMainImageValue} alt="תמונה ראשית" />}
-                       </FormItem>
-                    )} />
+                     <FormField
+                        name="mainImage"
+                        control={dishForm.control}
+                        render={({ field }) => (
+                           <FormItem>
+                             <FormLabel>תמונה ראשית</FormLabel>
+                             <FormControl>
+                                <Input 
+                                    type="file" 
+                                    accept="image/*" 
+                                    onChange={(e) => handleFileChange(e, field.onChange)}
+                                />
+                             </FormControl>
+                             <FormMessage />
+                             {dishMainImageValue && <ImagePreview imageKey={dishMainImageValue} alt="תמונה ראשית" />}
+                           </FormItem>
+                        )}
+                     />
+
                     <FormItem>
-                      <FormLabel>כתובות URL של תמונות נוספות (גלריה)</FormLabel>
+                      <FormLabel>תמונות נוספות (גלריה)</FormLabel>
                       <div className="flex gap-2">
                         <Input 
-                            placeholder="הדבק כאן כתובת URL של תמונה"
-                            value={newGalleryImageUrl}
-                            onChange={(e) => setNewGalleryImageUrl(e.target.value)}
+                            id="gallery-file-input"
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => setNewGalleryImageFile(e.target.files ? e.target.files[0] : null)}
                          />
-                        <Button type="button" onClick={addGalleryImage}>הוסף</Button>
+                        <Button type="button" onClick={addGalleryImage} disabled={!newGalleryImageFile}>הוסף</Button>
                       </div>
                       <FormMessage />
                       <div className="flex flex-wrap gap-2 mt-2">
-                          {dishGalleryImagesValue?.map((imgSrc, i) => (
+                          {dishGalleryImagesValue?.map((imgKey, i) => (
                               <div key={i} className="relative group">
-                                  <ImagePreview src={imgSrc} alt={`תמונת גלריה ${i + 1}`} />
+                                  <ImagePreview imageKey={imgKey} alt={`תמונת גלריה ${i + 1}`} />
                                   <Button 
                                       type="button"
                                       variant="destructive"
@@ -390,16 +429,24 @@ export default function MenuManager() {
                         <FormMessage />
                       </FormItem>
                     )} />
-                    <FormField name="image" control={categoryForm.control} render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>כתובת URL של תמונת באנר</FormLabel>
-                         <FormControl>
-                            <Input placeholder="https://example.com/image.png" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                         {categoryImageValue && <ImagePreview src={categoryImageValue} alt="תמונת קטגוריה" />}
-                      </FormItem>
-                    )} />
+                    <FormField
+                        name="image"
+                        control={categoryForm.control}
+                        render={({ field }) => (
+                           <FormItem>
+                             <FormLabel>תמונת באנר</FormLabel>
+                             <FormControl>
+                                <Input 
+                                    type="file" 
+                                    accept="image/*" 
+                                    onChange={(e) => handleFileChange(e, field.onChange)}
+                                />
+                             </FormControl>
+                             <FormMessage />
+                             {categoryImageValue && <ImagePreview imageKey={categoryImageValue} alt="תמונת קטגוריה" />}
+                           </FormItem>
+                        )}
+                     />
                     <DialogFooter>
                       <Button type="submit">שמור</Button>
                     </DialogFooter>

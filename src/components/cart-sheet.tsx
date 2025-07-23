@@ -23,37 +23,7 @@ import { getImage, getImageSync } from '@/lib/image-store';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Skeleton } from './ui/skeleton';
-
-const CartDishImage = ({ imageKey, alt }: { imageKey: string; alt: string }) => {
-    const [src, setSrc] = useState(() => getImageSync(imageKey) || "https://placehold.co/64x64");
-
-    useEffect(() => {
-        let isMounted = true;
-        const fetchImage = async () => {
-            const imageSrc = await getImage(imageKey);
-            if (isMounted && imageSrc) {
-                setSrc(imageSrc);
-            }
-        };
-
-        if (!src.startsWith('data:image')) {
-            fetchImage();
-        }
-        
-        return () => { isMounted = false; };
-    }, [imageKey, src]);
-    
-    return (
-        <Image
-            src={src}
-            alt={alt}
-            width={64}
-            height={64}
-            className="rounded-md object-cover h-16 w-16 shrink-0"
-            data-ai-hint="food dish"
-        />
-    )
-}
+import { AsyncImage } from './async-image';
 
 const CartItemSkeleton = () => (
     <div className="flex justify-between items-center gap-4">
@@ -139,7 +109,14 @@ export function CartSheet() {
                 {cartDetails.map(item => (
                   <div key={item!.id} className="flex justify-between items-center gap-4">
                     <div className="flex items-center gap-4 flex-1 min-w-0">
-                        <CartDishImage imageKey={item!.mainImage} alt={item!.name} />
+                        <AsyncImage 
+                            imageKey={item!.mainImage} 
+                            alt={item!.name} 
+                            width={64}
+                            height={64}
+                            className="rounded-md object-cover h-16 w-16 shrink-0"
+                            data-ai-hint="food dish"
+                        />
                         <div className="flex flex-col text-right flex-1 min-w-0">
                           <h4 className="font-semibold truncate">{item!.name}</h4>
                           <p className="text-sm text-muted-foreground">{item!.price} ₪</p>

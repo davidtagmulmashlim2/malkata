@@ -16,42 +16,14 @@ import { cn } from '@/lib/utils';
 import { getImage, getImageSync } from '@/lib/image-store';
 import { useIsClient } from '@/hooks/use-is-client';
 import { Skeleton } from '@/components/ui/skeleton';
+import { AsyncImage } from './async-image';
 
 interface DishCardProps {
   dish: Dish;
 }
 
-const DishImage = ({ imageKey, alt }: { imageKey: string, alt: string }) => {
-    const [src, setSrc] = useState(() => getImageSync(imageKey) || 'https://placehold.co/600x400');
-    
-    useEffect(() => {
-        let isMounted = true;
-        const fetchImage = async () => {
-            const imageSrc = await getImage(imageKey);
-            if(isMounted && imageSrc) {
-                setSrc(imageSrc);
-            }
-        }
-        if (!src.startsWith('data:image')) {
-             fetchImage();
-        }
-        return () => { isMounted = false; };
-    }, [imageKey, src]);
-
-    return (
-         <Image
-            src={src}
-            alt={alt}
-            width={600}
-            height={400}
-            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
-            data-ai-hint="food dish"
-        />
-    )
-}
-
 const CarouselDishImage = ({ imageKey, alt }: { imageKey: string, alt: string }) => {
-    const [src, setSrc] = useState(() => getImageSync(imageKey) || 'https://placehold.co/600x600');
+    const [src, setSrc] = useState(() => getImageSync(imageKey) || 'https://placehold.co/600x600.png');
 
     useEffect(() => {
         let isMounted = true;
@@ -61,7 +33,7 @@ const CarouselDishImage = ({ imageKey, alt }: { imageKey: string, alt: string })
                 setSrc(imageSrc);
             }
         }
-        if (!src.startsWith('data:image')) {
+        if (!src || (!src.startsWith('data:image') && !src.startsWith('http'))) {
              fetchImage();
         }
         return () => { isMounted = false; };
@@ -118,7 +90,7 @@ export function DishCard({ dish }: DishCardProps) {
       <Card className="flex flex-col overflow-hidden h-full transition-all hover:shadow-lg hover:-translate-y-1 group text-right">
         <DialogTrigger asChild>
             <div className="relative cursor-pointer aspect-[4/3] w-full overflow-hidden">
-                <DishImage imageKey={dish.mainImage} alt={dish.name} />
+                <AsyncImage imageKey={dish.mainImage} alt={dish.name} layout="fill" objectFit="cover" className="transition-transform duration-300 group-hover:scale-110"/>
                 <div className="absolute inset-x-0 bottom-0 flex items-center justify-center bg-black/50 text-white text-center py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     הצגה מהירה
                 </div>

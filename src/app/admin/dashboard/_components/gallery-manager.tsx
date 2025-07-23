@@ -1,7 +1,7 @@
 
 'use client';
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useApp } from '@/context/app-context';
@@ -11,21 +11,31 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger, AlertDialogFooter } from '@/components/ui/alert-dialog';
 import { toast } from '@/hooks/use-toast';
-import Image from 'next/image';
 import { Trash2 } from 'lucide-react';
 import type { GalleryImage } from '@/lib/types';
+import { storeImage } from '@/lib/image-store';
+import { AsyncImage } from '@/components/async-image';
 
 
 const gallerySchema = z.object({
-  src: z.string().url('חובה להזין כתובת URL חוקית').min(1, 'חובה להזין כתובת URL'),
+  src: z.string().min(1, 'חובה להעלות תמונה'),
   alt: z.string().min(1, 'תיאור הוא שדה חובה'),
 });
 
 
-const GalleryImagePreview = ({ src, alt }: { src: string, alt: string }) => {
-    if (!src) return null;
-    return <Image src={src} alt={alt} width={200} height={200} className="rounded-md object-cover aspect-square" />;
+const GalleryImagePreview = ({ imageKey, alt }: { imageKey: string, alt: string }) => {
+    if (!imageKey) return null;
+    return <AsyncImage imageKey={imageKey} alt={alt} width={200} height={200} className="rounded-md object-cover aspect-square" />;
 }
+
+const fileToDataUrl = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+    });
+};
 
 
 export default function GalleryManager() {
@@ -37,7 +47,22 @@ export default function GalleryManager() {
     defaultValues: { src: '', alt: '' },
   });
   
-  const imagePreviewSrc = form.watch('src');
+  const imagePreviewKey = form.watch('src');
+
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+      const file = event.target.files?.[0];
+      if (!file) return;
+
+      try {
+          const dataUrl = await fileToDataUrl(file);
+          const imageKey = await storeImage(dataUrl);
+          form.setValue('src', imageKey, { shouldValidate: true });
+      } catch (error) {
+          console.error("Error uploading image:", error);
+          toast({ title: 'שגיאה בהעלאת תמונה', variant: 'destructive' });
+      }
+  };
+
 
   const onSubmit = (values: z.infer<typeof gallerySchema>) => {
     dispatch({ type: 'ADD_GALLERY_IMAGE', payload: { ...values, id: Date.now().toString() } });
@@ -46,6 +71,7 @@ export default function GalleryManager() {
   };
 
   const deleteImage = (id: string) => {
+    // TODO: also delete from image-store
     dispatch({ type: 'DELETE_GALLERY_IMAGE', payload: id });
     toast({ title: 'התמונה נמחקה מהגלריה.' });
   };
@@ -62,7 +88,7 @@ export default function GalleryManager() {
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
               {gallery.map((image: GalleryImage) => (
                 <div key={image.id} className="relative group">
-                  <GalleryImagePreview src={image.src} alt={image.alt} />
+                  <GalleryImagePreview imageKey={image.src} alt={image.alt} />
                   <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                      <AlertDialog>
                         <AlertDialogTrigger asChild>
@@ -99,15 +125,16 @@ export default function GalleryManager() {
                   name="src"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>כתובת URL של התמונה</FormLabel>
+                      <FormLabel>קובץ תמונה</FormLabel>
                       <FormControl>
                         <Input 
-                            placeholder="https://example.com/image.png"
-                            {...field}
+                            type="file"
+                            accept="image/*"
+                            onChange={handleFileChange}
                         />
                       </FormControl>
                       <FormMessage />
-                      {imagePreviewSrc && <GalleryImagePreview src={imagePreviewSrc} alt="Preview" />}
+                      {imagePreviewKey && <GalleryImagePreview imageKey={imagePreviewKey} alt="Preview" />}
                     </FormItem>
                   )}
                 />

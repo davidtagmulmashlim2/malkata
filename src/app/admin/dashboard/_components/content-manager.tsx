@@ -1,6 +1,6 @@
 
 'use client';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useApp } from '@/context/app-context';
@@ -13,15 +13,17 @@ import { toast } from '@/hooks/use-toast';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Slider } from '@/components/ui/slider';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
+import { storeImage } from '@/lib/image-store';
+import { AsyncImage } from '@/components/async-image';
 
 const contentSchema = z.object({
   hero: z.object({
     titleFirstWord: z.string().min(1, 'חובה'),
     titleRest: z.string(),
     subtitle: z.string().min(1, 'חובה'),
-    image: z.string().url('חובה להזין כתובת URL חוקית').min(1, 'חובה'),
+    image: z.string().min(1, 'חובה'),
     titleFirstWordColor: z.string(),
     titleFirstWordFontSize: z.string(),
     titleFirstWordOpacity: z.number().min(0).max(1),
@@ -38,7 +40,7 @@ const contentSchema = z.object({
   about: z.object({
     short: z.string().min(1, 'חובה'),
     long: z.string().min(1, 'חובה'),
-    image: z.string().url('חובה להזין כתובת URL חוקית').min(1, 'חובה'),
+    image: z.string().min(1, 'חובה'),
   }),
   contact: z.object({
     address: z.string().min(1, 'חובה'),
@@ -48,23 +50,34 @@ const contentSchema = z.object({
     hours: z.string().min(1, 'חובה'),
   }),
   menu: z.object({
-      mainImage: z.string().url('חובה להזין כתובת URL חוקית').min(1, 'חובה'),
+      mainImage: z.string().min(1, 'חובה'),
   })
 });
 
+type ContentFormValues = z.infer<typeof contentSchema>;
+
 const fontSizes = ['xs', 'sm', 'base', 'lg', 'xl', '2xl', '3xl', '4xl', '5xl', '6xl', '7xl', '8xl', '9xl'];
 
-const ImagePreview = ({ src, alt }: { src: string, alt: string }) => {
-    if (!src) return null;
-    return <Image src={src} alt={alt} width={80} height={80} className="mt-2 h-20 w-20 rounded-md object-cover" />;
+const ImagePreview = ({ imageKey, alt }: { imageKey: string | undefined, alt: string }) => {
+    if (!imageKey) return null;
+    return <AsyncImage imageKey={imageKey} alt={alt} width={80} height={80} className="mt-2 h-20 w-20 rounded-md object-cover" />;
 }
 
+const fileToDataUrl = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+    });
+};
 
 export default function ContentManager() {
   const { state, dispatch } = useApp();
   const { siteContent } = state;
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const form = useForm<z.infer<typeof contentSchema>>({
+  const form = useForm<ContentFormValues>({
     resolver: zodResolver(contentSchema),
     defaultValues: siteContent,
   });
@@ -79,7 +92,26 @@ export default function ContentManager() {
     }
   }, [siteContent, form]);
 
-  const onSubmit = (values: z.infer<typeof contentSchema>) => {
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>, fieldName: keyof ContentFormValues['hero'] | keyof ContentFormValues['about'] | keyof ContentFormValues['menu']) => {
+      const file = event.target.files?.[0];
+      if (!file) return;
+
+      try {
+          const dataUrl = await fileToDataUrl(file);
+          const imageKey = await storeImage(dataUrl);
+          
+          // This is a bit tricky due to the nested structure
+          const [section, key] = (fieldName as string).split('.');
+          form.setValue(fieldName as any, imageKey, { shouldValidate: true });
+          
+      } catch (error) {
+          console.error("Error uploading image:", error);
+          toast({ title: 'שגיאה בהעלאת תמונה', variant: 'destructive' });
+      }
+  };
+
+
+  const onSubmit = (values: ContentFormValues) => {
     dispatch({ type: 'UPDATE_CONTENT', payload: values });
     toast({ title: 'תוכן האתר עודכן בהצלחה!' });
   };
@@ -231,16 +263,24 @@ export default function ContentManager() {
                         </FormItem>
                       )} />
                   </div>
-                  <FormField name="hero.image" control={form.control} render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>כתובת URL של תמונת רקע</FormLabel>
-                      <FormControl>
-                        <Input placeholder="https://example.com/image.png" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                       {heroImage && <ImagePreview src={heroImage} alt="תצוגה מקדימה של תמונת רקע" />}
-                    </FormItem>
-                  )} />
+                  <Controller
+                    control={form.control}
+                    name="hero.image"
+                    render={({ field }) => (
+                       <FormItem>
+                         <FormLabel>תמונת רקע</FormLabel>
+                          <FormControl>
+                            <Input 
+                                type="file" 
+                                accept="image/*" 
+                                onChange={(e) => handleFileChange(e, 'hero.image')}
+                            />
+                          </FormControl>
+                         <FormMessage />
+                         <ImagePreview imageKey={field.value} alt="תצוגה מקדימה של תמונת רקע" />
+                       </FormItem>
+                    )}
+                  />
                   <FormField name="hero.heroImageBrightness" control={form.control} render={({ field }) => (
                     <FormItem>
                       <FormLabel>בהירות תמונת רקע ({field.value ?? 100}%)</FormLabel>
@@ -268,32 +308,48 @@ export default function ContentManager() {
                       <FormMessage />
                     </FormItem>
                   )} />
-                   <FormField name="about.image" control={form.control} render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>כתובת URL של תמונה</FormLabel>
-                       <FormControl>
-                        <Input placeholder="https://example.com/image.png" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                      {aboutImage && <ImagePreview src={aboutImage} alt="תצוגה מקדימה של תמונת אודות" />}
-                    </FormItem>
-                  )} />
+                   <Controller
+                    control={form.control}
+                    name="about.image"
+                    render={({ field }) => (
+                       <FormItem>
+                         <FormLabel>תמונת אודות</FormLabel>
+                           <FormControl>
+                            <Input 
+                                type="file" 
+                                accept="image/*" 
+                                onChange={(e) => handleFileChange(e, 'about.image')}
+                            />
+                           </FormControl>
+                         <FormMessage />
+                         <ImagePreview imageKey={field.value} alt="תצוגה מקדימה של תמונת אודות" />
+                       </FormItem>
+                    )}
+                  />
                 </AccordionContent>
               </AccordionItem>
 
                <AccordionItem value="menu">
                 <AccordionTrigger className="font-headline text-xl">עמוד תפריט</AccordionTrigger>
                 <AccordionContent className="space-y-4 pt-4">
-                  <FormField name="menu.mainImage" control={form.control} render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>כתובת URL של תמונת באנר ראשית</FormLabel>
-                      <FormControl>
-                        <Input placeholder="https://example.com/image.png" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                      {menuImage && <ImagePreview src={menuImage} alt="תצוגה מקדימה של באנר תפריט" />}
-                    </FormItem>
-                  )} />
+                  <Controller
+                    control={form.control}
+                    name="menu.mainImage"
+                    render={({ field }) => (
+                       <FormItem>
+                         <FormLabel>תמונת באנר ראשית</FormLabel>
+                           <FormControl>
+                            <Input 
+                                type="file" 
+                                accept="image/*" 
+                                onChange={(e) => handleFileChange(e, 'menu.mainImage')}
+                            />
+                           </FormControl>
+                         <FormMessage />
+                         <ImagePreview imageKey={field.value} alt="תצוגה מקדימה של באנר תפריט" />
+                       </FormItem>
+                    )}
+                  />
                 </AccordionContent>
               </AccordionItem>
 
