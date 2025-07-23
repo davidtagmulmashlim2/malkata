@@ -59,9 +59,9 @@ export default function Home() {
         <div className="container grid lg:grid-cols-2 gap-12 items-center">
           <div>
             <h2 className="text-3xl md:text-4xl font-headline font-bold mb-4">הסיפור שלנו</h2>
-            <p className="text-muted-foreground mb-6">
+            <div className="text-muted-foreground mb-6">
               {isClient ? siteContent.about.short : <Skeleton className="h-20 w-full" />}
-            </p>
+            </div>
             <Button asChild variant="outline">
               <Link href="/about">קראו עוד</Link>
             </Button>
@@ -119,7 +119,7 @@ export default function Home() {
                 <Input 
                     type="email" 
                     placeholder="האימייל שלכם" 
-                    className="flex-grow text-foreground"
+                    className="text-foreground"
                     aria-label="Email for newsletter"
                 />
                 <Button type="submit" variant="secondary">הרשמה</Button>
