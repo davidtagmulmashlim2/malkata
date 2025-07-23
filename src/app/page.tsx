@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Carousel, CarouselApi, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import { useApp } from '@/context/app-context';
 import { Typewriter } from '@/components/typewriter';
 import { DishCard } from '@/components/dish-card';
@@ -15,30 +14,15 @@ import { cn } from '@/lib/utils';
 import { useEffect, useMemo, useState } from 'react';
 import type { Testimonial } from '@/lib/types';
 import { AsyncImage } from '@/components/async-image';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 export default function Home() {
   const { state } = useApp();
   const { siteContent, dishes, testimonials } = state;
   const { hero } = siteContent;
   const isClient = useIsClient();
-  const [api, setApi] = useState<CarouselApi>();
   const [typewriterKey, setTypewriterKey] = useState(0);
-
-   useEffect(() => {
-    if (!api || !testimonials?.length) return;
-    
-    const onSelect = () => {
-        // Do something on select.
-    };
-
-    api.on("reInit", onSelect);
-    api.on("select", onSelect);
-    
-    // This is a workaround to force re-initialization on data change
-    api.reInit();
-
-  }, [api, testimonials]);
-
+  const [currentTestimonialIndex, setCurrentTestimonialIndex] = useState(0);
 
   useEffect(() => {
     if (isClient && siteContent.hero.animationInterval > 0) {
@@ -49,6 +33,14 @@ export default function Home() {
       return () => clearInterval(interval);
     }
   }, [isClient, siteContent.hero.animationInterval]);
+
+  const nextTestimonial = () => {
+    setCurrentTestimonialIndex(prev => (prev + 1) % testimonials.length);
+  };
+
+  const prevTestimonial = () => {
+    setCurrentTestimonialIndex(prev => (prev - 1 + testimonials.length) % testimonials.length);
+  };
 
 
   const recommendedDishes = useMemo(() => {
@@ -158,33 +150,35 @@ export default function Home() {
        <section className="container">
         <h2 className="text-3xl md:text-4xl font-headline font-bold text-right mb-10">לקוחות ממליצים</h2>
          {isClient && testimonials?.length > 0 ? (
-            <Carousel 
-              setApi={setApi}
-              className="w-full max-w-xl mx-auto" 
-              dir="rtl"
-               opts={{
-                align: "start",
-                loop: true,
-              }}
-            >
-              <CarouselContent>
-                    {testimonials.map((testimonial) => (
-                      <CarouselItem key={testimonial.id}>
-                        <div className="p-1">
-                          <Card>
-                            <CardContent className="flex flex-col items-center justify-center p-6 text-center h-48">
-                              <p className="text-lg italic mb-4 flex-grow">"{testimonial.quote}"</p>
-                              <p className="font-bold text-primary">- {testimonial.name}</p>
-                            </CardContent>
-                          </Card>
-                        </div>
-                      </CarouselItem>
-                    ))
-                }
-              </CarouselContent>
-              <CarouselPrevious />
-              <CarouselNext />
-            </Carousel>
+            <div className="relative w-full max-w-xl mx-auto">
+              <Card>
+                <CardContent className="flex flex-col items-center justify-center p-6 text-center h-48 relative">
+                   {testimonials.map((testimonial, index) => (
+                      <div 
+                        key={testimonial.id}
+                        className={cn(
+                          "absolute inset-0 flex flex-col items-center justify-center p-6 transition-opacity duration-300",
+                          index === currentTestimonialIndex ? "opacity-100" : "opacity-0"
+                        )}
+                        style={{transitionDelay: index === currentTestimonialIndex ? '150ms' : '0ms' }}
+                      >
+                        <p className="text-lg italic mb-4 flex-grow">"{testimonial.quote}"</p>
+                        <p className="font-bold text-primary">- {testimonial.name}</p>
+                      </div>
+                    ))}
+                </CardContent>
+              </Card>
+              {testimonials.length > 1 && (
+                <>
+                  <Button variant="outline" size="icon" className="absolute top-1/2 -translate-y-1/2 right-[-2rem] md:right-[-4rem]" onClick={prevTestimonial}>
+                    <ChevronRight className="h-4 w-4" />
+                  </Button>
+                  <Button variant="outline" size="icon" className="absolute top-1/2 -translate-y-1/2 left-[-2rem] md:left-[-4rem]" onClick={nextTestimonial}>
+                    <ChevronLeft className="h-4 w-4" />
+                  </Button>
+                </>
+              )}
+            </div>
           ) : (
              <div className="p-1">
                  <Card className="w-full max-w-xl mx-auto">
