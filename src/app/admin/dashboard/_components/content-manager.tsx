@@ -12,6 +12,7 @@ import { toast } from '@/hooks/use-toast';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Slider } from '@/components/ui/slider';
+import { useEffect } from 'react';
 
 const contentSchema = z.object({
   hero: z.object({
@@ -46,7 +47,6 @@ const contentSchema = z.object({
 
 const fontSizes = ['xs', 'sm', 'base', 'lg', 'xl', '2xl', '3xl', '4xl', '5xl', '6xl', '7xl', '8xl', '9xl'];
 
-// Helper to read file as Data URL
 const readFileAsDataURL = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -62,8 +62,14 @@ export default function ContentManager() {
 
   const form = useForm<z.infer<typeof contentSchema>>({
     resolver: zodResolver(contentSchema),
-    values: siteContent,
+    // Use defaultValues instead of values to initialize, and `reset` in useEffect
+    defaultValues: siteContent, 
   });
+
+  // This useEffect will sync the form with the state from context when it changes.
+  useEffect(() => {
+    form.reset(siteContent);
+  }, [siteContent, form]);
 
   const onSubmit = (values: z.infer<typeof contentSchema>) => {
     dispatch({ type: 'UPDATE_CONTENT', payload: values });
@@ -151,15 +157,15 @@ export default function ContentManager() {
                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
                      <FormField name="hero.titleFirstWordOpacity" control={form.control} render={({ field }) => (
                         <FormItem>
-                          <FormLabel>שקיפות מילה ראשונה ({Math.round(field.value * 100)}%)</FormLabel>
-                          <FormControl><Slider defaultValue={[field.value]} min={0} max={1} step={0.05} onValueChange={(v) => field.onChange(v[0])} /></FormControl>
+                          <FormLabel>שקיפות מילה ראשונה ({field.value ? Math.round(field.value * 100) : 100}%)</FormLabel>
+                          <FormControl><Slider defaultValue={[field.value || 1]} min={0} max={1} step={0.05} onValueChange={(v) => field.onChange(v[0])} /></FormControl>
                           <FormMessage />
                         </FormItem>
                       )} />
                        <FormField name="hero.titleRestOpacity" control={form.control} render={({ field }) => (
                         <FormItem>
-                          <FormLabel>שקיפות שאר המשפט ({Math.round(field.value * 100)}%)</FormLabel>
-                          <FormControl><Slider defaultValue={[field.value]} min={0} max={1} step={0.05} onValueChange={(v) => field.onChange(v[0])} /></FormControl>
+                          <FormLabel>שקיפות שאר המשפט ({field.value ? Math.round(field.value * 100) : 100}%)</FormLabel>
+                          <FormControl><Slider defaultValue={[field.value || 1]} min={0} max={1} step={0.05} onValueChange={(v) => field.onChange(v[0])} /></FormControl>
                           <FormMessage />
                         </FormItem>
                       )} />
@@ -173,8 +179,8 @@ export default function ContentManager() {
                   )} />
                   <FormField name="hero.subtitleOpacity" control={form.control} render={({ field }) => (
                     <FormItem>
-                        <FormLabel>שקיפות כותרת משנה ({Math.round(field.value * 100)}%)</FormLabel>
-                        <FormControl><Slider defaultValue={[field.value]} min={0} max={1} step={0.05} onValueChange={(v) => field.onChange(v[0])} /></FormControl>
+                        <FormLabel>שקיפות כותרת משנה ({field.value ? Math.round(field.value * 100) : 100}%)</FormLabel>
+                        <FormControl><Slider defaultValue={[field.value || 1]} min={0} max={1} step={0.05} onValueChange={(v) => field.onChange(v[0])} /></FormControl>
                         <FormMessage />
                     </FormItem>
                   )} />
@@ -279,7 +285,7 @@ export default function ContentManager() {
               </AccordionItem>
             </Accordion>
             
-            <Button type="submit" className="w-full">שמור שינויים</Button>
+            <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>שמור שינויים</Button>
           </form>
         </Form>
       </CardContent>

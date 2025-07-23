@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { toast } from '@/hooks/use-toast';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useEffect } from 'react';
 
 const designSchema = z.object({
   theme: z.string(),
@@ -47,8 +48,13 @@ export default function DesignManager() {
 
   const form = useForm<z.infer<typeof designSchema>>({
     resolver: zodResolver(designSchema),
-    values: design,
+    defaultValues: design,
   });
+
+  // This useEffect will sync the form with the state from context when it changes.
+  useEffect(() => {
+    form.reset(design);
+  }, [design, form]);
 
   const onSubmit = (values: z.infer<typeof designSchema>) => {
     dispatch({ type: 'UPDATE_DESIGN', payload: values });
@@ -134,7 +140,7 @@ export default function DesignManager() {
                 />
             </div>
             
-            <Button type="submit" className="w-full">שמור שינויי עיצוב</Button>
+            <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>שמור שינויי עיצוב</Button>
           </form>
         </Form>
       </CardContent>
