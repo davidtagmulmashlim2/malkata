@@ -97,6 +97,11 @@ export default function MenuManager() {
         });
     } else {
         dishForm.reset({
+            name: '',
+            shortDescription: '',
+            fullDescription: '',
+            price: 0,
+            categoryId: '',
             isAvailable: true,
             isRecommended: false,
             tags: [],
@@ -116,13 +121,16 @@ export default function MenuManager() {
 
   const openDishDialog = (dish: Dish | null = null) => {
     setEditingDish(dish)
-    dishForm.reset(dish ? { ...dish, galleryImages: dish.galleryImages || [] } : { isAvailable: true, isRecommended: false, tags: [], mainImage: '', galleryImages: [] })
+    dishForm.reset(dish ? { ...dish, galleryImages: dish.galleryImages || [] } : { 
+        name: '', shortDescription: '', fullDescription: '', price: 0, categoryId: '', 
+        isAvailable: true, isRecommended: false, tags: [], mainImage: '', galleryImages: [] 
+    })
     setIsDishDialogOpen(true)
   }
 
   const openCategoryDialog = (category: Category | null = null) => {
     setEditingCategory(category)
-    categoryForm.reset(category || { image: '' })
+    categoryForm.reset(category || { name: '', description: '', image: '' })
     setIsCategoryDialogOpen(true)
   }
 
