@@ -1,5 +1,4 @@
 
-
 'use client';
 import type { Metadata } from 'next';
 import { AppProvider, useApp } from '@/context/app-context';
@@ -17,7 +16,7 @@ import { useEffect } from 'react';
 //   description: 'תפריט המסעדה של מלכתא. בואו לחוות טעמים של בית עם המנות המיוחדות שלנו.',
 // };
 
-function AppBody({ children }: { children: React.ReactNode }) {
+function AppContent({ children }: { children: React.ReactNode }) {
     const { state } = useApp();
     const isClient = useIsClient();
 
@@ -28,7 +27,7 @@ function AppBody({ children }: { children: React.ReactNode }) {
     }, [isClient, state.siteContent.hero.title]);
 
     return (
-        <body className={cn('font-body antialiased bg-background text-foreground', isClient ? `theme-${state.design.theme}` : '')}>
+        <body className={cn('font-body antialiased bg-background text-foreground')}>
             <div className="flex flex-col min-h-screen">
                 <Header />
                 <main className="flex-grow">{children}</main>
@@ -40,21 +39,32 @@ function AppBody({ children }: { children: React.ReactNode }) {
     )
 }
 
+function AppStateWrapper({ children }: { children: React.ReactNode }) {
+    const { state } = useApp();
+    const isClient = useIsClient();
+    
+    return (
+        <html lang="he" dir="rtl" className={cn(isClient ? `theme-${state.design.theme}`: '')}>
+            <head>
+                <link rel="preconnect" href="https://fonts.googleapis.com" />
+                <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+                <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=PT+Sans:wght@400;700&display=swap" rel="stylesheet" />
+            </head>
+            {children}
+        </html>
+    )
+}
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="he" dir="rtl">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=PT+Sans:wght@400;700&display=swap" rel="stylesheet" />
-      </head>
-      <AppProvider>
-        <AppBody>{children}</AppBody>
-      </AppProvider>
-    </html>
+    <AppProvider>
+        <AppStateWrapper>
+            <AppContent>{children}</AppContent>
+        </AppStateWrapper>
+    </AppProvider>
   );
 }

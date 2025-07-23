@@ -82,7 +82,6 @@ export type AppContextType = {
   login: (password: string) => boolean;
   logout: () => void;
   animationClass: string;
-  bodyClass: string;
 };
 
 export type Action =

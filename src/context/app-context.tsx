@@ -131,10 +131,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     return '';
   }, [state.design.animation]);
 
-  const bodyClass = useMemo(() => {
-    return `theme-${state.design.theme}`;
-  }, [state.design.theme]);
-
   const value = {
     state,
     dispatch,
@@ -148,7 +144,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     login,
     logout,
     animationClass,
-    bodyClass
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
