@@ -22,8 +22,8 @@ export default function MenuLayout({
   return (
     <div>
         <nav className="border-b bg-card sticky top-16 z-30">
-            <div className="container flex items-center justify-center p-2 overflow-x-auto">
-                <div className="flex items-center gap-2">
+            <div className="container flex justify-center p-2 overflow-x-auto">
+                <div className="flex items-center gap-2 flex-wrap justify-center">
                     <Button asChild variant={pathname === '/menu' ? 'default' : 'ghost'} size="sm">
                         <Link href="/menu">כל המנות</Link>
                     </Button>

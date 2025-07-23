@@ -1,3 +1,4 @@
+
 'use client';
 
 import { ShoppingCart, Trash2, X } from 'lucide-react';
@@ -98,11 +99,13 @@ export function CartSheet() {
             <ScrollArea className="flex-grow pr-4 -mr-6">
               <div className="flex flex-col gap-4 py-4">
                 {cartDetails.map(item => (
-                  <div key={item!.id} className="flex items-center gap-4">
-                    <CartDishImage imageKey={item!.mainImage} alt={item!.name} />
-                    <div className="flex-grow">
-                      <h4 className="font-semibold">{item!.name}</h4>
-                      <p className="text-sm text-muted-foreground">{item!.price} ₪</p>
+                  <div key={item!.id} className="flex items-center justify-between gap-4">
+                    <div className="flex items-center gap-4">
+                        <CartDishImage imageKey={item!.mainImage} alt={item!.name} />
+                        <div className="flex-grow">
+                          <h4 className="font-semibold">{item!.name}</h4>
+                          <p className="text-sm text-muted-foreground">{item!.price} ₪</p>
+                        </div>
                     </div>
                     <div className="flex items-center gap-2">
                       <Input
