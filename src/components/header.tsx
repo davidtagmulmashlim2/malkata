@@ -26,7 +26,6 @@ const Crown3 = (props: React.SVGProps<SVGSVGElement>) => (
 const navLinks = [
   { href: '/', label: 'בית' },
   { href: '/menu', label: 'תפריט' },
-  { href: '/menu/shabbat-malkata', label: 'שבת מלכתא' },
   { href: '/about', label: 'אודות' },
   { href: '/gallery', label: 'גלריה' },
   { href: '/contact', label: 'צור קשר' },
@@ -58,31 +57,23 @@ export function Header() {
 
   const NavLinks = ({ className, mobile = false }: { className?: string, mobile?: boolean }) => (
     <nav className={cn('flex items-center gap-4 lg:gap-6', className)}>
-      {navLinks.map(link => {
-        const isActive = (pathname === link.href) || 
-                         (link.href === '/menu' && pathname !== '/menu/shabbat-malkata' && pathname.startsWith('/menu/'));
-        
-        // Ensure exact match for the root path
-        const isRootActive = link.href === '/' ? pathname === '/' : isActive;
-
-        return (
-            <Link
-              key={link.href}
-              href={link.href}
-              className={cn(
-                'transition-colors hover:text-primary whitespace-nowrap',
-                isRootActive ? 'text-primary font-bold' : 'text-muted-foreground'
-              )}
-            >
-              {link.label}
-            </Link>
-        )
-      })}
+      {navLinks.map(link => (
+        <Link
+          key={link.href}
+          href={link.href}
+          className={cn(
+            'transition-colors hover:text-primary',
+            pathname === link.href ? 'text-primary font-bold' : 'text-muted-foreground'
+          )}
+        >
+          {link.label}
+        </Link>
+      ))}
       {mobile && (
          <Link
           href="/admin"
           className={cn(
-            'transition-colors hover:text-primary whitespace-nowrap',
+            'transition-colors hover:text-primary',
             pathname.startsWith('/admin') ? 'text-primary font-bold' : 'text-muted-foreground'
           )}
         >
