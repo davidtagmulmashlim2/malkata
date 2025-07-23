@@ -26,6 +26,13 @@ export default function Home() {
    useEffect(() => {
     if (!api) return;
     
+    const onSelect = () => {
+        // Do something on select.
+    };
+
+    api.on("reInit", onSelect);
+    api.on("select", onSelect);
+    
     // This is a workaround to force re-initialization on data change
     api.reInit();
 
@@ -64,7 +71,8 @@ export default function Home() {
           alt="רקע של אוכל ביתי"
           layout="fill"
           objectFit="cover"
-          className="z-0 brightness-50"
+          className="z-0"
+          style={{ filter: `brightness(${siteContent.hero.heroImageBrightness}%)` }}
           priority
           data-ai-hint="warm food"
           skeletonClassName="w-full h-full"

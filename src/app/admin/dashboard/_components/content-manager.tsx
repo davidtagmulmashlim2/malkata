@@ -32,6 +32,7 @@ const contentSchema = z.object({
     titleRestOpacity: z.number().min(0).max(1),
     subtitleOpacity: z.number().min(0).max(1),
     animationInterval: z.coerce.number().min(0, 'חייב להיות מספר חיובי'),
+    heroImageBrightness: z.coerce.number().min(0).max(100),
   }),
   about: z.object({
     short: z.string().min(1, 'חובה'),
@@ -228,6 +229,13 @@ export default function ContentManager() {
                       </FormControl>
                       <FormMessage />
                        {field.value && <ImagePreview imageKey={field.value} alt="תמונת רקע" />}
+                    </FormItem>
+                  )} />
+                  <FormField name="hero.heroImageBrightness" control={form.control} render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>בהירות תמונת רקע ({field.value ?? 100}%)</FormLabel>
+                      <FormControl><Slider value={[field.value ?? 100]} min={0} max={100} step={5} onValueChange={(v) => field.onChange(v[0])} /></FormControl>
+                      <FormMessage />
                     </FormItem>
                   )} />
                 </AccordionContent>
