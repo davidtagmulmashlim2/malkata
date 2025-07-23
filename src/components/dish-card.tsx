@@ -115,7 +115,7 @@ export function DishCard({ dish }: DishCardProps) {
 
   return (
     <Dialog>
-      <Card className="flex flex-col overflow-hidden h-full transition-all hover:shadow-lg hover:-translate-y-1 group">
+      <Card className="flex flex-col overflow-hidden h-full transition-all hover:shadow-lg hover:-translate-y-1 group text-right">
         <DialogTrigger asChild>
             <div className="relative cursor-pointer aspect-[4/3] w-full overflow-hidden">
                 <DishImage imageKey={dish.mainImage} alt={dish.name} />
@@ -148,7 +148,7 @@ export function DishCard({ dish }: DishCardProps) {
         </CardFooter>
       </Card>
 
-      <DialogContent className="sm:max-w-4xl">
+      <DialogContent className="sm:max-w-4xl text-right">
         <div className="grid md:grid-cols-2 gap-8">
             <div className="w-full">
                 {isClient && allImages.length > 0 ? (
@@ -183,13 +183,13 @@ export function DishCard({ dish }: DishCardProps) {
             <div className="flex flex-col justify-between">
                 <div>
                     <DialogHeader>
-                        <DialogTitle className="font-headline text-3xl mb-2 text-start">{dish.name}</DialogTitle>
+                        <DialogTitle className="font-headline text-3xl mb-2 text-right">{dish.name}</DialogTitle>
                     </DialogHeader>
                     <div className="flex gap-2 my-4 justify-start">
                         {dish.tags?.includes('vegan') && <Badge variant="default" className="bg-green-600 text-white"><Leaf className="w-3 h-3 me-1" /> טבעוני</Badge>}
                         {dish.tags?.includes('spicy') && <Badge variant="destructive"><Flame className="w-3 h-3 me-1" /> חריף</Badge>}
                     </div>
-                    <p className="text-muted-foreground text-start">{dish.fullDescription}</p>
+                    <p className="text-muted-foreground text-right">{dish.fullDescription}</p>
                 </div>
                 <DialogFooter className="mt-6">
                     <div className="flex justify-between items-center w-full">

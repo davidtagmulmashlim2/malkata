@@ -82,7 +82,7 @@ export default function Home() {
   };
 
   return (
-    <div className="space-y-16 md:space-y-24">
+    <div className="space-y-16 md:space-y-24 text-right">
       {/* Hero Section */}
       <section className={cn(
         "relative h-[60vh] md:h-[80vh] w-full flex text-white",
@@ -124,7 +124,7 @@ export default function Home() {
 
       {/* Recommended Dishes Section */}
       <section className="container">
-        <h2 className="text-3xl md:text-4xl font-headline font-bold text-center mb-10">מנות מומלצות</h2>
+        <h2 className="text-3xl md:text-4xl font-headline font-bold text-right mb-10">מנות מומלצות</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {recommendedDishes.map((dish, i) => dish ? <DishCard key={dish.id} dish={dish} /> : <Skeleton key={i} className="h-96 w-full" />)}
         </div>
@@ -156,7 +156,7 @@ export default function Home() {
       
       {/* Testimonials Section */}
        <section className="container">
-        <h2 className="text-3xl md:text-4xl font-headline font-bold text-center mb-10">לקוחות ממליצים</h2>
+        <h2 className="text-3xl md:text-4xl font-headline font-bold text-right mb-10">לקוחות ממליצים</h2>
          {isClient && testimonials?.length > 0 ? (
             <Carousel 
               setApi={setApi}
@@ -198,7 +198,7 @@ export default function Home() {
 
       {/* Newsletter Signup */}
       <section className="bg-primary text-primary-foreground py-16 md:py-24">
-        <div className="container text-center max-w-2xl mx-auto">
+        <div className="container text-right max-w-2xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-headline font-bold mb-4">הצטרפו למועדון הלקוחות שלנו</h2>
             <p className="mb-6 opacity-90">הישארו מעודכנים במבצעים, מנות חדשות ואירועים מיוחדים!</p>
             <form className="flex flex-col sm:flex-row gap-2 max-w-md mx-auto">

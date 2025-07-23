@@ -140,7 +140,7 @@ export function CartSheet() {
                   <div key={item!.id} className="flex justify-between items-center gap-4">
                     <div className="flex items-center gap-4 flex-1 min-w-0">
                         <CartDishImage imageKey={item!.mainImage} alt={item!.name} />
-                        <div className="flex flex-col text-start flex-1 min-w-0">
+                        <div className="flex flex-col text-right flex-1 min-w-0">
                           <h4 className="font-semibold truncate">{item!.name}</h4>
                           <p className="text-sm text-muted-foreground">{item!.price} ₪</p>
                         </div>
@@ -169,7 +169,7 @@ export function CartSheet() {
                         <span>{total.toLocaleString()} ₪</span>
                     </div>
                     <Separator />
-                    <div className='space-y-4 text-start'>
+                    <div className='space-y-4 text-right'>
                         <h4 className='font-medium text-center'>פרטי הזמנה</h4>
                         <div className='space-y-2'>
                             <Label htmlFor="customerName">שם מלא</Label>

@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -41,8 +42,8 @@ export default function AdminLoginPage() {
 
     return (
         <div className="flex items-center justify-center min-h-[calc(100vh-8rem)] bg-muted/40">
-            <Card className="w-full max-w-sm mx-4">
-                <CardHeader className="text-center">
+            <Card className="w-full max-w-sm mx-4 text-right">
+                <CardHeader className="text-right">
                     <div className="mx-auto bg-primary text-primary-foreground p-3 rounded-full mb-4 w-fit">
                         <Lock className="h-8 w-8" />
                     </div>

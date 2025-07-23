@@ -14,8 +14,8 @@ export default function AboutPage() {
     return (
         <div className="container py-12 md:py-20">
             <div className="max-w-4xl mx-auto">
-                <h1 className="text-4xl md:text-5xl font-headline font-bold text-center mb-8 text-primary">
-                    {isClient ? "הסיפור של מלכתא" : <Skeleton className="h-12 w-80 mx-auto" />}
+                <h1 className="text-4xl md:text-5xl font-headline font-bold text-right mb-8 text-primary">
+                    {isClient ? "הסיפור של מלכתא" : <Skeleton className="h-12 w-80" />}
                 </h1>
                 <div className="relative w-full h-96 rounded-lg overflow-hidden shadow-xl mb-12">
                      <AsyncImage
