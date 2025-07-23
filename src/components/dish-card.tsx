@@ -1,7 +1,6 @@
 
 'use client';
 
-import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import type { Dish } from '@/lib/types';
@@ -34,11 +33,14 @@ export function DishCard({ dish }: DishCardProps) {
   useEffect(() => {
     if (!api) return;
     
-    setCurrent(api.selectedScrollSnap());
-    const onSelect = () => {
+    const onSelect = (api: CarouselApi) => {
       setCurrent(api.selectedScrollSnap());
     };
+
     api.on("select", onSelect);
+    // Re-init to apply listeners correctly after data loads
+    api.reInit();
+    onSelect(api);
 
     return () => {
         api.off("select", onSelect);
@@ -61,7 +63,7 @@ export function DishCard({ dish }: DishCardProps) {
     <Dialog>
       <Card className="flex flex-col overflow-hidden h-full transition-all hover:shadow-lg hover:-translate-y-1 group text-right">
         <DialogTrigger asChild>
-            <div className="relative cursor-pointer aspect-[4/3] w-full overflow-hidden">
+            <div className="relative cursor-pointer aspect-square w-full overflow-hidden">
                 <AsyncImage imageKey={dish.mainImage} alt={dish.name} layout="fill" objectFit="cover" className="transition-transform duration-300 group-hover:scale-110"/>
                 <div className="absolute inset-x-0 bottom-0 flex items-center justify-center bg-black/50 text-white text-center py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     הצגה מהירה
@@ -96,8 +98,8 @@ export function DishCard({ dish }: DishCardProps) {
         <div className="grid md:grid-cols-2 gap-8">
             <div className="w-full">
                 {isClient && allImages.length > 0 ? (
-                    <>
-                        <Carousel setApi={setApi} className="w-full relative" dir="rtl">
+                    <div className="relative">
+                        <Carousel setApi={setApi} className="w-full" dir="rtl">
                             <CarouselContent>
                                 {allImages.map((imgKey, i) => (
                                     <CarouselItem key={imgKey ? `${imgKey}-${i}` : `item-${i}`}>
@@ -120,13 +122,21 @@ export function DishCard({ dish }: DishCardProps) {
                             </>}
                         </Carousel>
                         {allImages.length > 1 && (
-                            <div className="flex justify-center gap-2 mt-2">
+                            <div className="flex justify-center gap-2 mt-4">
                                 {allImages.map((_, i) => (
-                                    <button key={i} onClick={() => scrollTo(i)} className={cn("h-2 w-2 rounded-full", current === i ? "bg-primary" : "bg-muted")}></button>
+                                    <button 
+                                        key={i} 
+                                        onClick={() => scrollTo(i)} 
+                                        className={cn(
+                                            "h-2 w-2 rounded-full transition-colors", 
+                                            current === i ? "bg-primary" : "bg-muted hover:bg-muted-foreground"
+                                        )}
+                                        aria-label={`עבור לתמונה ${i+1}`}
+                                    ></button>
                                 ))}
                             </div>
                         )}
-                    </>
+                    </div>
                 ) : (
                     <div className="w-full aspect-square flex items-center justify-center bg-muted rounded-md">
                          <Skeleton className="w-full h-full" />
