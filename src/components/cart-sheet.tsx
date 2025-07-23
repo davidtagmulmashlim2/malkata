@@ -48,7 +48,7 @@ const CartDishImage = ({ imageKey, alt }: { imageKey: string; alt: string }) => 
             alt={alt}
             width={64}
             height={64}
-            className="rounded-md object-cover h-16 w-16"
+            className="rounded-md object-cover h-16 w-16 shrink-0"
             data-ai-hint="food dish"
         />
     )
@@ -105,7 +105,7 @@ export function CartSheet() {
         </Button>
       </SheetTrigger>
       <SheetContent className="flex flex-col">
-        <SheetHeader>
+        <SheetHeader className="text-right">
           <SheetTitle>עגלת הקניות שלך</SheetTitle>
         </SheetHeader>
         {isClient && cart.length > 0 ? (
@@ -116,9 +116,9 @@ export function CartSheet() {
                   <div key={item!.id} className="flex items-center justify-between gap-4">
                     <div className="flex items-center gap-4 flex-1">
                         <CartDishImage imageKey={item!.mainImage} alt={item!.name} />
-                        <div>
-                          <h4 className="font-semibold">{item!.name}</h4>
-                          <p className="text-sm text-muted-foreground">{item!.price} ₪</p>
+                        <div className="flex flex-col">
+                          <h4 className="font-semibold text-right">{item!.name}</h4>
+                          <p className="text-sm text-muted-foreground text-right">{item!.price} ₪</p>
                         </div>
                     </div>
                     <div className="flex items-center gap-2">
