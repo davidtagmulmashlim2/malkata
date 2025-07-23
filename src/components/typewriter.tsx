@@ -14,9 +14,10 @@ interface TextPart {
 interface TypewriterProps {
   textParts: TextPart[];
   speed?: number;
+  rerunKey?: number; // Change this key to re-run the animation
 }
 
-export function Typewriter({ textParts, speed = 100 }: TypewriterProps) {
+export function Typewriter({ textParts, speed = 100, rerunKey = 0 }: TypewriterProps) {
   const [displayedText, setDisplayedText] = useState('');
   const [isClient, setIsClient] = useState(false);
 
@@ -26,6 +27,7 @@ export function Typewriter({ textParts, speed = 100 }: TypewriterProps) {
 
   useEffect(() => {
     if (isClient) {
+        setDisplayedText(''); // Reset on key change
         let currentText = '';
         const fullText = textParts.map(p => p.text).join('');
         let charIndex = 0;
@@ -42,7 +44,7 @@ export function Typewriter({ textParts, speed = 100 }: TypewriterProps) {
 
         return () => clearInterval(intervalId);
     }
-  }, [textParts, speed, isClient]);
+  }, [textParts, speed, isClient, rerunKey]);
 
   if (!isClient) {
     // Return nothing on the server to prevent hydration mismatch

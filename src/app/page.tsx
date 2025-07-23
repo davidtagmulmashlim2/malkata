@@ -19,9 +19,35 @@ export default function Home() {
   const { state } = useApp();
   const { siteContent, dishes, testimonials } = state;
   const isClient = useIsClient();
+  const [api, setApi] = useState<CarouselApi>();
+  const [typewriterKey, setTypewriterKey] = useState(0);
+
+  useEffect(() => {
+    if (!api) return;
+    
+    const onSelect = () => {
+      // Do something on select
+    };
+    api.on("select", onSelect);
+
+    return () => {
+        api.off("select", onSelect);
+    }
+  }, [api]);
+
+  useEffect(() => {
+    if (isClient && siteContent.hero.animationInterval > 0) {
+      const interval = setInterval(() => {
+        setTypewriterKey(prevKey => prevKey + 1);
+      }, siteContent.hero.animationInterval * 1000);
+
+      return () => clearInterval(interval);
+    }
+  }, [isClient, siteContent.hero.animationInterval]);
+
 
   const recommendedDishes = useMemo(() => {
-    if (!isClient) return [];
+    if (!isClient) return Array(3).fill(null);
     const recommended = dishes.filter(d => d.isRecommended);
     return recommended.length > 0 ? recommended : dishes.slice(0, 3);
   }, [dishes, isClient]);
@@ -49,6 +75,7 @@ export default function Home() {
           <h1 className="font-headline font-bold drop-shadow-lg">
             {isClient ? (
                 <Typewriter
+                    key={typewriterKey}
                     textParts={[
                         { text: siteContent.hero.titleFirstWord, style: { color: siteContent.hero.titleFirstWordColor, opacity: siteContent.hero.titleFirstWordOpacity }, className: textSizeClasses[siteContent.hero.titleFirstWordFontSize] },
                         { text: ` ${siteContent.hero.titleRest}`, style: { color: siteContent.hero.titleRestColor, opacity: siteContent.hero.titleRestOpacity }, className: textSizeClasses[siteContent.hero.titleRestFontSize] },
@@ -69,8 +96,7 @@ export default function Home() {
       <section className="container">
         <h2 className="text-3xl md:text-4xl font-headline font-bold text-center mb-10">מנות מומלצות</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {isClient ? recommendedDishes.map(dish => <DishCard key={dish.id} dish={dish} />) 
-          : Array(3).fill(0).map((_, i) => <Skeleton key={i} className="h-96 w-full" />)}
+          {recommendedDishes.map((dish, i) => dish ? <DishCard key={dish.id} dish={dish} /> : <Skeleton key={i} className="h-96 w-full" />)}
         </div>
       </section>
 
@@ -103,6 +129,7 @@ export default function Home() {
         <h2 className="text-3xl md:text-4xl font-headline font-bold text-center mb-10">לקוחות ממליצים</h2>
          {isClient && testimonials.length > 0 ? (
             <Carousel 
+              setApi={setApi}
               className="w-full max-w-xl mx-auto" 
               dir="rtl"
               opts={{

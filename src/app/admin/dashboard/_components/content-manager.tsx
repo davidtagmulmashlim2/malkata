@@ -29,6 +29,7 @@ const contentSchema = z.object({
     titleRestFontSize: z.string(),
     titleRestOpacity: z.number().min(0).max(1),
     subtitleOpacity: z.number().min(0).max(1),
+    animationInterval: z.coerce.number().min(0, 'חייב להיות מספר חיובי'),
   }),
   about: z.object({
     short: z.string().min(1, 'חובה'),
@@ -70,6 +71,7 @@ export default function ContentManager() {
   useEffect(() => {
     if (siteContent) {
       const completeSiteContent = {
+        ...DEFAULT_APP_STATE.siteContent,
         ...siteContent,
         hero: {
           ...DEFAULT_APP_STATE.siteContent.hero,
@@ -191,6 +193,13 @@ export default function ContentManager() {
                         <FormLabel>שקיפות כותרת משנה ({Math.round((field.value ?? 1) * 100)}%)</FormLabel>
                         <FormControl><Slider value={[field.value ?? 1]} min={0} max={1} step={0.05} onValueChange={(v) => field.onChange(v[0])} /></FormControl>
                         <FormMessage />
+                    </FormItem>
+                  )} />
+                   <FormField name="hero.animationInterval" control={form.control} render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>מרווח הנפשה חוזרת (בשניות, 0 להפעלה חד-פעמית)</FormLabel>
+                      <FormControl><Input type="number" {...field} /></FormControl>
+                      <FormMessage />
                     </FormItem>
                   )} />
                   <FormField name="hero.image" control={form.control} render={({ field }) => (

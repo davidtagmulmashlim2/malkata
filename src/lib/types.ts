@@ -45,6 +45,7 @@ export interface SiteContent {
     titleRestFontSize: string;
     titleRestOpacity: number;
     subtitleOpacity: number;
+    animationInterval: number;
   };
   about: {
     short: string;

@@ -14,6 +14,7 @@ export const DEFAULT_APP_STATE: AppState = {
       titleRestFontSize: '6xl',
       titleRestOpacity: 1,
       subtitleOpacity: 1,
+      animationInterval: 0,
     },
     about: {
       short: 'בלב העיר, שוכנת "מלכתא", מסעדה שהיא בית. אנו מגישים באהבה את מיטב המאכלים מהמטבח הביתי, עם חומרי גלם טריים ומתכונים שעוברים מדור לדור.',
