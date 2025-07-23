@@ -35,7 +35,8 @@ const dishSchema = z.object({
   shortDescription: z.string().min(1, 'תיאור קצר הוא שדה חובה'),
   fullDescription: z.string().min(1, 'תיאור מלא הוא שדה חובה'),
   price: z.coerce.number().min(0, 'המחיר חייב להיות חיובי'),
-  images: z.array(z.string()).min(1, "חובה להעלות לפחות תמונה אחת"),
+  mainImage: z.string().min(1, "חובה להעלות תמונה ראשית"),
+  galleryImages: z.array(z.string()),
   categoryId: z.string().min(1, 'חובה לבחור קטגוריה'),
   isAvailable: z.boolean(),
   tags: z.array(z.string()),
@@ -61,7 +62,7 @@ export default function MenuManager() {
 
   const openDishDialog = (dish: Dish | null = null) => {
     setEditingDish(dish)
-    dishForm.reset(dish ? { ...dish, images: dish.images || [] } : { isAvailable: true, tags: [], images: [] })
+    dishForm.reset(dish ? { ...dish, galleryImages: dish.galleryImages || [] } : { isAvailable: true, tags: [], mainImage: '', galleryImages: [] })
     setIsDishDialogOpen(true)
   }
 
@@ -122,7 +123,7 @@ export default function MenuManager() {
         if (files) {
             try {
                 const dataUrls = await Promise.all(Array.from(files).map(file => readFileAsDataURL(file)));
-                const currentImages = dishForm.getValues('images') || [];
+                const currentImages = dishForm.getValues('galleryImages') || [];
                 field.onChange([...currentImages, ...dataUrls]);
             } catch (error) {
                 console.error("Error reading files:", error);
@@ -131,11 +132,11 @@ export default function MenuManager() {
         }
     };
     
-    const removeImage = (index: number) => {
-        const currentImages = dishForm.getValues('images') || [];
+    const removeGalleryImage = (index: number) => {
+        const currentImages = dishForm.getValues('galleryImages') || [];
         const newImages = [...currentImages];
         newImages.splice(index, 1);
-        dishForm.setValue('images', newImages, { shouldValidate: true });
+        dishForm.setValue('galleryImages', newImages, { shouldValidate: true });
     };
 
   return (
@@ -187,13 +188,21 @@ export default function MenuManager() {
                         <FormMessage />
                       </FormItem>
                     )} />
-                    <FormField name="images" control={dishForm.control} render={({ field }) => (
+                     <FormField name="mainImage" control={dishForm.control} render={({ field }) => (
                        <FormItem>
-                        <FormLabel>תמונות</FormLabel>
+                        <FormLabel>תמונה ראשית</FormLabel>
+                         <FormControl><Input type="file" accept="image/*" onChange={handleFileChange(field)} /></FormControl>
+                        <FormMessage />
+                        {dishForm.watch('mainImage') && <img src={dishForm.watch('mainImage')} alt="preview" className="h-24 w-24 rounded-md object-cover mt-2" />}
+                       </FormItem>
+                    )} />
+                    <FormField name="galleryImages" control={dishForm.control} render={({ field }) => (
+                       <FormItem>
+                        <FormLabel>תמונות נוספות (גלריה)</FormLabel>
                         <FormControl><Input type="file" accept="image/*" multiple onChange={handleMultiFileChange(field)} /></FormControl>
                         <FormMessage />
                         <div className="flex flex-wrap gap-2 mt-2">
-                            {dishForm.watch('images')?.map((img, i) => (
+                            {dishForm.watch('galleryImages')?.map((img, i) => (
                                 <div key={i} className="relative group">
                                     <img src={img} alt="preview" className="h-24 w-24 rounded-md object-cover" />
                                     <Button 
@@ -201,7 +210,7 @@ export default function MenuManager() {
                                         variant="destructive"
                                         size="icon"
                                         className="absolute top-0 right-0 h-5 w-5 opacity-0 group-hover:opacity-100 transition-opacity"
-                                        onClick={() => removeImage(i)}
+                                        onClick={() => removeGalleryImage(i)}
                                     >
                                         <X className="h-3 w-3" />
                                     </Button>

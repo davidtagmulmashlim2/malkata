@@ -66,7 +66,7 @@ export function CartSheet() {
                 {cartDetails.map(item => (
                   <div key={item!.id} className="flex items-center gap-4">
                     <Image
-                      src={item!.images[0]}
+                      src={item!.mainImage}
                       alt={item!.name}
                       width={64}
                       height={64}

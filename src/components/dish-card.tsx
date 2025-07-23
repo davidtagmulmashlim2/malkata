@@ -17,6 +17,7 @@ interface DishCardProps {
 
 export function DishCard({ dish }: DishCardProps) {
   const { addToCart } = useApp();
+  const allImages = [dish.mainImage, ...dish.galleryImages].filter(Boolean);
 
   const handleAddToCart = () => {
     addToCart(dish.id);
@@ -32,7 +33,7 @@ export function DishCard({ dish }: DishCardProps) {
         <DialogTrigger asChild>
           <div className="relative cursor-pointer">
             <Image
-              src={dish.images[0] || 'https://placehold.co/600x400'}
+              src={dish.mainImage || 'https://placehold.co/600x400'}
               alt={dish.name}
               width={600}
               height={600}
@@ -72,7 +73,7 @@ export function DishCard({ dish }: DishCardProps) {
         <div className="grid md:grid-cols-2 gap-8">
             <Carousel className="w-full">
                 <CarouselContent>
-                    {dish.images.map((img, i) => (
+                    {allImages.map((img, i) => (
                         <CarouselItem key={i}>
                             <Image
                                 src={img}
@@ -85,7 +86,7 @@ export function DishCard({ dish }: DishCardProps) {
                         </CarouselItem>
                     ))}
                 </CarouselContent>
-                {dish.images.length > 1 && <>
+                {allImages.length > 1 && <>
                   <CarouselPrevious />
                   <CarouselNext />
                 </>}

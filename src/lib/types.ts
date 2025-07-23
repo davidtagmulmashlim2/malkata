@@ -4,7 +4,8 @@ export interface Dish {
   shortDescription: string;
   fullDescription: string;
   price: number;
-  images: string[];
+  mainImage: string;
+  galleryImages: string[];
   categoryId: string;
   isAvailable: boolean;
   tags: ('vegan' | 'spicy')[];
