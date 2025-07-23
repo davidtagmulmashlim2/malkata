@@ -84,8 +84,7 @@ export default function MenuManager() {
   const [isCategoryDialogOpen, setIsCategoryDialogOpen] = useState(false)
   const [editingDish, setEditingDish] = useState<Dish | null>(null)
   const [editingCategory, setEditingCategory] = useState<Category | null>(null)
-  const [categoryImagePreview, setCategoryImagePreview] = useState<string | null>(null);
-
+  
   const dishForm = useForm<z.infer<typeof dishSchema>>({ 
     resolver: zodResolver(dishSchema),
     defaultValues: {
@@ -96,42 +95,24 @@ export default function MenuManager() {
   const categoryForm = useForm<z.infer<typeof categorySchema>>({ resolver: zodResolver(categorySchema) })
 
   useEffect(() => {
-    if (editingDish) {
+    if (isDishDialogOpen) {
+      if (editingDish) {
         dishForm.reset({
-            ...editingDish,
-            price: editingDish.price || 0,
-            galleryImages: editingDish.galleryImages || []
+          ...editingDish,
+          price: editingDish.price || 0,
+          galleryImages: editingDish.galleryImages || []
         });
-    } else {
-        dishForm.reset({
-            name: '',
-            shortDescription: '',
-            fullDescription: '',
-            price: 0,
-            categoryId: '',
-            isAvailable: true,
-            isRecommended: false,
-            tags: [],
-            mainImage: '',
-            galleryImages: []
-        });
-    }
-  }, [editingDish, dishForm]);
-
-  useEffect(() => {
-      if (editingCategory && editingCategory.image) {
-          getImage(editingCategory.image).then(src => setCategoryImagePreview(src));
       } else {
-          setCategoryImagePreview(null);
+        dishForm.reset({
+          name: '', shortDescription: '', fullDescription: '', price: 0, categoryId: '',
+          isAvailable: true, isRecommended: false, tags: [], mainImage: '', galleryImages: []
+        });
       }
-  }, [editingCategory]);
-
+    }
+  }, [isDishDialogOpen, editingDish, dishForm]);
+  
   const openDishDialog = (dish: Dish | null = null) => {
     setEditingDish(dish)
-    dishForm.reset(dish ? { ...dish, galleryImages: dish.galleryImages || [] } : { 
-        name: '', shortDescription: '', fullDescription: '', price: 0, categoryId: '', 
-        isAvailable: true, isRecommended: false, tags: [], mainImage: '', galleryImages: [] 
-    })
     setIsDishDialogOpen(true)
   }
 
@@ -150,6 +131,7 @@ export default function MenuManager() {
       toast({ title: 'מנה נוספה בהצלחה' })
     }
     setIsDishDialogOpen(false)
+    setEditingDish(null);
   }
 
   const handleCategorySubmit = (values: z.infer<typeof categorySchema>) => {
@@ -183,22 +165,18 @@ export default function MenuManager() {
     toast({ title: 'קטגוריה נמחקה' })
   }
 
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>, fieldName: 'mainImage' | 'image') => {
-      const file = e.target.files?.[0];
-      if (file) {
-          try {
-              const dataUrl = await readFileAsDataURL(file);
-              const imageKey = await storeImage(dataUrl);
-              if (fieldName === 'mainImage') {
-                dishForm.setValue(fieldName, imageKey, { shouldValidate: true });
-              } else {
-                categoryForm.setValue(fieldName, imageKey, { shouldValidate: true });
-              }
-          } catch (error) {
-              console.error("Error reading file:", error);
-              toast({ title: "שגיאה בקריאת הקובץ", variant: "destructive" });
-          }
+  const handleDishImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      try {
+        const dataUrl = await readFileAsDataURL(file);
+        const imageKey = await storeImage(dataUrl);
+        dishForm.setValue('mainImage', imageKey, { shouldValidate: true });
+      } catch (error) {
+        console.error("Error reading file:", error);
+        toast({ title: "שגיאה בקריאת הקובץ", variant: "destructive" });
       }
+    }
   };
   
    const handleMultiFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -223,6 +201,20 @@ export default function MenuManager() {
         const newImages = [...currentImages];
         newImages.splice(index, 1);
         dishForm.setValue('galleryImages', newImages, { shouldValidate: true });
+    };
+
+    const handleCategoryImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (file) {
+        try {
+          const dataUrl = await readFileAsDataURL(file);
+          const imageKey = await storeImage(dataUrl);
+          categoryForm.setValue('image', imageKey, { shouldValidate: true });
+        } catch (error) {
+          console.error("Error reading file:", error);
+          toast({ title: "שגיאה בקריאת הקובץ", variant: "destructive" });
+        }
+      }
     };
 
   return (
@@ -277,7 +269,7 @@ export default function MenuManager() {
                      <FormField name="mainImage" control={dishForm.control} render={({ field }) => (
                        <FormItem>
                         <FormLabel>תמונה ראשית</FormLabel>
-                         <FormControl><Input type="file" accept="image/*" onChange={(e) => handleFileChange(e, 'mainImage')} /></FormControl>
+                         <FormControl><Input type="file" accept="image/*" onChange={handleDishImageChange} /></FormControl>
                         <FormMessage />
                         {field.value && <ImagePreview imageKey={field.value} alt="תמונה ראשית" />}
                        </FormItem>
@@ -456,7 +448,7 @@ export default function MenuManager() {
                     <FormField name="image" control={categoryForm.control} render={({ field }) => (
                       <FormItem>
                         <FormLabel>תמונת באנר</FormLabel>
-                         <FormControl><Input type="file" accept="image/*" onChange={(e) => handleFileChange(e, 'image')} /></FormControl>
+                         <FormControl><Input type="file" accept="image/*" onChange={handleCategoryImageChange} /></FormControl>
                         <FormMessage />
                          {field.value && <ImagePreview imageKey={field.value} alt="תמונת קטגוריה" />}
                       </FormItem>
