@@ -1,7 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useReducer, useEffect, useState, useMemo } from 'react';
-import type { AppState, AppContextType, Action, CartItem, Dish } from '@/lib/types';
+import type { AppState, AppContextType, Action, CartItem, Dish, SiteContent, Category, GalleryImage, Testimonial, DesignSettings } from '@/lib/types';
 import { DEFAULT_APP_STATE } from '@/lib/data';
 import { useIsClient } from '@/hooks/use-is-client';
 
@@ -10,7 +10,7 @@ const AppContext = createContext<AppContextType | null>(null);
 const appReducer = (state: AppState, action: Action): AppState => {
   switch (action.type) {
     case 'SET_STATE':
-      return action.payload;
+      return { ...state, ...action.payload };
     case 'UPDATE_CONTENT':
       return { ...state, siteContent: action.payload };
     case 'ADD_DISH':
@@ -36,8 +36,16 @@ const appReducer = (state: AppState, action: Action): AppState => {
   }
 };
 
-const LS_APP_STATE_KEY = 'malkata_app_state';
-const LS_CART_KEY = 'malkata_cart';
+const LS_KEYS = {
+    SITE_CONTENT: 'malkata_siteContent',
+    DISHES: 'malkata_dishes',
+    CATEGORIES: 'malkata_categories',
+    GALLERY: 'malkata_gallery',
+    TESTIMONIALS: 'malkata_testimonials',
+    DESIGN: 'malkata_design',
+    CART: 'malkata_cart',
+};
+
 const ADMIN_PASSWORD = 'admin'; // In a real app, use a more secure method.
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -50,7 +58,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const newState = appReducer(state, action);
     if (isClient) {
         try {
-            localStorage.setItem(LS_APP_STATE_KEY, JSON.stringify(newState));
+            // Save each part of the state under its own key to avoid quota issues
+            localStorage.setItem(LS_KEYS.SITE_CONTENT, JSON.stringify(newState.siteContent));
+            localStorage.setItem(LS_KEYS.DISHES, JSON.stringify(newState.dishes));
+            localStorage.setItem(LS_KEYS.CATEGORIES, JSON.stringify(newState.categories));
+            localStorage.setItem(LS_KEYS.GALLERY, JSON.stringify(newState.gallery));
+            localStorage.setItem(LS_KEYS.TESTIMONIALS, JSON.stringify(newState.testimonials));
+            localStorage.setItem(LS_KEYS.DESIGN, JSON.stringify(newState.design));
         } catch (error) {
             console.error("Failed to save state to localStorage", error);
         }
@@ -62,11 +76,26 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   useEffect(() => {
     if (isClient) {
       try {
-        const storedState = localStorage.getItem(LS_APP_STATE_KEY);
-        if (storedState) {
-          dispatch({ type: 'SET_STATE', payload: JSON.parse(storedState) });
+        const storedSiteContent = localStorage.getItem(LS_KEYS.SITE_CONTENT);
+        const storedDishes = localStorage.getItem(LS_KEYS.DISHES);
+        const storedCategories = localStorage.getItem(LS_KEYS.CATEGORIES);
+        const storedGallery = localStorage.getItem(LS_KEYS.GALLERY);
+        const storedTestimonials = localStorage.getItem(LS_KEYS.TESTIMONIALS);
+        const storedDesign = localStorage.getItem(LS_KEYS.DESIGN);
+        const storedCart = localStorage.getItem(LS_KEYS.CART);
+        
+        const loadedState: Partial<AppState> = {};
+        if (storedSiteContent) loadedState.siteContent = JSON.parse(storedSiteContent);
+        if (storedDishes) loadedState.dishes = JSON.parse(storedDishes);
+        if (storedCategories) loadedState.categories = JSON.parse(storedCategories);
+        if (storedGallery) loadedState.gallery = JSON.parse(storedGallery);
+        if (storedTestimonials) loadedState.testimonials = JSON.parse(storedTestimonials);
+        if (storedDesign) loadedState.design = JSON.parse(storedDesign);
+
+        if (Object.keys(loadedState).length > 0) {
+            dispatch({ type: 'SET_STATE', payload: loadedState });
         }
-        const storedCart = localStorage.getItem(LS_CART_KEY);
+
         if (storedCart) {
           setCart(JSON.parse(storedCart));
         }
@@ -82,7 +111,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   useEffect(() => {
     if (isClient) {
-      localStorage.setItem(LS_CART_KEY, JSON.stringify(cart));
+      localStorage.setItem(LS_KEYS.CART, JSON.stringify(cart));
     }
   }, [cart, isClient]);
 

@@ -5,7 +5,7 @@ export interface Dish {
   fullDescription: string;
   price: number;
   mainImage: string;
-  galleryImages: string[];
+  galleryImages?: string[];
   categoryId: string;
   isAvailable: boolean;
   tags: ('vegan' | 'spicy')[];
@@ -98,7 +98,7 @@ export type AppContextType = {
 };
 
 export type Action =
-  | { type: 'SET_STATE'; payload: AppState }
+  | { type: 'SET_STATE'; payload: Partial<AppState> }
   | { type: 'UPDATE_CONTENT'; payload: SiteContent }
   | { type: 'ADD_DISH'; payload: Dish }
   | { type: 'UPDATE_DISH'; payload: Dish }
