@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useApp } from '@/context/app-context';
@@ -15,6 +16,9 @@ export default function MenuLayout({
   const { categories } = state;
   const pathname = usePathname();
 
+  const shabbatCategory = categories.find(c => c.slug === 'shabbat-malkata');
+  const otherCategories = categories.filter(c => c.slug !== 'shabbat-malkata');
+
   return (
     <div>
         <nav className="border-b bg-card sticky top-16 z-30">
@@ -23,7 +27,21 @@ export default function MenuLayout({
                     <Button asChild variant={pathname === '/menu' ? 'default' : 'ghost'} size="sm">
                         <Link href="/menu">כל המנות</Link>
                     </Button>
-                    {categories.map(category => (
+                    {shabbatCategory && (
+                         <Button
+                            asChild
+                            variant={pathname === `/menu/${shabbatCategory.slug}` ? 'default' : 'ghost'}
+                            size="sm"
+                            className={cn(
+                                pathname === `/menu/${shabbatCategory.slug}` 
+                                ? 'bg-amber-400 text-amber-900 hover:bg-amber-400/90'
+                                : 'bg-amber-300 text-amber-800 hover:bg-amber-300/90'
+                            )}
+                        >
+                            <Link href={`/menu/${shabbatCategory.slug}`}>{shabbatCategory.name}</Link>
+                        </Button>
+                    )}
+                    {otherCategories.map(category => (
                         <Button
                             key={category.id}
                             asChild

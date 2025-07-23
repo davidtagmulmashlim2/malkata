@@ -38,6 +38,7 @@ export const DEFAULT_APP_STATE: AppState = {
     }
   },
   categories: [
+    { id: 'shabbat', name: 'שבת מלכתא', slug: 'shabbat-malkata', description: 'תפריט שבת מיוחד עם כל המטעמים של בית.', image: '' },
     { id: '1', name: 'עיקריות', slug: 'main-dishes', description: 'הלב של הארוחה, מנות עשירות ומנחמות.', image: '' },
     { id: '2', name: 'תוספות', slug: 'side-dishes', description: 'מה שהופך ארוחה טובה למצוינת.', image: '' },
     { id: '3', name: 'סלטים', slug: 'salads', description: 'רעננות וצבעוניות בכל ביס.', image: '' },
