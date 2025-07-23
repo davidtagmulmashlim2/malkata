@@ -59,6 +59,7 @@ export default function DesignManager() {
 
   const form = useForm<z.infer<typeof designSchema>>({
     resolver: zodResolver(designSchema),
+    defaultValues: design,
   });
 
   useEffect(() => {
