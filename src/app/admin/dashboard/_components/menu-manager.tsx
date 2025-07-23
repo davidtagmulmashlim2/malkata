@@ -168,19 +168,25 @@ export default function MenuManager() {
     toast({ title: 'קטגוריה נמחקה' })
   }
   
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>, fieldName: "mainImage" | "image" ) => {
-      const file = e.target.files?.[0];
-      if (file) {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>, fieldName: "mainImage" | "image" | "galleryImages") => {
+      const files = e.target.files;
+      if (files && files.length > 0) {
           try {
-              const dataUrl = await readFileAsDataURL(file);
-              const imageKey = await storeImage(dataUrl);
+              if (fieldName === 'galleryImages') {
+                  const currentImages = dishForm.getValues('galleryImages') || [];
+                  const dataUrls = await Promise.all(Array.from(files).map(file => readFileAsDataURL(file)));
+                  const imageKeys = await Promise.all(dataUrls.map(url => storeImage(url)));
+                  dishForm.setValue('galleryImages', [...currentImages, ...imageKeys], { shouldValidate: true });
+              } else {
+                  const file = files[0];
+                  const dataUrl = await readFileAsDataURL(file);
+                  const imageKey = await storeImage(dataUrl);
 
-              if (fieldName === 'mainImage') {
-                dishForm.setValue(fieldName, imageKey);
-                dishForm.trigger(fieldName);
-              } else if (fieldName === 'image') {
-                categoryForm.setValue(fieldName, imageKey);
-                categoryForm.trigger(fieldName);
+                  if (fieldName === 'mainImage') {
+                    dishForm.setValue(fieldName, imageKey, { shouldValidate: true });
+                  } else if (fieldName === 'image') {
+                    categoryForm.setValue(fieldName, imageKey, { shouldValidate: true });
+                  }
               }
           } catch (error) {
               console.error("Error reading file:", error);
@@ -188,21 +194,6 @@ export default function MenuManager() {
           }
       }
   };
-  
-   const handleMultiFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        const files = e.target.files;
-        if (files) {
-            const currentImages = dishForm.getValues('galleryImages') || [];
-            try {
-                const dataUrls = await Promise.all(Array.from(files).map(file => readFileAsDataURL(file)));
-                const imageKeys = await Promise.all(dataUrls.map(url => storeImage(url)));
-                dishForm.setValue('galleryImages', [...currentImages, ...imageKeys], { shouldValidate: true });
-            } catch (error) {
-                console.error("Error reading files:", error);
-                toast({ title: "שגיאה בקריאת הקבצים", variant: "destructive" });
-            }
-        }
-    };
     
     const removeGalleryImage = (index: number) => {
         const currentImages = dishForm.getValues('galleryImages') || [];
@@ -262,23 +253,23 @@ export default function MenuManager() {
                         <FormMessage />
                       </FormItem>
                     )} />
-                     <FormField name="mainImage" control={dishForm.control} render={() => (
+                    <FormField name="mainImage" control={dishForm.control} render={({ field }) => (
                        <FormItem>
                         <FormLabel>תמונה ראשית</FormLabel>
                          <FormControl>
                             <Input type="file" accept="image/*" onChange={(e) => handleFileChange(e, 'mainImage')} />
                          </FormControl>
                         <FormMessage />
-                        {dishForm.watch('mainImage') && <ImagePreview imageKey={dishForm.watch('mainImage')} alt="תמונה ראשית" />}
+                        {field.value && <ImagePreview imageKey={field.value} alt="תמונה ראשית" />}
                        </FormItem>
                     )} />
-                    <FormField name="galleryImages" control={dishForm.control} render={() => (
+                    <FormField name="galleryImages" control={dishForm.control} render={({ field }) => (
                       <FormItem>
                         <FormLabel>תמונות נוספות (גלריה)</FormLabel>
-                        <FormControl><Input type="file" accept="image/*" multiple onChange={handleMultiFileChange} /></FormControl>
+                        <FormControl><Input type="file" accept="image/*" multiple onChange={(e) => handleFileChange(e, 'galleryImages')} /></FormControl>
                         <FormMessage />
                         <div className="flex flex-wrap gap-2 mt-2">
-                            {dishForm.watch('galleryImages')?.map((imgKey, i) => (
+                            {field.value?.map((imgKey, i) => (
                                 <div key={imgKey} className="relative group">
                                     <ImagePreview imageKey={imgKey} alt={`תמונת גלריה ${i + 1}`} />
                                     <Button 
@@ -443,14 +434,14 @@ export default function MenuManager() {
                         <FormMessage />
                       </FormItem>
                     )} />
-                    <FormField name="image" control={categoryForm.control} render={() => (
+                    <FormField name="image" control={categoryForm.control} render={({ field }) => (
                       <FormItem>
                         <FormLabel>תמונת באנר</FormLabel>
                          <FormControl>
                             <Input type="file" accept="image/*" onChange={(e) => handleFileChange(e, 'image')} />
                         </FormControl>
                         <FormMessage />
-                         {categoryForm.watch('image') && <ImagePreview imageKey={categoryForm.watch('image')} alt="תמונת קטגוריה" />}
+                         {field.value && <ImagePreview imageKey={field.value} alt="תמונת קטגוריה" />}
                       </FormItem>
                     )} />
                     <DialogFooter>
