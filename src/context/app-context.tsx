@@ -124,12 +124,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setIsAuthenticated(false);
     if(isClient) sessionStorage.removeItem('malkata_auth');
   }
-  
-  const animationClass = useMemo(() => {
-    if(state.design.animation === 'fadeIn') return 'animation-fade-in';
-    if(state.design.animation === 'slideUp') return 'animation-slide-up';
-    return '';
-  }, [state.design.animation]);
 
   const value = {
     state,
@@ -143,7 +137,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     isAuthenticated,
     login,
     logout,
-    animationClass,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

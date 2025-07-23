@@ -7,12 +7,12 @@ import { useIsClient } from '@/hooks/use-is-client';
 import { Skeleton } from '@/components/ui/skeleton';
 
 export default function GalleryPage() {
-    const { state, animationClass } = useApp();
+    const { state } = useApp();
     const { gallery } = state;
     const isClient = useIsClient();
     
     return (
-        <div className={cn("container py-12 md:py-20", animationClass)}>
+        <div className="container py-12 md:py-20">
             <h1 className="text-4xl md:text-5xl font-headline font-bold text-center mb-12 text-primary">
                 גלריית תמונות
             </h1>

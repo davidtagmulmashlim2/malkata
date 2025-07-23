@@ -7,12 +7,12 @@ import { useIsClient } from '@/hooks/use-is-client';
 import { Skeleton } from '@/components/ui/skeleton';
 
 export default function MenuPage() {
-    const { state, animationClass } = useApp();
+    const { state } = useApp();
     const { dishes, categories } = state;
     const isClient = useIsClient();
 
     return (
-        <div className={cn(animationClass)}>
+        <div>
             <div className="relative h-64 w-full">
                 <Image
                     src="https://placehold.co/1600x400"

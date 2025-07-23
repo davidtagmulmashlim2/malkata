@@ -1,6 +1,4 @@
-
 'use client';
-import type { Metadata } from 'next';
 import { AppProvider, useApp } from '@/context/app-context';
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
@@ -11,31 +9,21 @@ import './globals.css';
 import { useIsClient } from '@/hooks/use-is-client';
 import { useEffect } from 'react';
 
-
-function AppLayout({ children }: { children: React.ReactNode }) {
+function AppBody({ children }: { children: React.ReactNode }) {
     const { state } = useApp();
     const isClient = useIsClient();
 
-    useEffect(() => {
-        if(isClient) {
-            document.documentElement.className = `theme-${state.design.theme}`;
-        }
-    }, [isClient, state.design.theme]);
-
-    useEffect(() => {
-        if(isClient) {
-            document.title = state.siteContent.hero.title;
-        }
-    }, [isClient, state.siteContent.hero.title]);
+    const themeClass = isClient ? `theme-${state.design.theme}` : '';
+    const animationClass = state.design.animation === 'fadeIn' ? 'animation-fade-in' : state.design.animation === 'slideUp' ? 'animation-slide-up' : '';
 
     return (
-        <>
+        <body className={cn('min-h-screen flex flex-col', themeClass, animationClass)}>
             <Header />
             <main className="flex-grow">{children}</main>
             <Footer />
             <CartSheet />
             <Toaster />
-        </>
+        </body>
     );
 }
 
@@ -47,17 +35,13 @@ export default function RootLayout({
   return (
     <html lang="he" dir="rtl">
         <head>
-            <link rel="preconnect" href="https://fonts.googleapis.com" />
-            <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-            <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=PT+Sans:wght@400;700&display=swap" rel="stylesheet" />
+            {/* Font preconnects are now in globals.css via @import */}
         </head>
-        <body className={cn('font-body antialiased bg-background text-foreground min-h-screen flex flex-col')}>
-            <AppProvider>
-                <AppLayout>
-                    {children}
-                </AppLayout>
-            </AppProvider>
-        </body>
+        <AppProvider>
+            <AppBody>
+                {children}
+            </AppBody>
+        </AppProvider>
     </html>
   );
 }

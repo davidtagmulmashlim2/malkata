@@ -8,7 +8,7 @@ import { useIsClient } from '@/hooks/use-is-client';
 import { Skeleton } from '@/components/ui/skeleton';
 
 export default function CategoryPage() {
-    const { state, animationClass } = useApp();
+    const { state } = useApp();
     const isClient = useIsClient();
     const params = useParams();
     const categorySlug = typeof params.category === 'string' ? params.category : '';
@@ -41,7 +41,7 @@ export default function CategoryPage() {
     }
 
     return (
-        <div className={cn(animationClass)}>
+        <div>
             <div className="relative h-64 w-full">
                 <Image
                     src={category.image}

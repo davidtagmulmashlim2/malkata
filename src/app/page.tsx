@@ -13,14 +13,14 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 
 export default function Home() {
-  const { state, animationClass } = useApp();
+  const { state } = useApp();
   const { siteContent, dishes, testimonials } = state;
   const isClient = useIsClient();
   
   const recommendedDishes = dishes.filter(d => d.tags.includes('recommended')).slice(0, 3);
 
   return (
-    <div className={cn("space-y-16 md:space-y-24", animationClass)}>
+    <div className="space-y-16 md:space-y-24">
       {/* Hero Section */}
       <section className="relative h-[60vh] md:h-[80vh] w-full flex items-center justify-center text-center text-white">
         <Image
@@ -60,7 +60,7 @@ export default function Home() {
           <div>
             <h2 className="text-3xl md:text-4xl font-headline font-bold mb-4">הסיפור שלנו</h2>
             <div className="text-muted-foreground mb-6">
-              {isClient ? siteContent.about.short : <Skeleton className="h-20 w-full" />}
+              {isClient ? <p>{siteContent.about.short}</p> : <Skeleton className="h-20 w-full" />}
             </div>
             <Button asChild variant="outline">
               <Link href="/about">קראו עוד</Link>

@@ -18,7 +18,7 @@ const formSchema = z.object({
 });
 
 export default function ContactPage() {
-    const { state, animationClass } = useApp();
+    const { state } = useApp();
     const { contact } = state.siteContent;
 
     const form = useForm<z.infer<typeof formSchema>>({
@@ -35,7 +35,7 @@ export default function ContactPage() {
     }
     
     return (
-        <div className={cn("container py-12 md:py-20", animationClass)}>
+        <div className="container py-12 md:py-20">
              <h1 className="text-4xl md:text-5xl font-headline font-bold text-center mb-12 text-primary">
                 צרו איתנו קשר
             </h1>

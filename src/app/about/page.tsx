@@ -6,12 +6,12 @@ import { useIsClient } from '@/hooks/use-is-client';
 import { Skeleton } from '@/components/ui/skeleton';
 
 export default function AboutPage() {
-    const { state, animationClass } = useApp();
+    const { state } = useApp();
     const { about } = state.siteContent;
     const isClient = useIsClient();
 
     return (
-        <div className={cn("container py-12 md:py-20", animationClass)}>
+        <div className="container py-12 md:py-20">
             <div className="max-w-4xl mx-auto">
                 <h1 className="text-4xl md:text-5xl font-headline font-bold text-center mb-8 text-primary">
                     {isClient ? "הסיפור של מלכתא" : <Skeleton className="h-12 w-80 mx-auto" />}

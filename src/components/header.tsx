@@ -18,7 +18,6 @@ const navLinks = [
 
 export function Header() {
   const pathname = usePathname();
-  const { animationClass } = useApp();
 
   const NavLinks = ({ className }: { className?: string }) => (
     <nav className={cn('flex items-center gap-4 lg:gap-6', className)}>
@@ -44,7 +43,7 @@ export function Header() {
   );
 
   return (
-    <header className={cn("sticky top-0 z-40 w-full border-b bg-background/80 backdrop-blur-sm", animationClass)}>
+    <header className="sticky top-0 z-40 w-full border-b bg-background/80 backdrop-blur-sm">
       <div className="container flex h-16 items-center justify-between">
         <Link href="/" className="flex items-center gap-2 font-headline text-2xl font-bold text-primary">
           <UtensilsCrossed className="h-7 w-7" />
