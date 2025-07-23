@@ -29,6 +29,9 @@ const contentSchema = z.object({
     email: z.string().email('אימייל לא חוקי'),
     hours: z.string().min(1, 'חובה'),
   }),
+  menu: z.object({
+      mainImage: z.string().url('כתובת לא חוקית'),
+  })
 });
 
 export default function ContentManager() {
@@ -54,7 +57,7 @@ export default function ContentManager() {
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            <Accordion type="multiple" defaultValue={['hero', 'about', 'contact']} className="w-full">
+            <Accordion type="multiple" defaultValue={['hero', 'about', 'contact', 'menu']} className="w-full">
               <AccordionItem value="hero">
                 <AccordionTrigger className="font-headline text-xl">עמוד הבית (אזור עליון)</AccordionTrigger>
                 <AccordionContent className="space-y-4 pt-4">
@@ -102,6 +105,19 @@ export default function ContentManager() {
                    <FormField name="about.image" control={form.control} render={({ field }) => (
                     <FormItem>
                       <FormLabel>כתובת תמונה</FormLabel>
+                      <FormControl><Input {...field} /></FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )} />
+                </AccordionContent>
+              </AccordionItem>
+
+               <AccordionItem value="menu">
+                <AccordionTrigger className="font-headline text-xl">עמוד תפריט</AccordionTrigger>
+                <AccordionContent className="space-y-4 pt-4">
+                  <FormField name="menu.mainImage" control={form.control} render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>תמונת באנר ראשית</FormLabel>
                       <FormControl><Input {...field} /></FormControl>
                       <FormMessage />
                     </FormItem>

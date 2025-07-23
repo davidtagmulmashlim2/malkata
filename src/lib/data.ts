@@ -19,6 +19,9 @@ export const DEFAULT_APP_STATE: AppState = {
       email: 'contact@malkata.co.il',
       hours: 'א׳-ה׳: 11:00 - 22:00 | ו׳: 09:00 - 15:00',
     },
+    menu: {
+      mainImage: 'https://placehold.co/1600x400',
+    }
   },
   categories: [
     { id: '1', name: 'עיקריות', slug: 'main-dishes', description: 'הלב של הארוחה, מנות עשירות ומנחמות.', image: 'https://placehold.co/1200x400' },

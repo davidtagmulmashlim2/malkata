@@ -8,14 +8,14 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 export default function MenuPage() {
     const { state } = useApp();
-    const { dishes, categories } = state;
+    const { dishes, categories, siteContent } = state;
     const isClient = useIsClient();
 
     return (
         <div>
             <div className="relative h-64 w-full">
                 <Image
-                    src="https://placehold.co/1600x400"
+                    src={isClient ? siteContent.menu.mainImage : "https://placehold.co/1600x400"}
                     alt="תפריט"
                     layout="fill"
                     objectFit="cover"

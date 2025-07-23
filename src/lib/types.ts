@@ -48,6 +48,9 @@ export interface SiteContent {
     email: string;
     hours: string;
   };
+  menu: {
+    mainImage: string;
+  };
 }
 
 export interface DesignSettings {
