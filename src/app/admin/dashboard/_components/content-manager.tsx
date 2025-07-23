@@ -14,6 +14,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Slider } from '@/components/ui/slider';
 import { useEffect } from 'react';
+import { DEFAULT_APP_STATE } from '@/lib/data';
 
 const contentSchema = z.object({
   hero: z.object({
@@ -63,41 +64,33 @@ export default function ContentManager() {
 
   const form = useForm<z.infer<typeof contentSchema>>({
     resolver: zodResolver(contentSchema),
-    defaultValues: {
-      hero: {
-        titleFirstWord: '',
-        titleRest: '',
-        subtitle: '',
-        image: '',
-        titleFirstWordColor: '#FFFFFF',
-        titleFirstWordFontSize: '7xl',
-        titleFirstWordOpacity: 1,
-        titleRestColor: '#FFFFFF',
-        titleRestFontSize: '6xl',
-        titleRestOpacity: 1,
-        subtitleOpacity: 1,
-      },
-      about: {
-        short: '',
-        long: '',
-        image: '',
-      },
-      contact: {
-        address: '',
-        phone: '',
-        whatsapp: '',
-        email: '',
-        hours: '',
-      },
-      menu: {
-        mainImage: '',
-      },
-    }
+    defaultValues: DEFAULT_APP_STATE.siteContent
   });
 
   useEffect(() => {
     if (siteContent) {
-      form.reset(siteContent);
+      // Create a complete object by merging saved data with defaults
+      const completeSiteContent = {
+        ...DEFAULT_APP_STATE.siteContent,
+        ...siteContent,
+        hero: {
+          ...DEFAULT_APP_STATE.siteContent.hero,
+          ...siteContent.hero,
+        },
+        about: {
+          ...DEFAULT_APP_STATE.siteContent.about,
+          ...siteContent.about,
+        },
+        contact: {
+          ...DEFAULT_APP_STATE.siteContent.contact,
+          ...siteContent.contact,
+        },
+        menu: {
+          ...DEFAULT_APP_STATE.siteContent.menu,
+          ...siteContent.menu,
+        },
+      };
+      form.reset(completeSiteContent);
     }
   }, [siteContent, form]);
 
@@ -322,5 +315,3 @@ export default function ContentManager() {
     </Card>
   );
 }
-
-    
