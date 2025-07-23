@@ -100,16 +100,23 @@ export default function Home() {
       {/* Testimonials Section */}
       <section className="container">
         <h2 className="text-3xl md:text-4xl font-headline font-bold text-center mb-10">לקוחות ממליצים</h2>
-        <Carousel className="w-full max-w-4xl mx-auto" dir="rtl">
+        <Carousel 
+          className="w-full max-w-4xl mx-auto" 
+          dir="rtl"
+          opts={{
+            align: "start",
+            loop: true,
+          }}
+        >
           <CarouselContent>
             {(isClient ? testimonials : Array(3).fill({id:'', name:'', quote:''})).map((testimonial, index) => (
-              <CarouselItem key={isClient ? testimonial.id : index}>
+              <CarouselItem key={isClient ? testimonial.id : index} className="md:basis-1/2 lg:basis-1/3">
                 <div className="p-1">
                   <Card>
-                    <CardContent className="flex flex-col items-center justify-center p-6 text-center">
+                    <CardContent className="flex flex-col items-center justify-center p-6 text-center h-48">
                       {isClient ? (
                         <>
-                          <p className="text-lg italic mb-4">"{testimonial.quote}"</p>
+                          <p className="text-lg italic mb-4 flex-grow">"{testimonial.quote}"</p>
                           <p className="font-bold text-primary">- {testimonial.name}</p>
                         </>
                       ) : (
