@@ -33,6 +33,12 @@ const iconMap: { [key: string]: React.ElementType | null } = {
 export function Footer() {
     const { state } = useApp();
     const { contact, design } = state;
+
+    // Return null or a loading state if essential data isn't ready
+    if (!contact || !design) {
+        return null;
+    }
+    
     const IconComponent = iconMap[design.logoIcon] || UtensilsCrossed;
 
     return (
