@@ -3,9 +3,14 @@ import type { AppState } from './types';
 export const DEFAULT_APP_STATE: AppState = {
   siteContent: {
     hero: {
-      title: 'מלכתא: טעמים של בית',
+      titleFirstWord: 'מלכתא:',
+      titleRest: 'טעמים של בית',
       subtitle: 'אוכל ביתי אותנטי, מוכן באהבה כל יום מחדש.',
       image: 'https://placehold.co/1920x1080',
+      titleFirstWordColor: '#FFFFFF',
+      titleFirstWordFontSize: '7xl',
+      titleRestColor: '#FFFFFF',
+      titleRestFontSize: '6xl'
     },
     about: {
       short: 'בלב העיר, שוכנת "מלכתא", מסעדה שהיא בית. אנו מגישים באהבה את מיטב המאכלים מהמטבח הביתי, עם חומרי גלם טריים ומתכונים שעוברים מדור לדור.',

@@ -2,15 +2,21 @@
 
 import { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
+import React from 'react';
 
-interface TypewriterProps {
-  text: string;
-  speed?: number;
-  className?: string;
+interface TextPart {
+    text: string;
+    style?: React.CSSProperties;
+    className?: string;
 }
 
-export function Typewriter({ text, speed = 100, className }: TypewriterProps) {
-  const [displayedText, setDisplayedText] = useState('');
+interface TypewriterProps {
+  textParts: TextPart[];
+  speed?: number;
+}
+
+export function Typewriter({ textParts, speed = 100 }: TypewriterProps) {
+  const [displayedParts, setDisplayedParts] = useState<TextPart[]>([]);
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
@@ -19,29 +25,60 @@ export function Typewriter({ text, speed = 100, className }: TypewriterProps) {
 
   useEffect(() => {
     if (isClient) {
-      setDisplayedText(''); // Reset on text change
-      let i = 0;
-      const intervalId = setInterval(() => {
-        setDisplayedText(prev => prev + text.charAt(i));
-        i++;
-        if (i >= text.length) {
-          clearInterval(intervalId);
-        }
-      }, speed);
+        setDisplayedParts([]); // Reset on text change
+        let partIndex = 0;
+        let charIndex = 0;
 
-      return () => clearInterval(intervalId);
+        const intervalId = setInterval(() => {
+            if (partIndex >= textParts.length) {
+                clearInterval(intervalId);
+                return;
+            }
+
+            const currentPart = textParts[partIndex];
+            const currentText = currentPart.text;
+
+            setDisplayedParts(prev => {
+                const newParts = [...prev];
+                if (!newParts[partIndex]) {
+                    newParts[partIndex] = { ...currentPart, text: '' };
+                }
+                newParts[partIndex].text += currentText[charIndex];
+                return newParts;
+            });
+
+            charIndex++;
+            if (charIndex >= currentText.length) {
+                charIndex = 0;
+                partIndex++;
+            }
+        }, speed);
+
+        return () => clearInterval(intervalId);
     }
-  }, [text, speed, isClient]);
+  }, [textParts, speed, isClient]);
 
   // Render the full text for SEO and if JS is disabled
   if (!isClient) {
-    return <span className={className}>{text}</span>;
+    return (
+        <>
+            {textParts.map((part, index) => (
+                <span key={index} style={part.style} className={part.className}>
+                    {part.text}
+                </span>
+            ))}
+        </>
+    );
   }
 
   return (
-    <span className={cn(className)}>
-      {displayedText}
+    <>
+      {displayedParts.map((part, index) => (
+        <span key={index} style={part.style} className={cn(part.className)}>
+          {part.text}
+        </span>
+      ))}
       <span className="animate-ping">|</span>
-    </span>
+    </>
   );
 }

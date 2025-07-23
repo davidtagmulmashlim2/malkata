@@ -10,12 +10,18 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { toast } from '@/hooks/use-toast';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 const contentSchema = z.object({
   hero: z.object({
-    title: z.string().min(1, 'חובה'),
+    titleFirstWord: z.string().min(1, 'חובה'),
+    titleRest: z.string(),
     subtitle: z.string().min(1, 'חובה'),
     image: z.string().min(1, 'חובה'),
+    titleFirstWordColor: z.string(),
+    titleFirstWordFontSize: z.string(),
+    titleRestColor: z.string(),
+    titleRestFontSize: z.string(),
   }),
   about: z.object({
     short: z.string().min(1, 'חובה'),
@@ -33,6 +39,8 @@ const contentSchema = z.object({
       mainImage: z.string().min(1, 'חובה'),
   })
 });
+
+const fontSizes = ['xs', 'sm', 'base', 'lg', 'xl', '2xl', '3xl', '4xl', '5xl', '6xl', '7xl', '8xl', '9xl'];
 
 // Helper to read file as Data URL
 const readFileAsDataURL = (file: File): Promise<string> => {
@@ -84,13 +92,58 @@ export default function ContentManager() {
               <AccordionItem value="hero">
                 <AccordionTrigger className="font-headline text-xl">עמוד הבית (אזור עליון)</AccordionTrigger>
                 <AccordionContent className="space-y-4 pt-4">
-                  <FormField name="hero.title" control={form.control} render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>כותרת ראשית</FormLabel>
-                      <FormControl><Input {...field} /></FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )} />
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <FormField name="hero.titleFirstWord" control={form.control} render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>כותרת - מילה ראשונה</FormLabel>
+                        <FormControl><Input {...field} /></FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )} />
+                     <FormField name="hero.titleRest" control={form.control} render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>כותרת - שאר המשפט</FormLabel>
+                        <FormControl><Input {...field} /></FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )} />
+                  </div>
+                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4 items-end">
+                      <FormField name="hero.titleFirstWordColor" control={form.control} render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>צבע מילה ראשונה</FormLabel>
+                          <FormControl><Input type="color" {...field} className="p-1 h-10 w-full" /></FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )} />
+                       <FormField name="hero.titleFirstWordFontSize" control={form.control} render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>גודל מילה ראשונה</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl>
+                            <SelectContent>{fontSizes.map(s => <SelectItem key={s} value={s}>text-{s}</SelectItem>)}</SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )} />
+                       <FormField name="hero.titleRestColor" control={form.control} render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>צבע שאר המשפט</FormLabel>
+                          <FormControl><Input type="color" {...field} className="p-1 h-10 w-full" /></FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )} />
+                       <FormField name="hero.titleRestFontSize" control={form.control} render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>גודל שאר המשפט</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl>
+                            <SelectContent>{fontSizes.map(s => <SelectItem key={s} value={s}>text-{s}</SelectItem>)}</SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )} />
+                  </div>
                   <FormField name="hero.subtitle" control={form.control} render={({ field }) => (
                     <FormItem>
                       <FormLabel>כותרת משנה</FormLabel>

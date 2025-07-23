@@ -32,9 +32,14 @@ export interface GalleryImage {
 
 export interface SiteContent {
   hero: {
-    title: string;
+    titleFirstWord: string;
+    titleRest: string;
     subtitle: string;
     image: string;
+    titleFirstWordColor: string;
+    titleFirstWordFontSize: string;
+    titleRestColor: string;
+    titleRestFontSize: string;
   };
   about: {
     short: string;

@@ -18,6 +18,12 @@ export default function Home() {
   const isClient = useIsClient();
   
   const veganDishes = dishes.filter(d => d.tags.includes('vegan')).slice(0, 3);
+  
+  const textSizeClasses: { [key: string]: string } = {
+      'xs': 'text-xs', 'sm': 'text-sm', 'base': 'text-base', 'lg': 'text-lg', 'xl': 'text-xl', 
+      '2xl': 'text-2xl', '3xl': 'text-3xl', '4xl': 'text-4xl', '5xl': 'text-5xl', 
+      '6xl': 'text-6xl', '7xl': 'text-7xl', '8xl': 'text-8xl', '9xl': 'text-9xl',
+  };
 
   return (
     <div className="space-y-16 md:space-y-24">
@@ -33,8 +39,15 @@ export default function Home() {
           data-ai-hint="warm food"
         />
         <div className="z-10 p-4">
-          <h1 className="text-4xl md:text-7xl font-headline font-bold drop-shadow-lg">
-            {isClient ? <Typewriter text={siteContent.hero.title} /> : <Skeleton className="h-16 w-[80vw] max-w-4xl mx-auto" />}
+          <h1 className="font-headline font-bold drop-shadow-lg">
+            {isClient ? (
+                <Typewriter
+                    textParts={[
+                        { text: siteContent.hero.titleFirstWord, style: { color: siteContent.hero.titleFirstWordColor }, className: textSizeClasses[siteContent.hero.titleFirstWordFontSize] },
+                        { text: ` ${siteContent.hero.titleRest}`, style: { color: siteContent.hero.titleRestColor }, className: textSizeClasses[siteContent.hero.titleRestFontSize] },
+                    ]}
+                />
+            ) : <Skeleton className="h-16 w-[80vw] max-w-4xl mx-auto" />}
           </h1>
           <div className="mt-4 text-lg md:text-2xl max-w-2xl mx-auto drop-shadow-md">
             {isClient ? siteContent.hero.subtitle : <Skeleton className="h-8 w-96 mx-auto mt-2" />}
