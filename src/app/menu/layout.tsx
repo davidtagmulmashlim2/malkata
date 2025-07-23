@@ -33,13 +33,11 @@ export default function MenuLayout({
                                 <Button
                                     key={category.id}
                                     asChild
-                                    variant='ghost'
+                                    variant={pathname === `/menu/${category.slug}` ? 'default' : 'ghost'}
                                     size="sm"
                                     className={cn(
-                                        pathname === `/menu/${category.slug}` ? 'active' : '',
-                                        category.slug === 'shabbat-malkata' 
-                                            ? 'btn-shabbat' 
-                                            : (pathname === `/menu/${category.slug}` ? 'default' : 'ghost')
+                                        {'btn-shabbat': category.slug === 'shabbat-malkata'},
+                                        {'active': pathname === `/menu/${category.slug}` && category.slug === 'shabbat-malkata'}
                                     )}
                                 >
                                     <Link href={`/menu/${category.slug}`}>{category.name}</Link>
