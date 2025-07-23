@@ -23,10 +23,12 @@ interface DishCardProps {
 export function DishCard({ dish }: DishCardProps) {
   const { addToCart } = useApp();
   const isClient = useIsClient();
+  
   const allImages = useMemo(() => {
     const images = [dish.mainImage, ...(dish.galleryImages || [])];
     return [...new Set(images)].filter(Boolean); // Remove duplicates and empty strings
   }, [dish.mainImage, dish.galleryImages]);
+
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
 
@@ -38,9 +40,8 @@ export function DishCard({ dish }: DishCardProps) {
     };
 
     api.on("select", onSelect);
-    // Re-init to apply listeners correctly after data loads
-    api.reInit();
-    onSelect(api);
+    api.reInit(); // Re-init to apply listeners correctly after data loads
+    onSelect(api); // Set initial state
 
     return () => {
         api.off("select", onSelect);
@@ -98,7 +99,7 @@ export function DishCard({ dish }: DishCardProps) {
         <div className="grid md:grid-cols-2 gap-8">
             <div className="w-full">
                 {isClient && allImages.length > 0 ? (
-                    <div className="relative">
+                    <div>
                         <Carousel setApi={setApi} className="w-full" dir="rtl">
                             <CarouselContent>
                                 {allImages.map((imgKey, i) => (
@@ -117,8 +118,8 @@ export function DishCard({ dish }: DishCardProps) {
                                 ))}
                             </CarouselContent>
                             {allImages.length > 1 && <>
-                              <CarouselPrevious className="absolute right-2 top-1/2 -translate-y-1/2 z-10" />
-                              <CarouselNext className="absolute left-2 top-1/2 -translate-y-1/2 z-10" />
+                              <CarouselPrevious />
+                              <CarouselNext />
                             </>}
                         </Carousel>
                         {allImages.length > 1 && (
