@@ -1,6 +1,6 @@
 
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -30,7 +30,7 @@ const dishSchema = z.object({
   fullDescription: z.string().min(1, 'תיאור מלא הוא שדה חובה'),
   price: z.coerce.number().min(0, 'המחיר חייב להיות חיובי'),
   mainImage: z.string().min(1, "חובה להעלות תמונה ראשית"),
-  galleryImages: z.array(z.string()),
+  galleryImages: z.array(z.string()).optional(),
   categoryId: z.string().min(1, 'חובה לבחור קטגוריה'),
   isAvailable: z.boolean(),
   isRecommended: z.boolean().optional(),
@@ -66,7 +66,7 @@ export default function MenuManager() {
   const [isCategoryDialogOpen, setIsCategoryDialogOpen] = useState(false)
   const [editingDish, setEditingDish] = useState<Dish | null>(null)
   const [editingCategory, setEditingCategory] = useState<Category | null>(null)
-  const [newGalleryImageFile, setNewGalleryImageFile] = useState<File | null>(null);
+  const galleryImageInputRef = useRef<HTMLInputElement>(null);
 
   const dishForm = useForm<z.infer<typeof dishSchema>>({ 
     resolver: zodResolver(dishSchema),
@@ -157,21 +157,26 @@ export default function MenuManager() {
     toast({ title: 'קטגוריה נמחקה' })
   }
 
-  const addGalleryImage = async () => {
-    if (!newGalleryImageFile) return;
+  const handleAddGalleryImage = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
 
     try {
-        const dataUrl = await fileToDataUrl(newGalleryImageFile);
+        const dataUrl = await fileToDataUrl(file);
         const imageKey = await storeImage(dataUrl);
         const currentImages = dishForm.getValues('galleryImages') || [];
         dishForm.setValue('galleryImages', [...currentImages, imageKey], { shouldValidate: true });
-        setNewGalleryImageFile(null); 
-        const fileInput = document.getElementById('gallery-file-input') as HTMLInputElement;
-        if(fileInput) fileInput.value = '';
+        toast({title: "תמונה נוספה לגלריה"});
     } catch (error) {
         toast({title: "שגיאה בהעלאת תמונת גלריה", variant: "destructive"});
+    } finally {
+        // Reset the file input
+        if (event.target) {
+            event.target.value = '';
+        }
     }
   };
+
 
   const removeGalleryImage = (index: number) => {
       const currentImages = dishForm.getValues('galleryImages') || [];
@@ -253,33 +258,32 @@ export default function MenuManager() {
                      />
 
                     <FormItem>
-                      <FormLabel>תמונות נוספות (גלריה)</FormLabel>
-                      <div className="flex gap-2">
-                        <Input 
-                            id="gallery-file-input"
-                            type="file"
-                            accept="image/*"
-                            onChange={(e) => setNewGalleryImageFile(e.target.files ? e.target.files[0] : null)}
-                         />
-                        <Button type="button" onClick={addGalleryImage} disabled={!newGalleryImageFile}>הוסף</Button>
-                      </div>
-                      <FormMessage />
-                      <div className="flex flex-wrap gap-2 mt-2">
-                          {dishGalleryImagesValue?.map((imgKey, i) => (
-                              <div key={i} className="relative group">
-                                  <ImagePreview imageKey={imgKey} alt={`תמונת גלריה ${i + 1}`} />
-                                  <Button 
-                                      type="button"
-                                      variant="destructive"
-                                      size="icon"
-                                      className="absolute top-0 right-0 h-5 w-5 opacity-0 group-hover:opacity-100 transition-opacity"
-                                      onClick={() => removeGalleryImage(i)}
-                                  >
-                                      <X className="h-3 w-3" />
-                                  </Button>
-                              </div>
-                          ))}
-                      </div>
+                        <FormLabel>תמונות נוספות (גלריה)</FormLabel>
+                        <FormControl>
+                            <Input 
+                                type="file"
+                                accept="image/*"
+                                onChange={handleAddGalleryImage}
+                                ref={galleryImageInputRef}
+                            />
+                        </FormControl>
+                        <FormMessage />
+                        <div className="flex flex-wrap gap-2 mt-2">
+                            {dishGalleryImagesValue?.map((imgKey, i) => (
+                                <div key={i} className="relative group">
+                                    <ImagePreview imageKey={imgKey} alt={`תמונת גלריה ${i + 1}`} />
+                                    <Button 
+                                        type="button"
+                                        variant="destructive"
+                                        size="icon"
+                                        className="absolute top-0 right-0 h-5 w-5 opacity-0 group-hover:opacity-100 transition-opacity"
+                                        onClick={() => removeGalleryImage(i)}
+                                    >
+                                        <X className="h-3 w-3" />
+                                    </Button>
+                                </div>
+                            ))}
+                        </div>
                     </FormItem>
                     <FormField name="categoryId" control={dishForm.control} render={({ field }) => (
                       <FormItem>
@@ -492,3 +496,5 @@ export default function MenuManager() {
     </div>
   )
 }
+
+    
