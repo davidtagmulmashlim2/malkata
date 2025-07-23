@@ -1,7 +1,7 @@
 
 'use client';
 
-import { ShoppingCart, Trash2, X } from 'lucide-react';
+import { ShoppingCart, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Sheet,
@@ -15,6 +15,7 @@ import {
 import { useApp } from '@/context/app-context';
 import Image from 'next/image';
 import { Input } from './ui/input';
+import { Label } from './ui/label';
 import { ScrollArea } from './ui/scroll-area';
 import { Separator } from './ui/separator';
 import { useIsClient } from '@/hooks/use-is-client';
@@ -57,6 +58,8 @@ const CartDishImage = ({ imageKey, alt }: { imageKey: string; alt: string }) => 
 export function CartSheet() {
   const { cart, getDishById, updateCartQuantity, removeFromCart, state } = useApp();
   const isClient = useIsClient();
+  const [customerName, setCustomerName] = useState('');
+  const [customerPhone, setCustomerPhone] = useState('');
 
   const cartDetails = isClient ? cart.map(item => {
     const dish = getDishById(item.dishId);
@@ -66,12 +69,16 @@ export function CartSheet() {
   const total = cartDetails.reduce((sum, item) => sum + item!.price * item!.quantity, 0);
 
   const handleWhatsAppOrder = () => {
+    if (!customerName || !customerPhone) {
+        alert('יש למלא שם וטלפון לפני שליחת ההזמנה.');
+        return;
+    }
     const { contact } = state.siteContent;
-    let message = 'שלום, ברצוני לבצע הזמנה:\n\n';
+    let message = `שלום, אני ${customerName}, טלפון ${customerPhone}. ברצוני לבצע הזמנה:\n\n`;
     cartDetails.forEach(item => {
       message += `${item!.name} (x${item!.quantity}) - ${item!.price * item!.quantity} ₪\n`;
     });
-    message += `\nסה"כ לתשלום: ${total} ₪\n\n`;
+    message += `\nסה"כ לתשלום: ${total.toLocaleString()} ₪\n\n`;
     message += 'תודה!';
     
     const whatsappUrl = `https://wa.me/${contact.whatsapp}?text=${encodeURIComponent(message)}`;
@@ -101,7 +108,7 @@ export function CartSheet() {
               <div className="flex flex-col gap-4 py-4">
                 {cartDetails.map(item => (
                   <div key={item!.id} className="flex items-center justify-between gap-4">
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-4 flex-1">
                         <CartDishImage imageKey={item!.mainImage} alt={item!.name} />
                         <div>
                           <h4 className="font-semibold">{item!.name}</h4>
@@ -131,7 +138,19 @@ export function CartSheet() {
                         <span>סה"כ:</span>
                         <span>{total.toLocaleString()} ₪</span>
                     </div>
-                    <SheetClose asChild>
+                    <Separator />
+                    <div className='space-y-4'>
+                        <h4 className='font-medium text-center'>פרטי הזמנה</h4>
+                        <div className='space-y-2'>
+                            <Label htmlFor="customerName">שם מלא</Label>
+                            <Input id="customerName" value={customerName} onChange={(e) => setCustomerName(e.target.value)} placeholder='ישראל ישראלי' />
+                        </div>
+                         <div className='space-y-2'>
+                            <Label htmlFor="customerPhone">טלפון</Label>
+                            <Input id="customerPhone" type="tel" value={customerPhone} onChange={(e) => setCustomerPhone(e.target.value)} placeholder='050-1234567' />
+                        </div>
+                    </div>
+                    <SheetClose asChild={customerName !== '' && customerPhone !== ''}>
                         <Button type="submit" className="w-full" onClick={handleWhatsAppOrder}>
                         שליחת הזמנה ב-WhatsApp
                         </Button>
