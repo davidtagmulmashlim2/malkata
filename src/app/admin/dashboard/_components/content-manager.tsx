@@ -62,11 +62,12 @@ export default function ContentManager() {
 
   const form = useForm<z.infer<typeof contentSchema>>({
     resolver: zodResolver(contentSchema),
-    defaultValues: siteContent, 
   });
 
   useEffect(() => {
-    form.reset(siteContent);
+    if (siteContent) {
+      form.reset(siteContent);
+    }
   }, [siteContent, form]);
 
   const onSubmit = (values: z.infer<typeof contentSchema>) => {
@@ -290,5 +291,3 @@ export default function ContentManager() {
     </Card>
   );
 }
-
-    

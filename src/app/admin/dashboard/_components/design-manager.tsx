@@ -48,12 +48,12 @@ export default function DesignManager() {
 
   const form = useForm<z.infer<typeof designSchema>>({
     resolver: zodResolver(designSchema),
-    defaultValues: design,
   });
 
-  // This useEffect will sync the form with the state from context when it changes.
   useEffect(() => {
-    form.reset(design);
+    if (design) {
+      form.reset(design);
+    }
   }, [design, form]);
 
   const onSubmit = (values: z.infer<typeof designSchema>) => {
@@ -76,7 +76,7 @@ export default function DesignManager() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-lg font-headline">ערכת נושא</FormLabel>
-                   <Select onValueChange={field.onChange} defaultValue={field.value}>
+                   <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="בחר ערכת נושא" />
@@ -100,7 +100,7 @@ export default function DesignManager() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-lg font-headline">פונט לכותרות (Headline)</FormLabel>
-                       <Select onValueChange={field.onChange} defaultValue={field.value}>
+                       <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="בחר פונט" />
@@ -122,7 +122,7 @@ export default function DesignManager() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-lg font-headline">פונט לטקסט רץ (Body)</FormLabel>
-                       <Select onValueChange={field.onChange} defaultValue={field.value}>
+                       <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="בחר פונט" />

@@ -45,6 +45,19 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [cart, setCart] = useState<CartItem[]>([]);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const isClient = useIsClient();
+  
+  const enhancedDispatch = (action: Action) => {
+    const newState = appReducer(state, action);
+    if (isClient) {
+        try {
+            localStorage.setItem(LS_APP_STATE_KEY, JSON.stringify(newState));
+        } catch (error) {
+            console.error("Failed to save state to localStorage", error);
+        }
+    }
+    dispatch(action);
+  };
+
 
   useEffect(() => {
     if (isClient) {
@@ -66,12 +79,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       }
     }
   }, [isClient]);
-
-  useEffect(() => {
-    if (isClient) {
-      localStorage.setItem(LS_APP_STATE_KEY, JSON.stringify(state));
-    }
-  }, [state, isClient]);
 
   useEffect(() => {
     if (isClient) {
@@ -127,7 +134,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const value = {
     state,
-    dispatch,
+    dispatch: enhancedDispatch,
     cart,
     addToCart,
     updateCartQuantity,
