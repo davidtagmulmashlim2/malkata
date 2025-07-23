@@ -32,8 +32,21 @@
     --input: 34 20% 85%;
     --ring: 0 100% 27%;
     --radius: 0.5rem;
-    --font-sans: 'PT Sans', sans-serif;
-    --font-headline: 'Playfair Display', serif;
+    
+    /* Font Families */
+    --font-playfair: 'Playfair Display', serif;
+    --font-pt-sans: 'PT Sans', sans-serif;
+    --font-roboto-mono: 'Roboto Mono', monospace;
+    --font-chakra-petch: 'Chakra Petch', sans-serif;
+    --font-cormorant-garamond: 'Cormorant Garamond', serif;
+    --font-lato: 'Lato', sans-serif;
+    --font-montserrat: 'Montserrat', sans-serif;
+    --font-open-sans: 'Open Sans', sans-serif;
+    --font-frank-ruhl-libre: 'Frank Ruhl Libre', serif;
+
+    /* Dynamic Font Variables */
+    --font-sans-family: var(--font-pt-sans);
+    --font-headline-family: var(--font-playfair);
   }
 }
 
@@ -42,10 +55,11 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground font-sans;
+    @apply bg-background text-foreground;
+    font-family: var(--font-sans-family);
   }
   h1, h2, h3, h4, h5, h6, .font-headline {
-      font-family: var(--font-headline);
+      font-family: var(--font-headline-family);
   }
 }
 

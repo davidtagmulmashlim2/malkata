@@ -6,13 +6,13 @@ import { useApp } from '@/context/app-context';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { toast } from '@/hooks/use-toast';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 const designSchema = z.object({
   theme: z.string(),
-  animation: z.enum(['none', 'fadeIn', 'slideUp']),
+  headlineFont: z.string(),
+  bodyFont: z.string(),
 });
 
 const themes = [
@@ -29,6 +29,18 @@ const themes = [
     { name: 'מקראי', value: 'biblical' },
 ];
 
+const fonts = [
+    { name: 'Playfair Display (ברירת מחדל כותרות)', value: 'playfair' },
+    { name: 'PT Sans (ברירת מחדל גוף)', value: 'pt-sans' },
+    { name: 'Roboto Mono', value: 'roboto-mono' },
+    { name: 'Chakra Petch', value: 'chakra-petch' },
+    { name: 'Cormorant Garamond', value: 'cormorant-garamond' },
+    { name: 'Lato', value: 'lato' },
+    { name: 'Montserrat', value: 'montserrat' },
+    { name: 'Open Sans', value: 'open-sans' },
+    { name: 'Frank Ruhl Libre', value: 'frank-ruhl-libre' },
+];
+
 export default function DesignManager() {
   const { state, dispatch } = useApp();
   const { design } = state;
@@ -41,8 +53,6 @@ export default function DesignManager() {
   const onSubmit = (values: z.infer<typeof designSchema>) => {
     dispatch({ type: 'UPDATE_DESIGN', payload: values });
     toast({ title: 'הגדרות עיצוב עודכנו!' });
-    // Note: Applying themes would require a more complex setup to dynamically change CSS variables.
-    // This implementation saves the choice, but doesn't visually apply all themes yet.
   };
 
   return (
@@ -58,7 +68,7 @@ export default function DesignManager() {
               control={form.control}
               name="theme"
               render={({ field }) => (
-                <FormItem className="space-y-3">
+                <FormItem>
                   <FormLabel className="text-lg font-headline">ערכת נושא</FormLabel>
                    <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
@@ -76,43 +86,53 @@ export default function DesignManager() {
                 </FormItem>
               )}
             />
-
-            <FormField
-              control={form.control}
-              name="animation"
-              render={({ field }) => (
-                <FormItem className="space-y-3">
-                  <FormLabel className="text-lg font-headline">אנימציית טעינת עמודים</FormLabel>
-                  <FormControl>
-                    <RadioGroup
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                      className="flex flex-col space-y-1"
-                    >
-                      <FormItem className="flex items-center space-x-3 space-y-0">
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                 <FormField
+                  control={form.control}
+                  name="headlineFont"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-lg font-headline">פונט לכותרות (Headline)</FormLabel>
+                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
-                          <RadioGroupItem value="none" />
+                          <SelectTrigger>
+                            <SelectValue placeholder="בחר פונט" />
+                          </SelectTrigger>
                         </FormControl>
-                        <FormLabel className="font-normal">ללא</FormLabel>
-                      </FormItem>
-                      <FormItem className="flex items-center space-x-3 space-y-0">
+                        <SelectContent>
+                          {fonts.map(font => (
+                            <SelectItem key={font.value} value={font.value}>{font.name}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                 <FormField
+                  control={form.control}
+                  name="bodyFont"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-lg font-headline">פונט לטקסט רץ (Body)</FormLabel>
+                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
-                          <RadioGroupItem value="fadeIn" />
+                          <SelectTrigger>
+                            <SelectValue placeholder="בחר פונט" />
+                          </SelectTrigger>
                         </FormControl>
-                        <FormLabel className="font-normal">Fade In</FormLabel>
-                      </FormItem>
-                      <FormItem className="flex items-center space-x-3 space-y-0">
-                        <FormControl>
-                          <RadioGroupItem value="slideUp" />
-                        </FormControl>
-                        <FormLabel className="font-normal">Slide Up</FormLabel>
-                      </FormItem>
-                    </RadioGroup>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                        <SelectContent>
+                          {fonts.map(font => (
+                            <SelectItem key={font.value} value={font.value}>{font.name}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+            </div>
             
             <Button type="submit" className="w-full">שמור שינויי עיצוב</Button>
           </form>

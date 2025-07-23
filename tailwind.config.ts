@@ -17,8 +17,17 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ["var(--font-sans)"],
-        headline: ["var(--font-headline)"],
+        'playfair': 'var(--font-playfair)',
+        'pt-sans': 'var(--font-pt-sans)',
+        'roboto-mono': 'var(--font-roboto-mono)',
+        'chakra-petch': 'var(--font-chakra-petch)',
+        'cormorant-garamond': 'var(--font-cormorant-garamond)',
+        'lato': 'var(--font-lato)',
+        'montserrat': 'var(--font-montserrat)',
+        'open-sans': 'var(--font-open-sans)',
+        'frank-ruhl-libre': 'var(--font-frank-ruhl-libre)',
+        sans: "var(--font-sans-family)",
+        headline: "var(--font-headline-family)",
       },
       colors: {
         border: "hsl(var(--border))",

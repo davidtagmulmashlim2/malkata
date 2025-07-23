@@ -108,6 +108,7 @@ export const DEFAULT_APP_STATE: AppState = {
   ],
   design: {
     theme: 'default',
-    animation: 'fadeIn',
+    headlineFont: 'playfair',
+    bodyFont: 'pt-sans',
   },
 };

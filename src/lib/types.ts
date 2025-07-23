@@ -63,7 +63,8 @@ export interface SiteContent {
 
 export interface DesignSettings {
   theme: string;
-  animation: 'none' | 'fadeIn' | 'slideUp';
+  headlineFont: string;
+  bodyFont: string;
 }
 
 export interface CartItem {
