@@ -110,7 +110,7 @@ export default function Home() {
         >
           <CarouselContent>
             {(isClient ? testimonials : Array(3).fill({id:'', name:'', quote:''})).map((testimonial, index) => (
-              <CarouselItem key={isClient ? testimonial.id : index} className="md:basis-1/2 lg:basis-1/3">
+              <CarouselItem key={isClient ? testimonial.id : index}>
                 <div className="p-1">
                   <Card>
                     <CardContent className="flex flex-col items-center justify-center p-6 text-center h-48">
