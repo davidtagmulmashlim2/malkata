@@ -1,0 +1,24 @@
+
+.theme-retro {
+  --background: 45 93% 86%;
+  --foreground: 35 93% 34%;
+  --card: 45 93% 88%;
+  --card-foreground: 35 93% 34%;
+  --popover: 45 93% 88%;
+  --popover-foreground: 35 93% 34%;
+  --primary: 197 98% 46%;
+  --primary-foreground: 45 93% 86%;
+  --secondary: 355 98% 68%;
+  --secondary-foreground: 35 93% 34%;
+  --muted: 45 93% 80%;
+  --muted-foreground: 35 93% 45%;
+  --accent: 197 98% 56%;
+  --accent-foreground: 0 0% 100%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 45 93% 80%;
+  --input: 45 93% 82%;
+  --ring: 197 98% 46%;
+  --font-sans: 'PT Sans', sans-serif;
+  --font-headline: 'Playfair Display', serif;
+}

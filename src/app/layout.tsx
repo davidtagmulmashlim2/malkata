@@ -6,6 +6,16 @@ import { Toaster } from '@/components/ui/toaster';
 import { CartSheet } from '@/components/cart-sheet';
 import { cn } from '@/lib/utils';
 import './globals.css';
+import '../styles/themes/default.css';
+import '../styles/themes/retro.css';
+import '../styles/themes/urban.css';
+import '../styles/themes/terminal.css';
+import '../styles/themes/ocean.css';
+import '../styles/themes/forest.css';
+import '../styles/themes/sunrise.css';
+import '../styles/themes/luxury.css';
+import '../styles/themes/natural.css';
+import '../styles/themes/minimal.css';
 import { useIsClient } from '@/hooks/use-is-client';
 import { useEffect } from 'react';
 
@@ -16,7 +26,9 @@ function AppBody({ children }: { children: React.ReactNode }) {
     useEffect(() => {
         if(isClient) {
             // Remove any existing theme classes
-            document.documentElement.className = '';
+            const themeClasses = ['theme-default', 'theme-retro', 'theme-urban', 'theme-terminal', 'theme-ocean', 'theme-forest', 'theme-sunrise', 'theme-luxury', 'theme-natural', 'theme-minimal'];
+            document.documentElement.classList.remove(...themeClasses);
+            
             // Add the new theme class
             document.documentElement.classList.add(`theme-${state.design.theme}`);
         }
@@ -42,25 +54,12 @@ export default function RootLayout({
 }>) {
   return (
     <AppProvider>
-        <ThemedHtml>
+        <html lang="he" dir="rtl">
+            <head />
             <AppBody>
                 {children}
             </AppBody>
-        </ThemedHtml>
+        </html>
     </AppProvider>
   );
-}
-
-// A component to apply the theme to the <html> tag
-function ThemedHtml({ children }: { children: React.ReactNode }) {
-    const { state } = useApp();
-    const isClient = useIsClient();
-    const themeClass = isClient ? `theme-${state.design.theme}` : '';
-
-    return (
-        <html lang="he" dir="rtl" className={themeClass}>
-            <head />
-            {children}
-        </html>
-    )
 }

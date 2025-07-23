@@ -1,0 +1,24 @@
+
+.theme-natural {
+  --background: 40 25% 96%;
+  --foreground: 40 10% 30%;
+  --card: 40 25% 98%;
+  --card-foreground: 40 10% 30%;
+  --popover: 40 25% 98%;
+  --popover-foreground: 40 10% 30%;
+  --primary: 120 25% 45%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 40 30% 70%;
+  --secondary-foreground: 40 10% 30%;
+  --muted: 40 25% 90%;
+  --muted-foreground: 40 10% 50%;
+  --accent: 120 25% 55%;
+  --accent-foreground: 40 10% 30%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 40 25% 90%;
+  --input: 40 25% 92%;
+  --ring: 120 25% 45%;
+  --font-sans: 'Lato', sans-serif;
+  --font-headline: 'Cormorant Garamond', serif;
+}

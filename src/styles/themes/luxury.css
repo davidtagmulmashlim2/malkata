@@ -1,0 +1,24 @@
+
+.theme-luxury {
+  --background: 0 0% 12%;
+  --foreground: 0 0% 85%;
+  --card: 0 0% 15%;
+  --card-foreground: 0 0% 85%;
+  --popover: 0 0% 15%;
+  --popover-foreground: 0 0% 85%;
+  --primary: 40 100% 80%;
+  --primary-foreground: 0 0% 10%;
+  --secondary: 0 0% 25%;
+  --secondary-foreground: 0 0% 90%;
+  --muted: 0 0% 20%;
+  --muted-foreground: 0 0% 60%;
+  --accent: 40 100% 70%;
+  --accent-foreground: 0 0% 10%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 0 0% 25%;
+  --input: 0 0% 22%;
+  --ring: 40 100% 80%;
+  --font-sans: 'Lato', sans-serif;
+  --font-headline: 'Cormorant Garamond', serif;
+}

@@ -1,0 +1,24 @@
+
+.theme-ocean {
+  --background: 205 90% 95%;
+  --foreground: 215 40% 25%;
+  --card: 205 90% 98%;
+  --card-foreground: 215 40% 25%;
+  --popover: 205 90% 98%;
+  --popover-foreground: 215 40% 25%;
+  --primary: 205 85% 45%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 185 75% 65%;
+  --secondary-foreground: 215 40% 25%;
+  --muted: 205 90% 88%;
+  --muted-foreground: 215 40% 55%;
+  --accent: 185 75% 55%;
+  --accent-foreground: 215 40% 25%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 205 90% 88%;
+  --input: 205 90% 90%;
+  --ring: 205 85% 45%;
+  --font-sans: 'Open Sans', sans-serif;
+  --font-headline: 'Montserrat', sans-serif;
+}

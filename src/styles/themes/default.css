@@ -1,0 +1,25 @@
+
+.theme-default {
+  --background: 34 78% 91%;
+  --foreground: 20 15% 25%;
+  --card: 34 78% 93%;
+  --card-foreground: 20 15% 25%;
+  --popover: 34 78% 93%;
+  --popover-foreground: 20 15% 25%;
+  --primary: 0 100% 27%;
+  --primary-foreground: 34 78% 91%;
+  --secondary: 16 78% 75%;
+  --secondary-foreground: 0 100% 27%;
+  --muted: 34 20% 80%;
+  --muted-foreground: 20 10% 40%;
+  --accent: 16 78% 61%;
+  --accent-foreground: 0 0% 100%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 34 20% 80%;
+  --input: 34 20% 85%;
+  --ring: 0 100% 27%;
+  --radius: 0.5rem;
+  --font-sans: 'PT Sans', sans-serif;
+  --font-headline: 'Playfair Display', serif;
+}

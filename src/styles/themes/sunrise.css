@@ -1,0 +1,24 @@
+
+.theme-sunrise {
+  --background: 30 100% 97%;
+  --foreground: 20 40% 30%;
+  --card: 30 100% 98%;
+  --card-foreground: 20 40% 30%;
+  --popover: 30 100% 98%;
+  --popover-foreground: 20 40% 30%;
+  --primary: 350 90% 60%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 40 100% 70%;
+  --secondary-foreground: 20 40% 30%;
+  --muted: 30 100% 92%;
+  --muted-foreground: 20 40% 50%;
+  --accent: 40 100% 60%;
+  --accent-foreground: 20 40% 30%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 30 100% 92%;
+  --input: 30 100% 94%;
+  --ring: 350 90% 60%;
+  --font-sans: 'Lato', sans-serif;
+  --font-headline: 'Cormorant Garamond', serif;
+}

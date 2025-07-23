@@ -1,0 +1,24 @@
+
+.theme-terminal {
+  --background: 120 100% 3%;
+  --foreground: 120 100% 75%;
+  --card: 120 100% 5%;
+  --card-foreground: 120 100% 75%;
+  --popover: 120 100% 5%;
+  --popover-foreground: 120 100% 75%;
+  --primary: 120 100% 50%;
+  --primary-foreground: 120 100% 3%;
+  --secondary: 120 100% 15%;
+  --secondary-foreground: 120 100% 75%;
+  --muted: 120 100% 10%;
+  --muted-foreground: 120 100% 50%;
+  --accent: 120 100% 60%;
+  --accent-foreground: 120 100% 5%;
+  --destructive: 0 100% 50%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 120 100% 15%;
+  --input: 120 100% 12%;
+  --ring: 120 100% 50%;
+  --font-sans: 'Roboto Mono', monospace;
+  --font-headline: 'Chakra Petch', sans-serif;
+}

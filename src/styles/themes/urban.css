@@ -1,0 +1,24 @@
+
+.theme-urban {
+  --background: 210 10% 23%;
+  --foreground: 0 0% 95%;
+  --card: 210 10% 28%;
+  --card-foreground: 0 0% 95%;
+  --popover: 210 10% 28%;
+  --popover-foreground: 0 0% 95%;
+  --primary: 347 97% 63%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 210 10% 40%;
+  --secondary-foreground: 0 0% 100%;
+  --muted: 210 10% 35%;
+  --muted-foreground: 0 0% 70%;
+  --accent: 347 97% 70%;
+  --accent-foreground: 0 0% 100%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 210 10% 35%;
+  --input: 210 10% 32%;
+  --ring: 347 97% 63%;
+  --font-sans: 'Open Sans', sans-serif;
+  --font-headline: 'Montserrat', sans-serif;
+}
