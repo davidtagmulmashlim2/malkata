@@ -32,12 +32,8 @@ const iconMap: { [key: string]: React.ElementType | null } = {
 
 export function Footer() {
     const { state } = useApp();
-    const { contact, design } = state;
-
-    // Return null or a loading state if essential data isn't ready
-    if (!contact || !design) {
-        return null;
-    }
+    const { siteContent, design } = state;
+    const { contact } = siteContent;
     
     const IconComponent = iconMap[design.logoIcon] || UtensilsCrossed;
 
@@ -57,21 +53,21 @@ export function Footer() {
                         <ul className="space-y-2 text-sm text-muted-foreground">
                             <li className="flex items-start gap-2">
                                 <MapPin className="h-4 w-4 mt-1 shrink-0" />
-                                <span>{contact.address}</span>
+                                <span>{contact?.address}</span>
                             </li>
                             <li className="flex items-center gap-2">
                                 <Phone className="h-4 w-4" />
-                                <a href={`tel:${contact.phone}`} className="hover:text-primary">{contact.phone}</a>
+                                <a href={`tel:${contact?.phone}`} className="hover:text-primary">{contact?.phone}</a>
                             </li>
                             <li className="flex items-center gap-2">
                                 <Mail className="h-4 w-4" />
-                                <a href={`mailto:${contact.email}`} className="hover:text-primary">{contact.email}</a>
+                                <a href={`mailto:${contact?.email}`} className="hover:text-primary">{contact?.email}</a>
                             </li>
                         </ul>
                     </div>
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">שעות פתיחה</h3>
-                        <p className="text-sm text-muted-foreground whitespace-pre-line">{contact.hours}</p>
+                        <p className="text-sm text-muted-foreground whitespace-pre-line">{contact?.hours}</p>
                     </div>
                 </div>
                 <div className="mt-12 border-t pt-8 text-center text-sm text-muted-foreground">
