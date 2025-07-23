@@ -34,7 +34,7 @@ export default function MenuLayout({
                             size="sm"
                             className={cn(
                                 'btn-shabbat',
-                                pathname.includes(shabbatCategory.slug) && 'active'
+                                pathname === `/menu/${shabbatCategory.slug}` && 'active'
                             )}
                         >
                             <Link href={`/menu/${shabbatCategory.slug}`}>{shabbatCategory.name}</Link>
