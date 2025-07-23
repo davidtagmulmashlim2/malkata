@@ -19,9 +19,6 @@ export default function MenuLayout({
   const pathname = usePathname();
   const isClient = useIsClient();
 
-  const shabbatCategory = isClient ? categories.find(c => c.slug === 'shabbat-malkata') : undefined;
-  const otherCategories = isClient ? categories.filter(c => c.slug !== 'shabbat-malkata') : [];
-
   return (
     <div>
         <nav className="border-b bg-card sticky top-16 z-30">
@@ -32,25 +29,18 @@ export default function MenuLayout({
                             <Button asChild variant={pathname === '/menu' ? 'default' : 'ghost'} size="sm">
                                 <Link href="/menu">כל המנות</Link>
                             </Button>
-                            {shabbatCategory && (
+                            {categories.map(category => (
                                 <Button
+                                    key={category.id}
                                     asChild
                                     variant='ghost'
                                     size="sm"
                                     className={cn(
-                                        'btn-shabbat',
-                                        pathname === `/menu/${shabbatCategory.slug}` && 'active'
+                                        pathname === `/menu/${category.slug}` ? 'active' : '',
+                                        category.slug === 'shabbat-malkata' 
+                                            ? 'btn-shabbat' 
+                                            : (pathname === `/menu/${category.slug}` ? 'default' : 'ghost')
                                     )}
-                                >
-                                    <Link href={`/menu/${shabbatCategory.slug}`}>{shabbatCategory.name}</Link>
-                                </Button>
-                            )}
-                            {otherCategories.map(category => (
-                                <Button
-                                    key={category.id}
-                                    asChild
-                                    variant={pathname === `/menu/${category.slug}` ? 'default' : 'ghost'}
-                                    size="sm"
                                 >
                                     <Link href={`/menu/${category.slug}`}>{category.name}</Link>
                                 </Button>
