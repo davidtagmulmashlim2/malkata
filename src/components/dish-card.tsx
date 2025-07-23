@@ -1,3 +1,4 @@
+
 'use client';
 
 import Image from 'next/image';
@@ -17,7 +18,7 @@ interface DishCardProps {
 
 export function DishCard({ dish }: DishCardProps) {
   const { addToCart } = useApp();
-  const allImages = [dish.mainImage, ...dish.galleryImages].filter(Boolean);
+  const allImages = [dish.mainImage, ...(dish.galleryImages || [])].filter(Boolean);
 
   const handleAddToCart = () => {
     addToCart(dish.id);
