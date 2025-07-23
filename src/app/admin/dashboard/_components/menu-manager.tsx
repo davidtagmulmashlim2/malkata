@@ -168,7 +168,7 @@ export default function MenuManager() {
     toast({ title: 'קטגוריה נמחקה' })
   }
   
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>, fieldName: "mainImage" | "image" | "galleryImages") => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>, fieldName: "mainImage" | "image" ) => {
       const file = e.target.files?.[0];
       if (file) {
           try {
@@ -262,14 +262,14 @@ export default function MenuManager() {
                         <FormMessage />
                       </FormItem>
                     )} />
-                     <FormField name="mainImage" control={dishForm.control} render={({ field }) => (
+                     <FormField name="mainImage" control={dishForm.control} render={() => (
                        <FormItem>
                         <FormLabel>תמונה ראשית</FormLabel>
                          <FormControl>
                             <Input type="file" accept="image/*" onChange={(e) => handleFileChange(e, 'mainImage')} />
                          </FormControl>
                         <FormMessage />
-                        {field.value && <ImagePreview imageKey={field.value} alt="תמונה ראשית" />}
+                        {dishForm.watch('mainImage') && <ImagePreview imageKey={dishForm.watch('mainImage')} alt="תמונה ראשית" />}
                        </FormItem>
                     )} />
                     <FormField name="galleryImages" control={dishForm.control} render={() => (
@@ -443,14 +443,14 @@ export default function MenuManager() {
                         <FormMessage />
                       </FormItem>
                     )} />
-                    <FormField name="image" control={categoryForm.control} render={({ field }) => (
+                    <FormField name="image" control={categoryForm.control} render={() => (
                       <FormItem>
                         <FormLabel>תמונת באנר</FormLabel>
                          <FormControl>
                             <Input type="file" accept="image/*" onChange={(e) => handleFileChange(e, 'image')} />
                         </FormControl>
                         <FormMessage />
-                         {field.value && <ImagePreview imageKey={field.value} alt="תמונת קטגוריה" />}
+                         {categoryForm.watch('image') && <ImagePreview imageKey={categoryForm.watch('image')} alt="תמונת קטגוריה" />}
                       </FormItem>
                     )} />
                     <DialogFooter>

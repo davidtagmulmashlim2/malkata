@@ -53,8 +53,7 @@ export default function GalleryManager() {
     defaultValues: { src: '', alt: '' },
   });
   
-  const { watch } = form;
-  const imagePreviewKey = watch('src');
+  const imagePreviewKey = form.watch('src');
 
   const onSubmit = (values: z.infer<typeof gallerySchema>) => {
     dispatch({ type: 'ADD_GALLERY_IMAGE', payload: { ...values, id: Date.now().toString() } });
@@ -129,7 +128,7 @@ export default function GalleryManager() {
                 <FormField
                   control={form.control}
                   name="src"
-                  render={({ field }) => (
+                  render={() => (
                     <FormItem>
                       <FormLabel>קובץ תמונה</FormLabel>
                       <FormControl>
@@ -140,7 +139,7 @@ export default function GalleryManager() {
                         />
                       </FormControl>
                       <FormMessage />
-                      {field.value && <GalleryImagePreview imageKey={field.value} alt="Preview" />}
+                      {imagePreviewKey && <GalleryImagePreview imageKey={imagePreviewKey} alt="Preview" />}
                     </FormItem>
                   )}
                 />
