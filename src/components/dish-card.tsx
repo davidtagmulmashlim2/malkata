@@ -24,7 +24,10 @@ interface DishCardProps {
 export function DishCard({ dish }: DishCardProps) {
   const { addToCart } = useApp();
   const isClient = useIsClient();
-  const allImages = useMemo(() => [dish.mainImage, ...(dish.galleryImages || [])].filter(Boolean), [dish.mainImage, dish.galleryImages]);
+  const allImages = useMemo(() => {
+    const images = [dish.mainImage, ...(dish.galleryImages || [])];
+    return [...new Set(images)].filter(Boolean); // Remove duplicates and empty strings
+  }, [dish.mainImage, dish.galleryImages]);
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
 
@@ -97,7 +100,7 @@ export function DishCard({ dish }: DishCardProps) {
                         <Carousel setApi={setApi} className="w-full relative">
                             <CarouselContent>
                                 {allImages.map((imgKey, i) => (
-                                    <CarouselItem key={imgKey ? imgKey : `item-${i}`}>
+                                    <CarouselItem key={imgKey ? `${imgKey}-${i}` : `item-${i}`}>
                                         <div className="w-full aspect-square relative">
                                             <AsyncImage 
                                                 imageKey={imgKey} 
