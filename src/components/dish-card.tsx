@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import type { Dish } from '@/lib/types';
-import { Flame, ShoppingCart, Leaf } from 'lucide-react';
+import { Flame, ShoppingCart, Leaf, Eye } from 'lucide-react';
 import { Badge } from './ui/badge';
 import { useApp } from '@/context/app-context';
 import { toast } from '@/hooks/use-toast';
@@ -25,7 +25,7 @@ export function DishCard({ dish }: DishCardProps) {
   }
 
   return (
-    <Card className="flex flex-col overflow-hidden h-full transition-all hover:shadow-lg hover:-translate-y-1">
+    <Card className="flex flex-col overflow-hidden h-full transition-all hover:shadow-lg hover:-translate-y-1 group">
       <div className="relative">
         <Image
           src={dish.images[0] || 'https://placehold.co/600x400'}
@@ -35,6 +35,12 @@ export function DishCard({ dish }: DishCardProps) {
           className="w-full aspect-square object-cover"
           data-ai-hint="food dish"
         />
+        <div className="absolute inset-0 bg-black/70 flex items-end justify-center p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <Button variant="outline" className="text-white border-white bg-transparent hover:bg-white hover:text-black">
+                <Eye className="ml-2 h-4 w-4" />
+                צפייה מהירה
+            </Button>
+        </div>
         <div className="absolute top-2 left-2 flex gap-2">
             {dish.tags.includes('vegan') && <Badge variant="default" className="bg-green-600 text-white"><Leaf className="w-3 h-3 mr-1" /> טבעוני</Badge>}
             {dish.tags.includes('spicy') && <Badge variant="destructive"><Flame className="w-3 h-3 mr-1" /> חריף</Badge>}
