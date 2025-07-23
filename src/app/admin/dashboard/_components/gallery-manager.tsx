@@ -1,6 +1,6 @@
 
 'use client';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -13,33 +13,17 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { toast } from '@/hooks/use-toast';
 import Image from 'next/image';
 import { Trash2 } from 'lucide-react';
-import { storeImage, getImage, deleteImage as deleteImageFromStore, getImageSync } from '@/lib/image-store';
+import type { GalleryImage } from '@/lib/types';
 
 
 const gallerySchema = z.object({
-  src: z.string().min(1, 'חובה להעלות תמונה'),
+  src: z.string().url('חובה להזין כתובת URL חוקית').min(1, 'חובה להזין כתובת URL'),
   alt: z.string().min(1, 'תיאור הוא שדה חובה'),
 });
 
-const readFileAsDataURL = (file: File): Promise<string> => {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result as string);
-        reader.onerror = (error) => reject(error);
-    });
-};
 
-const GalleryImagePreview = ({ imageKey, alt }: { imageKey: string, alt: string }) => {
-    const [src, setSrc] = useState('https://placehold.co/200x200');
-
-    useEffect(() => {
-        if (imageKey) {
-            getImage(imageKey).then(imageSrc => {
-                if (imageSrc) setSrc(imageSrc);
-            });
-        }
-    }, [imageKey]);
-
+const GalleryImagePreview = ({ src, alt }: { src: string, alt: string }) => {
+    if (!src) return null;
     return <Image src={src} alt={alt} width={200} height={200} className="rounded-md object-cover aspect-square" />;
 }
 
@@ -53,7 +37,7 @@ export default function GalleryManager() {
     defaultValues: { src: '', alt: '' },
   });
   
-  const imagePreviewKey = form.watch('src');
+  const imagePreviewSrc = form.watch('src');
 
   const onSubmit = (values: z.infer<typeof gallerySchema>) => {
     dispatch({ type: 'ADD_GALLERY_IMAGE', payload: { ...values, id: Date.now().toString() } });
@@ -61,8 +45,7 @@ export default function GalleryManager() {
     form.reset();
   };
 
-  const deleteImage = (id: string, srcKey: string) => {
-    deleteImageFromStore(srcKey);
+  const deleteImage = (id: string) => {
     dispatch({ type: 'DELETE_GALLERY_IMAGE', payload: id });
     toast({ title: 'התמונה נמחקה מהגלריה.' });
   };
@@ -77,9 +60,9 @@ export default function GalleryManager() {
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-              {gallery.map(image => (
+              {gallery.map((image: GalleryImage) => (
                 <div key={image.id} className="relative group">
-                  <GalleryImagePreview imageKey={image.src} alt={image.alt} />
+                  <GalleryImagePreview src={image.src} alt={image.alt} />
                   <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                      <AlertDialog>
                         <AlertDialogTrigger asChild>
@@ -91,7 +74,7 @@ export default function GalleryManager() {
                           <AlertDialogHeader><AlertDialogTitle>האם אתה בטוח?</AlertDialogTitle><AlertDialogDescription>פעולה זו תמחק את התמונה לצמיתות.</AlertDialogDescription></AlertDialogHeader>
                           <AlertDialogFooter>
                             <AlertDialogCancel>ביטול</AlertDialogCancel>
-                            <AlertDialogAction onClick={() => deleteImage(image.id, image.src)}>מחק</AlertDialogAction>
+                            <AlertDialogAction onClick={() => deleteImage(image.id)}>מחק</AlertDialogAction>
                           </AlertDialogFooter>
                         </AlertDialogContent>
                     </AlertDialog>
@@ -116,28 +99,15 @@ export default function GalleryManager() {
                   name="src"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>קובץ תמונה</FormLabel>
+                      <FormLabel>כתובת URL של התמונה</FormLabel>
                       <FormControl>
                         <Input 
-                            type="file" 
-                            accept="image/*" 
-                            onChange={async (e) => {
-                                const file = e.target.files?.[0];
-                                if (file) {
-                                    try {
-                                        const dataUrl = await readFileAsDataURL(file);
-                                        const imageKey = await storeImage(dataUrl);
-                                        field.onChange(imageKey);
-                                    } catch (error) {
-                                        console.error("Error reading file:", error);
-                                        toast({ title: "שגיאה בקריאת הקובץ", variant: "destructive" });
-                                    }
-                                }
-                            }}
+                            placeholder="https://example.com/image.png"
+                            {...field}
                         />
                       </FormControl>
                       <FormMessage />
-                      {imagePreviewKey && <GalleryImagePreview imageKey={imagePreviewKey} alt="Preview" />}
+                      {imagePreviewSrc && <GalleryImagePreview src={imagePreviewSrc} alt="Preview" />}
                     </FormItem>
                   )}
                 />

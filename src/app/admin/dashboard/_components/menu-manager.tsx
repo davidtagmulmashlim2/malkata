@@ -18,18 +18,9 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { PlusCircle, Edit, Trash2, X } from 'lucide-react'
 import { toast } from '@/hooks/use-toast'
 import type { Dish, Category } from '@/lib/types'
-import { storeImage, getImage, deleteImage as deleteImageFromStore, getImageSync } from '@/lib/image-store'
 import Image from 'next/image';
 
 const slugify = (text: string) => text.toLowerCase().replace(/[\s\W-]+/g, '-')
-
-const readFileAsDataURL = (file: File): Promise<string> => {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result as string);
-        reader.onerror = (error) => reject(error);
-    });
-};
 
 const dishSchema = z.object({
   id: z.string().optional(),
@@ -37,8 +28,8 @@ const dishSchema = z.object({
   shortDescription: z.string().min(1, 'תיאור קצר הוא שדה חובה'),
   fullDescription: z.string().min(1, 'תיאור מלא הוא שדה חובה'),
   price: z.coerce.number().min(0, 'המחיר חייב להיות חיובי'),
-  mainImage: z.string().min(1, "חובה להעלות תמונה ראשית"),
-  galleryImages: z.array(z.string()),
+  mainImage: z.string().url('חובה להזין כתובת URL חוקית').min(1, "חובה להזין כתובת URL"),
+  galleryImages: z.array(z.string().url('חובה להזין כתובת URL חוקית')),
   categoryId: z.string().min(1, 'חובה לבחור קטגוריה'),
   isAvailable: z.boolean(),
   isRecommended: z.boolean().optional(),
@@ -49,34 +40,12 @@ const categorySchema = z.object({
   id: z.string().optional(),
   name: z.string().min(1, 'שם הקטגוריה הוא שדה חובה'),
   description: z.string().min(1, 'תיאור הוא שדה חובה'),
-  image: z.string().min(1, 'חובה להעלות תמונה'),
+  image: z.string().url('חובה להזין כתובת URL חוקית').min(1, 'חובה להזין כתובת URL'),
 })
 
 
-const ImagePreview = ({ imageKey, alt }: { imageKey: string, alt: string }) => {
-    const [src, setSrc] = useState(() => getImageSync(imageKey) || 'https://placehold.co/96x96');
-
-    useEffect(() => {
-        let isMounted = true;
-        const fetchImage = async () => {
-            if (imageKey) {
-                const imageSrc = await getImage(imageKey);
-                if (isMounted && imageSrc) {
-                    setSrc(imageSrc);
-                } else if (isMounted) {
-                    setSrc('https://placehold.co/96x96');
-                }
-            }
-        };
-        if (!imageKey) {
-            setSrc('https://placehold.co/96x96');
-        } else if (!src.startsWith('data:image')) {
-            fetchImage();
-        }
-        return () => { isMounted = false; };
-    }, [imageKey, src]);
-
-    if (!src || !imageKey) return <div className="h-24 w-24 rounded-md bg-muted animate-pulse" />;
+const ImagePreview = ({ src, alt }: { src: string, alt: string }) => {
+    if (!src) return null;
     return <Image src={src} alt={alt} width={96} height={96} className="h-24 w-24 rounded-md object-cover" />;
 };
 
@@ -88,6 +57,7 @@ export default function MenuManager() {
   const [isCategoryDialogOpen, setIsCategoryDialogOpen] = useState(false)
   const [editingDish, setEditingDish] = useState<Dish | null>(null)
   const [editingCategory, setEditingCategory] = useState<Category | null>(null)
+  const [newGalleryImageUrl, setNewGalleryImageUrl] = useState('');
   
   const dishForm = useForm<z.infer<typeof dishSchema>>({ 
     resolver: zodResolver(dishSchema),
@@ -154,36 +124,36 @@ export default function MenuManager() {
   }
 
   const deleteDish = (id: string) => {
-    const dishToDelete = dishes.find(d => d.id === id);
-    if (dishToDelete) {
-        if(dishToDelete.mainImage) deleteImageFromStore(dishToDelete.mainImage);
-        dishToDelete.galleryImages?.forEach(key => deleteImageFromStore(key));
-    }
     dispatch({ type: 'DELETE_DISH', payload: id })
     toast({ title: 'מנה נמחקה' })
   }
 
   const deleteCategory = (id: string) => {
-    const categoryToDelete = categories.find(c => c.id === id);
-    if (categoryToDelete && categoryToDelete.image) {
-        deleteImageFromStore(categoryToDelete.image);
-    }
     dispatch({ type: 'DELETE_CATEGORY', payload: id })
     toast({ title: 'קטגוריה נמחקה' })
   }
 
-    const removeGalleryImage = (index: number) => {
-        const currentImages = dishForm.getValues('galleryImages') || [];
-        const imageKeyToRemove = currentImages[index];
-        deleteImageFromStore(imageKeyToRemove);
-        const newImages = [...currentImages];
-        newImages.splice(index, 1);
-        dishForm.setValue('galleryImages', newImages, { shouldValidate: true });
-    };
+  const addGalleryImage = () => {
+    const currentImages = dishForm.getValues('galleryImages') || [];
+    // Basic URL validation
+    if (newGalleryImageUrl && newGalleryImageUrl.startsWith('http')) {
+        dishForm.setValue('galleryImages', [...currentImages, newGalleryImageUrl], { shouldValidate: true });
+        setNewGalleryImageUrl('');
+    } else {
+        toast({title: "יש להזין כתובת URL חוקית", variant: "destructive"})
+    }
+  };
+
+  const removeGalleryImage = (index: number) => {
+      const currentImages = dishForm.getValues('galleryImages') || [];
+      const newImages = [...currentImages];
+      newImages.splice(index, 1);
+      dishForm.setValue('galleryImages', newImages, { shouldValidate: true });
+  };
     
-    const dishMainImageValue = dishForm.watch('mainImage');
-    const dishGalleryImagesValue = dishForm.watch('galleryImages');
-    const categoryImageValue = categoryForm.watch('image');
+  const dishMainImageValue = dishForm.watch('mainImage');
+  const dishGalleryImagesValue = dishForm.watch('galleryImages');
+  const categoryImageValue = categoryForm.watch('image');
 
   return (
     <div className="space-y-8">
@@ -236,52 +206,42 @@ export default function MenuManager() {
                     )} />
                     <FormField name="mainImage" control={dishForm.control} render={({ field }) => (
                        <FormItem>
-                        <FormLabel>תמונה ראשית</FormLabel>
+                        <FormLabel>כתובת URL של תמונה ראשית</FormLabel>
                          <FormControl>
-                            <Input type="file" accept="image/*" onChange={async (e) => {
-                               const file = e.target.files?.[0];
-                                if (file) {
-                                    const dataUrl = await readFileAsDataURL(file);
-                                    const imageKey = await storeImage(dataUrl);
-                                    field.onChange(imageKey);
-                                }
-                            }} />
+                            <Input placeholder="https://example.com/image.png" {...field} />
                          </FormControl>
                         <FormMessage />
-                        {dishMainImageValue && <ImagePreview imageKey={dishMainImageValue} alt="תמונה ראשית" />}
+                        {dishMainImageValue && <ImagePreview src={dishMainImageValue} alt="תמונה ראשית" />}
                        </FormItem>
                     )} />
-                    <FormField name="galleryImages" control={dishForm.control} render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>תמונות נוספות (גלריה)</FormLabel>
-                        <FormControl><Input type="file" accept="image/*" multiple onChange={async (e) => {
-                            const files = e.target.files;
-                            if (files) {
-                                const currentImages = dishForm.getValues('galleryImages') || [];
-                                const dataUrls = await Promise.all(Array.from(files).map(file => readFileAsDataURL(file)));
-                                const imageKeys = await Promise.all(dataUrls.map(url => storeImage(url)));
-                                field.onChange([...currentImages, ...imageKeys]);
-                            }
-                        }} /></FormControl>
-                        <FormMessage />
-                        <div className="flex flex-wrap gap-2 mt-2">
-                            {dishGalleryImagesValue?.map((imgKey, i) => (
-                                <div key={i} className="relative group">
-                                    <ImagePreview imageKey={imgKey} alt={`תמונת גלריה ${i + 1}`} />
-                                    <Button 
-                                        type="button"
-                                        variant="destructive"
-                                        size="icon"
-                                        className="absolute top-0 right-0 h-5 w-5 opacity-0 group-hover:opacity-100 transition-opacity"
-                                        onClick={() => removeGalleryImage(i)}
-                                    >
-                                        <X className="h-3 w-3" />
-                                    </Button>
-                                </div>
-                            ))}
-                        </div>
-                      </FormItem>
-                    )} />
+                    <FormItem>
+                      <FormLabel>כתובות URL של תמונות נוספות (גלריה)</FormLabel>
+                      <div className="flex gap-2">
+                        <Input 
+                            placeholder="הדבק כאן כתובת URL של תמונה"
+                            value={newGalleryImageUrl}
+                            onChange={(e) => setNewGalleryImageUrl(e.target.value)}
+                         />
+                        <Button type="button" onClick={addGalleryImage}>הוסף</Button>
+                      </div>
+                      <FormMessage />
+                      <div className="flex flex-wrap gap-2 mt-2">
+                          {dishGalleryImagesValue?.map((imgSrc, i) => (
+                              <div key={i} className="relative group">
+                                  <ImagePreview src={imgSrc} alt={`תמונת גלריה ${i + 1}`} />
+                                  <Button 
+                                      type="button"
+                                      variant="destructive"
+                                      size="icon"
+                                      className="absolute top-0 right-0 h-5 w-5 opacity-0 group-hover:opacity-100 transition-opacity"
+                                      onClick={() => removeGalleryImage(i)}
+                                  >
+                                      <X className="h-3 w-3" />
+                                  </Button>
+                              </div>
+                          ))}
+                      </div>
+                    </FormItem>
                     <FormField name="categoryId" control={dishForm.control} render={({ field }) => (
                       <FormItem>
                         <FormLabel>קטגוריה</FormLabel>
@@ -432,19 +392,12 @@ export default function MenuManager() {
                     )} />
                     <FormField name="image" control={categoryForm.control} render={({ field }) => (
                       <FormItem>
-                        <FormLabel>תמונת באנר</FormLabel>
+                        <FormLabel>כתובת URL של תמונת באנר</FormLabel>
                          <FormControl>
-                            <Input type="file" accept="image/*" onChange={async (e) => {
-                               const file = e.target.files?.[0];
-                                if (file) {
-                                    const dataUrl = await readFileAsDataURL(file);
-                                    const imageKey = await storeImage(dataUrl);
-                                    field.onChange(imageKey);
-                                }
-                            }} />
+                            <Input placeholder="https://example.com/image.png" {...field} />
                         </FormControl>
                         <FormMessage />
-                         {categoryImageValue && <ImagePreview imageKey={categoryImageValue} alt="תמונת קטגוריה" />}
+                         {categoryImageValue && <ImagePreview src={categoryImageValue} alt="תמונת קטגוריה" />}
                       </FormItem>
                     )} />
                     <DialogFooter>

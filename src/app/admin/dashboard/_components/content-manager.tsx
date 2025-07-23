@@ -13,9 +13,7 @@ import { toast } from '@/hooks/use-toast';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Slider } from '@/components/ui/slider';
-import { useEffect, useState } from 'react';
-import { DEFAULT_APP_STATE } from '@/lib/data';
-import { storeImage, getImage } from '@/lib/image-store';
+import { useEffect } from 'react';
 import Image from 'next/image';
 
 const contentSchema = z.object({
@@ -23,7 +21,7 @@ const contentSchema = z.object({
     titleFirstWord: z.string().min(1, 'חובה'),
     titleRest: z.string(),
     subtitle: z.string().min(1, 'חובה'),
-    image: z.string().min(1, 'חובה'),
+    image: z.string().url('חובה להזין כתובת URL חוקית').min(1, 'חובה'),
     titleFirstWordColor: z.string(),
     titleFirstWordFontSize: z.string(),
     titleFirstWordOpacity: z.number().min(0).max(1),
@@ -40,7 +38,7 @@ const contentSchema = z.object({
   about: z.object({
     short: z.string().min(1, 'חובה'),
     long: z.string().min(1, 'חובה'),
-    image: z.string().min(1, 'חובה'),
+    image: z.string().url('חובה להזין כתובת URL חוקית').min(1, 'חובה'),
   }),
   contact: z.object({
     address: z.string().min(1, 'חובה'),
@@ -50,31 +48,14 @@ const contentSchema = z.object({
     hours: z.string().min(1, 'חובה'),
   }),
   menu: z.object({
-      mainImage: z.string().min(1, 'חובה'),
+      mainImage: z.string().url('חובה להזין כתובת URL חוקית').min(1, 'חובה'),
   })
 });
 
 const fontSizes = ['xs', 'sm', 'base', 'lg', 'xl', '2xl', '3xl', '4xl', '5xl', '6xl', '7xl', '8xl', '9xl'];
 
-const readFileAsDataURL = (file: File): Promise<string> => {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result as string);
-        reader.onerror = (error) => reject(error);
-    });
-};
-
-const ImagePreview = ({ imageKey, alt }: { imageKey: string, alt: string }) => {
-    const [src, setSrc] = useState('https://placehold.co/80x80');
-
-    useEffect(() => {
-        if (imageKey) {
-            getImage(imageKey).then(imageSrc => {
-                if (imageSrc) setSrc(imageSrc);
-            });
-        }
-    }, [imageKey]);
-
+const ImagePreview = ({ src, alt }: { src: string, alt: string }) => {
+    if (!src) return null;
     return <Image src={src} alt={alt} width={80} height={80} className="mt-2 h-20 w-20 rounded-md object-cover" />;
 }
 
@@ -88,6 +69,10 @@ export default function ContentManager() {
     defaultValues: siteContent,
   });
 
+  const heroImage = form.watch('hero.image');
+  const aboutImage = form.watch('about.image');
+  const menuImage = form.watch('menu.mainImage');
+
   useEffect(() => {
     if (siteContent) {
       form.reset(siteContent);
@@ -99,19 +84,6 @@ export default function ContentManager() {
     toast({ title: 'תוכן האתר עודכן בהצלחה!' });
   };
   
-  const handleFileChange = (field: any) => async (e: React.ChangeEvent<HTMLInputElement>) => {
-      const file = e.target.files?.[0];
-      if (file) {
-          try {
-              const dataUrl = await readFileAsDataURL(file);
-              const imageKey = await storeImage(dataUrl);
-              field.onChange(imageKey);
-          } catch (error) {
-              console.error("Error reading file:", error);
-              toast({ title: "שגיאה בקריאת הקובץ", variant: "destructive" });
-          }
-      }
-  };
 
   return (
     <Card>
@@ -261,12 +233,12 @@ export default function ContentManager() {
                   </div>
                   <FormField name="hero.image" control={form.control} render={({ field }) => (
                     <FormItem>
-                      <FormLabel>תמונת רקע</FormLabel>
+                      <FormLabel>כתובת URL של תמונת רקע</FormLabel>
                       <FormControl>
-                        <Input type="file" accept="image/*" onChange={handleFileChange(field)} />
+                        <Input placeholder="https://example.com/image.png" {...field} />
                       </FormControl>
                       <FormMessage />
-                       {field.value && <ImagePreview imageKey={field.value} alt="תמונת רקע" />}
+                       {heroImage && <ImagePreview src={heroImage} alt="תצוגה מקדימה של תמונת רקע" />}
                     </FormItem>
                   )} />
                   <FormField name="hero.heroImageBrightness" control={form.control} render={({ field }) => (
@@ -298,12 +270,12 @@ export default function ContentManager() {
                   )} />
                    <FormField name="about.image" control={form.control} render={({ field }) => (
                     <FormItem>
-                      <FormLabel>תמונה</FormLabel>
+                      <FormLabel>כתובת URL של תמונה</FormLabel>
                        <FormControl>
-                        <Input type="file" accept="image/*" onChange={handleFileChange(field)} />
+                        <Input placeholder="https://example.com/image.png" {...field} />
                       </FormControl>
                       <FormMessage />
-                      {field.value && <ImagePreview imageKey={field.value} alt="אודות" />}
+                      {aboutImage && <ImagePreview src={aboutImage} alt="תצוגה מקדימה של תמונת אודות" />}
                     </FormItem>
                   )} />
                 </AccordionContent>
@@ -314,12 +286,12 @@ export default function ContentManager() {
                 <AccordionContent className="space-y-4 pt-4">
                   <FormField name="menu.mainImage" control={form.control} render={({ field }) => (
                     <FormItem>
-                      <FormLabel>תמונת באנר ראשית</FormLabel>
+                      <FormLabel>כתובת URL של תמונת באנר ראשית</FormLabel>
                       <FormControl>
-                        <Input type="file" accept="image/*" onChange={handleFileChange(field)} />
+                        <Input placeholder="https://example.com/image.png" {...field} />
                       </FormControl>
                       <FormMessage />
-                      {field.value && <ImagePreview imageKey={field.value} alt="באנר תפריט" />}
+                      {menuImage && <ImagePreview src={menuImage} alt="תצוגה מקדימה של באנר תפריט" />}
                     </FormItem>
                   )} />
                 </AccordionContent>
@@ -374,5 +346,3 @@ export default function ContentManager() {
     </Card>
   );
 }
-
-    

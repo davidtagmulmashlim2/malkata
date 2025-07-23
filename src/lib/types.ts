@@ -5,8 +5,8 @@ export interface Dish {
   shortDescription: string;
   fullDescription: string;
   price: number;
-  mainImage: string; // This will now be an image key
-  galleryImages?: string[]; // This will be an array of image keys
+  mainImage: string; // This will be an image URL
+  galleryImages?: string[]; // This will be an array of image URLs
   categoryId: string;
   isAvailable: boolean;
   tags: ('vegan' | 'spicy')[];
@@ -18,7 +18,7 @@ export interface Category {
   name: string;
   slug: string;
   description: string;
-  image: string; // This will now be an image key
+  image: string; // This will be an image URL
 }
 
 export interface Testimonial {
@@ -29,7 +29,7 @@ export interface Testimonial {
 
 export interface GalleryImage {
   id: string;
-  src: string; // This will now be an image key
+  src: string; // This will be an image URL
   alt: string;
 }
 
@@ -38,7 +38,7 @@ export interface SiteContent {
     titleFirstWord: string;
     titleRest: string;
     subtitle: string;
-    image: string; // This will now be an image key
+    image: string; // This will be an image URL
     titleFirstWordColor: string;
     titleFirstWordFontSize: string;
     titleFirstWordOpacity: number;
@@ -55,7 +55,7 @@ export interface SiteContent {
   about: {
     short: string;
     long: string;
-    image: string; // This will now be an image key
+    image: string; // This will be an image URL
   };
   contact: {
     address: string;
@@ -65,7 +65,7 @@ export interface SiteContent {
     hours: string;
   };
   menu: {
-    mainImage: string; // This will now be an image key
+    mainImage: string; // This will be an image URL
   };
 }
 
