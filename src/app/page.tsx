@@ -19,6 +19,7 @@ import { AsyncImage } from '@/components/async-image';
 export default function Home() {
   const { state } = useApp();
   const { siteContent, dishes, testimonials } = state;
+  const { hero } = siteContent;
   const isClient = useIsClient();
   const [api, setApi] = useState<CarouselApi>();
   const [typewriterKey, setTypewriterKey] = useState(0);
@@ -62,10 +63,33 @@ export default function Home() {
       '6xl': 'text-6xl', '7xl': 'text-7xl', '8xl': 'text-8xl', '9xl': 'text-9xl',
   };
 
+  const verticalAlignClasses: { [key: string]: string } = {
+    top: 'items-start',
+    center: 'items-center',
+    bottom: 'items-end',
+  };
+
+  const horizontalAlignClasses: { [key: string]: string } = {
+    left: 'justify-start',
+    center: 'justify-center',
+    right: 'justify-end',
+  };
+
+  const textAlignClasses: { [key: string]: string } = {
+    left: 'text-left',
+    center: 'text-center',
+    right: 'text-right',
+  };
+
   return (
     <div className="space-y-16 md:space-y-24">
       {/* Hero Section */}
-      <section className="relative h-[60vh] md:h-[80vh] w-full flex items-center justify-center text-center text-white">
+      <section className={cn(
+        "relative h-[60vh] md:h-[80vh] w-full flex text-white",
+        verticalAlignClasses[hero.verticalAlign],
+        horizontalAlignClasses[hero.horizontalAlign],
+        textAlignClasses[hero.textAlign]
+        )}>
         <AsyncImage
           imageKey={siteContent.hero.image}
           alt="רקע של אוכל ביתי"
@@ -87,10 +111,10 @@ export default function Home() {
                         { text: ` ${siteContent.hero.titleRest}`, style: { color: siteContent.hero.titleRestColor, opacity: siteContent.hero.titleRestOpacity }, className: textSizeClasses[siteContent.hero.titleRestFontSize] },
                     ]}
                 />
-            ) : <Skeleton className="h-16 w-[80vw] max-w-4xl mx-auto" />}
+            ) : <Skeleton className="h-16 w-[80vw] max-w-4xl" />}
           </h1>
-          <div className="mt-4 text-lg md:text-2xl max-w-2xl mx-auto drop-shadow-md" style={{ opacity: isClient ? siteContent.hero.subtitleOpacity : 1 }}>
-            {isClient ? siteContent.hero.subtitle : <Skeleton className="h-8 w-96 mx-auto mt-2" />}
+          <div className={cn("mt-4 text-lg md:text-2xl max-w-2xl drop-shadow-md", horizontalAlignClasses[hero.horizontalAlign] === 'justify-center' ? 'mx-auto' : '')} style={{ opacity: isClient ? siteContent.hero.subtitleOpacity : 1 }}>
+            {isClient ? siteContent.hero.subtitle : <Skeleton className="h-8 w-96 mt-2" />}
           </div>
           <Button asChild size="lg" className="mt-8 font-bold">
             <Link href="/menu">הזמן עכשיו</Link>

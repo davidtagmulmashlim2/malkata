@@ -33,6 +33,9 @@ const contentSchema = z.object({
     subtitleOpacity: z.number().min(0).max(1),
     animationInterval: z.coerce.number().min(0, 'חייב להיות מספר חיובי'),
     heroImageBrightness: z.coerce.number().min(0).max(100),
+    verticalAlign: z.enum(['top', 'center', 'bottom']),
+    horizontalAlign: z.enum(['left', 'center', 'right']),
+    textAlign: z.enum(['left', 'center', 'right']),
   }),
   about: z.object({
     short: z.string().min(1, 'חובה'),
@@ -220,6 +223,50 @@ export default function ContentManager() {
                       <FormMessage />
                     </FormItem>
                   )} />
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <FormField name="hero.verticalAlign" control={form.control} render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>יישור אנכי</FormLabel>
+                          <Select onValueChange={field.onChange} value={field.value}>
+                            <FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl>
+                            <SelectContent>
+                              <SelectItem value="top">למעלה</SelectItem>
+                              <SelectItem value="center">מרכז</SelectItem>
+                              <SelectItem value="bottom">למטה</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )} />
+                      <FormField name="hero.horizontalAlign" control={form.control} render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>יישור אופקי</FormLabel>
+                           <Select onValueChange={field.onChange} value={field.value}>
+                            <FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl>
+                            <SelectContent>
+                              <SelectItem value="left">שמאל</SelectItem>
+                              <SelectItem value="center">מרכז</SelectItem>
+                              <SelectItem value="right">ימין</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )} />
+                      <FormField name="hero.textAlign" control={form.control} render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>יישור טקסט</FormLabel>
+                           <Select onValueChange={field.onChange} value={field.value}>
+                            <FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl>
+                            <SelectContent>
+                              <SelectItem value="left">שמאל</SelectItem>
+                              <SelectItem value="center">מרכז</SelectItem>
+                              <SelectItem value="right">ימין</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )} />
+                  </div>
                   <FormField name="hero.image" control={form.control} render={({ field }) => (
                     <FormItem>
                       <FormLabel>תמונת רקע</FormLabel>

@@ -47,6 +47,9 @@ export interface SiteContent {
     subtitleOpacity: number;
     animationInterval: number;
     heroImageBrightness: number;
+    verticalAlign: 'top' | 'center' | 'bottom';
+    horizontalAlign: 'left' | 'center' | 'right';
+    textAlign: 'left' | 'center' | 'right';
   };
   about: {
     short: string;
