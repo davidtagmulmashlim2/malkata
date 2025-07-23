@@ -74,8 +74,7 @@ export default function GalleryManager() {
           try {
               const dataUrl = await readFileAsDataURL(file);
               const imageKey = await storeImage(dataUrl);
-              form.setValue('src', imageKey);
-              form.trigger('src');
+              form.setValue('src', imageKey, { shouldValidate: true });
           } catch (error) {
               console.error("Error reading file:", error);
               toast({ title: "שגיאה בקריאת הקובץ", variant: "destructive" });
@@ -130,14 +129,18 @@ export default function GalleryManager() {
                 <FormField
                   control={form.control}
                   name="src"
-                  render={() => (
+                  render={({ field }) => (
                     <FormItem>
                       <FormLabel>קובץ תמונה</FormLabel>
                       <FormControl>
-                        <Input type="file" accept="image/*" onChange={handleFileChange} />
+                        <Input 
+                            type="file" 
+                            accept="image/*" 
+                            onChange={handleFileChange}
+                        />
                       </FormControl>
                       <FormMessage />
-                      {imagePreviewKey && <GalleryImagePreview imageKey={imagePreviewKey} alt="Preview" />}
+                      {field.value && <GalleryImagePreview imageKey={field.value} alt="Preview" />}
                     </FormItem>
                   )}
                 />
