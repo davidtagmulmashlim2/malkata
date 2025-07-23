@@ -100,7 +100,7 @@ export function CartSheet() {
               <div className="flex flex-col gap-4 py-4">
                 {cartDetails.map(item => (
                   <div key={item!.id} className="flex items-center justify-between gap-4">
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-4 flex-1">
                         <CartDishImage imageKey={item!.mainImage} alt={item!.name} />
                         <div className="flex-grow">
                           <h4 className="font-semibold">{item!.name}</h4>
@@ -144,7 +144,9 @@ export function CartSheet() {
             <h3 className="text-xl font-semibold">העגלה שלך ריקה</h3>
             <p className="text-muted-foreground">מוזמנים להוסיף מנות מהתפריט שלנו.</p>
             <SheetClose asChild>
-              <Button>לתפריט</Button>
+                <Link href="/menu">
+                    <Button>לתפריט</Button>
+                </Link>
             </SheetClose>
           </div>
         )}
