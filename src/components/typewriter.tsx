@@ -36,6 +36,14 @@ export function Typewriter({ textParts, speed = 100 }: TypewriterProps) {
             }
 
             const currentPart = textParts[partIndex];
+            
+            // If current part or its text is invalid, skip to the next part.
+            if (!currentPart || !currentPart.text) {
+                partIndex++;
+                charIndex = 0;
+                return;
+            }
+            
             const currentText = currentPart.text;
 
             setDisplayedParts(prev => {
