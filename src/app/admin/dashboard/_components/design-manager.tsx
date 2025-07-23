@@ -26,6 +26,7 @@ const themes = [
     { name: 'יוקרתי', value: 'luxury' },
     { name: 'טבעי', value: 'natural' },
     { name: 'מינימליסטי', value: 'minimal' },
+    { name: 'מקראי', value: 'biblical' },
 ];
 
 export default function DesignManager() {

@@ -16,6 +16,7 @@ import '../styles/themes/sunrise.css';
 import '../styles/themes/luxury.css';
 import '../styles/themes/natural.css';
 import '../styles/themes/minimal.css';
+import '../styles/themes/biblical.css';
 import { useIsClient } from '@/hooks/use-is-client';
 import { useEffect } from 'react';
 
@@ -26,7 +27,7 @@ function AppBody({ children }: { children: React.ReactNode }) {
     useEffect(() => {
         if(isClient) {
             // Remove any existing theme classes
-            const themeClasses = ['theme-default', 'theme-retro', 'theme-urban', 'theme-terminal', 'theme-ocean', 'theme-forest', 'theme-sunrise', 'theme-luxury', 'theme-natural', 'theme-minimal'];
+            const themeClasses = ['theme-default', 'theme-retro', 'theme-urban', 'theme-terminal', 'theme-ocean', 'theme-forest', 'theme-sunrise', 'theme-luxury', 'theme-natural', 'theme-minimal', 'theme-biblical'];
             document.documentElement.classList.remove(...themeClasses);
             
             // Add the new theme class

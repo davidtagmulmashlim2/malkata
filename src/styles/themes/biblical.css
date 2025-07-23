@@ -1,0 +1,24 @@
+
+.theme-biblical {
+  --background: 48 33% 94%; /* Parchment */
+  --foreground: 35 34% 32%; /* Dark brown */
+  --card: 48 33% 96%;
+  --card-foreground: 35 34% 32%;
+  --popover: 48 33% 96%;
+  --popover-foreground: 35 34% 32%;
+  --primary: 0 53% 38%; /* Deep red */
+  --primary-foreground: 48 33% 94%;
+  --secondary: 210 25% 58%; /* Faded blue */
+  --secondary-foreground: 35 34% 32%;
+  --muted: 48 33% 88%;
+  --muted-foreground: 35 34% 45%;
+  --accent: 0 53% 48%;
+  --accent-foreground: 48 33% 94%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 48 33% 85%;
+  --input: 48 33% 88%;
+  --ring: 0 53% 38%;
+  --font-sans: 'Frank Ruhl Libre', serif;
+  --font-headline: 'Frank Ruhl Libre', serif;
+}
