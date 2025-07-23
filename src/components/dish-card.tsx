@@ -100,7 +100,7 @@ export function DishCard({ dish }: DishCardProps) {
             <div className="w-full">
                 {isClient && allImages.length > 0 ? (
                     <div>
-                        <Carousel setApi={setApi} className="w-full" dir="rtl">
+                        <Carousel setApi={setApi} className="w-full relative" dir="rtl">
                             <CarouselContent>
                                 {allImages.map((imgKey, i) => (
                                     <CarouselItem key={imgKey ? `${imgKey}-${i}` : `item-${i}`}>
@@ -118,8 +118,8 @@ export function DishCard({ dish }: DishCardProps) {
                                 ))}
                             </CarouselContent>
                             {allImages.length > 1 && <>
-                              <CarouselPrevious />
-                              <CarouselNext />
+                              <CarouselPrevious className="absolute start-4 top-1/2 -translate-y-1/2 z-10" />
+                              <CarouselNext className="absolute end-4 top-1/2 -translate-y-1/2 z-10" />
                             </>}
                         </Carousel>
                         {allImages.length > 1 && (
@@ -170,3 +170,4 @@ export function DishCard({ dish }: DishCardProps) {
     </Dialog>
   );
 }
+
