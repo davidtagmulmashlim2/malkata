@@ -1,0 +1,98 @@
+export interface Dish {
+  id: string;
+  name: string;
+  shortDescription: string;
+  fullDescription: string;
+  price: number;
+  images: string[];
+  categoryId: string;
+  isAvailable: boolean;
+  tags: ('recommended' | 'spicy')[];
+}
+
+export interface Category {
+  id: string;
+  name: string;
+  slug: string;
+  description: string;
+  image: string;
+}
+
+export interface Testimonial {
+  id: string;
+  name: string;
+  quote: string;
+}
+
+export interface GalleryImage {
+  id: string;
+  src: string;
+  alt: string;
+}
+
+export interface SiteContent {
+  hero: {
+    title: string;
+    subtitle: string;
+    image: string;
+  };
+  about: {
+    short: string;
+    long: string;
+    image: string;
+  };
+  contact: {
+    address: string;
+    phone: string;
+    whatsapp: string;
+    email: string;
+    hours: string;
+  };
+}
+
+export interface DesignSettings {
+  theme: string;
+  animation: 'none' | 'fadeIn' | 'slideUp';
+}
+
+export interface CartItem {
+  dishId: string;
+  quantity: number;
+}
+
+export interface AppState {
+  siteContent: SiteContent;
+  dishes: Dish[];
+  categories: Category[];
+  testimonials: Testimonial[];
+  gallery: GalleryImage[];
+  design: DesignSettings;
+}
+
+export type AppContextType = {
+  state: AppState;
+  dispatch: React.Dispatch<any>;
+  cart: CartItem[];
+  addToCart: (dishId: string, quantity?: number) => void;
+  updateCartQuantity: (dishId: string, quantity: number) => void;
+  removeFromCart: (dishId: string) => void;
+  clearCart: () => void;
+  getDishById: (dishId: string) => Dish | undefined;
+  isAuthenticated: boolean;
+  login: (password: string) => boolean;
+  logout: () => void;
+  animationClass: string;
+};
+
+export type Action =
+  | { type: 'SET_STATE'; payload: AppState }
+  | { type: 'UPDATE_CONTENT'; payload: SiteContent }
+  | { type: 'ADD_DISH'; payload: Dish }
+  | { type: 'UPDATE_DISH'; payload: Dish }
+  | { type: 'DELETE_DISH'; payload: string }
+  | { type: 'ADD_CATEGORY'; payload: Category }
+  | { type: 'UPDATE_CATEGORY'; payload: Category }
+  | { type: 'DELETE_CATEGORY'; payload: string }
+  | { type: 'ADD_GALLERY_IMAGE'; payload: GalleryImage }
+  | { type: 'DELETE_GALLERY_IMAGE'; payload: string }
+  | { type: 'UPDATE_DESIGN'; payload: DesignSettings };
