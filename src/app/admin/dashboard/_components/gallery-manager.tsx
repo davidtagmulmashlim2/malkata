@@ -47,18 +47,19 @@ const GalleryImagePreview = ({ imageKey, alt }: { imageKey: string, alt: string 
 export default function GalleryManager() {
   const { state, dispatch } = useApp();
   const { gallery } = state;
-  const [imagePreviewKey, setImagePreviewKey] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof gallerySchema>>({
     resolver: zodResolver(gallerySchema),
     defaultValues: { src: '', alt: '' },
   });
+  
+  const { watch } = form;
+  const imagePreviewKey = watch('src');
 
   const onSubmit = (values: z.infer<typeof gallerySchema>) => {
     dispatch({ type: 'ADD_GALLERY_IMAGE', payload: { ...values, id: Date.now().toString() } });
     toast({ title: 'תמונה נוספה לגלריה!' });
     form.reset();
-    setImagePreviewKey(null);
   };
 
   const deleteImage = (id: string, srcKey: string) => {
@@ -67,14 +68,14 @@ export default function GalleryManager() {
     toast({ title: 'התמונה נמחקה מהגלריה.' });
   };
   
-  const handleFileChange = (field: any) => async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0];
       if (file) {
           try {
               const dataUrl = await readFileAsDataURL(file);
               const imageKey = await storeImage(dataUrl);
-              field.onChange(imageKey);
-              setImagePreviewKey(imageKey);
+              form.setValue('src', imageKey);
+              form.trigger('src');
           } catch (error) {
               console.error("Error reading file:", error);
               toast({ title: "שגיאה בקריאת הקובץ", variant: "destructive" });
@@ -129,10 +130,12 @@ export default function GalleryManager() {
                 <FormField
                   control={form.control}
                   name="src"
-                  render={({ field }) => (
+                  render={() => (
                     <FormItem>
                       <FormLabel>קובץ תמונה</FormLabel>
-                      <FormControl><Input type="file" accept="image/*" onChange={handleFileChange(field)} /></FormControl>
+                      <FormControl>
+                        <Input type="file" accept="image/*" onChange={handleFileChange} />
+                      </FormControl>
                       <FormMessage />
                       {imagePreviewKey && <GalleryImagePreview imageKey={imagePreviewKey} alt="Preview" />}
                     </FormItem>

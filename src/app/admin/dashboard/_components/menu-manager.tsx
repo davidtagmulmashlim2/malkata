@@ -92,7 +92,10 @@ export default function MenuManager() {
         isAvailable: true, isRecommended: false, tags: [], mainImage: '', galleryImages: []
     }
   })
-  const categoryForm = useForm<z.infer<typeof categorySchema>>({ resolver: zodResolver(categorySchema) })
+  const categoryForm = useForm<z.infer<typeof categorySchema>>({ 
+      resolver: zodResolver(categorySchema),
+      defaultValues: { name: '', description: '', image: ''} 
+    })
 
   useEffect(() => {
     if (isDishDialogOpen) {
@@ -165,18 +168,19 @@ export default function MenuManager() {
     toast({ title: 'קטגוריה נמחקה' })
   }
   
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>, fieldName: 'mainImage' | 'image') => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>, fieldName: "mainImage" | "image" | "galleryImages") => {
       const file = e.target.files?.[0];
       if (file) {
           try {
               const dataUrl = await readFileAsDataURL(file);
               const imageKey = await storeImage(dataUrl);
+
               if (fieldName === 'mainImage') {
-                dishForm.setValue(fieldName, imageKey, { shouldValidate: true });
-                dishForm.trigger('mainImage');
-              } else {
-                categoryForm.setValue(fieldName, imageKey, { shouldValidate: true });
-                categoryForm.trigger('image');
+                dishForm.setValue(fieldName, imageKey);
+                dishForm.trigger(fieldName);
+              } else if (fieldName === 'image') {
+                categoryForm.setValue(fieldName, imageKey);
+                categoryForm.trigger(fieldName);
               }
           } catch (error) {
               console.error("Error reading file:", error);
@@ -261,7 +265,9 @@ export default function MenuManager() {
                      <FormField name="mainImage" control={dishForm.control} render={({ field }) => (
                        <FormItem>
                         <FormLabel>תמונה ראשית</FormLabel>
-                         <FormControl><Input type="file" accept="image/*" onChange={(e) => handleFileChange(e, 'mainImage')} /></FormControl>
+                         <FormControl>
+                            <Input type="file" accept="image/*" onChange={(e) => handleFileChange(e, 'mainImage')} />
+                         </FormControl>
                         <FormMessage />
                         {field.value && <ImagePreview imageKey={field.value} alt="תמונה ראשית" />}
                        </FormItem>
@@ -371,7 +377,7 @@ export default function MenuManager() {
                 <TableHead>מחיר</TableHead>
                 <TableHead>זמינות</TableHead>
                 <TableHead>מומלצת</TableHead>
-                <TableHead className="text-left">פעולות</TableHead>
+                <TableHead className="text-right">פעולות</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -382,7 +388,7 @@ export default function MenuManager() {
                   <TableCell>{dish.price} ₪</TableCell>
                   <TableCell>{dish.isAvailable ? 'כן' : 'לא'}</TableCell>
                   <TableCell>{dish.isRecommended ? 'כן' : 'לא'}</TableCell>
-                  <TableCell className="text-left">
+                  <TableCell className="text-right">
                     <div className="flex gap-2">
                       <Button variant="ghost" size="icon" onClick={() => openDishDialog(dish)}><Edit className="h-4 w-4" /></Button>
                       <AlertDialog>
@@ -440,7 +446,9 @@ export default function MenuManager() {
                     <FormField name="image" control={categoryForm.control} render={({ field }) => (
                       <FormItem>
                         <FormLabel>תמונת באנר</FormLabel>
-                         <FormControl><Input type="file" accept="image/*" onChange={(e) => handleFileChange(e, 'image')} /></FormControl>
+                         <FormControl>
+                            <Input type="file" accept="image/*" onChange={(e) => handleFileChange(e, 'image')} />
+                        </FormControl>
                         <FormMessage />
                          {field.value && <ImagePreview imageKey={field.value} alt="תמונת קטגוריה" />}
                       </FormItem>
@@ -459,14 +467,14 @@ export default function MenuManager() {
             <TableHeader>
               <TableRow>
                 <TableHead>שם</TableHead>
-                <TableHead className="text-left">פעולות</TableHead>
+                <TableHead className="text-right">פעולות</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {categories.map(category => (
                 <TableRow key={category.id}>
                   <TableCell>{category.name}</TableCell>
-                  <TableCell className="text-left">
+                  <TableCell className="text-right">
                      <div className="flex gap-2">
                         <Button variant="ghost" size="icon" onClick={() => openCategoryDialog(category)}><Edit className="h-4 w-4" /></Button>
                          <AlertDialog>
@@ -490,5 +498,3 @@ export default function MenuManager() {
     </div>
   )
 }
-
-    
