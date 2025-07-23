@@ -44,6 +44,7 @@ const LS_KEYS = {
     TESTIMONIALS: 'malkata_testimonials',
     DESIGN: 'malkata_design',
     CART: 'malkata_cart',
+    // Image store is managed separately
 };
 
 const ADMIN_PASSWORD = 'admin'; // In a real app, use a more secure method.
@@ -56,15 +57,25 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   
   const enhancedDispatch = (action: Action) => {
     const newState = appReducer(state, action);
+     // We avoid saving images here to prevent quota errors. Images are saved separately.
     if (isClient) {
         try {
-            // Save each part of the state under its own key to avoid quota issues
-            localStorage.setItem(LS_KEYS.SITE_CONTENT, JSON.stringify(newState.siteContent));
-            localStorage.setItem(LS_KEYS.DISHES, JSON.stringify(newState.dishes));
-            localStorage.setItem(LS_KEYS.CATEGORIES, JSON.stringify(newState.categories));
-            localStorage.setItem(LS_KEYS.GALLERY, JSON.stringify(newState.gallery));
-            localStorage.setItem(LS_KEYS.TESTIMONIALS, JSON.stringify(newState.testimonials));
-            localStorage.setItem(LS_KEYS.DESIGN, JSON.stringify(newState.design));
+            const stateToSave = {
+                siteContent: newState.siteContent,
+                dishes: newState.dishes,
+                categories: newState.categories,
+                gallery: newState.gallery,
+                testimonials: newState.testimonials,
+                design: newState.design,
+            };
+
+            localStorage.setItem(LS_KEYS.SITE_CONTENT, JSON.stringify(stateToSave.siteContent));
+            localStorage.setItem(LS_KEYS.DISHES, JSON.stringify(stateToSave.dishes));
+            localStorage.setItem(LS_KEYS.CATEGORIES, JSON.stringify(stateToSave.categories));
+            localStorage.setItem(LS_KEYS.GALLERY, JSON.stringify(stateToSave.gallery));
+            localStorage.setItem(LS_KEYS.TESTIMONIALS, JSON.stringify(stateToSave.testimonials));
+            localStorage.setItem(LS_KEYS.DESIGN, JSON.stringify(stateToSave.design));
+
         } catch (error) {
             console.error("Failed to save state to localStorage", error);
         }
@@ -94,6 +105,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
         if (Object.keys(loadedState).length > 0) {
             dispatch({ type: 'SET_STATE', payload: loadedState });
+        } else {
+             dispatch({ type: 'SET_STATE', payload: DEFAULT_APP_STATE });
         }
 
         if (storedCart) {
@@ -105,6 +118,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         }
       } catch (error) {
         console.error("Failed to parse from localStorage", error);
+        // If parsing fails, load default state
+        dispatch({ type: 'SET_STATE', payload: DEFAULT_APP_STATE });
       }
     }
   }, [isClient]);

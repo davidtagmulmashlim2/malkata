@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -17,6 +17,8 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { PlusCircle, Edit, Trash2, X } from 'lucide-react'
 import { toast } from '@/hooks/use-toast'
 import type { Dish, Category } from '@/lib/types'
+import { storeImage, getImageSync, deleteImage as deleteImageFromStore } from '@/lib/image-store'
+import Image from 'next/image';
 
 const slugify = (text: string) => text.toLowerCase().replace(/[\s\W-]+/g, '-')
 
@@ -48,6 +50,14 @@ const categorySchema = z.object({
   description: z.string().min(1, 'תיאור הוא שדה חובה'),
   image: z.string().min(1, 'חובה להעלות תמונה'),
 })
+
+
+const ImagePreview = ({ imageKey }: { imageKey: string }) => {
+    const src = getImageSync(imageKey);
+    if (!src) return null;
+    return <Image src={src} alt="preview" width={96} height={96} className="h-24 w-24 rounded-md object-cover" />;
+};
+
 
 export default function MenuManager() {
   const { state, dispatch } = useApp()
@@ -96,6 +106,11 @@ export default function MenuManager() {
   }
 
   const deleteDish = (id: string) => {
+    const dishToDelete = dishes.find(d => d.id === id);
+    if (dishToDelete) {
+        if(dishToDelete.mainImage) deleteImageFromStore(dishToDelete.mainImage);
+        dishToDelete.galleryImages?.forEach(key => deleteImageFromStore(key));
+    }
     dispatch({ type: 'DELETE_DISH', payload: id })
     toast({ title: 'מנה נמחקה' })
   }
@@ -110,7 +125,8 @@ export default function MenuManager() {
       if (file) {
           try {
               const dataUrl = await readFileAsDataURL(file);
-              field.onChange(dataUrl);
+              const imageKey = await storeImage(dataUrl);
+              field.onChange(imageKey);
           } catch (error) {
               console.error("Error reading file:", error);
               toast({ title: "שגיאה בקריאת הקובץ", variant: "destructive" });
@@ -123,8 +139,9 @@ export default function MenuManager() {
         if (files) {
             try {
                 const dataUrls = await Promise.all(Array.from(files).map(file => readFileAsDataURL(file)));
+                const imageKeys = await Promise.all(dataUrls.map(url => storeImage(url)));
                 const currentImages = dishForm.getValues('galleryImages') || [];
-                field.onChange([...currentImages, ...dataUrls]);
+                field.onChange([...currentImages, ...imageKeys]);
             } catch (error) {
                 console.error("Error reading files:", error);
                 toast({ title: "שגיאה בקריאת הקבצים", variant: "destructive" });
@@ -134,9 +151,24 @@ export default function MenuManager() {
     
     const removeGalleryImage = (index: number) => {
         const currentImages = dishForm.getValues('galleryImages') || [];
+        const imageKeyToRemove = currentImages[index];
+        deleteImageFromStore(imageKeyToRemove);
         const newImages = [...currentImages];
         newImages.splice(index, 1);
         dishForm.setValue('galleryImages', newImages, { shouldValidate: true });
+    };
+
+    const handleCategoryFileChange = (field: any) => async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            try {
+                const dataUrl = await readFileAsDataURL(file);
+                field.onChange(dataUrl);
+            } catch (error) {
+                console.error("Error reading file:", error);
+                toast({ title: "שגיאה בקריאת הקובץ", variant: "destructive" });
+            }
+        }
     };
 
   return (
@@ -193,7 +225,7 @@ export default function MenuManager() {
                         <FormLabel>תמונה ראשית</FormLabel>
                          <FormControl><Input type="file" accept="image/*" onChange={handleFileChange(field)} /></FormControl>
                         <FormMessage />
-                        {dishForm.watch('mainImage') && <img src={dishForm.watch('mainImage')} alt="preview" className="h-24 w-24 rounded-md object-cover mt-2" />}
+                        {dishForm.watch('mainImage') && <ImagePreview imageKey={dishForm.watch('mainImage')} />}
                        </FormItem>
                     )} />
                     <FormField name="galleryImages" control={dishForm.control} render={({ field }) => (
@@ -202,9 +234,9 @@ export default function MenuManager() {
                         <FormControl><Input type="file" accept="image/*" multiple onChange={handleMultiFileChange(field)} /></FormControl>
                         <FormMessage />
                         <div className="flex flex-wrap gap-2 mt-2">
-                            {dishForm.watch('galleryImages')?.map((img, i) => (
+                            {dishForm.watch('galleryImages')?.map((imgKey, i) => (
                                 <div key={i} className="relative group">
-                                    <img src={img} alt="preview" className="h-24 w-24 rounded-md object-cover" />
+                                    <ImagePreview imageKey={imgKey} />
                                     <Button 
                                         type="button"
                                         variant="destructive"
@@ -360,7 +392,7 @@ export default function MenuManager() {
                     <FormField name="image" control={categoryForm.control} render={({ field }) => (
                       <FormItem>
                         <FormLabel>תמונת באנר</FormLabel>
-                         <FormControl><Input type="file" accept="image/*" onChange={handleFileChange(field)} /></FormControl>
+                         <FormControl><Input type="file" accept="image/*" onChange={handleCategoryFileChange(field)} /></FormControl>
                         <FormMessage />
                          {field.value && <img src={field.value} alt="Preview" className="mt-2 h-20 rounded-md" />}
                       </FormItem>

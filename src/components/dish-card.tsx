@@ -13,10 +13,66 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, Dialog
 import { Carousel, CarouselApi, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import { useEffect, useState, useMemo } from 'react';
 import { cn } from '@/lib/utils';
+import { getImage, getImageSync } from '@/lib/image-store';
 
 interface DishCardProps {
   dish: Dish;
 }
+
+const DishImage = ({ imageKey, alt }: { imageKey: string, alt: string }) => {
+    const [src, setSrc] = useState(() => getImageSync(imageKey) || 'https://placehold.co/600x400');
+    
+    useEffect(() => {
+        const fetchImage = async () => {
+            const imageSrc = await getImage(imageKey);
+            if(imageSrc) {
+                setSrc(imageSrc);
+            }
+        }
+        if (!src.startsWith('data:image')) {
+             fetchImage();
+        }
+    }, [imageKey, src]);
+
+    return (
+         <Image
+            src={src}
+            alt={alt}
+            width={600}
+            height={600}
+            className="w-full aspect-square object-cover"
+            data-ai-hint="food dish"
+        />
+    )
+}
+
+const CarouselDishImage = ({ imageKey, alt }: { imageKey: string, alt: string }) => {
+    const [src, setSrc] = useState(() => getImageSync(imageKey) || 'https://placehold.co/600x400');
+
+    useEffect(() => {
+        const fetchImage = async () => {
+            const imageSrc = await getImage(imageKey);
+            if(imageSrc) {
+                setSrc(imageSrc);
+            }
+        }
+        if (!src.startsWith('data:image')) {
+             fetchImage();
+        }
+    }, [imageKey, src]);
+    
+    return (
+        <Image
+            src={src}
+            alt={alt}
+            width={600}
+            height={600}
+            className="w-full aspect-square object-cover rounded-md"
+            data-ai-hint="food dish"
+        />
+    )
+}
+
 
 export function DishCard({ dish }: DishCardProps) {
   const { addToCart } = useApp();
@@ -49,14 +105,7 @@ export function DishCard({ dish }: DishCardProps) {
       <Card className="flex flex-col overflow-hidden h-full transition-all hover:shadow-lg hover:-translate-y-1 group">
         <DialogTrigger asChild>
           <div className="relative cursor-pointer">
-            <Image
-              src={dish.mainImage || 'https://placehold.co/600x400'}
-              alt={dish.name}
-              width={600}
-              height={600}
-              className="w-full aspect-square object-cover"
-              data-ai-hint="food dish"
-            />
+            <DishImage imageKey={dish.mainImage} alt={dish.name} />
             <div className="absolute inset-x-0 bottom-0 flex items-center justify-center bg-black/50 text-white text-center py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 הצגה מהירה
             </div>
@@ -91,16 +140,9 @@ export function DishCard({ dish }: DishCardProps) {
             <div className="w-full">
                 <Carousel setApi={setApi} className="w-full relative">
                     <CarouselContent>
-                        {allImages.map((img, i) => (
+                        {allImages.map((imgKey, i) => (
                             <CarouselItem key={i}>
-                                <Image
-                                    src={img}
-                                    alt={`${dish.name} - תמונה ${i+1}`}
-                                    width={600}
-                                    height={600}
-                                    className="w-full aspect-square object-cover rounded-md"
-                                    data-ai-hint="food dish"
-                                />
+                               <CarouselDishImage imageKey={imgKey} alt={`${dish.name} - תמונה ${i+1}`} />
                             </CarouselItem>
                         ))}
                     </CarouselContent>

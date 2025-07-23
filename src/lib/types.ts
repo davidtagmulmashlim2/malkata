@@ -4,8 +4,8 @@ export interface Dish {
   shortDescription: string;
   fullDescription: string;
   price: number;
-  mainImage: string;
-  galleryImages?: string[];
+  mainImage: string; // This will now be an image key
+  galleryImages?: string[]; // This will be an array of image keys
   categoryId: string;
   isAvailable: boolean;
   tags: ('vegan' | 'spicy')[];
@@ -17,7 +17,7 @@ export interface Category {
   name: string;
   slug: string;
   description: string;
-  image: string;
+  image: string; // Can remain data URI as it's one per category
 }
 
 export interface Testimonial {
@@ -28,7 +28,7 @@ export interface Testimonial {
 
 export interface GalleryImage {
   id: string;
-  src: string;
+  src: string; // Can remain data URI for simplicity in gallery management
   alt: string;
 }
 
