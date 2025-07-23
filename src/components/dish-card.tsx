@@ -35,7 +35,7 @@ export function DishCard({ dish }: DishCardProps) {
           className="w-full aspect-square object-cover"
           data-ai-hint="food dish"
         />
-        <div className="absolute inset-0 bg-black/70 flex items-end justify-center p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+        <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center p-4">
             <Button variant="outline" className="text-white border-white bg-transparent hover:bg-white hover:text-black">
                 <Eye className="ml-2 h-4 w-4" />
                 צפייה מהירה
