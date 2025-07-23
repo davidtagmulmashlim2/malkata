@@ -31,6 +31,8 @@ export default function Home() {
       '6xl': 'text-6xl', '7xl': 'text-7xl', '8xl': 'text-8xl', '9xl': 'text-9xl',
   };
 
+  const displayTestimonials = isClient ? testimonials : Array(3).fill(null);
+
   return (
     <div className="space-y-16 md:space-y-24">
       {/* Hero Section */}
@@ -101,7 +103,7 @@ export default function Home() {
       <section className="container">
         <h2 className="text-3xl md:text-4xl font-headline font-bold text-center mb-10">לקוחות ממליצים</h2>
         <Carousel 
-          className="w-full max-w-4xl mx-auto" 
+          className="w-full max-w-xl mx-auto" 
           dir="rtl"
           opts={{
             align: "start",
@@ -109,12 +111,12 @@ export default function Home() {
           }}
         >
           <CarouselContent>
-            {(isClient ? testimonials : Array(3).fill({id:'', name:'', quote:''})).map((testimonial, index) => (
+            {displayTestimonials.map((testimonial, index) => (
               <CarouselItem key={isClient ? testimonial.id : index}>
                 <div className="p-1">
                   <Card>
                     <CardContent className="flex flex-col items-center justify-center p-6 text-center h-48">
-                      {isClient ? (
+                      {isClient && testimonial ? (
                         <>
                           <p className="text-lg italic mb-4 flex-grow">"{testimonial.quote}"</p>
                           <p className="font-bold text-primary">- {testimonial.name}</p>
