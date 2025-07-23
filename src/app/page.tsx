@@ -31,8 +31,6 @@ export default function Home() {
       '6xl': 'text-6xl', '7xl': 'text-7xl', '8xl': 'text-8xl', '9xl': 'text-9xl',
   };
 
-  const displayTestimonials = isClient ? testimonials : Array(3).fill(null);
-
   return (
     <div className="space-y-16 md:space-y-24">
       {/* Hero Section */}
@@ -111,27 +109,31 @@ export default function Home() {
           }}
         >
           <CarouselContent>
-            {displayTestimonials.map((testimonial, index) => (
-              <CarouselItem key={isClient ? testimonial.id : index}>
-                <div className="p-1">
-                  <Card>
-                    <CardContent className="flex flex-col items-center justify-center p-6 text-center h-48">
-                      {isClient && testimonial ? (
-                        <>
-                          <p className="text-lg italic mb-4 flex-grow">"{testimonial.quote}"</p>
-                          <p className="font-bold text-primary">- {testimonial.name}</p>
-                        </>
-                      ) : (
-                        <div className="space-y-2 w-full">
-                           <Skeleton className="h-6 w-3/4 mx-auto" />
-                           <Skeleton className="h-5 w-1/4 mx-auto" />
-                        </div>
-                      )}
-                    </CardContent>
-                  </Card>
-                </div>
-              </CarouselItem>
-            ))}
+            {isClient && testimonials.length > 0 ? (
+                testimonials.map((testimonial) => (
+                  <CarouselItem key={testimonial.id}>
+                    <div className="p-1">
+                      <Card>
+                        <CardContent className="flex flex-col items-center justify-center p-6 text-center h-48">
+                              <p className="text-lg italic mb-4 flex-grow">"{testimonial.quote}"</p>
+                              <p className="font-bold text-primary">- {testimonial.name}</p>
+                        </CardContent>
+                      </Card>
+                    </div>
+                  </CarouselItem>
+                ))
+            ) : (
+                <CarouselItem>
+                    <div className="p-1">
+                        <Card>
+                            <CardContent className="flex flex-col items-center justify-center p-6 text-center h-48">
+                                <Skeleton className="h-6 w-3/4 mx-auto" />
+                                <Skeleton className="h-5 w-1/4 mx-auto mt-4" />
+                            </CardContent>
+                        </Card>
+                    </div>
+                </CarouselItem>
+            )}
           </CarouselContent>
           <CarouselPrevious />
           <CarouselNext />
