@@ -17,7 +17,7 @@ interface TypewriterProps {
 }
 
 export function Typewriter({ textParts, speed = 100 }: TypewriterProps) {
-  const [displayedParts, setDisplayedParts] = useState<TextPart[]>([]);
+  const [displayedText, setDisplayedText] = useState('');
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
@@ -26,40 +26,17 @@ export function Typewriter({ textParts, speed = 100 }: TypewriterProps) {
 
   useEffect(() => {
     if (isClient) {
-        setDisplayedParts([]); // Reset on text change
-        let partIndex = 0;
+        let currentText = '';
+        const fullText = textParts.map(p => p.text).join('');
         let charIndex = 0;
 
         const intervalId = setInterval(() => {
-            if (partIndex >= textParts.length) {
+            if (charIndex < fullText.length) {
+                currentText += fullText[charIndex];
+                setDisplayedText(currentText);
+                charIndex++;
+            } else {
                 clearInterval(intervalId);
-                return;
-            }
-
-            const currentPart = textParts[partIndex];
-            
-            // If current part or its text is invalid, skip to the next part.
-            if (!currentPart || !currentPart.text) {
-                partIndex++;
-                charIndex = 0;
-                return;
-            }
-            
-            const currentText = currentPart.text;
-
-            setDisplayedParts(prev => {
-                const newParts = [...prev];
-                if (!newParts[partIndex]) {
-                    newParts[partIndex] = { ...currentPart, text: '' };
-                }
-                newParts[partIndex].text += currentText[charIndex];
-                return newParts;
-            });
-
-            charIndex++;
-            if (charIndex >= currentText.length) {
-                charIndex = 0;
-                partIndex++;
             }
         }, speed);
 
@@ -67,27 +44,29 @@ export function Typewriter({ textParts, speed = 100 }: TypewriterProps) {
     }
   }, [textParts, speed, isClient]);
 
-  // Render the full text for SEO and if JS is disabled
   if (!isClient) {
-    return (
-        <>
-            {textParts.map((part, index) => (
-                <span key={index} style={part.style} className={part.className}>
-                    {part.text}
-                </span>
-            ))}
-        </>
-    );
+    // Return nothing on the server to prevent hydration mismatch
+    return null;
   }
-
+    
+  let charCount = 0;
   return (
     <>
-      {displayedParts.filter(Boolean).map((part, index) => (
-        <span key={index} style={part.style} className={cn(part.className)}>
-          {part.text}
-        </span>
-      ))}
-      <span className="animate-ping">|</span>
+      {textParts.map((part, index) => {
+          if (!part || !part.text) return null;
+
+          const partStart = charCount;
+          const partEnd = charCount + part.text.length;
+          const visibleText = displayedText.substring(partStart, Math.min(partEnd, displayedText.length));
+          charCount = partEnd;
+
+          return (
+              <span key={index} style={part.style} className={cn(part.className)}>
+                  {visibleText}
+              </span>
+          );
+      })}
+      {displayedText.length < textParts.map(p => p.text).join('').length && <span className="animate-ping">|</span>}
     </>
   );
 }
