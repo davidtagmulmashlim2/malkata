@@ -35,7 +35,7 @@ export default function MenuLayout({
                             {shabbatCategory && (
                                 <Button
                                     asChild
-                                    variant={pathname === `/menu/${shabbatCategory.slug}` ? 'default' : 'ghost'}
+                                    variant='ghost'
                                     size="sm"
                                     className={cn(
                                         'btn-shabbat',
