@@ -4,7 +4,7 @@ import NextImage, { ImageProps } from 'next/image';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 import { useState, useEffect } from 'react';
-import { getImage, getImageSync } from '@/lib/image-store';
+import { getImage } from '@/lib/image-store';
 
 interface AsyncImageProps extends Omit<ImageProps, 'src'> {
   imageKey: string | undefined | null;
@@ -12,42 +12,30 @@ interface AsyncImageProps extends Omit<ImageProps, 'src'> {
 }
 
 export function AsyncImage({ imageKey, alt, skeletonClassName, className, ...props }: AsyncImageProps) {
-  const [src, setSrc] = useState(() => {
-    if (!imageKey) return "https://placehold.co/600x400.png";
-    return getImageSync(imageKey) || imageKey; // Fallback to key if not in sync cache
-  });
-
-  const [isLoading, setIsLoading] = useState(true);
+  const [src, setSrc] = useState<string | null>(null);
   const [error, setError] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
+    setSrc(null); // Reset on key change to show loader
+    setError(false);
 
     const fetchImage = async () => {
       if (!imageKey) {
-        setSrc("https://placehold.co/600x400.png");
-        setIsLoading(false);
+        if(isMounted) setSrc("https://placehold.co/600x400.png");
         return;
       }
       
-      // Don't refetch if it's already a data or http URL
-      if (imageKey.startsWith('data:') || imageKey.startsWith('http')) {
-        setSrc(imageKey);
-        setIsLoading(false);
-        return;
-      }
-      
-      // It's a key, try to fetch from IndexedDB
-      setIsLoading(true);
-      setError(false);
       const imageSrc = await getImage(imageKey);
+      
       if (isMounted) {
         if (imageSrc) {
             setSrc(imageSrc);
         } else {
+            // getImage now returns a placeholder on failure, but as a fallback:
             setError(true);
+            setSrc("https://placehold.co/600x400.png");
         }
-        setIsLoading(false);
       }
     };
 
@@ -64,21 +52,16 @@ export function AsyncImage({ imageKey, alt, skeletonClassName, className, ...pro
       );
   }
 
+  if (!src) {
+    return <Skeleton className={cn("w-full h-full", skeletonClassName)} />;
+  }
+
   return (
-    <>
-      {isLoading && <Skeleton className={cn("w-full h-full", skeletonClassName)} />}
       <NextImage 
         src={src} 
         alt={alt} 
-        className={cn(className, isLoading ? 'opacity-0' : 'opacity-100', "transition-opacity")} 
-        onLoad={() => setIsLoading(false)}
-        onError={() => {
-            // This might happen if the src is a URL that fails to load
-            setError(true);
-            setIsLoading(false);
-        }}
+        className={cn(className)}
         {...props} 
       />
-    </>
   );
 }
