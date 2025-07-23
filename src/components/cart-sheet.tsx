@@ -113,10 +113,10 @@ export function CartSheet() {
             <ScrollArea className="flex-grow pr-4 -mr-6">
               <div className="flex flex-col gap-4 py-4">
                 {cartDetails.map(item => (
-                  <div key={item!.id} className="flex items-center justify-between gap-4">
+                  <div key={item!.id} className="flex items-center justify-between gap-4 text-right">
                     <div className="flex items-center gap-4 flex-1">
                         <CartDishImage imageKey={item!.mainImage} alt={item!.name} />
-                        <div className="flex flex-col text-right">
+                        <div className="flex flex-col">
                           <h4 className="font-semibold">{item!.name}</h4>
                           <p className="text-sm text-muted-foreground">{item!.price} ₪</p>
                         </div>
@@ -138,7 +138,7 @@ export function CartSheet() {
               </div>
             </ScrollArea>
             <SheetFooter className="mt-auto">
-                <div className="w-full space-y-4">
+                <div className="w-full space-y-4 text-right">
                     <Separator />
                     <div className="flex justify-between text-lg font-bold">
                         <span>סה"כ:</span>
