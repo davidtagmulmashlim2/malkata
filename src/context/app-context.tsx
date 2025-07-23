@@ -79,13 +79,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
   }, [cart, isClient]);
 
-   useEffect(() => {
-    if (isClient) {
-        document.body.className = '';
-        document.body.classList.add(`theme-${state.design.theme}`);
-    }
-  }, [state.design.theme, isClient]);
-
   const addToCart = (dishId: string, quantity = 1) => {
     setCart(prevCart => {
       const existingItem = prevCart.find(item => item.dishId === dishId);

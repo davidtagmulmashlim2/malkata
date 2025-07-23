@@ -1,4 +1,5 @@
 
+
 'use client';
 import type { Metadata } from 'next';
 import { AppProvider, useApp } from '@/context/app-context';
@@ -17,7 +18,7 @@ import { useEffect } from 'react';
 // };
 
 function AppBody({ children }: { children: React.ReactNode }) {
-    const { bodyClass, state } = useApp();
+    const { state } = useApp();
     const isClient = useIsClient();
 
     useEffect(() => {
@@ -27,7 +28,7 @@ function AppBody({ children }: { children: React.ReactNode }) {
     }, [isClient, state.siteContent.hero.title]);
 
     return (
-        <body className={cn('font-body antialiased bg-background text-foreground', isClient ? bodyClass : '')}>
+        <body className={cn('font-body antialiased bg-background text-foreground', isClient ? `theme-${state.design.theme}` : '')}>
             <div className="flex flex-col min-h-screen">
                 <Header />
                 <main className="flex-grow">{children}</main>
