@@ -34,9 +34,9 @@ export function DishCard({ dish }: DishCardProps) {
   useEffect(() => {
     if (!api) return;
     
-    setCurrent(api.selectedScrollSnap() + 1);
+    setCurrent(api.selectedScrollSnap());
     const onSelect = () => {
-      setCurrent(api.selectedScrollSnap() + 1);
+      setCurrent(api.selectedScrollSnap());
     };
     api.on("select", onSelect);
 
@@ -97,7 +97,7 @@ export function DishCard({ dish }: DishCardProps) {
             <div className="w-full">
                 {isClient && allImages.length > 0 ? (
                     <>
-                        <Carousel setApi={setApi} className="w-full relative">
+                        <Carousel setApi={setApi} className="w-full relative" dir="rtl">
                             <CarouselContent>
                                 {allImages.map((imgKey, i) => (
                                     <CarouselItem key={imgKey ? `${imgKey}-${i}` : `item-${i}`}>
@@ -115,14 +115,14 @@ export function DishCard({ dish }: DishCardProps) {
                                 ))}
                             </CarouselContent>
                             {allImages.length > 1 && <>
-                              <CarouselPrevious className="absolute start-2 top-1/2 -translate-y-1/2 z-10" />
-                              <CarouselNext className="absolute end-2 top-1/2 -translate-y-1/2 z-10" />
+                              <CarouselPrevious className="absolute right-2 top-1/2 -translate-y-1/2 z-10" />
+                              <CarouselNext className="absolute left-2 top-1/2 -translate-y-1/2 z-10" />
                             </>}
                         </Carousel>
                         {allImages.length > 1 && (
                             <div className="flex justify-center gap-2 mt-2">
                                 {allImages.map((_, i) => (
-                                    <button key={i} onClick={() => scrollTo(i)} className={cn("h-2 w-2 rounded-full", current === i + 1 ? "bg-primary" : "bg-muted")}></button>
+                                    <button key={i} onClick={() => scrollTo(i)} className={cn("h-2 w-2 rounded-full", current === i ? "bg-primary" : "bg-muted")}></button>
                                 ))}
                             </div>
                         )}
