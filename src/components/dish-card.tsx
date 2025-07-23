@@ -31,8 +31,8 @@ export function DishCard({ dish }: DishCardProps) {
           src={dish.images[0] || 'https://placehold.co/600x400'}
           alt={dish.name}
           width={600}
-          height={400}
-          className="w-full h-48 object-cover"
+          height={600}
+          className="w-full aspect-square object-cover"
           data-ai-hint="food dish"
         />
         <div className="absolute top-2 left-2 flex gap-2">
