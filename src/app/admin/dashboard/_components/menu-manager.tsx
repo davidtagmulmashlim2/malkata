@@ -185,7 +185,7 @@ export default function MenuManager() {
                         <FormControl><Input type="file" accept="image/*" multiple onChange={handleMultiFileChange(field)} /></FormControl>
                         <FormMessage />
                         <div className="flex gap-2 mt-2">
-                            {field.value?.map((img, i) => <img key={i} src={img} alt="preview" className="h-16 w-16 rounded-md object-cover" />)}
+                            {dishForm.watch('images')?.map((img, i) => <img key={i} src={img} alt="preview" className="h-16 w-16 rounded-md object-cover" />)}
                         </div>
                        </FormItem>
                     )} />
