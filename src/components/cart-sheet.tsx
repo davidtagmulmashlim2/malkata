@@ -22,6 +22,7 @@ import { useIsClient } from '@/hooks/use-is-client';
 import { getImage, getImageSync } from '@/lib/image-store';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { Skeleton } from './ui/skeleton';
 
 const CartDishImage = ({ imageKey, alt }: { imageKey: string; alt: string }) => {
     const [src, setSrc] = useState(() => getImageSync(imageKey) || "https://placehold.co/64x64");
@@ -110,7 +111,13 @@ export function CartSheet() {
         <SheetHeader>
           <SheetTitle>עגלת הקניות שלך</SheetTitle>
         </SheetHeader>
-        {isClient && cart.length > 0 ? (
+        {!isClient ? (
+           <div className="flex-grow flex flex-col items-center justify-center">
+                <Skeleton className="h-24 w-24 rounded-full" />
+                <Skeleton className="h-6 w-32 mt-4" />
+                <Skeleton className="h-4 w-48 mt-2" />
+            </div>
+        ) : cart.length > 0 ? (
           <>
             <ScrollArea className="flex-grow pr-4 -mr-6">
               <div className="flex flex-col gap-4 py-4">
@@ -118,7 +125,7 @@ export function CartSheet() {
                   <div key={item!.id} className="flex justify-between items-center gap-4">
                     <div className="flex items-center gap-4 flex-1">
                         <CartDishImage imageKey={item!.mainImage} alt={item!.name} />
-                        <div className="flex flex-col">
+                        <div className="flex flex-col text-right">
                           <h4 className="font-semibold">{item!.name}</h4>
                           <p className="text-sm text-muted-foreground">{item!.price} ₪</p>
                         </div>
