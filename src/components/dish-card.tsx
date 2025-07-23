@@ -13,7 +13,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, Dialog
 import { Carousel, CarouselApi, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import { useEffect, useState, useMemo } from 'react';
 import { cn } from '@/lib/utils';
-import { getImage, getImageSync } from '@/lib/image-store';
 import { useIsClient } from '@/hooks/use-is-client';
 import { Skeleton } from '@/components/ui/skeleton';
 import { AsyncImage } from './async-image';
@@ -21,36 +20,6 @@ import { AsyncImage } from './async-image';
 interface DishCardProps {
   dish: Dish;
 }
-
-const CarouselDishImage = ({ imageKey, alt }: { imageKey: string, alt: string }) => {
-    const [src, setSrc] = useState(() => getImageSync(imageKey) || 'https://placehold.co/600x600.png');
-
-    useEffect(() => {
-        let isMounted = true;
-        const fetchImage = async () => {
-            const imageSrc = await getImage(imageKey);
-            if(isMounted && imageSrc) {
-                setSrc(imageSrc);
-            }
-        }
-        if (!src || (!src.startsWith('data:image') && !src.startsWith('http'))) {
-             fetchImage();
-        }
-        return () => { isMounted = false; };
-    }, [imageKey, src]);
-    
-    return (
-        <Image
-            src={src}
-            alt={alt}
-            width={600}
-            height={600}
-            className="w-full aspect-square object-cover rounded-md"
-            data-ai-hint="food dish"
-        />
-    )
-}
-
 
 export function DishCard({ dish }: DishCardProps) {
   const { addToCart } = useApp();
@@ -129,7 +98,16 @@ export function DishCard({ dish }: DishCardProps) {
                             <CarouselContent>
                                 {allImages.map((imgKey, i) => (
                                     <CarouselItem key={imgKey ? imgKey : `item-${i}`}>
-                                        <CarouselDishImage imageKey={imgKey} alt={`${dish.name} - תמונה ${i+1}`} />
+                                        <div className="w-full aspect-square relative">
+                                            <AsyncImage 
+                                                imageKey={imgKey} 
+                                                alt={`${dish.name} - תמונה ${i+1}`} 
+                                                layout="fill"
+                                                objectFit="cover"
+                                                className="rounded-md"
+                                                data-ai-hint="food dish"
+                                            />
+                                        </div>
                                     </CarouselItem>
                                 ))}
                             </CarouselContent>
@@ -148,7 +126,7 @@ export function DishCard({ dish }: DishCardProps) {
                     </>
                 ) : (
                     <div className="w-full aspect-square flex items-center justify-center bg-muted rounded-md">
-                        <p className="text-muted-foreground">טוען...</p>
+                         <Skeleton className="w-full h-full" />
                     </div>
                 )}
             </div>
