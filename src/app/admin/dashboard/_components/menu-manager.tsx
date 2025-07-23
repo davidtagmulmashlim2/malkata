@@ -27,7 +27,6 @@ const readFileAsDataURL = (file: File): Promise<string> => {
         const reader = new FileReader();
         reader.onload = () => resolve(reader.result as string);
         reader.onerror = (error) => reject(error);
-        reader.readAsDataURL(file);
     });
 };
 
@@ -69,6 +68,23 @@ export default function MenuManager() {
 
   const dishForm = useForm<z.infer<typeof dishSchema>>({ resolver: zodResolver(dishSchema) })
   const categoryForm = useForm<z.infer<typeof categorySchema>>({ resolver: zodResolver(categorySchema) })
+
+  useEffect(() => {
+    if (editingDish) {
+        dishForm.reset({
+            ...editingDish,
+            galleryImages: editingDish.galleryImages || []
+        });
+    } else {
+        dishForm.reset({
+            isAvailable: true,
+            tags: [],
+            mainImage: '',
+            galleryImages: []
+        });
+    }
+}, [editingDish, dishForm]);
+
 
   const openDishDialog = (dish: Dish | null = null) => {
     setEditingDish(dish)
