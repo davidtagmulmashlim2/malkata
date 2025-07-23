@@ -24,7 +24,7 @@ export default function Home() {
   const [typewriterKey, setTypewriterKey] = useState(0);
 
    useEffect(() => {
-    if (!api) return;
+    if (!api || !testimonials?.length) return;
     
     const onSelect = () => {
         // Do something on select.
@@ -131,9 +131,9 @@ export default function Home() {
       </section>
       
       {/* Testimonials Section */}
-      <section className="container">
+       <section className="container">
         <h2 className="text-3xl md:text-4xl font-headline font-bold text-center mb-10">לקוחות ממליצים</h2>
-         {isClient && testimonials.length > 0 ? (
+         {isClient && testimonials?.length > 0 ? (
             <Carousel 
               setApi={setApi}
               className="w-full max-w-xl mx-auto" 
