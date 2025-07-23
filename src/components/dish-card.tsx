@@ -35,7 +35,7 @@ export function DishCard({ dish }: DishCardProps) {
           className="w-full aspect-square object-cover"
           data-ai-hint="food dish"
         />
-        <div className="absolute inset-x-0 bottom-0 flex items-center justify-center bg-black/70 text-white text-center py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+        <div className="absolute inset-x-0 bottom-0 flex items-center justify-center bg-black/50 text-white text-center py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
              הצגה מהירה
         </div>
         <div className="absolute top-2 left-2 flex gap-2">
