@@ -10,7 +10,9 @@ import { Badge } from './ui/badge';
 import { useApp } from '@/context/app-context';
 import { toast } from '@/hooks/use-toast';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from '@/components/ui/dialog';
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
+import { Carousel, CarouselApi, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
+import { useEffect, useState } from 'react';
+import { cn } from '@/lib/utils';
 
 interface DishCardProps {
   dish: Dish;
@@ -19,6 +21,16 @@ interface DishCardProps {
 export function DishCard({ dish }: DishCardProps) {
   const { addToCart } = useApp();
   const allImages = [dish.mainImage, ...(dish.galleryImages || [])].filter(Boolean);
+  const [api, setApi] = useState<CarouselApi>();
+  const [current, setCurrent] = useState(0);
+
+  useEffect(() => {
+    if (!api) return;
+    setCurrent(api.selectedScrollSnap() + 1);
+    api.on("select", () => {
+      setCurrent(api.selectedScrollSnap() + 1);
+    });
+  }, [api]);
 
   const handleAddToCart = () => {
     addToCart(dish.id);
@@ -26,6 +38,10 @@ export function DishCard({ dish }: DishCardProps) {
         title: "נוסף לעגלה",
         description: `${dish.name} נוסף לעגלת הקניות שלך.`,
     });
+  }
+  
+  const scrollTo = (index: number) => {
+    api?.scrollTo(index);
   }
 
   return (
@@ -70,28 +86,37 @@ export function DishCard({ dish }: DishCardProps) {
         </CardFooter>
       </Card>
 
-      <DialogContent className="sm:max-w-3xl">
+      <DialogContent className="sm:max-w-4xl">
         <div className="grid md:grid-cols-2 gap-8">
-            <Carousel className="w-full">
-                <CarouselContent>
-                    {allImages.map((img, i) => (
-                        <CarouselItem key={i}>
-                            <Image
-                                src={img}
-                                alt={`${dish.name} - תמונה ${i+1}`}
-                                width={600}
-                                height={600}
-                                className="w-full aspect-square object-cover rounded-md"
-                                data-ai-hint="food dish"
-                            />
-                        </CarouselItem>
-                    ))}
-                </CarouselContent>
-                {allImages.length > 1 && <>
-                  <CarouselPrevious />
-                  <CarouselNext />
-                </>}
-            </Carousel>
+            <div className="w-full">
+                <Carousel setApi={setApi} className="w-full relative">
+                    <CarouselContent>
+                        {allImages.map((img, i) => (
+                            <CarouselItem key={i}>
+                                <Image
+                                    src={img}
+                                    alt={`${dish.name} - תמונה ${i+1}`}
+                                    width={600}
+                                    height={600}
+                                    className="w-full aspect-square object-cover rounded-md"
+                                    data-ai-hint="food dish"
+                                />
+                            </CarouselItem>
+                        ))}
+                    </CarouselContent>
+                    {allImages.length > 1 && <>
+                      <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2" />
+                      <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2" />
+                    </>}
+                </Carousel>
+                {allImages.length > 1 && (
+                    <div className="flex justify-center gap-2 mt-2">
+                        {allImages.map((_, i) => (
+                            <button key={i} onClick={() => scrollTo(i)} className={cn("h-2 w-2 rounded-full", current === i + 1 ? "bg-primary" : "bg-muted")}></button>
+                        ))}
+                    </div>
+                )}
+            </div>
             <div className="flex flex-col justify-between">
                 <div>
                     <DialogHeader>
