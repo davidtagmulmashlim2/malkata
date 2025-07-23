@@ -1,3 +1,4 @@
+
 'use client';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Utensils, Edit, Image as ImageIcon, Palette, MessageSquare } from 'lucide-react';
@@ -12,11 +13,11 @@ export default function DashboardPage() {
         <div className="container py-10">
             <Tabs defaultValue="menu" className="w-full">
                 <TabsList className="grid w-full grid-cols-5">
-                    <TabsTrigger value="menu"><Utensils className="mr-2 h-4 w-4" /> ניהול תפריט</TabsTrigger>
-                    <TabsTrigger value="content"><Edit className="mr-2 h-4 w-4" /> ניהול תוכן</TabsTrigger>
-                    <TabsTrigger value="gallery"><ImageIcon className="mr-2 h-4 w-4" /> ניהול גלריה</TabsTrigger>
-                    <TabsTrigger value="design"><Palette className="mr-2 h-4 w-4" /> ניהול עיצוב</TabsTrigger>
-                    <TabsTrigger value="testimonials"><MessageSquare className="mr-2 h-4 w-4" /> ניהול המלצות</TabsTrigger>
+                    <TabsTrigger value="menu"><Utensils className="ms-2 h-4 w-4" /> ניהול תפריט</TabsTrigger>
+                    <TabsTrigger value="content"><Edit className="ms-2 h-4 w-4" /> ניהול תוכן</TabsTrigger>
+                    <TabsTrigger value="gallery"><ImageIcon className="ms-2 h-4 w-4" /> ניהול גלריה</TabsTrigger>
+                    <TabsTrigger value="design"><Palette className="ms-2 h-4 w-4" /> ניהול עיצוב</TabsTrigger>
+                    <TabsTrigger value="testimonials"><MessageSquare className="ms-2 h-4 w-4" /> ניהול המלצות</TabsTrigger>
                 </TabsList>
                 <TabsContent value="menu" className="mt-6">
                     <MenuManager />

@@ -122,9 +122,9 @@ export function DishCard({ dish }: DishCardProps) {
                 <div className="absolute inset-x-0 bottom-0 flex items-center justify-center bg-black/50 text-white text-center py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     הצגה מהירה
                 </div>
-                <div className="absolute top-2 left-2 flex gap-2">
-                    {dish.tags?.includes('vegan') && <Badge variant="default" className="bg-green-600 text-white"><Leaf className="w-3 h-3 mr-1" /> טבעוני</Badge>}
-                    {dish.tags?.includes('spicy') && <Badge variant="destructive"><Flame className="w-3 h-3 mr-1" /> חריף</Badge>}
+                <div className="absolute top-2 end-2 flex gap-2">
+                    {dish.tags?.includes('vegan') && <Badge variant="default" className="bg-green-600 text-white"><Leaf className="w-3 h-3 me-1" /> טבעוני</Badge>}
+                    {dish.tags?.includes('spicy') && <Badge variant="destructive"><Flame className="w-3 h-3 me-1" /> חריף</Badge>}
                 </div>
                 {!dish.isAvailable && (
                     <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
@@ -142,7 +142,7 @@ export function DishCard({ dish }: DishCardProps) {
         <CardFooter className="flex justify-between items-center mt-auto">
           <p className="text-xl font-bold text-primary">{dish.price} ₪</p>
           <Button onClick={handleAddToCart} disabled={!dish.isAvailable}>
-            <ShoppingCart className="ml-2 h-4 w-4" />
+            <ShoppingCart className="ms-2 h-4 w-4" />
             הוסף לעגלה
           </Button>
         </CardFooter>
@@ -162,8 +162,8 @@ export function DishCard({ dish }: DishCardProps) {
                                 ))}
                             </CarouselContent>
                             {allImages.length > 1 && <>
-                              <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2 z-10" />
-                              <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2 z-10" />
+                              <CarouselPrevious className="absolute start-2 top-1/2 -translate-y-1/2 z-10" />
+                              <CarouselNext className="absolute end-2 top-1/2 -translate-y-1/2 z-10" />
                             </>}
                         </Carousel>
                         {allImages.length > 1 && (
@@ -183,19 +183,19 @@ export function DishCard({ dish }: DishCardProps) {
             <div className="flex flex-col justify-between">
                 <div>
                     <DialogHeader>
-                        <DialogTitle className="font-headline text-3xl mb-2 text-right">{dish.name}</DialogTitle>
+                        <DialogTitle className="font-headline text-3xl mb-2 text-start">{dish.name}</DialogTitle>
                     </DialogHeader>
-                    <div className="flex gap-2 my-4 justify-end">
-                        {dish.tags?.includes('vegan') && <Badge variant="default" className="bg-green-600 text-white"><Leaf className="w-3 h-3 mr-1" /> טבעוני</Badge>}
-                        {dish.tags?.includes('spicy') && <Badge variant="destructive"><Flame className="w-3 h-3 mr-1" /> חריף</Badge>}
+                    <div className="flex gap-2 my-4 justify-start">
+                        {dish.tags?.includes('vegan') && <Badge variant="default" className="bg-green-600 text-white"><Leaf className="w-3 h-3 me-1" /> טבעוני</Badge>}
+                        {dish.tags?.includes('spicy') && <Badge variant="destructive"><Flame className="w-3 h-3 me-1" /> חריף</Badge>}
                     </div>
-                    <p className="text-muted-foreground text-right">{dish.fullDescription}</p>
+                    <p className="text-muted-foreground text-start">{dish.fullDescription}</p>
                 </div>
                 <DialogFooter className="mt-6">
                     <div className="flex justify-between items-center w-full">
                         <p className="text-2xl font-bold text-primary">{dish.price} ₪</p>
                          <Button onClick={handleAddToCart} disabled={!dish.isAvailable} size="lg">
-                            <ShoppingCart className="ml-2 h-5 w-5" />
+                            <ShoppingCart className="ms-2 h-5 w-5" />
                             הוסף לעגלה
                         </Button>
                     </div>

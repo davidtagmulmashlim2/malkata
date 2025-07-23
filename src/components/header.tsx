@@ -93,7 +93,7 @@ export function Header() {
                 <span className="sr-only">פתח תפריט ניווט</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="right">
+            <SheetContent side="left">
               <div className="flex flex-col gap-6 p-6">
                 <Logo />
                 <NavLinks className="flex-col items-start text-lg gap-6" />

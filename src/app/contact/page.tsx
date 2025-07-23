@@ -1,3 +1,4 @@
+
 'use client';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -41,7 +42,7 @@ export default function ContactPage() {
             </h1>
             <div className="grid lg:grid-cols-2 gap-12">
                 <div className="bg-card p-8 rounded-lg shadow-md">
-                    <h2 className="text-2xl font-bold font-headline mb-6">טופס יצירת קשר</h2>
+                    <h2 className="text-2xl font-bold font-headline mb-6 text-start">טופס יצירת קשר</h2>
                     <Form {...form}>
                         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                             <FormField
@@ -82,7 +83,7 @@ export default function ContactPage() {
                     </Form>
                 </div>
                 <div className="space-y-8">
-                    <h2 className="text-2xl font-bold font-headline mb-6">פרטי התקשרות</h2>
+                    <h2 className="text-2xl font-bold font-headline mb-6 text-start">פרטי התקשרות</h2>
                     <div className="space-y-4 text-lg">
                         <div className="flex items-start gap-4">
                             <MapPin className="h-6 w-6 text-primary mt-1" />
