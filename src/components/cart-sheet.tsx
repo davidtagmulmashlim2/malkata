@@ -20,6 +20,7 @@ import { Separator } from './ui/separator';
 import { useIsClient } from '@/hooks/use-is-client';
 import { getImage, getImageSync } from '@/lib/image-store';
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 
 const CartDishImage = ({ imageKey, alt }: { imageKey: string; alt: string }) => {
     const [src, setSrc] = useState(() => getImageSync(imageKey) || "https://placehold.co/64x64");
