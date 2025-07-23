@@ -39,8 +39,8 @@ const DishImage = ({ imageKey, alt }: { imageKey: string, alt: string }) => {
             src={src}
             alt={alt}
             width={600}
-            height={600}
-            className="w-full aspect-square object-cover"
+            height={400}
+            className="w-full h-full object-cover"
             data-ai-hint="food dish"
         />
     )
@@ -104,21 +104,21 @@ export function DishCard({ dish }: DishCardProps) {
     <Dialog>
       <Card className="flex flex-col overflow-hidden h-full transition-all hover:shadow-lg hover:-translate-y-1 group">
         <DialogTrigger asChild>
-          <div className="relative cursor-pointer">
-            <DishImage imageKey={dish.mainImage} alt={dish.name} />
-            <div className="absolute inset-x-0 bottom-0 flex items-center justify-center bg-black/50 text-white text-center py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                הצגה מהירה
-            </div>
-            <div className="absolute top-2 left-2 flex gap-2">
-                {dish.tags?.includes('vegan') && <Badge variant="default" className="bg-green-600 text-white"><Leaf className="w-3 h-3 mr-1" /> טבעוני</Badge>}
-                {dish.tags?.includes('spicy') && <Badge variant="destructive"><Flame className="w-3 h-3 mr-1" /> חריף</Badge>}
-            </div>
-            {!dish.isAvailable && (
-                <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                    <p className="text-white text-lg font-bold">אזל מהמלאי</p>
+            <div className="relative cursor-pointer aspect-[4/3] w-full overflow-hidden">
+                <DishImage imageKey={dish.mainImage} alt={dish.name} />
+                <div className="absolute inset-x-0 bottom-0 flex items-center justify-center bg-black/50 text-white text-center py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    הצגה מהירה
                 </div>
-            )}
-          </div>
+                <div className="absolute top-2 left-2 flex gap-2">
+                    {dish.tags?.includes('vegan') && <Badge variant="default" className="bg-green-600 text-white"><Leaf className="w-3 h-3 mr-1" /> טבעוני</Badge>}
+                    {dish.tags?.includes('spicy') && <Badge variant="destructive"><Flame className="w-3 h-3 mr-1" /> חריף</Badge>}
+                </div>
+                {!dish.isAvailable && (
+                    <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                        <p className="text-white text-lg font-bold">אזל מהמלאי</p>
+                    </div>
+                )}
+            </div>
         </DialogTrigger>
         <CardHeader>
           <CardTitle className="font-headline">{dish.name}</CardTitle>
@@ -147,8 +147,8 @@ export function DishCard({ dish }: DishCardProps) {
                         ))}
                     </CarouselContent>
                     {allImages.length > 1 && <>
-                      <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2" />
-                      <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2" />
+                      <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2 z-10" />
+                      <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2 z-10" />
                     </>}
                 </Carousel>
                 {allImages.length > 1 && (
@@ -162,13 +162,13 @@ export function DishCard({ dish }: DishCardProps) {
             <div className="flex flex-col justify-between">
                 <div>
                     <DialogHeader>
-                        <DialogTitle className="font-headline text-3xl mb-2">{dish.name}</DialogTitle>
+                        <DialogTitle className="font-headline text-3xl mb-2 text-right">{dish.name}</DialogTitle>
                     </DialogHeader>
-                    <div className="flex gap-2 my-4">
+                    <div className="flex gap-2 my-4 justify-end">
                         {dish.tags?.includes('vegan') && <Badge variant="default" className="bg-green-600 text-white"><Leaf className="w-3 h-3 mr-1" /> טבעוני</Badge>}
                         {dish.tags?.includes('spicy') && <Badge variant="destructive"><Flame className="w-3 h-3 mr-1" /> חריף</Badge>}
                     </div>
-                    <p className="text-muted-foreground">{dish.fullDescription}</p>
+                    <p className="text-muted-foreground text-right">{dish.fullDescription}</p>
                 </div>
                 <DialogFooter className="mt-6">
                     <div className="flex justify-between items-center w-full">
