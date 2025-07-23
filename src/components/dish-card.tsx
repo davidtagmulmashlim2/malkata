@@ -14,6 +14,8 @@ import { Carousel, CarouselApi, CarouselContent, CarouselItem, CarouselNext, Car
 import { useEffect, useState, useMemo } from 'react';
 import { cn } from '@/lib/utils';
 import { getImage, getImageSync } from '@/lib/image-store';
+import { useIsClient } from '@/hooks/use-is-client';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface DishCardProps {
   dish: Dish;
@@ -80,9 +82,18 @@ const CarouselDishImage = ({ imageKey, alt }: { imageKey: string, alt: string })
 
 export function DishCard({ dish }: DishCardProps) {
   const { addToCart } = useApp();
+  const isClient = useIsClient();
   const allImages = useMemo(() => [dish.mainImage, ...(dish.galleryImages || [])].filter(Boolean), [dish.mainImage, dish.galleryImages]);
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
+
+  const displayImages = useMemo(() => {
+      if (isClient && allImages.length > 0) {
+          return allImages;
+      }
+      return Array(3).fill(null);
+  }, [isClient, allImages]);
+
 
   useEffect(() => {
     if (!api) return;
@@ -144,18 +155,22 @@ export function DishCard({ dish }: DishCardProps) {
             <div className="w-full">
                 <Carousel setApi={setApi} className="w-full relative">
                     <CarouselContent>
-                        {allImages.map((imgKey, i) => (
-                            <CarouselItem key={i}>
-                               <CarouselDishImage imageKey={imgKey} alt={`${dish.name} - תמונה ${i+1}`} />
+                        {displayImages.map((imgKey, i) => (
+                            <CarouselItem key={imgKey ? imgKey : `skeleton-${i}`}>
+                               {imgKey ? (
+                                    <CarouselDishImage imageKey={imgKey} alt={`${dish.name} - תמונה ${i+1}`} />
+                               ) : (
+                                    <Skeleton className="w-full aspect-square" />
+                               )}
                             </CarouselItem>
                         ))}
                     </CarouselContent>
-                    {allImages.length > 1 && <>
+                    {isClient && allImages.length > 1 && <>
                       <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2 z-10" />
                       <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2 z-10" />
                     </>}
                 </Carousel>
-                {allImages.length > 1 && (
+                {isClient && allImages.length > 1 && (
                     <div className="flex justify-center gap-2 mt-2">
                         {allImages.map((_, i) => (
                             <button key={i} onClick={() => scrollTo(i)} className={cn("h-2 w-2 rounded-full", current === i + 1 ? "bg-primary" : "bg-muted")}></button>
