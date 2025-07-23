@@ -108,7 +108,7 @@ export function CartSheet() {
         </Button>
       </SheetTrigger>
       <SheetContent className="flex flex-col">
-        <SheetHeader className="text-right">
+        <SheetHeader className="text-left">
           <SheetTitle>עגלת הקניות שלך</SheetTitle>
         </SheetHeader>
         {!isClient ? (
