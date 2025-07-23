@@ -1,6 +1,6 @@
 'use client'
 import { useState } from 'react'
-import { useForm, Controller } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useApp } from '@/context/app-context'
@@ -20,13 +20,22 @@ import type { Dish, Category } from '@/lib/types'
 
 const slugify = (text: string) => text.toLowerCase().replace(/[\s\W-]+/g, '-')
 
+const readFileAsDataURL = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = (error) => reject(error);
+        reader.readAsDataURL(file);
+    });
+};
+
 const dishSchema = z.object({
   id: z.string().optional(),
   name: z.string().min(1, 'שם המנה הוא שדה חובה'),
   shortDescription: z.string().min(1, 'תיאור קצר הוא שדה חובה'),
   fullDescription: z.string().min(1, 'תיאור מלא הוא שדה חובה'),
   price: z.coerce.number().min(0, 'המחיר חייב להיות חיובי'),
-  images: z.string().transform(val => val.split(',').map(s => s.trim()).filter(Boolean)),
+  images: z.array(z.string()).min(1, "חובה להעלות לפחות תמונה אחת"),
   categoryId: z.string().min(1, 'חובה לבחור קטגוריה'),
   isAvailable: z.boolean(),
   tags: z.array(z.string()),
@@ -36,7 +45,7 @@ const categorySchema = z.object({
   id: z.string().optional(),
   name: z.string().min(1, 'שם הקטגוריה הוא שדה חובה'),
   description: z.string().min(1, 'תיאור הוא שדה חובה'),
-  image: z.string().url('כתובת תמונה לא חוקית'),
+  image: z.string().min(1, 'חובה להעלות תמונה'),
 })
 
 export default function MenuManager() {
@@ -52,22 +61,22 @@ export default function MenuManager() {
 
   const openDishDialog = (dish: Dish | null = null) => {
     setEditingDish(dish)
-    dishForm.reset(dish ? { ...dish, images: dish.images.join(', ') } : { isAvailable: true, tags: [] })
+    dishForm.reset(dish ? { ...dish } : { isAvailable: true, tags: [], images: [] })
     setIsDishDialogOpen(true)
   }
 
   const openCategoryDialog = (category: Category | null = null) => {
     setEditingCategory(category)
-    categoryForm.reset(category || {})
+    categoryForm.reset(category || { image: '' })
     setIsCategoryDialogOpen(true)
   }
 
   const handleDishSubmit = (values: z.infer<typeof dishSchema>) => {
     if (editingDish) {
-      dispatch({ type: 'UPDATE_DISH', payload: { ...editingDish, ...values, images: values.images || [] } })
+      dispatch({ type: 'UPDATE_DISH', payload: { ...editingDish, ...values } })
       toast({ title: 'מנה עודכנה בהצלחה' })
     } else {
-      dispatch({ type: 'ADD_DISH', payload: { ...values, id: Date.now().toString(), images: values.images || [] } })
+      dispatch({ type: 'ADD_DISH', payload: { ...values, id: Date.now().toString() } })
       toast({ title: 'מנה נוספה בהצלחה' })
     }
     setIsDishDialogOpen(false)
@@ -94,6 +103,32 @@ export default function MenuManager() {
     dispatch({ type: 'DELETE_CATEGORY', payload: id })
     toast({ title: 'קטגוריה נמחקה' })
   }
+
+  const handleFileChange = (field: any) => async (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (file) {
+          try {
+              const dataUrl = await readFileAsDataURL(file);
+              field.onChange(dataUrl);
+          } catch (error) {
+              console.error("Error reading file:", error);
+              toast({ title: "שגיאה בקריאת הקובץ", variant: "destructive" });
+          }
+      }
+  };
+  
+   const handleMultiFileChange = (field: any) => async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const files = e.target.files;
+        if (files) {
+            try {
+                const dataUrls = await Promise.all(Array.from(files).map(file => readFileAsDataURL(file)));
+                field.onChange(dataUrls);
+            } catch (error) {
+                console.error("Error reading files:", error);
+                toast({ title: "שגיאה בקריאת הקבצים", variant: "destructive" });
+            }
+        }
+    };
 
   return (
     <div className="space-y-8">
@@ -146,10 +181,13 @@ export default function MenuManager() {
                     )} />
                     <FormField name="images" control={dishForm.control} render={({ field }) => (
                        <FormItem>
-                        <FormLabel>כתובות תמונות (מופרדות בפסיק)</FormLabel>
-                        <FormControl><Input {...field} /></FormControl>
+                        <FormLabel>תמונות</FormLabel>
+                        <FormControl><Input type="file" accept="image/*" multiple onChange={handleMultiFileChange(field)} /></FormControl>
                         <FormMessage />
-                      </FormItem>
+                        <div className="flex gap-2 mt-2">
+                            {field.value?.map((img, i) => <img key={i} src={img} alt="preview" className="h-16 w-16 rounded-md object-cover" />)}
+                        </div>
+                       </FormItem>
                     )} />
                     <FormField name="categoryId" control={dishForm.control} render={({ field }) => (
                       <FormItem>
@@ -171,15 +209,15 @@ export default function MenuManager() {
                               <FormItem className="flex items-center gap-2 space-y-0">
                                   <FormControl>
                                       <Checkbox 
-                                          checked={field.value?.includes('recommended')}
+                                          checked={field.value?.includes('vegan')}
                                           onCheckedChange={(checked) => {
                                               return checked
-                                                  ? field.onChange([...(field.value || []), 'recommended'])
-                                                  : field.onChange(field.value?.filter(v => v !== 'recommended'))
+                                                  ? field.onChange([...(field.value || []), 'vegan'])
+                                                  : field.onChange(field.value?.filter(v => v !== 'vegan'))
                                           }}
                                       />
                                   </FormControl>
-                                  <FormLabel>מומלץ</FormLabel>
+                                  <FormLabel>טבעוני</FormLabel>
                               </FormItem>
                           )} />
                           <FormField control={dishForm.control} name="tags" render={({ field }) => (
@@ -291,9 +329,10 @@ export default function MenuManager() {
                     )} />
                     <FormField name="image" control={categoryForm.control} render={({ field }) => (
                       <FormItem>
-                        <FormLabel>כתובת תמונת באנר</FormLabel>
-                        <FormControl><Input {...field} /></FormControl>
+                        <FormLabel>תמונת באנר</FormLabel>
+                         <FormControl><Input type="file" accept="image/*" onChange={handleFileChange(field)} /></FormControl>
                         <FormMessage />
+                         {field.value && <img src={field.value} alt="Preview" className="mt-2 h-20 rounded-md" />}
                       </FormItem>
                     )} />
                     <DialogFooter>

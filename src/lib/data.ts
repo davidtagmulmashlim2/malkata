@@ -38,7 +38,7 @@ export const DEFAULT_APP_STATE: AppState = {
       images: ['https://placehold.co/600x400', 'https://placehold.co/600x400'],
       categoryId: '1',
       isAvailable: true,
-      tags: ['recommended'],
+      tags: [],
     },
     {
       id: 'd2',
@@ -60,7 +60,7 @@ export const DEFAULT_APP_STATE: AppState = {
       images: ['https://placehold.co/600x400'],
       categoryId: '3',
       isAvailable: true,
-      tags: [],
+      tags: ['vegan'],
     },
     {
       id: 'd4',
@@ -71,7 +71,7 @@ export const DEFAULT_APP_STATE: AppState = {
       images: ['https://placehold.co/600x400'],
       categoryId: '1',
       isAvailable: true,
-      tags: ['recommended', 'spicy'],
+      tags: ['spicy'],
     },
     {
       id: 'd5',
@@ -82,7 +82,7 @@ export const DEFAULT_APP_STATE: AppState = {
       images: ['https://placehold.co/600x400'],
       categoryId: '1',
       isAvailable: true,
-      tags: ['recommended'],
+      tags: ['vegan'],
     },
   ],
   testimonials: [

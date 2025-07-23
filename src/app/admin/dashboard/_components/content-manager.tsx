@@ -15,12 +15,12 @@ const contentSchema = z.object({
   hero: z.object({
     title: z.string().min(1, 'חובה'),
     subtitle: z.string().min(1, 'חובה'),
-    image: z.string().url('כתובת לא חוקית'),
+    image: z.string().min(1, 'חובה'),
   }),
   about: z.object({
     short: z.string().min(1, 'חובה'),
     long: z.string().min(1, 'חובה'),
-    image: z.string().url('כתובת לא חוקית'),
+    image: z.string().min(1, 'חובה'),
   }),
   contact: z.object({
     address: z.string().min(1, 'חובה'),
@@ -30,9 +30,19 @@ const contentSchema = z.object({
     hours: z.string().min(1, 'חובה'),
   }),
   menu: z.object({
-      mainImage: z.string().url('כתובת לא חוקית'),
+      mainImage: z.string().min(1, 'חובה'),
   })
 });
+
+// Helper to read file as Data URL
+const readFileAsDataURL = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = (error) => reject(error);
+        reader.readAsDataURL(file);
+    });
+};
 
 export default function ContentManager() {
   const { state, dispatch } = useApp();
@@ -46,6 +56,19 @@ export default function ContentManager() {
   const onSubmit = (values: z.infer<typeof contentSchema>) => {
     dispatch({ type: 'UPDATE_CONTENT', payload: values });
     toast({ title: 'תוכן האתר עודכן בהצלחה!' });
+  };
+  
+  const handleFileChange = (field: any) => async (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (file) {
+          try {
+              const dataUrl = await readFileAsDataURL(file);
+              field.onChange(dataUrl);
+          } catch (error) {
+              console.error("Error reading file:", error);
+              toast({ title: "שגיאה בקריאת הקובץ", variant: "destructive" });
+          }
+      }
   };
 
   return (
@@ -77,9 +100,12 @@ export default function ContentManager() {
                   )} />
                   <FormField name="hero.image" control={form.control} render={({ field }) => (
                     <FormItem>
-                      <FormLabel>כתובת תמונת רקע</FormLabel>
-                      <FormControl><Input {...field} /></FormControl>
+                      <FormLabel>תמונת רקע</FormLabel>
+                      <FormControl>
+                        <Input type="file" accept="image/*" onChange={handleFileChange(field)} />
+                      </FormControl>
                       <FormMessage />
+                       {field.value && <img src={field.value} alt="Preview" className="mt-2 h-20 rounded-md" />}
                     </FormItem>
                   )} />
                 </AccordionContent>
@@ -104,9 +130,12 @@ export default function ContentManager() {
                   )} />
                    <FormField name="about.image" control={form.control} render={({ field }) => (
                     <FormItem>
-                      <FormLabel>כתובת תמונה</FormLabel>
-                      <FormControl><Input {...field} /></FormControl>
+                      <FormLabel>תמונה</FormLabel>
+                       <FormControl>
+                        <Input type="file" accept="image/*" onChange={handleFileChange(field)} />
+                      </FormControl>
                       <FormMessage />
+                      {field.value && <img src={field.value} alt="Preview" className="mt-2 h-20 rounded-md" />}
                     </FormItem>
                   )} />
                 </AccordionContent>
@@ -118,8 +147,11 @@ export default function ContentManager() {
                   <FormField name="menu.mainImage" control={form.control} render={({ field }) => (
                     <FormItem>
                       <FormLabel>תמונת באנר ראשית</FormLabel>
-                      <FormControl><Input {...field} /></FormControl>
+                      <FormControl>
+                        <Input type="file" accept="image/*" onChange={handleFileChange(field)} />
+                      </FormControl>
                       <FormMessage />
+                      {field.value && <img src={field.value} alt="Preview" className="mt-2 h-20 rounded-md" />}
                     </FormItem>
                   )} />
                 </AccordionContent>

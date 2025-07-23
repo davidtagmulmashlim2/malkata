@@ -14,13 +14,23 @@ import Image from 'next/image';
 import { Trash2 } from 'lucide-react';
 
 const gallerySchema = z.object({
-  src: z.string().url('כתובת תמונה לא חוקית'),
+  src: z.string().min(1, 'חובה להעלות תמונה'),
   alt: z.string().min(1, 'תיאור הוא שדה חובה'),
 });
+
+const readFileAsDataURL = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = (error) => reject(error);
+        reader.readAsDataURL(file);
+    });
+};
 
 export default function GalleryManager() {
   const { state, dispatch } = useApp();
   const { gallery } = state;
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof gallerySchema>>({
     resolver: zodResolver(gallerySchema),
@@ -31,11 +41,26 @@ export default function GalleryManager() {
     dispatch({ type: 'ADD_GALLERY_IMAGE', payload: { ...values, id: Date.now().toString() } });
     toast({ title: 'תמונה נוספה לגלריה!' });
     form.reset();
+    setImagePreview(null);
   };
 
   const deleteImage = (id: string) => {
     dispatch({ type: 'DELETE_GALLERY_IMAGE', payload: id });
     toast({ title: 'התמונה נמחקה מהגלריה.' });
+  };
+  
+  const handleFileChange = (field: any) => async (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (file) {
+          try {
+              const dataUrl = await readFileAsDataURL(file);
+              field.onChange(dataUrl);
+              setImagePreview(dataUrl);
+          } catch (error) {
+              console.error("Error reading file:", error);
+              toast({ title: "שגיאה בקריאת הקובץ", variant: "destructive" });
+          }
+      }
   };
 
   return (
@@ -87,9 +112,10 @@ export default function GalleryManager() {
                   name="src"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>כתובת תמונה (URL)</FormLabel>
-                      <FormControl><Input placeholder="https://..." {...field} /></FormControl>
+                      <FormLabel>קובץ תמונה</FormLabel>
+                      <FormControl><Input type="file" accept="image/*" onChange={handleFileChange(field)} /></FormControl>
                       <FormMessage />
+                      {imagePreview && <img src={imagePreview} alt="Preview" className="mt-2 h-20 rounded-md" />}
                     </FormItem>
                   )}
                 />

@@ -7,7 +7,7 @@ export interface Dish {
   images: string[];
   categoryId: string;
   isAvailable: boolean;
-  tags: ('recommended' | 'spicy')[];
+  tags: ('vegan' | 'spicy')[];
 }
 
 export interface Category {

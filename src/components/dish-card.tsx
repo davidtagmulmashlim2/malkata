@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import type { Dish } from '@/lib/types';
-import { Flame, ShoppingCart, Star } from 'lucide-react';
+import { Flame, ShoppingCart, Leaf } from 'lucide-react';
 import { Badge } from './ui/badge';
 import { useApp } from '@/context/app-context';
 import { toast } from '@/hooks/use-toast';
@@ -36,7 +36,7 @@ export function DishCard({ dish }: DishCardProps) {
           data-ai-hint="food dish"
         />
         <div className="absolute top-2 left-2 flex gap-2">
-            {dish.tags.includes('recommended') && <Badge variant="default" className="bg-amber-500 text-white"><Star className="w-3 h-3 mr-1" /> מומלץ</Badge>}
+            {dish.tags.includes('vegan') && <Badge variant="default" className="bg-green-600 text-white"><Leaf className="w-3 h-3 mr-1" /> טבעוני</Badge>}
             {dish.tags.includes('spicy') && <Badge variant="destructive"><Flame className="w-3 h-3 mr-1" /> חריף</Badge>}
         </div>
          {!dish.isAvailable && (

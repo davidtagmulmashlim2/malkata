@@ -17,7 +17,7 @@ export default function Home() {
   const { siteContent, dishes, testimonials } = state;
   const isClient = useIsClient();
   
-  const recommendedDishes = dishes.filter(d => d.tags.includes('recommended')).slice(0, 3);
+  const veganDishes = dishes.filter(d => d.tags.includes('vegan')).slice(0, 3);
 
   return (
     <div className="space-y-16 md:space-y-24">
@@ -34,7 +34,7 @@ export default function Home() {
         />
         <div className="z-10 p-4">
           <h1 className="text-4xl md:text-7xl font-headline font-bold drop-shadow-lg">
-            {isClient ? <Typewriter text={siteContent.hero.title} /> : siteContent.hero.title}
+            {isClient ? <Typewriter text={siteContent.hero.title} /> : <Skeleton className="h-16 w-[80vw] max-w-4xl mx-auto" />}
           </h1>
           <div className="mt-4 text-lg md:text-2xl max-w-2xl mx-auto drop-shadow-md">
             {isClient ? siteContent.hero.subtitle : <Skeleton className="h-8 w-96 mx-auto mt-2" />}
@@ -47,9 +47,9 @@ export default function Home() {
 
       {/* Recommended Dishes Section */}
       <section className="container">
-        <h2 className="text-3xl md:text-4xl font-headline font-bold text-center mb-10">מנות נבחרות</h2>
+        <h2 className="text-3xl md:text-4xl font-headline font-bold text-center mb-10">מנות טבעוניות</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {isClient ? recommendedDishes.map(dish => <DishCard key={dish.id} dish={dish} />) 
+          {isClient ? veganDishes.map(dish => <DishCard key={dish.id} dish={dish} />) 
           : Array(3).fill(0).map((_, i) => <Skeleton key={i} className="h-96 w-full" />)}
         </div>
       </section>
