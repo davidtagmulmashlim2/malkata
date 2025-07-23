@@ -107,23 +107,20 @@ export function CartSheet() {
             <ScrollArea className="flex-grow pr-4 -mr-6">
               <div className="flex flex-col gap-4 py-4">
                 {cartDetails.map(item => (
-                  <div key={item!.id} className="flex justify-between items-center gap-4">
-                    <div className="flex items-center gap-4 flex-1 min-w-0">
-                        <AsyncImage 
-                            imageKey={item!.mainImage} 
-                            alt={item!.name} 
-                            width={64}
-                            height={64}
-                            className="rounded-md object-cover h-16 w-16 shrink-0"
-                            data-ai-hint="food dish"
-                        />
-                        <div className="flex flex-col text-right flex-1 min-w-0">
-                          <h4 className="font-semibold truncate">{item!.name}</h4>
-                          <p className="text-sm text-muted-foreground">{item!.price} ₪</p>
-                        </div>
+                  <div key={item!.id} className="flex items-center gap-4">
+                     <AsyncImage 
+                        imageKey={item!.mainImage} 
+                        alt={item!.name} 
+                        width={64}
+                        height={64}
+                        className="rounded-md object-cover h-16 w-16 shrink-0"
+                        data-ai-hint="food dish"
+                    />
+                    <div className="flex-1 min-w-0">
+                      <h4 className="font-semibold truncate">{item!.name}</h4>
+                      <p className="text-sm text-muted-foreground">{item!.price} ₪</p>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <Input
+                     <Input
                         type="number"
                         min="1"
                         value={item!.quantity}
@@ -133,7 +130,6 @@ export function CartSheet() {
                       <Button variant="ghost" size="icon" onClick={() => removeFromCart(item!.id)}>
                         <Trash2 className="h-4 w-4 text-destructive" />
                       </Button>
-                    </div>
                   </div>
                 ))}
               </div>
