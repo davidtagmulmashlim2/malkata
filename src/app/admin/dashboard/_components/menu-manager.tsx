@@ -14,7 +14,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, Dialog
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
-import { PlusCircle, Edit, Trash2 } from 'lucide-react'
+import { PlusCircle, Edit, Trash2, X } from 'lucide-react'
 import { toast } from '@/hooks/use-toast'
 import type { Dish, Category } from '@/lib/types'
 
@@ -61,7 +61,7 @@ export default function MenuManager() {
 
   const openDishDialog = (dish: Dish | null = null) => {
     setEditingDish(dish)
-    dishForm.reset(dish ? { ...dish } : { isAvailable: true, tags: [], images: [] })
+    dishForm.reset(dish ? { ...dish, images: dish.images || [] } : { isAvailable: true, tags: [], images: [] })
     setIsDishDialogOpen(true)
   }
 
@@ -122,12 +122,20 @@ export default function MenuManager() {
         if (files) {
             try {
                 const dataUrls = await Promise.all(Array.from(files).map(file => readFileAsDataURL(file)));
-                field.onChange(dataUrls);
+                const currentImages = dishForm.getValues('images') || [];
+                field.onChange([...currentImages, ...dataUrls]);
             } catch (error) {
                 console.error("Error reading files:", error);
                 toast({ title: "שגיאה בקריאת הקבצים", variant: "destructive" });
             }
         }
+    };
+    
+    const removeImage = (index: number) => {
+        const currentImages = dishForm.getValues('images') || [];
+        const newImages = [...currentImages];
+        newImages.splice(index, 1);
+        dishForm.setValue('images', newImages, { shouldValidate: true });
     };
 
   return (
@@ -184,8 +192,21 @@ export default function MenuManager() {
                         <FormLabel>תמונות</FormLabel>
                         <FormControl><Input type="file" accept="image/*" multiple onChange={handleMultiFileChange(field)} /></FormControl>
                         <FormMessage />
-                        <div className="flex gap-2 mt-2">
-                            {dishForm.watch('images')?.map((img, i) => <img key={i} src={img} alt="preview" className="h-16 w-16 rounded-md object-cover" />)}
+                        <div className="flex flex-wrap gap-2 mt-2">
+                            {dishForm.watch('images')?.map((img, i) => (
+                                <div key={i} className="relative group">
+                                    <img src={img} alt="preview" className="h-24 w-24 rounded-md object-cover" />
+                                    <Button 
+                                        type="button"
+                                        variant="destructive"
+                                        size="icon"
+                                        className="absolute top-0 right-0 h-5 w-5 opacity-0 group-hover:opacity-100 transition-opacity"
+                                        onClick={() => removeImage(i)}
+                                    >
+                                        <X className="h-3 w-3" />
+                                    </Button>
+                                </div>
+                            ))}
                         </div>
                        </FormItem>
                     )} />
