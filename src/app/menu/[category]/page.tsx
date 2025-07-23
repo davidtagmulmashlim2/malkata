@@ -1,19 +1,21 @@
 'use client';
 import { useApp } from '@/context/app-context';
 import { DishCard } from '@/components/dish-card';
-import { notFound } from 'next/navigation';
+import { notFound, useParams } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import { useIsClient } from '@/hooks/use-is-client';
 import { Skeleton } from '@/components/ui/skeleton';
 
-export default function CategoryPage({ params }: { params: { category: string } }) {
+export default function CategoryPage() {
     const { state, animationClass } = useApp();
     const isClient = useIsClient();
+    const params = useParams();
+    const categorySlug = typeof params.category === 'string' ? params.category : '';
 
-    const category = state.categories.find(c => c.slug === params.category);
+    const category = state.categories.find(c => c.slug === categorySlug);
     
-    if (isClient && !category) {
+    if (isClient && !category && categorySlug) {
         notFound();
     }
 
@@ -34,7 +36,7 @@ export default function CategoryPage({ params }: { params: { category: string } 
     }
     
     if (!category) {
-        // This will be caught by notFound() on the client, but keeps TS happy.
+        // This will be caught by notFound() on the client, or show loading state.
         return null; 
     }
 
