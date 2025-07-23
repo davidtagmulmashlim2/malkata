@@ -86,13 +86,20 @@ export default function MenuManager() {
   const [editingCategory, setEditingCategory] = useState<Category | null>(null)
   const [categoryImagePreview, setCategoryImagePreview] = useState<string | null>(null);
 
-  const dishForm = useForm<z.infer<typeof dishSchema>>({ resolver: zodResolver(dishSchema) })
+  const dishForm = useForm<z.infer<typeof dishSchema>>({ 
+    resolver: zodResolver(dishSchema),
+    defaultValues: {
+        name: '', shortDescription: '', fullDescription: '', price: 0, categoryId: '',
+        isAvailable: true, isRecommended: false, tags: [], mainImage: '', galleryImages: []
+    }
+  })
   const categoryForm = useForm<z.infer<typeof categorySchema>>({ resolver: zodResolver(categorySchema) })
 
   useEffect(() => {
     if (editingDish) {
         dishForm.reset({
             ...editingDish,
+            price: editingDish.price || 0,
             galleryImages: editingDish.galleryImages || []
         });
     } else {
@@ -109,7 +116,7 @@ export default function MenuManager() {
             galleryImages: []
         });
     }
-}, [editingDish, dishForm]);
+  }, [editingDish, dishForm]);
 
   useEffect(() => {
       if (editingCategory && editingCategory.image) {
@@ -176,13 +183,17 @@ export default function MenuManager() {
     toast({ title: 'קטגוריה נמחקה' })
   }
 
-  const handleFileChange = (field: any) => async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>, fieldName: 'mainImage' | 'image') => {
       const file = e.target.files?.[0];
       if (file) {
           try {
               const dataUrl = await readFileAsDataURL(file);
               const imageKey = await storeImage(dataUrl);
-              field.onChange(imageKey);
+              if (fieldName === 'mainImage') {
+                dishForm.setValue(fieldName, imageKey, { shouldValidate: true });
+              } else {
+                categoryForm.setValue(fieldName, imageKey, { shouldValidate: true });
+              }
           } catch (error) {
               console.error("Error reading file:", error);
               toast({ title: "שגיאה בקריאת הקובץ", variant: "destructive" });
@@ -266,9 +277,9 @@ export default function MenuManager() {
                      <FormField name="mainImage" control={dishForm.control} render={({ field }) => (
                        <FormItem>
                         <FormLabel>תמונה ראשית</FormLabel>
-                         <FormControl><Input type="file" accept="image/*" onChange={handleFileChange(field)} /></FormControl>
+                         <FormControl><Input type="file" accept="image/*" onChange={(e) => handleFileChange(e, 'mainImage')} /></FormControl>
                         <FormMessage />
-                        {dishForm.watch('mainImage') && <ImagePreview imageKey={dishForm.watch('mainImage')} alt="תמונה ראשית" />}
+                        {field.value && <ImagePreview imageKey={field.value} alt="תמונה ראשית" />}
                        </FormItem>
                     )} />
                     <FormField name="galleryImages" control={dishForm.control} render={() => (
@@ -445,9 +456,9 @@ export default function MenuManager() {
                     <FormField name="image" control={categoryForm.control} render={({ field }) => (
                       <FormItem>
                         <FormLabel>תמונת באנר</FormLabel>
-                         <FormControl><Input type="file" accept="image/*" onChange={handleFileChange(field)} /></FormControl>
+                         <FormControl><Input type="file" accept="image/*" onChange={(e) => handleFileChange(e, 'image')} /></FormControl>
                         <FormMessage />
-                         {categoryForm.watch('image') && <ImagePreview imageKey={categoryForm.watch('image')} alt="תמונת קטגוריה" />}
+                         {field.value && <ImagePreview imageKey={field.value} alt="תמונת קטגוריה" />}
                       </FormItem>
                     )} />
                     <DialogFooter>
