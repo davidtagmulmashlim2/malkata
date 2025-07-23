@@ -36,9 +36,9 @@ export default function Home() {
           <h1 className="text-4xl md:text-7xl font-headline font-bold drop-shadow-lg">
             {isClient ? <Typewriter text={siteContent.hero.title} /> : siteContent.hero.title}
           </h1>
-          <p className="mt-4 text-lg md:text-2xl max-w-2xl mx-auto drop-shadow-md">
+          <div className="mt-4 text-lg md:text-2xl max-w-2xl mx-auto drop-shadow-md">
             {isClient ? siteContent.hero.subtitle : <Skeleton className="h-8 w-96 mx-auto mt-2" />}
-          </p>
+          </div>
           <Button asChild size="lg" className="mt-8 font-bold">
             <Link href="/menu">הזמן עכשיו</Link>
           </Button>
