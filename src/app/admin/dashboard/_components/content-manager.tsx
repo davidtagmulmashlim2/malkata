@@ -1,3 +1,4 @@
+
 'use client';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -62,6 +63,36 @@ export default function ContentManager() {
 
   const form = useForm<z.infer<typeof contentSchema>>({
     resolver: zodResolver(contentSchema),
+    defaultValues: {
+      hero: {
+        titleFirstWord: '',
+        titleRest: '',
+        subtitle: '',
+        image: '',
+        titleFirstWordColor: '#FFFFFF',
+        titleFirstWordFontSize: '7xl',
+        titleFirstWordOpacity: 1,
+        titleRestColor: '#FFFFFF',
+        titleRestFontSize: '6xl',
+        titleRestOpacity: 1,
+        subtitleOpacity: 1,
+      },
+      about: {
+        short: '',
+        long: '',
+        image: '',
+      },
+      contact: {
+        address: '',
+        phone: '',
+        whatsapp: '',
+        email: '',
+        hours: '',
+      },
+      menu: {
+        mainImage: '',
+      },
+    }
   });
 
   useEffect(() => {
@@ -291,3 +322,5 @@ export default function ContentManager() {
     </Card>
   );
 }
+
+    
