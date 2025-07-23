@@ -23,15 +23,17 @@ const DishImage = ({ imageKey, alt }: { imageKey: string, alt: string }) => {
     const [src, setSrc] = useState(() => getImageSync(imageKey) || 'https://placehold.co/600x400');
     
     useEffect(() => {
+        let isMounted = true;
         const fetchImage = async () => {
             const imageSrc = await getImage(imageKey);
-            if(imageSrc) {
+            if(isMounted && imageSrc) {
                 setSrc(imageSrc);
             }
         }
         if (!src.startsWith('data:image')) {
              fetchImage();
         }
+        return () => { isMounted = false; };
     }, [imageKey, src]);
 
     return (
@@ -40,25 +42,27 @@ const DishImage = ({ imageKey, alt }: { imageKey: string, alt: string }) => {
             alt={alt}
             width={600}
             height={400}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
             data-ai-hint="food dish"
         />
     )
 }
 
 const CarouselDishImage = ({ imageKey, alt }: { imageKey: string, alt: string }) => {
-    const [src, setSrc] = useState(() => getImageSync(imageKey) || 'https://placehold.co/600x400');
+    const [src, setSrc] = useState(() => getImageSync(imageKey) || 'https://placehold.co/600x600');
 
     useEffect(() => {
+        let isMounted = true;
         const fetchImage = async () => {
             const imageSrc = await getImage(imageKey);
-            if(imageSrc) {
+            if(isMounted && imageSrc) {
                 setSrc(imageSrc);
             }
         }
         if (!src.startsWith('data:image')) {
              fetchImage();
         }
+        return () => { isMounted = false; };
     }, [imageKey, src]);
     
     return (

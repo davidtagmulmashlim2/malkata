@@ -17,7 +17,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { PlusCircle, Edit, Trash2, X } from 'lucide-react'
 import { toast } from '@/hooks/use-toast'
 import type { Dish, Category } from '@/lib/types'
-import { storeImage, getImageSync, deleteImage as deleteImageFromStore } from '@/lib/image-store'
+import { storeImage, getImage, deleteImage as deleteImageFromStore } from '@/lib/image-store'
 import Image from 'next/image';
 
 const slugify = (text: string) => text.toLowerCase().replace(/[\s\W-]+/g, '-')
@@ -52,8 +52,21 @@ const categorySchema = z.object({
 
 
 const ImagePreview = ({ imageKey }: { imageKey: string }) => {
-    const src = getImageSync(imageKey);
-    if (!src) return null;
+    const [src, setSrc] = useState<string | null>(null);
+
+    useEffect(() => {
+        let isMounted = true;
+        const fetchImage = async () => {
+            const imageSrc = await getImage(imageKey);
+            if (isMounted) {
+                setSrc(imageSrc);
+            }
+        };
+        fetchImage();
+        return () => { isMounted = false; };
+    }, [imageKey]);
+
+    if (!src) return <div className="h-24 w-24 rounded-md bg-muted animate-pulse" />;
     return <Image src={src} alt="preview" width={96} height={96} className="h-24 w-24 rounded-md object-cover" />;
 };
 
@@ -150,14 +163,14 @@ export default function MenuManager() {
       }
   };
   
-   const handleMultiFileChange = (field: any) => async (e: React.ChangeEvent<HTMLInputElement>) => {
+   const handleMultiFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = e.target.files;
         if (files) {
             try {
                 const dataUrls = await Promise.all(Array.from(files).map(file => readFileAsDataURL(file)));
                 const imageKeys = await Promise.all(dataUrls.map(url => storeImage(url)));
                 const currentImages = dishForm.getValues('galleryImages') || [];
-                field.onChange([...currentImages, ...imageKeys]);
+                dishForm.setValue('galleryImages', [...currentImages, ...imageKeys], { shouldValidate: true });
             } catch (error) {
                 console.error("Error reading files:", error);
                 toast({ title: "שגיאה בקריאת הקבצים", variant: "destructive" });
@@ -244,29 +257,27 @@ export default function MenuManager() {
                         {dishForm.watch('mainImage') && <ImagePreview imageKey={dishForm.watch('mainImage')} />}
                        </FormItem>
                     )} />
-                    <FormField name="galleryImages" control={dishForm.control} render={({ field }) => (
-                       <FormItem>
-                        <FormLabel>תמונות נוספות (גלריה)</FormLabel>
-                        <FormControl><Input type="file" accept="image/*" multiple onChange={handleMultiFileChange(field)} /></FormControl>
-                        <FormMessage />
-                        <div className="flex flex-wrap gap-2 mt-2">
-                            {dishForm.watch('galleryImages')?.map((imgKey, i) => (
-                                <div key={i} className="relative group">
-                                    <ImagePreview imageKey={imgKey} />
-                                    <Button 
-                                        type="button"
-                                        variant="destructive"
-                                        size="icon"
-                                        className="absolute top-0 right-0 h-5 w-5 opacity-0 group-hover:opacity-100 transition-opacity"
-                                        onClick={() => removeGalleryImage(i)}
-                                    >
-                                        <X className="h-3 w-3" />
-                                    </Button>
-                                </div>
-                            ))}
-                        </div>
-                       </FormItem>
-                    )} />
+                    <FormItem>
+                      <FormLabel>תמונות נוספות (גלריה)</FormLabel>
+                      <FormControl><Input type="file" accept="image/*" multiple onChange={handleMultiFileChange} /></FormControl>
+                      <FormMessage />
+                      <div className="flex flex-wrap gap-2 mt-2">
+                          {dishForm.watch('galleryImages')?.map((imgKey, i) => (
+                              <div key={i} className="relative group">
+                                  <ImagePreview imageKey={imgKey} />
+                                  <Button 
+                                      type="button"
+                                      variant="destructive"
+                                      size="icon"
+                                      className="absolute top-0 right-0 h-5 w-5 opacity-0 group-hover:opacity-100 transition-opacity"
+                                      onClick={() => removeGalleryImage(i)}
+                                  >
+                                      <X className="h-3 w-3" />
+                                  </Button>
+                              </div>
+                          ))}
+                      </div>
+                    </FormItem>
                     <FormField name="categoryId" control={dishForm.control} render={({ field }) => (
                       <FormItem>
                         <FormLabel>קטגוריה</FormLabel>

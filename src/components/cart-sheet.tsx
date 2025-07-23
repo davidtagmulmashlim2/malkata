@@ -17,6 +17,40 @@ import { Input } from './ui/input';
 import { ScrollArea } from './ui/scroll-area';
 import { Separator } from './ui/separator';
 import { useIsClient } from '@/hooks/use-is-client';
+import { getImage, getImageSync } from '@/lib/image-store';
+import { useEffect, useState } from 'react';
+
+const CartDishImage = ({ imageKey, alt }: { imageKey: string; alt: string }) => {
+    const [src, setSrc] = useState(() => getImageSync(imageKey) || "https://placehold.co/64x64");
+
+    useEffect(() => {
+        let isMounted = true;
+        const fetchImage = async () => {
+            const imageSrc = await getImage(imageKey);
+            if (isMounted && imageSrc) {
+                setSrc(imageSrc);
+            }
+        };
+
+        if (!src.startsWith('data:image')) {
+            fetchImage();
+        }
+        
+        return () => { isMounted = false; };
+    }, [imageKey, src]);
+    
+    return (
+        <Image
+            src={src}
+            alt={alt}
+            width={64}
+            height={64}
+            className="rounded-md object-cover h-16 w-16"
+            data-ai-hint="food dish"
+        />
+    )
+}
+
 
 export function CartSheet() {
   const { cart, getDishById, updateCartQuantity, removeFromCart, state } = useApp();
@@ -65,14 +99,7 @@ export function CartSheet() {
               <div className="flex flex-col gap-4 py-4">
                 {cartDetails.map(item => (
                   <div key={item!.id} className="flex items-center gap-4">
-                    <Image
-                      src={item!.mainImage}
-                      alt={item!.name}
-                      width={64}
-                      height={64}
-                      className="rounded-md object-cover h-16 w-16"
-                      data-ai-hint="food dish"
-                    />
+                    <CartDishImage imageKey={item!.mainImage} alt={item!.name} />
                     <div className="flex-grow">
                       <h4 className="font-semibold">{item!.name}</h4>
                       <p className="text-sm text-muted-foreground">{item!.price} ₪</p>
