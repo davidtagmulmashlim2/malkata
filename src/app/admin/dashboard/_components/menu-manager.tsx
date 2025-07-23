@@ -41,6 +41,7 @@ const dishSchema = z.object({
   galleryImages: z.array(z.string()),
   categoryId: z.string().min(1, 'חובה לבחור קטגוריה'),
   isAvailable: z.boolean(),
+  isRecommended: z.boolean().optional(),
   tags: z.array(z.string()),
 })
 
@@ -96,6 +97,7 @@ export default function MenuManager() {
     } else {
         dishForm.reset({
             isAvailable: true,
+            isRecommended: false,
             tags: [],
             mainImage: '',
             galleryImages: []
@@ -106,7 +108,7 @@ export default function MenuManager() {
 
   const openDishDialog = (dish: Dish | null = null) => {
     setEditingDish(dish)
-    dishForm.reset(dish ? { ...dish, galleryImages: dish.galleryImages || [] } : { isAvailable: true, tags: [], mainImage: '', galleryImages: [] })
+    dishForm.reset(dish ? { ...dish, galleryImages: dish.galleryImages || [] } : { isAvailable: true, isRecommended: false, tags: [], mainImage: '', galleryImages: [] })
     setIsDishDialogOpen(true)
   }
 
@@ -335,12 +337,20 @@ export default function MenuManager() {
                         <FormMessage />
                       </FormItem>
                     )} />
-                    <FormField name="isAvailable" control={dishForm.control} render={({ field }) => (
-                      <FormItem className="flex items-center gap-2 space-y-0">
-                        <FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl>
-                        <FormLabel>זמין במלאי</FormLabel>
-                      </FormItem>
-                    )} />
+                    <div className="flex justify-between">
+                      <FormField name="isAvailable" control={dishForm.control} render={({ field }) => (
+                        <FormItem className="flex items-center gap-2 space-y-0">
+                          <FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl>
+                          <FormLabel>זמין במלאי</FormLabel>
+                        </FormItem>
+                      )} />
+                      <FormField name="isRecommended" control={dishForm.control} render={({ field }) => (
+                        <FormItem className="flex items-center gap-2 space-y-0">
+                          <FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl>
+                          <FormLabel>מנה מומלצת</FormLabel>
+                        </FormItem>
+                      )} />
+                    </div>
                     <DialogFooter>
                       <Button type="submit">שמור</Button>
                     </DialogFooter>
@@ -358,6 +368,7 @@ export default function MenuManager() {
                 <TableHead>קטגוריה</TableHead>
                 <TableHead>מחיר</TableHead>
                 <TableHead>זמינות</TableHead>
+                <TableHead>מומלצת</TableHead>
                 <TableHead className="text-left">פעולות</TableHead>
               </TableRow>
             </TableHeader>
@@ -368,6 +379,7 @@ export default function MenuManager() {
                   <TableCell>{categories.find(c => c.id === dish.categoryId)?.name}</TableCell>
                   <TableCell>{dish.price} ₪</TableCell>
                   <TableCell>{dish.isAvailable ? 'כן' : 'לא'}</TableCell>
+                  <TableCell>{dish.isRecommended ? 'כן' : 'לא'}</TableCell>
                   <TableCell className="text-left">
                     <div className="flex gap-2">
                       <Button variant="ghost" size="icon" onClick={() => openDishDialog(dish)}><Edit className="h-4 w-4" /></Button>
@@ -476,5 +488,3 @@ export default function MenuManager() {
     </div>
   )
 }
-
-    

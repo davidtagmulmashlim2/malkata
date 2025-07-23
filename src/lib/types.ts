@@ -108,4 +108,7 @@ export type Action =
   | { type: 'DELETE_CATEGORY'; payload: string }
   | { type: 'ADD_GALLERY_IMAGE'; payload: GalleryImage }
   | { type: 'DELETE_GALLERY_IMAGE'; payload: string }
-  | { type: 'UPDATE_DESIGN'; payload: DesignSettings };
+  | { type: 'UPDATE_DESIGN'; payload: DesignSettings }
+  | { type: 'ADD_TESTIMONIAL'; payload: Testimonial }
+  | { type: 'UPDATE_TESTIMONIAL'; payload: Testimonial }
+  | { type: 'DELETE_TESTIMONIAL'; payload: string };

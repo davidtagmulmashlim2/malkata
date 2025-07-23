@@ -31,6 +31,12 @@ const appReducer = (state: AppState, action: Action): AppState => {
         return { ...state, gallery: state.gallery.filter(img => img.id !== action.payload) };
     case 'UPDATE_DESIGN':
         return { ...state, design: action.payload };
+    case 'ADD_TESTIMONIAL':
+        return { ...state, testimonials: [...state.testimonials, action.payload] };
+    case 'UPDATE_TESTIMONIAL':
+        return { ...state, testimonials: state.testimonials.map(t => t.id === action.payload.id ? action.payload : t) };
+    case 'DELETE_TESTIMONIAL':
+        return { ...state, testimonials: state.testimonials.filter(t => t.id !== action.payload) };
     default:
       return state;
   }
