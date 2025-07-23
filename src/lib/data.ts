@@ -15,7 +15,7 @@ export const DEFAULT_APP_STATE: AppState = {
       titleRestFontSize: '6xl',
       titleRestOpacity: 1,
       subtitleOpacity: 1,
-      animationInterval: 0,
+      animationInterval: 5,
       heroImageBrightness: 50,
       verticalAlign: 'center',
       horizontalAlign: 'center',
@@ -121,6 +121,6 @@ export const DEFAULT_APP_STATE: AppState = {
     theme: 'default',
     headlineFont: 'playfair',
     bodyFont: 'pt-sans',
-    logoIcon: 'default',
+    logoIcon: 'crown',
   },
 };
