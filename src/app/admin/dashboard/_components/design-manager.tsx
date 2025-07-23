@@ -1,3 +1,4 @@
+
 'use client';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -14,6 +15,7 @@ const designSchema = z.object({
   theme: z.string(),
   headlineFont: z.string(),
   bodyFont: z.string(),
+  logoIcon: z.string(),
 });
 
 const themes = [
@@ -40,6 +42,15 @@ const fonts = [
     { name: 'Montserrat', value: 'montserrat' },
     { name: 'Open Sans', value: 'open-sans' },
     { name: 'Frank Ruhl Libre', value: 'frank-ruhl-libre' },
+];
+
+const logoIcons = [
+    { name: 'ברירת מחדל (סכו״ם)', value: 'default' },
+    { name: 'כתר', value: 'crown' },
+    { name: 'יהלום', value: 'gem' },
+    { name: 'כוכב', value: 'star' },
+    { name: 'מגן', value: 'shield' },
+    { name: 'ללא', value: 'none' },
 ];
 
 export default function DesignManager() {
@@ -70,28 +81,52 @@ export default function DesignManager() {
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            <FormField
-              control={form.control}
-              name="theme"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-lg font-headline">ערכת נושא</FormLabel>
-                   <Select onValueChange={field.onChange} value={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="בחר ערכת נושא" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {themes.map(theme => (
-                        <SelectItem key={theme.value} value={theme.value}>{theme.name}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <FormField
+                  control={form.control}
+                  name="theme"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-lg font-headline">ערכת נושא</FormLabel>
+                       <Select onValueChange={field.onChange} value={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="בחר ערכת נושא" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {themes.map(theme => (
+                            <SelectItem key={theme.value} value={theme.value}>{theme.name}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                 <FormField
+                  control={form.control}
+                  name="logoIcon"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-lg font-headline">סמל לוגו</FormLabel>
+                       <Select onValueChange={field.onChange} value={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="בחר סמל" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {logoIcons.map(icon => (
+                            <SelectItem key={icon.value} value={icon.value}>{icon.name}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+            </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                  <FormField

@@ -1,3 +1,4 @@
+
 import type { AppState } from './types';
 
 export const DEFAULT_APP_STATE: AppState = {
@@ -120,5 +121,6 @@ export const DEFAULT_APP_STATE: AppState = {
     theme: 'default',
     headlineFont: 'playfair',
     bodyFont: 'pt-sans',
+    logoIcon: 'default',
   },
 };

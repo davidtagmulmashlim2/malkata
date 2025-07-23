@@ -1,3 +1,4 @@
+
 export interface Dish {
   id: string;
   name: string;
@@ -72,6 +73,7 @@ export interface DesignSettings {
   theme: string;
   headlineFont: string;
   bodyFont: string;
+  logoIcon: string;
 }
 
 export interface CartItem {

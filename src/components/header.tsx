@@ -1,12 +1,14 @@
+
 'use client';
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, UtensilsCrossed, User } from 'lucide-react';
+import { Menu, UtensilsCrossed, User, Crown, Gem, Star, Shield } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useApp } from '@/context/app-context';
+import React from 'react';
 
 const navLinks = [
   { href: '/', label: 'בית' },
@@ -16,8 +18,27 @@ const navLinks = [
   { href: '/contact', label: 'צור קשר' },
 ];
 
+const iconMap: { [key: string]: React.ElementType | null } = {
+  default: UtensilsCrossed,
+  crown: Crown,
+  gem: Gem,
+  star: Star,
+  shield: Shield,
+  none: null,
+};
+
+
 export function Header() {
   const pathname = usePathname();
+  const { state } = useApp();
+  const IconComponent = iconMap[state.design.logoIcon] || UtensilsCrossed;
+
+  const Logo = () => (
+     <Link href="/" className="flex items-center gap-2 font-headline text-2xl font-bold text-primary">
+        {IconComponent && <IconComponent className="h-7 w-7" />}
+        מלכתא
+    </Link>
+  );
 
   const NavLinks = ({ className }: { className?: string }) => (
     <nav className={cn('flex items-center gap-4 lg:gap-6', className)}>
@@ -45,10 +66,7 @@ export function Header() {
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background/80 backdrop-blur-sm">
       <div className="container flex h-16 items-center justify-between">
-        <Link href="/" className="flex items-center gap-2 font-headline text-2xl font-bold text-primary">
-          <UtensilsCrossed className="h-7 w-7" />
-          מלכתא
-        </Link>
+        <Logo />
         <div className="hidden md:flex">
           <NavLinks />
         </div>
@@ -62,10 +80,7 @@ export function Header() {
             </SheetTrigger>
             <SheetContent side="right">
               <div className="flex flex-col gap-6 p-6">
-                <Link href="/" className="flex items-center gap-2 font-headline text-2xl font-bold text-primary">
-                  <UtensilsCrossed className="h-7 w-7" />
-                  מלכתא
-                </Link>
+                <Logo />
                 <NavLinks className="flex-col items-start text-lg gap-6" />
               </div>
             </SheetContent>
