@@ -38,6 +38,7 @@ export const DEFAULT_APP_STATE: AppState = {
     }
   },
   categories: [
+    { id: 'shabbat', name: 'שבת מלכתא', slug: 'shabbat-malkata', description: 'אוכל מוכן לשבת, ממש כמו בבית.', image: 'https://placehold.co/1000x400.png' },
     { id: '1', name: 'עיקריות', slug: 'main-dishes', description: 'הלב של הארוחה, מנות עשירות ומנחמות.', image: 'https://placehold.co/1000x400.png' },
     { id: '2', name: 'תוספות', slug: 'side-dishes', description: 'מה שהופך ארוחה טובה למצוינת.', image: 'https://placehold.co/1000x400.png' },
     { id: '3', name: 'סלטים', slug: 'salads', description: 'רעננות וצבעוניות בכל ביס.', image: 'https://placehold.co/1000x400.png' },

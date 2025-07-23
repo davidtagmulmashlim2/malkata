@@ -63,7 +63,7 @@ export function Header() {
           key={link.href}
           href={link.href}
           className={cn(
-            'transition-colors hover:text-primary',
+            'transition-colors hover:text-primary whitespace-nowrap',
             pathname === link.href ? 'text-primary font-bold' : 'text-muted-foreground'
           )}
         >
@@ -74,7 +74,7 @@ export function Header() {
          <Link
           href="/admin"
           className={cn(
-            'transition-colors hover:text-primary',
+            'transition-colors hover:text-primary whitespace-nowrap',
             pathname.startsWith('/admin') ? 'text-primary font-bold' : 'text-muted-foreground'
           )}
         >
