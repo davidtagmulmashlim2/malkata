@@ -60,6 +60,7 @@ export function CartSheet() {
   const isClient = useIsClient();
   const [customerName, setCustomerName] = useState('');
   const [customerPhone, setCustomerPhone] = useState('');
+  const [customerAddress, setCustomerAddress] = useState('');
 
   const cartDetails = isClient ? cart.map(item => {
     const dish = getDishById(item.dishId);
@@ -69,12 +70,15 @@ export function CartSheet() {
   const total = cartDetails.reduce((sum, item) => sum + item!.price * item!.quantity, 0);
 
   const handleWhatsAppOrder = () => {
-    if (!customerName || !customerPhone) {
-        alert('יש למלא שם וטלפון לפני שליחת ההזמנה.');
+    if (!customerName || !customerPhone || !customerAddress) {
+        alert('יש למלא שם, טלפון וכתובת לפני שליחת ההזמנה.');
         return;
     }
     const { contact } = state.siteContent;
-    let message = `שלום, אני ${customerName}, טלפון ${customerPhone}. ברצוני לבצע הזמנה:\n\n`;
+    let message = `שלום, אני ${customerName}, טלפון ${customerPhone}.\n`;
+    message += `כתובת למשלוח: ${customerAddress}\n\n`;
+    message += `ברצוני לבצע הזמנה:\n\n`;
+    
     cartDetails.forEach(item => {
       message += `${item!.name} (x${item!.quantity}) - ${item!.price * item!.quantity} ₪\n`;
     });
@@ -84,6 +88,8 @@ export function CartSheet() {
     const whatsappUrl = `https://wa.me/${contact.whatsapp}?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
   };
+
+  const canSubmit = customerName !== '' && customerPhone !== '' && customerAddress !== '';
 
   return (
     <Sheet>
@@ -149,9 +155,13 @@ export function CartSheet() {
                             <Label htmlFor="customerPhone">טלפון</Label>
                             <Input id="customerPhone" type="tel" value={customerPhone} onChange={(e) => setCustomerPhone(e.target.value)} placeholder='050-1234567' />
                         </div>
+                         <div className='space-y-2'>
+                            <Label htmlFor="customerAddress">כתובת למשלוח</Label>
+                            <Input id="customerAddress" value={customerAddress} onChange={(e) => setCustomerAddress(e.target.value)} placeholder='רחוב, מספר בית, עיר' />
+                        </div>
                     </div>
-                    <SheetClose asChild={customerName !== '' && customerPhone !== ''}>
-                        <Button type="submit" className="w-full" onClick={handleWhatsAppOrder}>
+                    <SheetClose asChild={canSubmit}>
+                        <Button type="submit" className="w-full" onClick={handleWhatsAppOrder} disabled={!canSubmit}>
                         שליחת הזמנה ב-WhatsApp
                         </Button>
                     </SheetClose>
