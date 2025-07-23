@@ -1,16 +1,43 @@
+
+'use client';
 import type { Metadata } from 'next';
-import { AppProvider } from '@/context/app-context';
+import { AppProvider, useApp } from '@/context/app-context';
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
 import { Toaster } from '@/components/ui/toaster';
 import { CartSheet } from '@/components/cart-sheet';
 import { cn } from '@/lib/utils';
 import './globals.css';
+import { useIsClient } from '@/hooks/use-is-client';
+import { useEffect } from 'react';
 
-export const metadata: Metadata = {
-  title: 'מלכתא תפריט | אוכל ביתי אותנטי',
-  description: 'תפריט המסעדה של מלכתא. בואו לחוות טעמים של בית עם המנות המיוחדות שלנו.',
-};
+// export const metadata: Metadata = {
+//   title: 'מלכתא תפריט | אוכל ביתי אותנטי',
+//   description: 'תפריט המסעדה של מלכתא. בואו לחוות טעמים של בית עם המנות המיוחדות שלנו.',
+// };
+
+function AppBody({ children }: { children: React.ReactNode }) {
+    const { bodyClass, state } = useApp();
+    const isClient = useIsClient();
+
+    useEffect(() => {
+        if(isClient) {
+            document.title = state.siteContent.hero.title;
+        }
+    }, [isClient, state.siteContent.hero.title]);
+
+    return (
+        <body className={cn('font-body antialiased bg-background text-foreground', isClient ? bodyClass : '')}>
+            <div className="flex flex-col min-h-screen">
+                <Header />
+                <main className="flex-grow">{children}</main>
+                <Footer />
+            </div>
+            <CartSheet />
+            <Toaster />
+        </body>
+    )
+}
 
 export default function RootLayout({
   children,
@@ -24,17 +51,9 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=PT+Sans:wght@400;700&display=swap" rel="stylesheet" />
       </head>
-      <body className={cn('font-body antialiased bg-background text-foreground')}>
-        <AppProvider>
-            <div className="flex flex-col min-h-screen">
-                <Header />
-                <main className="flex-grow">{children}</main>
-                <Footer />
-            </div>
-            <CartSheet />
-            <Toaster />
-        </AppProvider>
-      </body>
+      <AppProvider>
+        <AppBody>{children}</AppBody>
+      </AppProvider>
     </html>
   );
 }
