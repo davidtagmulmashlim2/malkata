@@ -11,6 +11,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { toast } from '@/hooks/use-toast';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Slider } from '@/components/ui/slider';
 
 const contentSchema = z.object({
   hero: z.object({
@@ -20,8 +21,11 @@ const contentSchema = z.object({
     image: z.string().min(1, 'חובה'),
     titleFirstWordColor: z.string(),
     titleFirstWordFontSize: z.string(),
+    titleFirstWordOpacity: z.number().min(0).max(1),
     titleRestColor: z.string(),
     titleRestFontSize: z.string(),
+    titleRestOpacity: z.number().min(0).max(1),
+    subtitleOpacity: z.number().min(0).max(1),
   }),
   about: z.object({
     short: z.string().min(1, 'חובה'),
@@ -144,11 +148,34 @@ export default function ContentManager() {
                         </FormItem>
                       )} />
                   </div>
+                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
+                     <FormField name="hero.titleFirstWordOpacity" control={form.control} render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>שקיפות מילה ראשונה ({Math.round(field.value * 100)}%)</FormLabel>
+                          <FormControl><Slider defaultValue={[field.value]} min={0} max={1} step={0.05} onValueChange={(v) => field.onChange(v[0])} /></FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )} />
+                       <FormField name="hero.titleRestOpacity" control={form.control} render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>שקיפות שאר המשפט ({Math.round(field.value * 100)}%)</FormLabel>
+                          <FormControl><Slider defaultValue={[field.value]} min={0} max={1} step={0.05} onValueChange={(v) => field.onChange(v[0])} /></FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )} />
+                  </div>
                   <FormField name="hero.subtitle" control={form.control} render={({ field }) => (
                     <FormItem>
                       <FormLabel>כותרת משנה</FormLabel>
                       <FormControl><Input {...field} /></FormControl>
                       <FormMessage />
+                    </FormItem>
+                  )} />
+                  <FormField name="hero.subtitleOpacity" control={form.control} render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>שקיפות כותרת משנה ({Math.round(field.value * 100)}%)</FormLabel>
+                        <FormControl><Slider defaultValue={[field.value]} min={0} max={1} step={0.05} onValueChange={(v) => field.onChange(v[0])} /></FormControl>
+                        <FormMessage />
                     </FormItem>
                   )} />
                   <FormField name="hero.image" control={form.control} render={({ field }) => (

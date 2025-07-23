@@ -43,13 +43,13 @@ export default function Home() {
             {isClient ? (
                 <Typewriter
                     textParts={[
-                        { text: siteContent.hero.titleFirstWord, style: { color: siteContent.hero.titleFirstWordColor }, className: textSizeClasses[siteContent.hero.titleFirstWordFontSize] },
-                        { text: ` ${siteContent.hero.titleRest}`, style: { color: siteContent.hero.titleRestColor }, className: textSizeClasses[siteContent.hero.titleRestFontSize] },
+                        { text: siteContent.hero.titleFirstWord, style: { color: siteContent.hero.titleFirstWordColor, opacity: siteContent.hero.titleFirstWordOpacity }, className: textSizeClasses[siteContent.hero.titleFirstWordFontSize] },
+                        { text: ` ${siteContent.hero.titleRest}`, style: { color: siteContent.hero.titleRestColor, opacity: siteContent.hero.titleRestOpacity }, className: textSizeClasses[siteContent.hero.titleRestFontSize] },
                     ]}
                 />
             ) : <Skeleton className="h-16 w-[80vw] max-w-4xl mx-auto" />}
           </h1>
-          <div className="mt-4 text-lg md:text-2xl max-w-2xl mx-auto drop-shadow-md">
+          <div className="mt-4 text-lg md:text-2xl max-w-2xl mx-auto drop-shadow-md" style={{ opacity: isClient ? siteContent.hero.subtitleOpacity : 1 }}>
             {isClient ? siteContent.hero.subtitle : <Skeleton className="h-8 w-96 mx-auto mt-2" />}
           </div>
           <Button asChild size="lg" className="mt-8 font-bold">

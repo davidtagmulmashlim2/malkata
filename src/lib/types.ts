@@ -38,8 +38,11 @@ export interface SiteContent {
     image: string;
     titleFirstWordColor: string;
     titleFirstWordFontSize: string;
+    titleFirstWordOpacity: number;
     titleRestColor: string;
     titleRestFontSize: string;
+    titleRestOpacity: number;
+    subtitleOpacity: number;
   };
   about: {
     short: string;
