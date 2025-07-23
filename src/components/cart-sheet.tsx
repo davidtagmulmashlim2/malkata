@@ -162,7 +162,7 @@ export function CartSheet() {
               </div>
             </ScrollArea>
             <SheetFooter className="mt-auto">
-                <div className="w-full space-y-4">
+                <div className="w-full space-y-4 text-right">
                     <Separator />
                     <div className="flex justify-between text-lg font-bold">
                         <span>סה"כ:</span>
