@@ -164,19 +164,25 @@ export default function MenuManager() {
     dispatch({ type: 'DELETE_CATEGORY', payload: id })
     toast({ title: 'קטגוריה נמחקה' })
   }
-
-  const handleDishImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      try {
-        const dataUrl = await readFileAsDataURL(file);
-        const imageKey = await storeImage(dataUrl);
-        dishForm.setValue('mainImage', imageKey, { shouldValidate: true });
-      } catch (error) {
-        console.error("Error reading file:", error);
-        toast({ title: "שגיאה בקריאת הקובץ", variant: "destructive" });
+  
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>, fieldName: 'mainImage' | 'image') => {
+      const file = e.target.files?.[0];
+      if (file) {
+          try {
+              const dataUrl = await readFileAsDataURL(file);
+              const imageKey = await storeImage(dataUrl);
+              if (fieldName === 'mainImage') {
+                dishForm.setValue(fieldName, imageKey, { shouldValidate: true });
+                dishForm.trigger('mainImage');
+              } else {
+                categoryForm.setValue(fieldName, imageKey, { shouldValidate: true });
+                categoryForm.trigger('image');
+              }
+          } catch (error) {
+              console.error("Error reading file:", error);
+              toast({ title: "שגיאה בקריאת הקובץ", variant: "destructive" });
+          }
       }
-    }
   };
   
    const handleMultiFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -201,20 +207,6 @@ export default function MenuManager() {
         const newImages = [...currentImages];
         newImages.splice(index, 1);
         dishForm.setValue('galleryImages', newImages, { shouldValidate: true });
-    };
-
-    const handleCategoryImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-      const file = e.target.files?.[0];
-      if (file) {
-        try {
-          const dataUrl = await readFileAsDataURL(file);
-          const imageKey = await storeImage(dataUrl);
-          categoryForm.setValue('image', imageKey, { shouldValidate: true });
-        } catch (error) {
-          console.error("Error reading file:", error);
-          toast({ title: "שגיאה בקריאת הקובץ", variant: "destructive" });
-        }
-      }
     };
 
   return (
@@ -269,7 +261,7 @@ export default function MenuManager() {
                      <FormField name="mainImage" control={dishForm.control} render={({ field }) => (
                        <FormItem>
                         <FormLabel>תמונה ראשית</FormLabel>
-                         <FormControl><Input type="file" accept="image/*" onChange={handleDishImageChange} /></FormControl>
+                         <FormControl><Input type="file" accept="image/*" onChange={(e) => handleFileChange(e, 'mainImage')} /></FormControl>
                         <FormMessage />
                         {field.value && <ImagePreview imageKey={field.value} alt="תמונה ראשית" />}
                        </FormItem>
@@ -300,7 +292,7 @@ export default function MenuManager() {
                     <FormField name="categoryId" control={dishForm.control} render={({ field }) => (
                       <FormItem>
                         <FormLabel>קטגוריה</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <Select onValueChange={field.onChange} value={field.value}>
                           <FormControl><SelectTrigger><SelectValue placeholder="בחר קטגוריה" /></SelectTrigger></FormControl>
                           <SelectContent>
                             {categories.map(c => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}
@@ -448,7 +440,7 @@ export default function MenuManager() {
                     <FormField name="image" control={categoryForm.control} render={({ field }) => (
                       <FormItem>
                         <FormLabel>תמונת באנר</FormLabel>
-                         <FormControl><Input type="file" accept="image/*" onChange={handleCategoryImageChange} /></FormControl>
+                         <FormControl><Input type="file" accept="image/*" onChange={(e) => handleFileChange(e, 'image')} /></FormControl>
                         <FormMessage />
                          {field.value && <ImagePreview imageKey={field.value} alt="תמונת קטגוריה" />}
                       </FormItem>
@@ -498,3 +490,5 @@ export default function MenuManager() {
     </div>
   )
 }
+
+    
