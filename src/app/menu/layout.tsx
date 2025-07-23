@@ -19,6 +19,8 @@ export default function MenuLayout({
   const pathname = usePathname();
   const isClient = useIsClient();
 
+  const isAllDishesActive = pathname === '/menu';
+
   return (
     <div>
         <nav className="border-b bg-card sticky top-16 z-30">
@@ -26,19 +28,22 @@ export default function MenuLayout({
                 <div className="flex items-center gap-2 flex-wrap justify-center">
                     {isClient ? (
                         <>
-                            <Button asChild variant={pathname === '/menu' ? 'default' : 'ghost'} size="sm">
+                            <Button asChild variant={isAllDishesActive ? 'default' : 'ghost'} size="sm">
                                 <Link href="/menu">כל המנות</Link>
                             </Button>
-                            {categories.map(category => (
-                                <Button
-                                    key={category.id}
-                                    asChild
-                                    variant={pathname === `/menu/${category.slug}` ? 'default' : 'ghost'}
-                                    size="sm"
-                                >
-                                    <Link href={`/menu/${category.slug}`}>{category.name}</Link>
-                                </Button>
-                            ))}
+                            {categories.map(category => {
+                                const isCategoryActive = pathname === `/menu/${category.slug}`;
+                                return (
+                                    <Button
+                                        key={category.id}
+                                        asChild
+                                        variant={isCategoryActive ? 'default' : 'ghost'}
+                                        size="sm"
+                                    >
+                                        <Link href={`/menu/${category.slug}`}>{category.name}</Link>
+                                    </Button>
+                                );
+                            })}
                         </>
                     ) : (
                         <div className="flex gap-2">
