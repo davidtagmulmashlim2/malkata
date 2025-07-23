@@ -18,6 +18,9 @@ export default function MenuLayout({
   const { categories } = state;
   const pathname = usePathname();
   const isClient = useIsClient();
+  
+  const shabbatCategorySlug = 'shabbat-malkata';
+  const shabbatCategory = categories.find(c => c.slug === shabbatCategorySlug);
 
   return (
     <div>
@@ -29,16 +32,27 @@ export default function MenuLayout({
                             <Button asChild variant={pathname === '/menu' ? 'default' : 'ghost'} size="sm">
                                 <Link href="/menu">כל המנות</Link>
                             </Button>
-                            {categories.map(category => (
+                            {shabbatCategory && (
+                                <Button
+                                    asChild
+                                    variant={pathname === `/menu/${shabbatCategory.slug}` ? 'default' : 'ghost'}
+                                    size="sm"
+                                    className={cn(
+                                        'btn-shabbat',
+                                        {'active': pathname === `/menu/${shabbatCategory.slug}`}
+                                    )}
+                                >
+                                    <Link href={`/menu/${shabbatCategory.slug}`}>{shabbatCategory.name}</Link>
+                                </Button>
+                            )}
+                            {categories
+                                .filter(category => category.slug !== shabbatCategorySlug)
+                                .map(category => (
                                 <Button
                                     key={category.id}
                                     asChild
                                     variant={pathname === `/menu/${category.slug}` ? 'default' : 'ghost'}
                                     size="sm"
-                                    className={cn(
-                                        {'btn-shabbat': category.slug === 'shabbat-malkata'},
-                                        {'active': pathname === `/menu/${category.slug}` && category.slug === 'shabbat-malkata'}
-                                    )}
                                 >
                                     <Link href={`/menu/${category.slug}`}>{category.name}</Link>
                                 </Button>
@@ -46,7 +60,7 @@ export default function MenuLayout({
                         </>
                     ) : (
                         <div className="flex gap-2">
-                           {Array(4).fill(0).map((_, i) => <Skeleton key={i} className="h-9 w-24" />)}
+                           {Array(5).fill(0).map((_, i) => <Skeleton key={i} className="h-9 w-24" />)}
                         </div>
                     )}
                 </div>
