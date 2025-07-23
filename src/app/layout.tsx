@@ -13,11 +13,19 @@ function AppBody({ children }: { children: React.ReactNode }) {
     const { state } = useApp();
     const isClient = useIsClient();
 
-    const themeClass = isClient ? `theme-${state.design.theme}` : '';
-    const animationClass = state.design.animation === 'fadeIn' ? 'animation-fade-in' : state.design.animation === 'slideUp' ? 'animation-slide-up' : '';
+    useEffect(() => {
+        if(isClient) {
+            // Remove any existing theme classes
+            document.documentElement.className = '';
+            // Add the new theme class
+            document.documentElement.classList.add(`theme-${state.design.theme}`);
+        }
+    }, [isClient, state.design.theme]);
+
+    const animationClass = isClient ? (state.design.animation === 'fadeIn' ? 'animation-fade-in' : state.design.animation === 'slideUp' ? 'animation-slide-up' : '') : '';
 
     return (
-        <body className={cn('min-h-screen flex flex-col', themeClass, animationClass)}>
+        <body className={cn('min-h-screen flex flex-col', animationClass)}>
             <Header />
             <main className="flex-grow">{children}</main>
             <Footer />
@@ -33,15 +41,26 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="he" dir="rtl">
-        <head>
-            {/* Font preconnects are now in globals.css via @import */}
-        </head>
-        <AppProvider>
+    <AppProvider>
+        <ThemedHtml>
             <AppBody>
                 {children}
             </AppBody>
-        </AppProvider>
-    </html>
+        </ThemedHtml>
+    </AppProvider>
   );
+}
+
+// A component to apply the theme to the <html> tag
+function ThemedHtml({ children }: { children: React.ReactNode }) {
+    const { state } = useApp();
+    const isClient = useIsClient();
+    const themeClass = isClient ? `theme-${state.design.theme}` : '';
+
+    return (
+        <html lang="he" dir="rtl" className={themeClass}>
+            <head />
+            {children}
+        </html>
+    )
 }
