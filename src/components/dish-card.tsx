@@ -4,12 +4,11 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import type { Dish } from '@/lib/types';
-import { Flame, ShoppingCart, Leaf } from 'lucide-react';
+import { Flame, ShoppingCart, Leaf, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Badge } from './ui/badge';
 import { useApp } from '@/context/app-context';
 import { toast } from '@/hooks/use-toast';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from '@/components/ui/dialog';
-import { Carousel, CarouselApi, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import { useEffect, useState, useMemo } from 'react';
 import { cn } from '@/lib/utils';
 import { useIsClient } from '@/hooks/use-is-client';
@@ -25,28 +24,20 @@ export function DishCard({ dish }: DishCardProps) {
   const isClient = useIsClient();
   
   const allImages = useMemo(() => {
-    const images = [dish.mainImage, ...(dish.galleryImages || [])];
-    return [...new Set(images)].filter(Boolean); // Remove duplicates and empty strings
-  }, [dish.mainImage, dish.galleryImages]);
-
-  const [api, setApi] = useState<CarouselApi>();
-  const [current, setCurrent] = useState(0);
-
-  useEffect(() => {
-    if (!api) return;
-    
-    const onSelect = (api: CarouselApi) => {
-      setCurrent(api.selectedScrollSnap());
-    };
-
-    api.on("select", onSelect);
-    api.reInit(); // Re-init to apply listeners correctly after data loads
-    onSelect(api); // Set initial state
-
-    return () => {
-        api.off("select", onSelect);
+    // Create a set to ensure unique image keys
+    const imageSet = new Set<string>();
+    if (dish.mainImage) {
+        imageSet.add(dish.mainImage);
     }
-  }, [api, allImages.length]);
+    if (dish.galleryImages && Array.isArray(dish.galleryImages)) {
+        dish.galleryImages.forEach(imgKey => {
+            if (imgKey) imageSet.add(imgKey);
+        });
+    }
+    return Array.from(imageSet);
+  }, [dish.mainImage, dish.galleryImages]);
+  
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   const handleAddToCart = () => {
     addToCart(dish.id);
@@ -56,12 +47,16 @@ export function DishCard({ dish }: DishCardProps) {
     });
   }
   
-  const scrollTo = (index: number) => {
-    api?.scrollTo(index);
-  }
+  const nextImage = () => {
+      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % allImages.length);
+  };
+
+  const prevImage = () => {
+      setCurrentImageIndex((prevIndex) => (prevIndex - 1 + allImages.length) % allImages.length);
+  };
 
   return (
-    <Dialog>
+    <Dialog onOpenChange={() => setCurrentImageIndex(0)}>
       <Card className="flex flex-col overflow-hidden h-full transition-all hover:shadow-lg hover:-translate-y-1 group text-right">
         <DialogTrigger asChild>
             <div className="relative cursor-pointer aspect-square w-full overflow-hidden">
@@ -98,49 +93,46 @@ export function DishCard({ dish }: DishCardProps) {
       <DialogContent className="sm:max-w-4xl text-right">
         <div className="grid md:grid-cols-2 gap-8">
             <div className="w-full">
-                {isClient && allImages.length > 0 ? (
-                    <div>
-                        <Carousel setApi={setApi} className="w-full relative" dir="rtl">
-                            <CarouselContent>
-                                {allImages.map((imgKey, i) => (
-                                    <CarouselItem key={imgKey ? `${imgKey}-${i}` : `item-${i}`}>
-                                        <div className="w-full aspect-square relative">
-                                            <AsyncImage 
-                                                imageKey={imgKey} 
-                                                alt={`${dish.name} - תמונה ${i+1}`} 
-                                                layout="fill"
-                                                objectFit="cover"
-                                                className="rounded-md"
-                                                data-ai-hint="food dish"
-                                            />
-                                        </div>
-                                    </CarouselItem>
-                                ))}
-                            </CarouselContent>
-                            {allImages.length > 1 && <>
-                              <CarouselPrevious className="absolute start-4 top-1/2 -translate-y-1/2 z-10" />
-                              <CarouselNext className="absolute end-4 top-1/2 -translate-y-1/2 z-10" />
-                            </>}
-                        </Carousel>
-                        {allImages.length > 1 && (
-                            <div className="flex justify-center gap-2 mt-4">
-                                {allImages.map((_, i) => (
-                                    <button 
-                                        key={i} 
-                                        onClick={() => scrollTo(i)} 
-                                        className={cn(
-                                            "h-2 w-2 rounded-full transition-colors", 
-                                            current === i ? "bg-primary" : "bg-muted hover:bg-muted-foreground"
-                                        )}
-                                        aria-label={`עבור לתמונה ${i+1}`}
-                                    ></button>
-                                ))}
-                            </div>
-                        )}
-                    </div>
-                ) : (
-                    <div className="w-full aspect-square flex items-center justify-center bg-muted rounded-md">
-                         <Skeleton className="w-full h-full" />
+                <div className="w-full aspect-square relative">
+                    {isClient && allImages.length > 0 ? (
+                        <>
+                            <AsyncImage 
+                                key={allImages[currentImageIndex]}
+                                imageKey={allImages[currentImageIndex]} 
+                                alt={`${dish.name} - תמונה ${currentImageIndex + 1}`} 
+                                layout="fill"
+                                objectFit="cover"
+                                className="rounded-md"
+                                data-ai-hint="food dish"
+                            />
+                            {allImages.length > 1 && (
+                                <>
+                                    <Button size="icon" variant="ghost" className="absolute top-1/2 -translate-y-1/2 left-2 bg-black/30 hover:bg-black/50 text-white" onClick={nextImage}>
+                                        <ChevronLeft className="h-6 w-6" />
+                                    </Button>
+                                    <Button size="icon" variant="ghost" className="absolute top-1/2 -translate-y-1/2 right-2 bg-black/30 hover:bg-black/50 text-white" onClick={prevImage}>
+                                        <ChevronRight className="h-6 w-6" />
+                                    </Button>
+                                </>
+                            )}
+                        </>
+                    ) : (
+                        <Skeleton className="w-full h-full" />
+                    )}
+                </div>
+                 {allImages.length > 1 && (
+                    <div className="flex justify-center gap-2 mt-4">
+                        {allImages.map((_, i) => (
+                            <button 
+                                key={i} 
+                                onClick={() => setCurrentImageIndex(i)} 
+                                className={cn(
+                                    "h-2 w-2 rounded-full transition-colors", 
+                                    currentImageIndex === i ? "bg-primary" : "bg-muted hover:bg-muted-foreground"
+                                )}
+                                aria-label={`עבור לתמונה ${i+1}`}
+                            ></button>
+                        ))}
                     </div>
                 )}
             </div>
