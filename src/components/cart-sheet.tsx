@@ -124,8 +124,8 @@ export function CartSheet() {
         </Button>
       </SheetTrigger>
       <SheetContent className="flex flex-col">
-        <SheetHeader className="text-right">
-          <SheetTitle>עגלת הקניות שלך</SheetTitle>
+        <SheetHeader>
+          <SheetTitle className="text-right">עגלת הקניות שלך</SheetTitle>
         </SheetHeader>
         {!isClient ? (
            <div className="space-y-4 py-4">
@@ -135,7 +135,7 @@ export function CartSheet() {
         ) : cart.length > 0 ? (
           <>
             <ScrollArea className="flex-grow pr-4 -mr-6">
-              <div className="flex flex-col gap-4 py-4">
+              <div className="flex flex-col gap-4 py-4 text-right">
                 {cartDetails.map(item => (
                   <div key={item!.id} className="flex justify-between items-center gap-4">
                     <div className="flex items-center gap-4 flex-1 min-w-0">
