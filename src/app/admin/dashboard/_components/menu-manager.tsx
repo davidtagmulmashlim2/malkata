@@ -1,7 +1,7 @@
 
 'use client'
 import { useState, useEffect } from 'react'
-import { useForm } from 'react-hook-form'
+import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useApp } from '@/context/app-context'
@@ -63,16 +63,20 @@ const ImagePreview = ({ imageKey, alt }: { imageKey: string, alt: string }) => {
                 const imageSrc = await getImage(imageKey);
                 if (isMounted && imageSrc) {
                     setSrc(imageSrc);
+                } else if (isMounted) {
+                    setSrc('https://placehold.co/96x96');
                 }
             }
         };
-        if (!src.startsWith('data:image')) {
+        if (!imageKey) {
+            setSrc('https://placehold.co/96x96');
+        } else if (!src.startsWith('data:image')) {
             fetchImage();
         }
         return () => { isMounted = false; };
     }, [imageKey, src]);
 
-    if (!src) return <div className="h-24 w-24 rounded-md bg-muted animate-pulse" />;
+    if (!src || !imageKey) return <div className="h-24 w-24 rounded-md bg-muted animate-pulse" />;
     return <Image src={src} alt={alt} width={96} height={96} className="h-24 w-24 rounded-md object-cover" />;
 };
 
@@ -167,34 +171,7 @@ export default function MenuManager() {
     dispatch({ type: 'DELETE_CATEGORY', payload: id })
     toast({ title: 'קטגוריה נמחקה' })
   }
-  
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>, fieldName: "mainImage" | "image" | "galleryImages") => {
-      const files = e.target.files;
-      if (files && files.length > 0) {
-          try {
-              if (fieldName === 'galleryImages') {
-                  const currentImages = dishForm.getValues('galleryImages') || [];
-                  const dataUrls = await Promise.all(Array.from(files).map(file => readFileAsDataURL(file)));
-                  const imageKeys = await Promise.all(dataUrls.map(url => storeImage(url)));
-                  dishForm.setValue('galleryImages', [...currentImages, ...imageKeys], { shouldValidate: true });
-              } else {
-                  const file = files[0];
-                  const dataUrl = await readFileAsDataURL(file);
-                  const imageKey = await storeImage(dataUrl);
 
-                  if (fieldName === 'mainImage') {
-                    dishForm.setValue(fieldName, imageKey, { shouldValidate: true });
-                  } else if (fieldName === 'image') {
-                    categoryForm.setValue(fieldName, imageKey, { shouldValidate: true });
-                  }
-              }
-          } catch (error) {
-              console.error("Error reading file:", error);
-              toast({ title: "שגיאה בקריאת הקובץ", variant: "destructive" });
-          }
-      }
-  };
-    
     const removeGalleryImage = (index: number) => {
         const currentImages = dishForm.getValues('galleryImages') || [];
         const imageKeyToRemove = currentImages[index];
@@ -203,6 +180,10 @@ export default function MenuManager() {
         newImages.splice(index, 1);
         dishForm.setValue('galleryImages', newImages, { shouldValidate: true });
     };
+    
+    const dishMainImageValue = dishForm.watch('mainImage');
+    const dishGalleryImagesValue = dishForm.watch('galleryImages');
+    const categoryImageValue = categoryForm.watch('image');
 
   return (
     <div className="space-y-8">
@@ -257,20 +238,35 @@ export default function MenuManager() {
                        <FormItem>
                         <FormLabel>תמונה ראשית</FormLabel>
                          <FormControl>
-                            <Input type="file" accept="image/*" onChange={(e) => handleFileChange(e, 'mainImage')} />
+                            <Input type="file" accept="image/*" onChange={async (e) => {
+                               const file = e.target.files?.[0];
+                                if (file) {
+                                    const dataUrl = await readFileAsDataURL(file);
+                                    const imageKey = await storeImage(dataUrl);
+                                    field.onChange(imageKey);
+                                }
+                            }} />
                          </FormControl>
                         <FormMessage />
-                        {field.value && <ImagePreview imageKey={field.value} alt="תמונה ראשית" />}
+                        {dishMainImageValue && <ImagePreview imageKey={dishMainImageValue} alt="תמונה ראשית" />}
                        </FormItem>
                     )} />
                     <FormField name="galleryImages" control={dishForm.control} render={({ field }) => (
                       <FormItem>
                         <FormLabel>תמונות נוספות (גלריה)</FormLabel>
-                        <FormControl><Input type="file" accept="image/*" multiple onChange={(e) => handleFileChange(e, 'galleryImages')} /></FormControl>
+                        <FormControl><Input type="file" accept="image/*" multiple onChange={async (e) => {
+                            const files = e.target.files;
+                            if (files) {
+                                const currentImages = dishForm.getValues('galleryImages') || [];
+                                const dataUrls = await Promise.all(Array.from(files).map(file => readFileAsDataURL(file)));
+                                const imageKeys = await Promise.all(dataUrls.map(url => storeImage(url)));
+                                field.onChange([...currentImages, ...imageKeys]);
+                            }
+                        }} /></FormControl>
                         <FormMessage />
                         <div className="flex flex-wrap gap-2 mt-2">
-                            {field.value?.map((imgKey, i) => (
-                                <div key={imgKey} className="relative group">
+                            {dishGalleryImagesValue?.map((imgKey, i) => (
+                                <div key={i} className="relative group">
                                     <ImagePreview imageKey={imgKey} alt={`תמונת גלריה ${i + 1}`} />
                                     <Button 
                                         type="button"
@@ -380,7 +376,7 @@ export default function MenuManager() {
                   <TableCell>{dish.isAvailable ? 'כן' : 'לא'}</TableCell>
                   <TableCell>{dish.isRecommended ? 'כן' : 'לא'}</TableCell>
                   <TableCell className="text-right">
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 justify-end">
                       <Button variant="ghost" size="icon" onClick={() => openDishDialog(dish)}><Edit className="h-4 w-4" /></Button>
                       <AlertDialog>
                           <AlertDialogTrigger asChild><Button variant="ghost" size="icon"><Trash2 className="h-4 w-4 text-destructive" /></Button></AlertDialogTrigger>
@@ -438,10 +434,17 @@ export default function MenuManager() {
                       <FormItem>
                         <FormLabel>תמונת באנר</FormLabel>
                          <FormControl>
-                            <Input type="file" accept="image/*" onChange={(e) => handleFileChange(e, 'image')} />
+                            <Input type="file" accept="image/*" onChange={async (e) => {
+                               const file = e.target.files?.[0];
+                                if (file) {
+                                    const dataUrl = await readFileAsDataURL(file);
+                                    const imageKey = await storeImage(dataUrl);
+                                    field.onChange(imageKey);
+                                }
+                            }} />
                         </FormControl>
                         <FormMessage />
-                         {field.value && <ImagePreview imageKey={field.value} alt="תמונת קטגוריה" />}
+                         {categoryImageValue && <ImagePreview imageKey={categoryImageValue} alt="תמונת קטגוריה" />}
                       </FormItem>
                     )} />
                     <DialogFooter>
@@ -466,7 +469,7 @@ export default function MenuManager() {
                 <TableRow key={category.id}>
                   <TableCell>{category.name}</TableCell>
                   <TableCell className="text-right">
-                     <div className="flex gap-2">
+                     <div className="flex gap-2 justify-end">
                         <Button variant="ghost" size="icon" onClick={() => openCategoryDialog(category)}><Edit className="h-4 w-4" /></Button>
                          <AlertDialog>
                           <AlertDialogTrigger asChild><Button variant="ghost" size="icon"><Trash2 className="h-4 w-4 text-destructive" /></Button></AlertDialogTrigger>

@@ -13,7 +13,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { toast } from '@/hooks/use-toast';
 import Image from 'next/image';
 import { Trash2 } from 'lucide-react';
-import { storeImage, getImage, deleteImage as deleteImageFromStore } from '@/lib/image-store';
+import { storeImage, getImage, deleteImage as deleteImageFromStore, getImageSync } from '@/lib/image-store';
 
 
 const gallerySchema = z.object({
@@ -66,20 +66,6 @@ export default function GalleryManager() {
     dispatch({ type: 'DELETE_GALLERY_IMAGE', payload: id });
     toast({ title: 'התמונה נמחקה מהגלריה.' });
   };
-  
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-      const file = e.target.files?.[0];
-      if (file) {
-          try {
-              const dataUrl = await readFileAsDataURL(file);
-              const imageKey = await storeImage(dataUrl);
-              form.setValue('src', imageKey, { shouldValidate: true });
-          } catch (error) {
-              console.error("Error reading file:", error);
-              toast({ title: "שגיאה בקריאת הקובץ", variant: "destructive" });
-          }
-      }
-  };
 
   return (
     <div className="grid md:grid-cols-3 gap-8">
@@ -128,14 +114,26 @@ export default function GalleryManager() {
                 <FormField
                   control={form.control}
                   name="src"
-                  render={() => (
+                  render={({ field }) => (
                     <FormItem>
                       <FormLabel>קובץ תמונה</FormLabel>
                       <FormControl>
                         <Input 
                             type="file" 
                             accept="image/*" 
-                            onChange={handleFileChange}
+                            onChange={async (e) => {
+                                const file = e.target.files?.[0];
+                                if (file) {
+                                    try {
+                                        const dataUrl = await readFileAsDataURL(file);
+                                        const imageKey = await storeImage(dataUrl);
+                                        field.onChange(imageKey);
+                                    } catch (error) {
+                                        console.error("Error reading file:", error);
+                                        toast({ title: "שגיאה בקריאת הקובץ", variant: "destructive" });
+                                    }
+                                }
+                            }}
                         />
                       </FormControl>
                       <FormMessage />
