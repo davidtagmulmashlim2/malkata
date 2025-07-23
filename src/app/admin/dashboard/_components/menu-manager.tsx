@@ -1,3 +1,4 @@
+
 'use client'
 import { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
@@ -17,7 +18,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { PlusCircle, Edit, Trash2, X } from 'lucide-react'
 import { toast } from '@/hooks/use-toast'
 import type { Dish, Category } from '@/lib/types'
-import { storeImage, getImage, deleteImage as deleteImageFromStore } from '@/lib/image-store'
+import { storeImage, getImage, deleteImage as deleteImageFromStore, getImageSync } from '@/lib/image-store'
 import Image from 'next/image';
 
 const slugify = (text: string) => text.toLowerCase().replace(/[\s\W-]+/g, '-')
@@ -51,23 +52,27 @@ const categorySchema = z.object({
 })
 
 
-const ImagePreview = ({ imageKey }: { imageKey: string }) => {
-    const [src, setSrc] = useState<string | null>(null);
+const ImagePreview = ({ imageKey, alt }: { imageKey: string, alt: string }) => {
+    const [src, setSrc] = useState(() => getImageSync(imageKey) || 'https://placehold.co/96x96');
 
     useEffect(() => {
         let isMounted = true;
         const fetchImage = async () => {
-            const imageSrc = await getImage(imageKey);
-            if (isMounted) {
-                setSrc(imageSrc);
+            if (imageKey) {
+                const imageSrc = await getImage(imageKey);
+                if (isMounted && imageSrc) {
+                    setSrc(imageSrc);
+                }
             }
         };
-        fetchImage();
+        if (!src.startsWith('data:image')) {
+            fetchImage();
+        }
         return () => { isMounted = false; };
-    }, [imageKey]);
+    }, [imageKey, src]);
 
     if (!src) return <div className="h-24 w-24 rounded-md bg-muted animate-pulse" />;
-    return <Image src={src} alt="preview" width={96} height={96} className="h-24 w-24 rounded-md object-cover" />;
+    return <Image src={src} alt={alt} width={96} height={96} className="h-24 w-24 rounded-md object-cover" />;
 };
 
 
@@ -254,30 +259,32 @@ export default function MenuManager() {
                         <FormLabel>תמונה ראשית</FormLabel>
                          <FormControl><Input type="file" accept="image/*" onChange={handleFileChange(field)} /></FormControl>
                         <FormMessage />
-                        {dishForm.watch('mainImage') && <ImagePreview imageKey={dishForm.watch('mainImage')} />}
+                        {dishForm.watch('mainImage') && <ImagePreview imageKey={dishForm.watch('mainImage')} alt="תמונה ראשית" />}
                        </FormItem>
                     )} />
-                    <FormItem>
-                      <FormLabel>תמונות נוספות (גלריה)</FormLabel>
-                      <FormControl><Input type="file" accept="image/*" multiple onChange={handleMultiFileChange} /></FormControl>
-                      <FormMessage />
-                      <div className="flex flex-wrap gap-2 mt-2">
-                          {dishForm.watch('galleryImages')?.map((imgKey, i) => (
-                              <div key={i} className="relative group">
-                                  <ImagePreview imageKey={imgKey} />
-                                  <Button 
-                                      type="button"
-                                      variant="destructive"
-                                      size="icon"
-                                      className="absolute top-0 right-0 h-5 w-5 opacity-0 group-hover:opacity-100 transition-opacity"
-                                      onClick={() => removeGalleryImage(i)}
-                                  >
-                                      <X className="h-3 w-3" />
-                                  </Button>
-                              </div>
-                          ))}
-                      </div>
-                    </FormItem>
+                    <FormField name="galleryImages" control={dishForm.control} render={() => (
+                      <FormItem>
+                        <FormLabel>תמונות נוספות (גלריה)</FormLabel>
+                        <FormControl><Input type="file" accept="image/*" multiple onChange={handleMultiFileChange} /></FormControl>
+                        <FormMessage />
+                        <div className="flex flex-wrap gap-2 mt-2">
+                            {dishForm.watch('galleryImages')?.map((imgKey, i) => (
+                                <div key={imgKey} className="relative group">
+                                    <ImagePreview imageKey={imgKey} alt={`תמונת גלריה ${i + 1}`} />
+                                    <Button 
+                                        type="button"
+                                        variant="destructive"
+                                        size="icon"
+                                        className="absolute top-0 right-0 h-5 w-5 opacity-0 group-hover:opacity-100 transition-opacity"
+                                        onClick={() => removeGalleryImage(i)}
+                                    >
+                                        <X className="h-3 w-3" />
+                                    </Button>
+                                </div>
+                            ))}
+                        </div>
+                      </FormItem>
+                    )} />
                     <FormField name="categoryId" control={dishForm.control} render={({ field }) => (
                       <FormItem>
                         <FormLabel>קטגוריה</FormLabel>
@@ -469,3 +476,5 @@ export default function MenuManager() {
     </div>
   )
 }
+
+    
