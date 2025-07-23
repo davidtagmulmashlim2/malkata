@@ -16,23 +16,16 @@ import Image from 'next/image';
 import { Input } from './ui/input';
 import { ScrollArea } from './ui/scroll-area';
 import { Separator } from './ui/separator';
+import { useIsClient } from '@/hooks/use-is-client';
 
 export function CartSheet() {
   const { cart, getDishById, updateCartQuantity, removeFromCart, state } = useApp();
-  const isClient = typeof window !== 'undefined';
+  const isClient = useIsClient();
 
-  if (!isClient) {
-    return (
-      <Button variant="outline" size="icon" className="relative">
-        <ShoppingCart className="h-5 w-5" />
-      </Button>
-    );
-  }
-
-  const cartDetails = cart.map(item => {
+  const cartDetails = isClient ? cart.map(item => {
     const dish = getDishById(item.dishId);
     return dish ? { ...item, ...dish } : null;
-  }).filter(Boolean);
+  }).filter(Boolean) : [];
 
   const total = cartDetails.reduce((sum, item) => sum + item!.price * item!.quantity, 0);
 
@@ -54,7 +47,7 @@ export function CartSheet() {
       <SheetTrigger asChild>
         <Button variant="outline" size="icon" className="fixed bottom-4 right-4 z-50 h-14 w-14 rounded-full shadow-lg lg:bottom-8 lg:right-8">
           <ShoppingCart className="h-6 w-6" />
-          {cart.length > 0 && (
+          {isClient && cart.length > 0 && (
             <span className="absolute -top-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs font-bold">
               {cart.reduce((acc, item) => acc + item.quantity, 0)}
             </span>
@@ -66,7 +59,7 @@ export function CartSheet() {
         <SheetHeader>
           <SheetTitle>עגלת הקניות שלך</SheetTitle>
         </SheetHeader>
-        {cart.length > 0 ? (
+        {isClient && cart.length > 0 ? (
           <>
             <ScrollArea className="flex-grow pr-4 -mr-6">
               <div className="flex flex-col gap-4 py-4">
@@ -105,7 +98,7 @@ export function CartSheet() {
                     <Separator />
                     <div className="flex justify-between text-lg font-bold">
                         <span>סה"כ:</span>
-                        <span>{total} ₪</span>
+                        <span>{total.toLocaleString()} ₪</span>
                     </div>
                     <SheetClose asChild>
                         <Button type="submit" className="w-full" onClick={handleWhatsAppOrder}>
