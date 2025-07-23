@@ -33,9 +33,8 @@ export default function MenuLayout({
                             variant={pathname.includes(shabbatCategory.slug) ? 'default' : 'ghost'}
                             size="sm"
                             className={cn(
-                                'bg-amber-300 text-amber-800 hover:bg-amber-300/90',
-                                'dark:bg-amber-400 dark:text-amber-900 dark:hover:bg-amber-400/90',
-                                pathname.includes(shabbatCategory.slug) && 'bg-amber-400 text-amber-900 hover:bg-amber-400/90 dark:bg-amber-500 dark:text-amber-950 dark:hover:bg-amber-500/90'
+                                'btn-shabbat',
+                                pathname.includes(shabbatCategory.slug) && 'active'
                             )}
                         >
                             <Link href={`/menu/${shabbatCategory.slug}`}>{shabbatCategory.name}</Link>
