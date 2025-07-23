@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import type { Dish } from '@/lib/types';
-import { Flame, ShoppingCart, Leaf, Eye } from 'lucide-react';
+import { Flame, ShoppingCart, Leaf } from 'lucide-react';
 import { Badge } from './ui/badge';
 import { useApp } from '@/context/app-context';
 import { toast } from '@/hooks/use-toast';
@@ -35,11 +35,8 @@ export function DishCard({ dish }: DishCardProps) {
           className="w-full aspect-square object-cover"
           data-ai-hint="food dish"
         />
-        <div className="absolute inset-0 flex items-center justify-center bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-             <Button variant="outline" className="text-white border-white bg-transparent hover:bg-white hover:text-black">
-                <Eye className="ml-2 h-4 w-4" />
-                צפייה מהירה
-            </Button>
+        <div className="absolute inset-x-0 bottom-0 flex items-center justify-center bg-black/70 text-white text-center py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+             הצגה מהירה
         </div>
         <div className="absolute top-2 left-2 flex gap-2">
             {dish.tags.includes('vegan') && <Badge variant="default" className="bg-green-600 text-white"><Leaf className="w-3 h-3 mr-1" /> טבעוני</Badge>}
