@@ -57,6 +57,7 @@ const CartDishImage = ({ imageKey, alt }: { imageKey: string; alt: string }) => 
 
 export function CartSheet() {
   const { cart, getDishById, updateCartQuantity, removeFromCart, state } = useApp();
+  const [open, setOpen] = useState(false);
   const isClient = useIsClient();
   const [customerName, setCustomerName] = useState('');
   const [customerPhone, setCustomerPhone] = useState('');
@@ -87,12 +88,13 @@ export function CartSheet() {
     
     const whatsappUrl = `https://wa.me/${contact.whatsapp}?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
+    setOpen(false); // Close the sheet after sending
   };
 
   const canSubmit = customerName !== '' && customerPhone !== '' && customerAddress !== '';
 
   return (
-    <Sheet>
+    <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
         <Button variant="outline" size="icon" className="fixed bottom-4 right-4 z-50 h-14 w-14 rounded-full shadow-lg lg:bottom-8 lg:right-8">
           <ShoppingCart className="h-6 w-6" />
@@ -113,7 +115,7 @@ export function CartSheet() {
             <ScrollArea className="flex-grow pr-4 -mr-6">
               <div className="flex flex-col gap-4 py-4">
                 {cartDetails.map(item => (
-                  <div key={item!.id} className="flex items-center justify-between gap-4 text-right">
+                  <div key={item!.id} className="flex justify-between items-center gap-4 text-right">
                     <div className="flex items-center gap-4 flex-1">
                         <CartDishImage imageKey={item!.mainImage} alt={item!.name} />
                         <div className="flex flex-col">
@@ -160,11 +162,9 @@ export function CartSheet() {
                             <Input id="customerAddress" value={customerAddress} onChange={(e) => setCustomerAddress(e.target.value)} placeholder='רחוב, מספר בית, עיר' />
                         </div>
                     </div>
-                    <SheetClose asChild={canSubmit}>
-                        <Button type="submit" className="w-full" onClick={handleWhatsAppOrder} disabled={!canSubmit}>
-                        שליחת הזמנה ב-WhatsApp
-                        </Button>
-                    </SheetClose>
+                    <Button type="submit" className="w-full" onClick={handleWhatsAppOrder} disabled={!canSubmit}>
+                      שליחת הזמנה ב-WhatsApp
+                    </Button>
                 </div>
             </SheetFooter>
           </>
