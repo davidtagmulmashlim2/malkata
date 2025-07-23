@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -81,7 +82,7 @@ export function Typewriter({ textParts, speed = 100 }: TypewriterProps) {
 
   return (
     <>
-      {displayedParts.map((part, index) => (
+      {displayedParts.filter(Boolean).map((part, index) => (
         <span key={index} style={part.style} className={cn(part.className)}>
           {part.text}
         </span>
