@@ -81,17 +81,4 @@
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
   }
-
-  .btn-shabbat {
-    @apply bg-amber-300 text-amber-800 hover:bg-amber-300/90;
-  }
-  .dark .btn-shabbat {
-    @apply bg-amber-400 text-amber-900 hover:bg-amber-400/90;
-  }
-  .btn-shabbat.active {
-    @apply bg-amber-400 text-amber-900 ring-2 ring-amber-500;
-  }
-   .dark .btn-shabbat.active {
-    @apply bg-amber-500 text-amber-950;
-  }
 }

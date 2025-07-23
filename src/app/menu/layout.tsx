@@ -18,9 +18,6 @@ export default function MenuLayout({
   const { categories } = state;
   const pathname = usePathname();
   const isClient = useIsClient();
-  
-  const shabbatCategorySlug = 'shabbat-malkata';
-  const shabbatCategory = categories.find(c => c.slug === shabbatCategorySlug);
 
   return (
     <div>
@@ -32,22 +29,7 @@ export default function MenuLayout({
                             <Button asChild variant={pathname === '/menu' ? 'default' : 'ghost'} size="sm">
                                 <Link href="/menu">כל המנות</Link>
                             </Button>
-                            {shabbatCategory && (
-                                <Button
-                                    asChild
-                                    variant='ghost'
-                                    size="sm"
-                                    className={cn(
-                                        'btn-shabbat',
-                                        {'active': pathname === `/menu/${shabbatCategory.slug}`}
-                                    )}
-                                >
-                                    <Link href={`/menu/${shabbatCategory.slug}`}>{shabbatCategory.name}</Link>
-                                </Button>
-                            )}
-                            {categories
-                                .filter(category => category.slug !== shabbatCategorySlug)
-                                .map(category => (
+                            {categories.map(category => (
                                 <Button
                                     key={category.id}
                                     asChild
