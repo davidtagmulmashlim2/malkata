@@ -19,7 +19,6 @@ export default function Home() {
   const { state } = useApp();
   const { siteContent, dishes, testimonials } = state;
   const isClient = useIsClient();
-  const [api, setApi] = useState<CarouselApi>();
 
   const recommendedDishes = useMemo(() => {
     if (!isClient) return [];
@@ -32,13 +31,6 @@ export default function Home() {
       '2xl': 'text-2xl', '3xl': 'text-3xl', '4xl': 'text-4xl', '5xl': 'text-5xl', 
       '6xl': 'text-6xl', '7xl': 'text-7xl', '8xl': 'text-8xl', '9xl': 'text-9xl',
   };
-
-  useEffect(() => {
-    if (!api) return;
-    // Re-initialize carousel when the number of testimonials changes
-    api.reInit();
-  }, [api, testimonials.length]);
-
 
   return (
     <div className="space-y-16 md:space-y-24">
@@ -109,57 +101,42 @@ export default function Home() {
       {/* Testimonials Section */}
       <section className="container">
         <h2 className="text-3xl md:text-4xl font-headline font-bold text-center mb-10">לקוחות ממליצים</h2>
-        <Carousel 
-          setApi={setApi}
-          className="w-full max-w-xl mx-auto" 
-          dir="rtl"
-          opts={{
-            align: "start",
-            loop: true,
-          }}
-        >
-          <CarouselContent>
-            {!isClient ? (
-              Array(3).fill(0).map((_, index) => (
-                 <CarouselItem key={`skeleton-${index}`}>
-                   <div className="p-1">
-                     <Card>
-                       <CardContent className="flex flex-col items-center justify-center p-6 text-center h-48">
-                          <Skeleton className="h-6 w-3/4 mx-auto" />
-                          <Skeleton className="h-5 w-1/4 mx-auto mt-4" />
-                       </CardContent>
-                     </Card>
-                   </div>
-                 </CarouselItem>
-              ))
-            ) : testimonials.length > 0 ? (
-                testimonials.map((testimonial) => (
-                  <CarouselItem key={testimonial.id}>
-                    <div className="p-1">
-                      <Card>
-                        <CardContent className="flex flex-col items-center justify-center p-6 text-center h-48">
-                          <p className="text-lg italic mb-4 flex-grow">"{testimonial.quote}"</p>
-                          <p className="font-bold text-primary">- {testimonial.name}</p>
-                        </CardContent>
-                      </Card>
-                    </div>
-                  </CarouselItem>
-                ))
-            ) : (
-                <CarouselItem>
-                    <div className="p-1">
-                         <Card>
-                           <CardContent className="flex flex-col items-center justify-center p-6 text-center h-48">
-                              <p>עדיין אין המלצות.</p>
-                           </CardContent>
-                         </Card>
-                    </div>
-                </CarouselItem>
-            )}
-          </CarouselContent>
-          <CarouselPrevious />
-          <CarouselNext />
-        </Carousel>
+         {isClient && testimonials.length > 0 ? (
+            <Carousel 
+              className="w-full max-w-xl mx-auto" 
+              dir="rtl"
+              opts={{
+                align: "start",
+                loop: true,
+              }}
+            >
+              <CarouselContent>
+                    {testimonials.map((testimonial) => (
+                      <CarouselItem key={testimonial.id}>
+                        <div className="p-1">
+                          <Card>
+                            <CardContent className="flex flex-col items-center justify-center p-6 text-center h-48">
+                              <p className="text-lg italic mb-4 flex-grow">"{testimonial.quote}"</p>
+                              <p className="font-bold text-primary">- {testimonial.name}</p>
+                            </CardContent>
+                          </Card>
+                        </div>
+                      </CarouselItem>
+                    ))
+                }
+              </CarouselContent>
+              <CarouselPrevious />
+              <CarouselNext />
+            </Carousel>
+          ) : (
+             <div className="p-1">
+                 <Card className="w-full max-w-xl mx-auto">
+                   <CardContent className="flex flex-col items-center justify-center p-6 text-center h-48">
+                      <p>{isClient ? 'עדיין אין המלצות.' : 'טוען...'}</p>
+                   </CardContent>
+                 </Card>
+            </div>
+          )}
       </section>
 
       {/* Newsletter Signup */}

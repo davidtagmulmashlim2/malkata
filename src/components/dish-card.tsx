@@ -90,9 +90,6 @@ export function DishCard({ dish }: DishCardProps) {
   useEffect(() => {
     if (!api) return;
     
-    // Re-initialize carousel when the number of images changes
-    api.reInit();
-    
     setCurrent(api.selectedScrollSnap() + 1);
     const onSelect = () => {
       setCurrent(api.selectedScrollSnap() + 1);
@@ -154,9 +151,7 @@ export function DishCard({ dish }: DishCardProps) {
       <DialogContent className="sm:max-w-4xl">
         <div className="grid md:grid-cols-2 gap-8">
             <div className="w-full">
-                {!isClient ? (
-                    <div className="w-full aspect-square flex items-center justify-center">טוען...</div>
-                ) : (
+                {isClient && allImages.length > 0 ? (
                     <>
                         <Carousel setApi={setApi} className="w-full relative">
                             <CarouselContent>
@@ -179,6 +174,10 @@ export function DishCard({ dish }: DishCardProps) {
                             </div>
                         )}
                     </>
+                ) : (
+                    <div className="w-full aspect-square flex items-center justify-center bg-muted rounded-md">
+                        <p className="text-muted-foreground">טוען...</p>
+                    </div>
                 )}
             </div>
             <div className="flex flex-col justify-between">
