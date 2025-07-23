@@ -55,6 +55,22 @@ const CartDishImage = ({ imageKey, alt }: { imageKey: string; alt: string }) => 
     )
 }
 
+const CartItemSkeleton = () => (
+    <div className="flex justify-between items-center gap-4">
+        <div className="flex items-center gap-4 flex-1 min-w-0">
+            <Skeleton className="h-16 w-16 rounded-md shrink-0" />
+            <div className="flex flex-col text-start flex-1 min-w-0 space-y-2">
+                <Skeleton className="h-4 w-3/4" />
+                <Skeleton className="h-4 w-1/4" />
+            </div>
+        </div>
+        <div className="flex items-center gap-2">
+            <Skeleton className="w-16 h-8" />
+            <Skeleton className="h-8 w-8" />
+        </div>
+    </div>
+);
+
 
 export function CartSheet() {
   const { cart, getDishById, updateCartQuantity, removeFromCart, state } = useApp();
@@ -108,27 +124,13 @@ export function CartSheet() {
         </Button>
       </SheetTrigger>
       <SheetContent className="flex flex-col">
-        <SheetHeader className="text-start">
+        <SheetHeader className="text-right">
           <SheetTitle>עגלת הקניות שלך</SheetTitle>
         </SheetHeader>
         {!isClient ? (
            <div className="space-y-4 py-4">
-                <div className="flex items-center justify-between gap-4">
-                    <Skeleton className="h-16 w-16 rounded-md" />
-                    <div className="flex-1 space-y-2">
-                        <Skeleton className="h-4 w-3/4" />
-                        <Skeleton className="h-4 w-1/4" />
-                    </div>
-                    <Skeleton className="h-8 w-16" />
-                </div>
-                <div className="flex items-center justify-between gap-4">
-                    <Skeleton className="h-16 w-16 rounded-md" />
-                    <div className="flex-1 space-y-2">
-                        <Skeleton className="h-4 w-3/4" />
-                        <Skeleton className="h-4 w-1/4" />
-                    </div>
-                    <Skeleton className="h-8 w-16" />
-                </div>
+                <CartItemSkeleton />
+                <CartItemSkeleton />
             </div>
         ) : cart.length > 0 ? (
           <>
