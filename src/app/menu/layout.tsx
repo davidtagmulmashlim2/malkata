@@ -19,8 +19,8 @@ export default function MenuLayout({
   const pathname = usePathname();
   const isClient = useIsClient();
 
-  const shabbatCategory = categories.find(c => c.slug === 'shabbat-malkata');
-  const otherCategories = categories.filter(c => c.slug !== 'shabbat-malkata');
+  const shabbatCategory = isClient ? categories.find(c => c.slug === 'shabbat-malkata') : undefined;
+  const otherCategories = isClient ? categories.filter(c => c.slug !== 'shabbat-malkata') : [];
 
   return (
     <div>

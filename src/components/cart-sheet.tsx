@@ -107,15 +107,28 @@ export function CartSheet() {
           <span className="sr-only">פתח עגלת קניות</span>
         </Button>
       </SheetTrigger>
-      <SheetContent className="flex flex-col text-right">
-        <SheetHeader>
+      <SheetContent className="flex flex-col">
+        <SheetHeader className="text-right">
           <SheetTitle>עגלת הקניות שלך</SheetTitle>
         </SheetHeader>
         {!isClient ? (
-           <div className="flex-grow flex flex-col items-center justify-center">
-                <Skeleton className="h-24 w-24 rounded-full" />
-                <Skeleton className="h-6 w-32 mt-4" />
-                <Skeleton className="h-4 w-48 mt-2" />
+           <div className="space-y-4 py-4">
+                <div className="flex items-center justify-between gap-4">
+                    <Skeleton className="h-16 w-16 rounded-md" />
+                    <div className="flex-1 space-y-2">
+                        <Skeleton className="h-4 w-3/4" />
+                        <Skeleton className="h-4 w-1/4" />
+                    </div>
+                    <Skeleton className="h-8 w-16" />
+                </div>
+                <div className="flex items-center justify-between gap-4">
+                    <Skeleton className="h-16 w-16 rounded-md" />
+                    <div className="flex-1 space-y-2">
+                        <Skeleton className="h-4 w-3/4" />
+                        <Skeleton className="h-4 w-1/4" />
+                    </div>
+                    <Skeleton className="h-8 w-16" />
+                </div>
             </div>
         ) : cart.length > 0 ? (
           <>
@@ -123,10 +136,10 @@ export function CartSheet() {
               <div className="flex flex-col gap-4 py-4">
                 {cartDetails.map(item => (
                   <div key={item!.id} className="flex justify-between items-center gap-4">
-                    <div className="flex items-center gap-4 flex-1">
+                    <div className="flex items-center gap-4 flex-1 min-w-0">
                         <CartDishImage imageKey={item!.mainImage} alt={item!.name} />
-                        <div className="flex flex-col text-right">
-                          <h4 className="font-semibold">{item!.name}</h4>
+                        <div className="flex flex-col text-right flex-1 min-w-0">
+                          <h4 className="font-semibold truncate">{item!.name}</h4>
                           <p className="text-sm text-muted-foreground">{item!.price} ₪</p>
                         </div>
                     </div>
@@ -154,7 +167,7 @@ export function CartSheet() {
                         <span>{total.toLocaleString()} ₪</span>
                     </div>
                     <Separator />
-                    <div className='space-y-4'>
+                    <div className='space-y-4 text-right'>
                         <h4 className='font-medium text-center'>פרטי הזמנה</h4>
                         <div className='space-y-2'>
                             <Label htmlFor="customerName">שם מלא</Label>
