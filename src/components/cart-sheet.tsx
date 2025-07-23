@@ -123,7 +123,7 @@ export function CartSheet() {
           <span className="sr-only">פתח עגלת קניות</span>
         </Button>
       </SheetTrigger>
-      <SheetContent className="flex flex-col">
+      <SheetContent className="flex flex-col text-right">
         <SheetHeader>
           <SheetTitle className="text-right">עגלת הקניות שלך</SheetTitle>
         </SheetHeader>
@@ -135,7 +135,7 @@ export function CartSheet() {
         ) : cart.length > 0 ? (
           <>
             <ScrollArea className="flex-grow pr-4 -mr-6">
-              <div className="flex flex-col gap-4 py-4 text-right">
+              <div className="flex flex-col gap-4 py-4">
                 {cartDetails.map(item => (
                   <div key={item!.id} className="flex justify-between items-center gap-4">
                     <div className="flex items-center gap-4 flex-1 min-w-0">
