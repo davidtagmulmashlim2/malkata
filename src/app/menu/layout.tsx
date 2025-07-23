@@ -30,12 +30,11 @@ export default function MenuLayout({
                     {shabbatCategory && (
                          <Button
                             asChild
-                            variant={pathname === `/menu/${shabbatCategory.slug}` ? 'default' : 'ghost'}
+                            variant={pathname.includes(shabbatCategory.slug) ? 'default' : 'ghost'}
                             size="sm"
                             className={cn(
-                                pathname === `/menu/${shabbatCategory.slug}` 
-                                ? 'bg-amber-400 text-amber-900 hover:bg-amber-400/90'
-                                : 'bg-amber-300 text-amber-800 hover:bg-amber-300/90'
+                                'bg-amber-300 text-amber-800 hover:bg-amber-300/90',
+                                pathname.includes(shabbatCategory.slug) && 'bg-amber-400 text-amber-900 hover:bg-amber-400/90'
                             )}
                         >
                             <Link href={`/menu/${shabbatCategory.slug}`}>{shabbatCategory.name}</Link>
