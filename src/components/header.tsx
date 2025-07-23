@@ -55,7 +55,7 @@ export function Header() {
     </Link>
   );
 
-  const NavLinks = ({ className }: { className?: string }) => (
+  const NavLinks = ({ className, mobile = false }: { className?: string, mobile?: boolean }) => (
     <nav className={cn('flex items-center gap-4 lg:gap-6', className)}>
       {navLinks.map(link => (
         <Link
@@ -69,23 +69,48 @@ export function Header() {
           {link.label}
         </Link>
       ))}
-       <Link href="/admin">
-          <Button variant="ghost" size="icon">
-              <User className="h-5 w-5" />
-              <span className="sr-only">Admin</span>
-          </Button>
-      </Link>
+      {mobile && (
+         <Link
+          href="/admin"
+          className={cn(
+            'transition-colors hover:text-primary',
+            pathname.startsWith('/admin') ? 'text-primary font-bold' : 'text-muted-foreground'
+          )}
+        >
+          אזור אישי
+        </Link>
+      )}
     </nav>
+  );
+
+  const AdminButton = () => (
+     <Link href="/admin">
+        <Button variant="ghost" size="icon">
+            <User className="h-5 w-5" />
+            <span className="sr-only">Admin</span>
+        </Button>
+    </Link>
   );
 
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background/80 backdrop-blur-sm">
-      <div className="container flex h-16 items-center justify-between">
-        <Logo />
-        <div className="hidden md:flex">
-          <NavLinks />
+      <div className="container flex h-16 items-center">
+        {/* Desktop Layout */}
+        <div className="hidden md:flex flex-1 justify-between items-center">
+            <div className="flex-1">
+                <Logo />
+            </div>
+             <div className="flex-1 flex justify-center">
+                <NavLinks />
+            </div>
+            <div className="flex-1 flex justify-end">
+                <AdminButton />
+            </div>
         </div>
-        <div className="md:hidden">
+        
+        {/* Mobile Layout */}
+        <div className="md:hidden flex w-full justify-between items-center">
+          <Logo />
           <Sheet>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon">
@@ -95,8 +120,10 @@ export function Header() {
             </SheetTrigger>
             <SheetContent side="left">
               <div className="flex flex-col gap-6 p-6">
-                <Logo />
-                <NavLinks className="flex-col items-start text-lg gap-6" />
+                <div className="mb-4">
+                  <Logo />
+                </div>
+                <NavLinks className="flex-col items-start text-lg gap-6" mobile={true} />
               </div>
             </SheetContent>
           </Sheet>
