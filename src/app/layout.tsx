@@ -11,10 +11,17 @@ import './globals.css';
 import { useIsClient } from '@/hooks/use-is-client';
 import { useEffect } from 'react';
 
-// export const metadata: Metadata = {
-//   title: 'מלכתא תפריט | אוכל ביתי אותנטי',
-//   description: 'תפריט המסעדה של מלכתא. בואו לחוות טעמים של בית עם המנות המיוחדות שלנו.',
-// };
+// This component now correctly applies the theme class to the <html> element.
+function ThemedHtml({ children }: { children: React.ReactNode }) {
+    const { state } = useApp();
+    const isClient = useIsClient();
+    
+    return (
+        <html lang="he" dir="rtl" className={cn(isClient ? `theme-${state.design.theme}`: '')}>
+            {children}
+        </html>
+    );
+}
 
 function AppContent({ children }: { children: React.ReactNode }) {
     const { state } = useApp();
@@ -28,6 +35,11 @@ function AppContent({ children }: { children: React.ReactNode }) {
 
     return (
         <body className={cn('font-body antialiased bg-background text-foreground')}>
+             <head>
+                <link rel="preconnect" href="https://fonts.googleapis.com" />
+                <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+                <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=PT+Sans:wght@400;700&display=swap" rel="stylesheet" />
+            </head>
             <div className="flex flex-col min-h-screen">
                 <Header />
                 <main className="flex-grow">{children}</main>
@@ -39,21 +51,6 @@ function AppContent({ children }: { children: React.ReactNode }) {
     )
 }
 
-function AppStateWrapper({ children }: { children: React.ReactNode }) {
-    const { state } = useApp();
-    const isClient = useIsClient();
-    
-    return (
-        <html lang="he" dir="rtl" className={cn(isClient ? `theme-${state.design.theme}`: '')}>
-            <head>
-                <link rel="preconnect" href="https://fonts.googleapis.com" />
-                <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-                <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=PT+Sans:wght@400;700&display=swap" rel="stylesheet" />
-            </head>
-            {children}
-        </html>
-    )
-}
 
 export default function RootLayout({
   children,
@@ -62,9 +59,9 @@ export default function RootLayout({
 }>) {
   return (
     <AppProvider>
-        <AppStateWrapper>
+        <ThemedHtml>
             <AppContent>{children}</AppContent>
-        </AppStateWrapper>
+        </ThemedHtml>
     </AppProvider>
   );
 }
