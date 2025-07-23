@@ -8,6 +8,7 @@ export interface Dish {
   categoryId: string;
   isAvailable: boolean;
   tags: ('vegan' | 'spicy')[];
+  isRecommended?: boolean;
 }
 
 export interface Category {

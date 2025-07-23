@@ -18,7 +18,7 @@ export default function Home() {
   const { siteContent, dishes, testimonials } = state;
   const isClient = useIsClient();
   
-  const recommendedDishes = dishes.slice(0, 3);
+  const recommendedDishes = isClient ? (dishes.filter(d => d.isRecommended).length > 0 ? dishes.filter(d => d.isRecommended) : dishes.slice(0, 3)) : [];
   
   const textSizeClasses: { [key: string]: string } = {
       'xs': 'text-xs', 'sm': 'text-sm', 'base': 'text-base', 'lg': 'text-lg', 'xl': 'text-xl', 
