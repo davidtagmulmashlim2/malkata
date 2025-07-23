@@ -12,13 +12,18 @@ import { DishCard } from '@/components/dish-card';
 import { useIsClient } from '@/hooks/use-is-client';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
+import { useMemo } from 'react';
 
 export default function Home() {
   const { state } = useApp();
   const { siteContent, dishes, testimonials } = state;
   const isClient = useIsClient();
   
-  const recommendedDishes = isClient ? (dishes.filter(d => d.isRecommended).length > 0 ? dishes.filter(d => d.isRecommended) : dishes.slice(0, 3)) : [];
+  const recommendedDishes = useMemo(() => {
+    if (!isClient) return [];
+    const recommended = dishes.filter(d => d.isRecommended);
+    return recommended.length > 0 ? recommended : dishes.slice(0, 3);
+  }, [dishes, isClient]);
   
   const textSizeClasses: { [key: string]: string } = {
       'xs': 'text-xs', 'sm': 'text-sm', 'base': 'text-base', 'lg': 'text-lg', 'xl': 'text-xl', 

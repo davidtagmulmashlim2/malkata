@@ -11,7 +11,7 @@ import { useApp } from '@/context/app-context';
 import { toast } from '@/hooks/use-toast';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from '@/components/ui/dialog';
 import { Carousel, CarouselApi, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { cn } from '@/lib/utils';
 
 interface DishCardProps {
@@ -20,7 +20,7 @@ interface DishCardProps {
 
 export function DishCard({ dish }: DishCardProps) {
   const { addToCart } = useApp();
-  const allImages = [dish.mainImage, ...(dish.galleryImages || [])].filter(Boolean);
+  const allImages = useMemo(() => [dish.mainImage, ...(dish.galleryImages || [])].filter(Boolean), [dish.mainImage, dish.galleryImages]);
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
 
@@ -61,8 +61,8 @@ export function DishCard({ dish }: DishCardProps) {
                 הצגה מהירה
             </div>
             <div className="absolute top-2 left-2 flex gap-2">
-                {dish.tags.includes('vegan') && <Badge variant="default" className="bg-green-600 text-white"><Leaf className="w-3 h-3 mr-1" /> טבעוני</Badge>}
-                {dish.tags.includes('spicy') && <Badge variant="destructive"><Flame className="w-3 h-3 mr-1" /> חריף</Badge>}
+                {dish.tags?.includes('vegan') && <Badge variant="default" className="bg-green-600 text-white"><Leaf className="w-3 h-3 mr-1" /> טבעוני</Badge>}
+                {dish.tags?.includes('spicy') && <Badge variant="destructive"><Flame className="w-3 h-3 mr-1" /> חריף</Badge>}
             </div>
             {!dish.isAvailable && (
                 <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
@@ -123,8 +123,8 @@ export function DishCard({ dish }: DishCardProps) {
                         <DialogTitle className="font-headline text-3xl mb-2">{dish.name}</DialogTitle>
                     </DialogHeader>
                     <div className="flex gap-2 my-4">
-                        {dish.tags.includes('vegan') && <Badge variant="default" className="bg-green-600 text-white"><Leaf className="w-3 h-3 mr-1" /> טבעוני</Badge>}
-                        {dish.tags.includes('spicy') && <Badge variant="destructive"><Flame className="w-3 h-3 mr-1" /> חריף</Badge>}
+                        {dish.tags?.includes('vegan') && <Badge variant="default" className="bg-green-600 text-white"><Leaf className="w-3 h-3 mr-1" /> טבעוני</Badge>}
+                        {dish.tags?.includes('spicy') && <Badge variant="destructive"><Flame className="w-3 h-3 mr-1" /> חריף</Badge>}
                     </div>
                     <p className="text-muted-foreground">{dish.fullDescription}</p>
                 </div>
