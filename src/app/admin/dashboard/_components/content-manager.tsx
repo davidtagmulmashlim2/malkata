@@ -62,11 +62,9 @@ export default function ContentManager() {
 
   const form = useForm<z.infer<typeof contentSchema>>({
     resolver: zodResolver(contentSchema),
-    // Use defaultValues instead of values to initialize, and `reset` in useEffect
     defaultValues: siteContent, 
   });
 
-  // This useEffect will sync the form with the state from context when it changes.
   useEffect(() => {
     form.reset(siteContent);
   }, [siteContent, form]);
@@ -129,7 +127,7 @@ export default function ContentManager() {
                        <FormField name="hero.titleFirstWordFontSize" control={form.control} render={({ field }) => (
                         <FormItem>
                           <FormLabel>גודל מילה ראשונה</FormLabel>
-                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <Select onValueChange={field.onChange} value={field.value}>
                             <FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl>
                             <SelectContent>{fontSizes.map(s => <SelectItem key={s} value={s}>text-{s}</SelectItem>)}</SelectContent>
                           </Select>
@@ -146,7 +144,7 @@ export default function ContentManager() {
                        <FormField name="hero.titleRestFontSize" control={form.control} render={({ field }) => (
                         <FormItem>
                           <FormLabel>גודל שאר המשפט</FormLabel>
-                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <Select onValueChange={field.onChange} value={field.value}>
                             <FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl>
                             <SelectContent>{fontSizes.map(s => <SelectItem key={s} value={s}>text-{s}</SelectItem>)}</SelectContent>
                           </Select>
@@ -157,15 +155,15 @@ export default function ContentManager() {
                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
                      <FormField name="hero.titleFirstWordOpacity" control={form.control} render={({ field }) => (
                         <FormItem>
-                          <FormLabel>שקיפות מילה ראשונה ({field.value ? Math.round(field.value * 100) : 100}%)</FormLabel>
-                          <FormControl><Slider defaultValue={[field.value || 1]} min={0} max={1} step={0.05} onValueChange={(v) => field.onChange(v[0])} /></FormControl>
+                          <FormLabel>שקיפות מילה ראשונה ({Math.round((field.value ?? 1) * 100)}%)</FormLabel>
+                          <FormControl><Slider value={[field.value ?? 1]} min={0} max={1} step={0.05} onValueChange={(v) => field.onChange(v[0])} /></FormControl>
                           <FormMessage />
                         </FormItem>
                       )} />
                        <FormField name="hero.titleRestOpacity" control={form.control} render={({ field }) => (
                         <FormItem>
-                          <FormLabel>שקיפות שאר המשפט ({field.value ? Math.round(field.value * 100) : 100}%)</FormLabel>
-                          <FormControl><Slider defaultValue={[field.value || 1]} min={0} max={1} step={0.05} onValueChange={(v) => field.onChange(v[0])} /></FormControl>
+                          <FormLabel>שקיפות שאר המשפט ({Math.round((field.value ?? 1) * 100)}%)</FormLabel>
+                          <FormControl><Slider value={[field.value ?? 1]} min={0} max={1} step={0.05} onValueChange={(v) => field.onChange(v[0])} /></FormControl>
                           <FormMessage />
                         </FormItem>
                       )} />
@@ -179,8 +177,8 @@ export default function ContentManager() {
                   )} />
                   <FormField name="hero.subtitleOpacity" control={form.control} render={({ field }) => (
                     <FormItem>
-                        <FormLabel>שקיפות כותרת משנה ({field.value ? Math.round(field.value * 100) : 100}%)</FormLabel>
-                        <FormControl><Slider defaultValue={[field.value || 1]} min={0} max={1} step={0.05} onValueChange={(v) => field.onChange(v[0])} /></FormControl>
+                        <FormLabel>שקיפות כותרת משנה ({Math.round((field.value ?? 1) * 100)}%)</FormLabel>
+                        <FormControl><Slider value={[field.value ?? 1]} min={0} max={1} step={0.05} onValueChange={(v) => field.onChange(v[0])} /></FormControl>
                         <FormMessage />
                     </FormItem>
                   )} />
@@ -292,3 +290,5 @@ export default function ContentManager() {
     </Card>
   );
 }
+
+    
