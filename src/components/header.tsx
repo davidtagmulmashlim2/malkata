@@ -26,6 +26,7 @@ const Crown3 = (props: React.SVGProps<SVGSVGElement>) => (
 const navLinks = [
   { href: '/', label: 'בית' },
   { href: '/menu', label: 'תפריט' },
+  { href: '/menu/shabbat-malkata', label: 'שבת מלכתא' },
   { href: '/about', label: 'אודות' },
   { href: '/gallery', label: 'גלריה' },
   { href: '/contact', label: 'צור קשר' },
