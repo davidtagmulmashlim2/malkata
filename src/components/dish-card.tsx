@@ -89,11 +89,20 @@ export function DishCard({ dish }: DishCardProps) {
 
   useEffect(() => {
     if (!api) return;
+    
+    // Re-initialize carousel when the number of images changes
+    api.reInit();
+    
     setCurrent(api.selectedScrollSnap() + 1);
-    api.on("select", () => {
+    const onSelect = () => {
       setCurrent(api.selectedScrollSnap() + 1);
-    });
-  }, [api]);
+    };
+    api.on("select", onSelect);
+
+    return () => {
+        api.off("select", onSelect);
+    }
+  }, [api, allImages.length]);
 
   const handleAddToCart = () => {
     addToCart(dish.id);
@@ -145,30 +154,31 @@ export function DishCard({ dish }: DishCardProps) {
       <DialogContent className="sm:max-w-4xl">
         <div className="grid md:grid-cols-2 gap-8">
             <div className="w-full">
-                <Carousel setApi={setApi} className="w-full relative">
-                    <CarouselContent>
-                         {!isClient && Array(3).fill(0).map((_, i) => (
-                            <CarouselItem key={`skeleton-${i}`}>
-                                <Skeleton className="w-full aspect-square" />
-                            </CarouselItem>
-                        ))}
-                        {isClient && allImages.map((imgKey, i) => (
-                            <CarouselItem key={imgKey ? imgKey : `item-${i}`}>
-                                <CarouselDishImage imageKey={imgKey} alt={`${dish.name} - תמונה ${i+1}`} />
-                            </CarouselItem>
-                        ))}
-                    </CarouselContent>
-                    {isClient && allImages.length > 1 && <>
-                      <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2 z-10" />
-                      <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2 z-10" />
-                    </>}
-                </Carousel>
-                {isClient && allImages.length > 1 && (
-                    <div className="flex justify-center gap-2 mt-2">
-                        {allImages.map((_, i) => (
-                            <button key={i} onClick={() => scrollTo(i)} className={cn("h-2 w-2 rounded-full", current === i + 1 ? "bg-primary" : "bg-muted")}></button>
-                        ))}
-                    </div>
+                {!isClient ? (
+                    <div className="w-full aspect-square flex items-center justify-center">טוען...</div>
+                ) : (
+                    <>
+                        <Carousel setApi={setApi} className="w-full relative">
+                            <CarouselContent>
+                                {allImages.map((imgKey, i) => (
+                                    <CarouselItem key={imgKey ? imgKey : `item-${i}`}>
+                                        <CarouselDishImage imageKey={imgKey} alt={`${dish.name} - תמונה ${i+1}`} />
+                                    </CarouselItem>
+                                ))}
+                            </CarouselContent>
+                            {allImages.length > 1 && <>
+                              <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2 z-10" />
+                              <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2 z-10" />
+                            </>}
+                        </Carousel>
+                        {allImages.length > 1 && (
+                            <div className="flex justify-center gap-2 mt-2">
+                                {allImages.map((_, i) => (
+                                    <button key={i} onClick={() => scrollTo(i)} className={cn("h-2 w-2 rounded-full", current === i + 1 ? "bg-primary" : "bg-muted")}></button>
+                                ))}
+                            </div>
+                        )}
+                    </>
                 )}
             </div>
             <div className="flex flex-col justify-between">
