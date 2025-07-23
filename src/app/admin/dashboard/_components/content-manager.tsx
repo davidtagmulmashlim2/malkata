@@ -85,20 +85,12 @@ export default function ContentManager() {
 
   const form = useForm<z.infer<typeof contentSchema>>({
     resolver: zodResolver(contentSchema),
-    defaultValues: DEFAULT_APP_STATE.siteContent,
+    defaultValues: siteContent,
   });
 
   useEffect(() => {
     if (siteContent) {
-      const completeSiteContent = {
-        ...DEFAULT_APP_STATE.siteContent,
-        ...siteContent,
-        hero: {
-          ...DEFAULT_APP_STATE.siteContent.hero,
-          ...siteContent.hero,
-        },
-      };
-      form.reset(completeSiteContent);
+      form.reset(siteContent);
     }
   }, [siteContent, form]);
 
@@ -382,3 +374,5 @@ export default function ContentManager() {
     </Card>
   );
 }
+
+    
