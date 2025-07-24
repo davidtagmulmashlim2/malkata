@@ -14,7 +14,7 @@ const Crown2 = (props: React.SVGProps<SVGSVGElement>) => (
 );
 
 const Crown3 = (props: React.SVGProps<SVGSVGElement>) => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" {...props}>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="currentColor" {...props}>
         <path d="M12 2C9.2 2 7 4.2 7 7c0 1.5.6 2.8 1.5 3.7L3 14h18l-5.5-3.3c.9-.9 1.5-2.2 1.5-3.7C17 4.2 14.8 2 12 2zm0 2c1.7 0 3 1.3 3 3s-1.3 3-3 3-3-1.3-3-3 1.3-3 3-3z" />
     </svg>
 );
@@ -50,6 +50,11 @@ export function Footer() {
                             מלכתא
                         </Link>
                         <p className="text-muted-foreground text-sm">אוכל ביתי אותנטי, מוכן באהבה כל יום מחדש.</p>
+                        <div className="flex gap-2">
+                           <a href={`https://wa.me/${contact.whatsapp}`} target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp">
+                                <WhatsappIcon className="h-8 w-8 text-green-500 transition-opacity hover:opacity-80" />
+                            </a>
+                        </div>
                     </div>
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">יצירת קשר</h3>
@@ -61,10 +66,6 @@ export function Footer() {
                             <li className="flex items-center gap-2">
                                 <Phone className="h-4 w-4" />
                                 <a href={`tel:${contact?.phone}`} className="hover:text-primary">{contact?.phone}</a>
-                            </li>
-                            <li className="flex items-center gap-2">
-                                <WhatsappIcon className="h-4 w-4" />
-                                <a href={`https://wa.me/${contact.whatsapp}`} target="_blank" rel="noopener noreferrer" className="hover:text-primary">{contact?.whatsapp}</a>
                             </li>
                             <li className="flex items-center gap-2">
                                 <Mail className="h-4 w-4" />

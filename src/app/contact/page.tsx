@@ -101,11 +101,9 @@ export default function ContactPage() {
                             </div>
                         </div>
                          <div className="flex items-start gap-4">
-                            <WhatsappIcon className="h-6 w-6 text-primary mt-1" />
-                            <div>
-                                <h3 className="font-semibold">WhatsApp</h3>
-                                <a href={`https://wa.me/${contact.whatsapp}`} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary">{contact.whatsapp}</a>
-                            </div>
+                            <a href={`https://wa.me/${contact.whatsapp}`} target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp">
+                                <WhatsappIcon className="h-10 w-10 text-green-500 transition-opacity hover:opacity-80" />
+                            </a>
                         </div>
                         <div className="flex items-start gap-4">
                             <Mail className="h-6 w-6 text-primary mt-1" />
