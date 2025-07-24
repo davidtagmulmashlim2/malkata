@@ -31,21 +31,29 @@ export default function MenuPage() {
                 </div>
             </div>
             <div className="container py-12 md:py-20">
-                {categories.map(category => (
-                    <div key={category.id} className="mb-16">
-                        <h2 className="text-3xl md:text-4xl font-headline font-bold mb-8 border-b-2 border-primary pb-2">
-                            {category.name}
-                        </h2>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                            {isClient ? 
-                                dishes.filter(d => d.categoryId === category.id).map(dish => (
+                {isClient ? (
+                    categories.map(category => (
+                        <div key={category.id} className="mb-16">
+                            <h2 className="text-3xl md:text-4xl font-headline font-bold mb-8 border-b-2 border-primary pb-2">
+                                {category.name}
+                            </h2>
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                                {dishes.filter(d => d.categoryId === category.id).map(dish => (
                                     <DishCard key={dish.id} dish={dish} />
-                                ))
-                                : Array(3).fill(0).map((_, i) => <Skeleton key={i} className="h-96 w-full" />)
-                            }
+                                ))}
+                            </div>
                         </div>
-                    </div>
-                ))}
+                    ))
+                ) : (
+                    Array(3).fill(0).map((_, i) => (
+                         <div key={i} className="mb-16">
+                            <Skeleton className="h-10 w-1/3 mb-8" />
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                                {Array(3).fill(0).map((_, j) => <Skeleton key={j} className="h-96 w-full" />)}
+                            </div>
+                        </div>
+                    ))
+                )}
             </div>
         </div>
     );
