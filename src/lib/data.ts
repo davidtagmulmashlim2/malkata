@@ -41,6 +41,7 @@ export const DEFAULT_APP_STATE: AppState = {
     { id: '1', name: 'עיקריות', slug: 'main-dishes', description: 'הלב של הארוחה, מנות עשירות ומנחמות.', image: 'https://placehold.co/1000x400.png' },
     { id: '2', name: 'תוספות', slug: 'side-dishes', description: 'מה שהופך ארוחה טובה למצוינת.', image: 'https://placehold.co/1000x400.png' },
     { id: '3', name: 'סלטים', slug: 'salads', description: 'רעננות וצבעוניות בכל ביס.', image: 'https://placehold.co/1000x400.png' },
+    { id: '4', name: 'שבת מלכתא', slug: 'shabbat-malkata', description: 'אוכל של שבת, מוכן לקחת הביתה.', image: 'https://placehold.co/1000x400.png' },
   ],
   dishes: [
     {
@@ -102,6 +103,30 @@ export const DEFAULT_APP_STATE: AppState = {
       categoryId: '1',
       isAvailable: true,
       tags: ['vegan'],
+    },
+     {
+      id: 'd6',
+      name: 'חלה של שבת',
+      shortDescription: 'חלה קלועה, רכה ואוורירית.',
+      fullDescription: 'חלה מתוקה ורכה, קלועה בעבודת יד ואפויה עד להזהבה. מושלמת לקבלת שבת, לניגוב הרוטב של הדג או סתם ככה עם מטבוחה.',
+      price: 20,
+      mainImage: 'https://placehold.co/600x400.png',
+      galleryImages: [],
+      categoryId: '4',
+      isAvailable: true,
+      tags: [],
+    },
+     {
+      id: 'd7',
+      name: 'דג מרוקאי חריף',
+      shortDescription: 'פילה אמנון ברוטב אדום פיקנטי.',
+      fullDescription: 'תבשיל דגים מרוקאי קלאסי עם פילה דג אמנון טרי, ברוטב עגבניות אדום ועשיר עם פלפלים חריפים, שום, כוסברה וגרגירי חומוס. מנה חמה ומנחמת.',
+      price: 65,
+      mainImage: 'https://placehold.co/600x400.png',
+      galleryImages: [],
+      categoryId: '4',
+      isAvailable: true,
+      tags: ['spicy'],
     },
   ],
   testimonials: [
