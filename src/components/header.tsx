@@ -47,14 +47,14 @@ export function Header() {
   const pathname = usePathname();
   const { state, isLoading } = useApp();
   const IconComponent = iconMap[state.design.logoIcon] || UtensilsCrossed;
+  const logoStyle = state.design.logoColor ? { color: state.design.logoColor } : {};
+
 
   const navLinks = useMemo(() => {
-    // During SSR and initial client load, return base links to prevent hydration mismatch.
     if (isLoading) {
         return baseNavLinks;
     }
 
-    // After hydration, compute the full list of links.
     const { featuredCategoryId } = state.design;
     const newLinks = [...baseNavLinks];
 
@@ -66,11 +66,10 @@ export function Header() {
                 label: featuredCategory.name,
                 isFeatured: true,
             };
-            // Insert after 'Gallery' and before 'Contact'
             const galleryIndex = newLinks.findIndex(link => link.href === '/gallery');
             if (galleryIndex !== -1) {
                 newLinks.splice(galleryIndex + 1, 0, featuredLink);
-            } else { // Fallback if gallery is not found
+            } else { 
                 const contactIndex = newLinks.findIndex(link => link.href === '/contact');
                  if (contactIndex !== -1) {
                     newLinks.splice(contactIndex, 0, featuredLink);
@@ -86,7 +85,7 @@ export function Header() {
 
 
   const Logo = () => (
-     <Link href="/" className="flex items-center gap-2 font-headline text-2xl font-bold text-primary">
+     <Link href="/" className="flex items-center gap-2 font-headline text-2xl font-bold text-primary" style={logoStyle}>
         {IconComponent && <IconComponent className="h-7 w-7" />}
         מלכתא
     </Link>
@@ -99,7 +98,8 @@ export function Header() {
         ) : (
             navLinks.map(link => (
                  <Button key={link.href} asChild variant={link.isFeatured ? "default" : "ghost"} className={cn(
-                    link.isFeatured ? 'font-bold' : (pathname.startsWith(link.href) && link.href !== '/' || pathname === link.href ? 'text-primary font-bold' : 'text-muted-foreground hover:text-primary'),
+                    (pathname.startsWith(link.href) && link.href !== '/' || pathname === link.href) && !link.isFeatured ? 'text-primary font-bold' : 'text-muted-foreground hover:text-primary',
+                    link.isFeatured ? 'font-bold' : '',
                     'p-1',
                     'no-underline'
                  )}>
@@ -114,7 +114,7 @@ export function Header() {
          <Link
           href="/admin"
           className={cn(
-            'transition-colors hover:text-primary px-3 py-1 rounded-md no-underline',
+            'transition-colors hover:text-primary no-underline',
             pathname.startsWith('/admin') ? 'text-primary font-bold' : 'text-muted-foreground'
           )}
         >

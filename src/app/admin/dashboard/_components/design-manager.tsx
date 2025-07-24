@@ -10,12 +10,14 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { toast } from '@/hooks/use-toast';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useEffect } from 'react';
+import { Input } from '@/components/ui/input';
 
 const designSchema = z.object({
   theme: z.string(),
   headlineFont: z.string(),
   bodyFont: z.string(),
   logoIcon: z.string(),
+  logoColor: z.string().optional(),
   featuredCategoryId: z.string().optional(),
 });
 
@@ -135,6 +137,20 @@ export default function DesignManager() {
                   )}
                 />
             </div>
+
+            <FormField
+              control={form.control}
+              name="logoColor"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-lg font-headline">צבע הלוגו</FormLabel>
+                  <FormControl>
+                    <Input type="color" {...field} className="p-1 h-10 w-full" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                  <FormField

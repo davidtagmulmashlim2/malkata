@@ -48,11 +48,13 @@ export const DEFAULT_APP_STATE: AppState = {
   categories: [],
   dishes: [],
   gallery: [],
+  testimonials: [],
   design: {
     theme: 'default',
     headlineFont: 'playfair',
     bodyFont: 'pt-sans',
     logoIcon: 'crown',
+    logoColor: '',
     featuredCategoryId: '',
   },
 };

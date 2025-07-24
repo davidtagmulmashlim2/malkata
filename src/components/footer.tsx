@@ -13,7 +13,7 @@ const Crown2 = (props: React.SVGProps<SVGSVGElement>) => (
 );
 
 const Crown3 = (props: React.SVGProps<SVGSVGElement>) => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" {...props}>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="currentColor" {...props}>
         <path d="M12 2C9.2 2 7 4.2 7 7c0 1.5.6 2.8 1.5 3.7L3 14h18l-5.5-3.3c.9-.9 1.5-2.2 1.5-3.7C17 4.2 14.8 2 12 2zm0 2c1.7 0 3 1.3 3 3s-1.3 3-3 3-3-1.3-3-3 1.3-3 3-3z" />
     </svg>
 );
@@ -36,13 +36,15 @@ export function Footer() {
     const { contact } = siteContent;
     
     const IconComponent = iconMap[design.logoIcon] || UtensilsCrossed;
+    const logoStyle = design.logoColor ? { color: design.logoColor } : {};
+
 
     return (
         <footer className="bg-card text-card-foreground border-t">
             <div className="container py-12 px-4 sm:px-6 lg:px-8">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                     <div className="space-y-4">
-                        <Link href="/" className="flex items-center gap-2 font-headline text-2xl font-bold text-primary">
+                        <Link href="/" className="flex items-center gap-2 font-headline text-2xl font-bold text-primary" style={logoStyle}>
                             {IconComponent && <IconComponent className="h-7 w-7" />}
                             מלכתא
                         </Link>

@@ -2,7 +2,7 @@
 'use client';
 
 import React, { createContext, useContext, useReducer, useEffect, useState, useMemo, useCallback } from 'react';
-import type { AppState, AppContextType, Action, CartItem, Dish } from '@/lib/types';
+import type { AppState, AppContextType, Action, CartItem, Dish, Testimonial } from '@/lib/types';
 import { DEFAULT_APP_STATE } from '@/lib/data';
 
 const AppContext = createContext<AppContextType | null>(null);
@@ -36,6 +36,12 @@ const appReducer = (state: AppState, action: Action): AppState => {
         return { ...state, gallery: [...state.gallery, action.payload] };
     case 'DELETE_GALLERY_IMAGE':
         return { ...state, gallery: state.gallery.filter(img => img.id !== action.payload) };
+    case 'ADD_TESTIMONIAL':
+        return { ...state, testimonials: [...state.testimonials, action.payload] };
+    case 'UPDATE_TESTIMONIAL':
+        return { ...state, testimonials: state.testimonials.map(t => t.id === action.payload.id ? action.payload : t) };
+    case 'DELETE_TESTIMONIAL':
+        return { ...state, testimonials: state.testimonials.filter(t => t.id !== action.payload) };
     case 'UPDATE_DESIGN':
         return { ...state, design: action.payload };
     default:
