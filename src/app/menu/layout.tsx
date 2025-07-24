@@ -16,6 +16,7 @@ export default function MenuLayout({
   const { categories } = state;
   const pathname = usePathname();
 
+  // Parts of the path, e.g., ['menu'] or ['menu', 'pasta']
   const pathParts = pathname.split('/').filter(Boolean); 
   const activeSlug = pathParts.length > 1 && pathParts[0] === 'menu' ? pathParts[1] : null;
 
@@ -36,7 +37,7 @@ export default function MenuLayout({
               <>
                 <Button
                   asChild
-                  variant={!activeSlug && pathParts[0] === 'menu' ? 'default' : 'ghost'}
+                  variant={!activeSlug ? 'default' : 'ghost'}
                   size="sm"
                 >
                   <Link href="/menu">כל המנות</Link>
