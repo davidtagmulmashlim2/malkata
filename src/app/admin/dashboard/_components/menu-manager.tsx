@@ -42,6 +42,7 @@ const categorySchema = z.object({
   name: z.string().min(1, 'שם הקטגוריה הוא שדה חובה'),
   description: z.string().min(1, 'תיאור הוא שדה חובה'),
   image: z.string().min(1, 'חובה להעלות תמונה'),
+  slug: z.string().optional(), // Make slug optional in form, we will generate it
 })
 
 const fileToDataUrl = (file: File): Promise<string> => {
@@ -122,14 +123,16 @@ export default function MenuManager() {
 
   const handleCategorySubmit = (values: z.infer<typeof categorySchema>) => {
     if (editingCategory) {
-      dispatch({ type: 'UPDATE_CATEGORY', payload: { ...editingCategory, ...values } })
+      const updatedCategory = { ...editingCategory, ...values, slug: values.slug || slugify(values.name) };
+      dispatch({ type: 'UPDATE_CATEGORY', payload: updatedCategory });
       toast({ title: 'קטגוריה עודכנה בהצלחה' })
     } else {
-      const newCategory = { ...values, id: Date.now().toString(), slug: slugify(values.name) }
-      dispatch({ type: 'ADD_CATEGORY', payload: newCategory })
+      const newCategory = { ...values, id: Date.now().toString(), slug: slugify(values.name) };
+      dispatch({ type: 'ADD_CATEGORY', payload: newCategory as Category });
       toast({ title: 'קטגוריה נוספה בהצלחה' })
     }
     setIsCategoryDialogOpen(false)
+    setEditingCategory(null);
   }
   
     const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>, onChange: (value: string) => void) => {
@@ -496,5 +499,3 @@ export default function MenuManager() {
     </div>
   )
 }
-
-    
