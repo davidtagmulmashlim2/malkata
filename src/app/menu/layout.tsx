@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useApp } from '@/context/app-context';
@@ -18,9 +17,9 @@ export default function MenuLayout({
   const pathname = usePathname();
   const isClient = useIsClient();
 
-  // Find the currently active category slug from the pathname
-  const pathParts = pathname.split('/').filter(Boolean); // e.g., ['menu', 'salads']
-  const activeSlug = pathParts.length === 2 && pathParts[0] === 'menu' ? pathParts[1] : null;
+  // חלקים של הנתיב, לדוגמה: ['/menu', 'pasta']
+  const pathParts = pathname.split('/').filter(Boolean); // ['menu'] או ['menu', 'pasta']
+  const activeSlug = pathParts[1]; // אם יש /menu/<slug> – זה יהיה <slug>
 
   return (
     <div>
@@ -31,18 +30,19 @@ export default function MenuLayout({
               <>
                 <Button
                   asChild
-                  variant={!activeSlug ? 'default' : 'ghost'}
+                  variant={pathParts.length === 1 && pathParts[0] === 'menu' ? 'default' : 'ghost'}
                   size="sm"
                 >
                   <Link href="/menu">כל המנות</Link>
                 </Button>
 
                 {categories.map((category) => {
+                  const isActive = activeSlug === category.slug;
                   return (
                     <Button
                       key={category.id}
                       asChild
-                      variant={activeSlug === category.slug ? 'default' : 'ghost'}
+                      variant={isActive ? 'default' : 'ghost'}
                       size="sm"
                     >
                       <Link href={`/menu/${category.slug}`}>
