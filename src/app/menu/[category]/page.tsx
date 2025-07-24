@@ -14,15 +14,15 @@ export default function CategoryPage() {
     const params = useParams();
     const categorySlug = typeof params.category === 'string' ? params.category : '';
 
-    const category = state.categories.find(c => c.slug === categorySlug);
+    const category = isClient ? state.categories.find(c => c.slug === categorySlug) : undefined;
     
     if (isClient && !category && categorySlug) {
         notFound();
     }
 
-    const categoryDishes = state.dishes.filter(d => d.categoryId === category?.id);
+    const categoryDishes = isClient ? state.dishes.filter(d => d.categoryId === category?.id) : [];
 
-    if (!isClient) {
+    if (!isClient || !category) {
         return (
             <div>
                 <Skeleton className="h-64 w-full" />
@@ -36,11 +36,6 @@ export default function CategoryPage() {
         );
     }
     
-    if (!category) {
-        // This will be caught by notFound() on the client, or show loading state.
-        return null; 
-    }
-
     return (
         <div>
             <div className="relative h-64 w-full">
