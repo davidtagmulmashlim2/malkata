@@ -98,18 +98,14 @@ export function Header() {
             Array(5).fill(0).map((_, i) => <Skeleton key={i} className="h-6 w-16" />)
         ) : (
             navLinks.map(link => (
-                <Link
-                key={link.href}
-                href={link.href}
-                className={cn(
-                    'transition-colors hover:text-primary px-3 py-1 rounded-md',
-                    link.isFeatured 
-                        ? 'btn-featured' 
-                        : (pathname.startsWith(link.href) && link.href !== '/' || pathname === link.href ? 'text-primary font-bold' : 'text-muted-foreground')
-                )}
-                >
-                {link.label}
-                </Link>
+                 <Button key={link.href} asChild variant={link.isFeatured ? "default" : "link"} className={cn(
+                    link.isFeatured ? 'font-bold' : (pathname.startsWith(link.href) && link.href !== '/' || pathname === link.href ? 'text-primary font-bold underline' : 'text-muted-foreground no-underline hover:underline hover:text-primary'),
+                    'p-1'
+                 )}>
+                    <Link href={link.href}>
+                        {link.label}
+                    </Link>
+                </Button>
             ))
         )
       }

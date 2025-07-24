@@ -82,12 +82,3 @@
     to { opacity: 1; transform: translateY(0); }
   }
 }
-
-@layer components {
-    .btn-featured {
-        @apply bg-amber-500 text-amber-900 font-bold;
-    }
-    .btn-featured:hover {
-        @apply bg-amber-600;
-    }
-}
