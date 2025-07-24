@@ -49,7 +49,7 @@ export function Header() {
 
   const navLinks = useMemo(() => {
     const { featuredCategoryId } = state.design;
-    const newLinks = [...baseNavLinks];
+    const newLinks = [...baseNavLinks.map(l => ({ ...l, isFeatured: false }))];
 
     if (featuredCategoryId && featuredCategoryId !== 'none') {
         const featuredCategory = state.categories.find(c => c.id === featuredCategoryId);
@@ -57,12 +57,12 @@ export function Header() {
             const featuredLink = {
                 href: `/menu/${featuredCategory.slug}`,
                 label: featuredCategory.name,
+                isFeatured: true,
             };
             const galleryIndex = newLinks.findIndex(link => link.href === '/gallery');
             if (galleryIndex !== -1) {
                 newLinks.splice(galleryIndex + 1, 0, featuredLink);
             } else {
-                // Fallback in case gallery link isn't found
                 const contactIndex = newLinks.findIndex(link => link.href === '/contact');
                 newLinks.splice(contactIndex, 0, featuredLink);
             }
@@ -87,8 +87,10 @@ export function Header() {
           key={link.href}
           href={link.href}
           className={cn(
-            'transition-colors hover:text-primary',
-            pathname === link.href ? 'text-primary font-bold' : 'text-muted-foreground'
+            'transition-colors hover:text-primary px-3 py-1 rounded-md',
+            link.isFeatured 
+                ? 'btn-featured' 
+                : (pathname === link.href ? 'text-primary font-bold' : 'text-muted-foreground')
           )}
         >
           {link.label}
@@ -98,7 +100,7 @@ export function Header() {
          <Link
           href="/admin"
           className={cn(
-            'transition-colors hover:text-primary',
+            'transition-colors hover:text-primary px-3 py-1 rounded-md',
             pathname.startsWith('/admin') ? 'text-primary font-bold' : 'text-muted-foreground'
           )}
         >
