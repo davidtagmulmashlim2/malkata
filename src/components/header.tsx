@@ -27,7 +27,6 @@ const baseNavLinks = [
   { href: '/menu', label: 'תפריט' },
   { href: '/about', label: 'אודות' },
   { href: '/gallery', label: 'גלריה' },
-  { href: '/testimonials', label: 'המלצות' },
   { href: '/contact', label: 'יצירת קשר' },
 ];
 
@@ -50,25 +49,27 @@ export function Header() {
 
   const navLinks = useMemo(() => {
     const { featuredCategoryId } = state.design;
-    if (!featuredCategoryId || featuredCategoryId === 'none') {
-        return baseNavLinks;
+    const newLinks = [...baseNavLinks];
+
+    if (featuredCategoryId && featuredCategoryId !== 'none') {
+        const featuredCategory = state.categories.find(c => c.id === featuredCategoryId);
+        if (featuredCategory) {
+            const featuredLink = {
+                href: `/menu/${featuredCategory.slug}`,
+                label: featuredCategory.name,
+            };
+            const galleryIndex = newLinks.findIndex(link => link.href === '/gallery');
+            if (galleryIndex !== -1) {
+                newLinks.splice(galleryIndex + 1, 0, featuredLink);
+            } else {
+                // Fallback in case gallery link isn't found
+                const contactIndex = newLinks.findIndex(link => link.href === '/contact');
+                newLinks.splice(contactIndex, 0, featuredLink);
+            }
+        }
     }
-
-    const featuredCategory = state.categories.find(c => c.id === featuredCategoryId);
-
-    if (featuredCategory) {
-      const featuredLink = {
-        href: `/menu/${featuredCategory.slug}`,
-        label: featuredCategory.name,
-      };
-      
-      const menuIndex = baseNavLinks.findIndex(link => link.href === '/menu');
-      const newLinks = [...baseNavLinks];
-      newLinks.splice(menuIndex + 1, 0, featuredLink);
-      return newLinks;
-    }
-
-    return baseNavLinks;
+    
+    return newLinks;
   }, [state.design, state.categories]);
 
 

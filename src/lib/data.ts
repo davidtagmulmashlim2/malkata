@@ -47,7 +47,6 @@ export const DEFAULT_APP_STATE: AppState = {
   // This prevents hydration mismatches and data conflicts.
   categories: [],
   dishes: [],
-  testimonials: [],
   gallery: [],
   design: {
     theme: 'default',
