@@ -16,7 +16,6 @@ export default function MenuLayout({
   const { categories } = state;
   const pathname = usePathname();
 
-  // This correctly gets the current active slug from the URL, e.g., "pasta" from "/menu/pasta"
   const activeSlug = pathname.split('/').pop();
 
   return (
@@ -66,3 +65,5 @@ export default function MenuLayout({
     </div>
   );
 }
+
+    

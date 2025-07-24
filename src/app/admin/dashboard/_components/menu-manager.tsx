@@ -21,7 +21,16 @@ import type { Dish, Category } from '@/lib/types'
 import { storeImage, deleteImage } from '@/lib/image-store';
 import { AsyncImage } from '@/components/async-image'
 
-const slugify = (text: string) => text.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
+const slugify = (text: string) => {
+  if (!text) return '';
+  return text
+    .toString()
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, '-')           // Replace spaces with -
+    .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
+    .replace(/\-\-+/g, '-');        // Replace multiple - with single -
+}
 
 const dishSchema = z.object({
   id: z.string().optional(),
@@ -42,7 +51,7 @@ const categorySchema = z.object({
   name: z.string().min(1, 'שם הקטגוריה הוא שדה חובה'),
   description: z.string().min(1, 'תיאור הוא שדה חובה'),
   image: z.string().min(1, 'חובה להעלות תמונה'),
-  slug: z.string().optional(), // Make slug optional in form, we will generate it
+  slug: z.string().optional(), // Slug is generated, so optional in form
 })
 
 const fileToDataUrl = (file: File): Promise<string> => {
@@ -524,3 +533,5 @@ export default function MenuManager() {
     </div>
   )
 }
+
+    

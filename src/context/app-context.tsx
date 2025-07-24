@@ -10,7 +10,6 @@ const AppContext = createContext<AppContextType | null>(null);
 const appReducer = (state: AppState, action: Action): AppState => {
   switch (action.type) {
     case 'SET_STATE':
-      // When setting state from storage, merge it with default to avoid missing fields
       return { 
           ...DEFAULT_APP_STATE,
           ...action.payload,
@@ -59,14 +58,16 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [state, dispatch] = useReducer(appReducer, DEFAULT_APP_STATE);
   const [cart, setCart] = useState<CartItem[]>([]);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isLoading, setIsLoading] = useState(true); // Start in loading state
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Effect to load state from localStorage ONLY on the client-side
   useEffect(() => {
     try {
       const storedState = localStorage.getItem(LS_KEYS.APP_STATE);
       if (storedState) {
         dispatch({ type: 'SET_STATE', payload: JSON.parse(storedState) });
+      } else {
+        // If nothing is in storage, we start with the default state.
+        dispatch({ type: 'SET_STATE', payload: DEFAULT_APP_STATE });
       }
 
       const storedCart = localStorage.getItem(LS_KEYS.CART);
@@ -79,20 +80,16 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           setIsAuthenticated(true);
       }
     } catch (error) {
-      console.error("Failed to parse from localStorage", error);
-      // If parsing fails, we still proceed with default state
+      console.error("Failed to parse from localStorage, using default state.", error);
+      dispatch({ type: 'SET_STATE', payload: DEFAULT_APP_STATE });
     } finally {
-      // THIS IS THE KEY: We are now finished with the initial client-side load.
       setIsLoading(false);
     }
   }, []);
 
-  // Effect to save state to localStorage whenever it changes
   useEffect(() => {
-    // Only save state if we are done loading, to prevent writing default state over saved state.
     if (!isLoading) {
         try {
-            // Save the entire app state as one object
             localStorage.setItem(LS_KEYS.APP_STATE, JSON.stringify(state));
             localStorage.setItem(LS_KEYS.CART, JSON.stringify(cart));
         } catch (error) {
@@ -148,8 +145,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     sessionStorage.removeItem('malkata_auth');
   }, []);
 
-  // The provided value now includes `isLoading`.
-  // All child components will re-render when isLoading changes from true to false.
   const value = useMemo(() => ({
     state,
     dispatch,
@@ -175,3 +170,5 @@ export const useApp = (): AppContextType => {
   }
   return context;
 };
+
+    
