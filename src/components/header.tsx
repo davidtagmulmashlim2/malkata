@@ -98,9 +98,10 @@ export function Header() {
             Array(5).fill(0).map((_, i) => <Skeleton key={i} className="h-6 w-16" />)
         ) : (
             navLinks.map(link => (
-                 <Button key={link.href} asChild variant={link.isFeatured ? "default" : "link"} className={cn(
-                    link.isFeatured ? 'font-bold' : (pathname.startsWith(link.href) && link.href !== '/' || pathname === link.href ? 'text-primary font-bold underline' : 'text-muted-foreground no-underline hover:underline hover:text-primary'),
-                    'p-1'
+                 <Button key={link.href} asChild variant={link.isFeatured ? "default" : "ghost"} className={cn(
+                    link.isFeatured ? 'font-bold' : (pathname.startsWith(link.href) && link.href !== '/' || pathname === link.href ? 'text-primary font-bold' : 'text-muted-foreground hover:text-primary'),
+                    'p-1',
+                    'no-underline'
                  )}>
                     <Link href={link.href}>
                         {link.label}
@@ -113,7 +114,7 @@ export function Header() {
          <Link
           href="/admin"
           className={cn(
-            'transition-colors hover:text-primary px-3 py-1 rounded-md',
+            'transition-colors hover:text-primary px-3 py-1 rounded-md no-underline',
             pathname.startsWith('/admin') ? 'text-primary font-bold' : 'text-muted-foreground'
           )}
         >
