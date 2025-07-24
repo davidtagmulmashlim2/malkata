@@ -2,7 +2,7 @@
 'use client';
 
 import React, { createContext, useContext, useReducer, useEffect, useState, useMemo, useCallback } from 'react';
-import type { AppState, AppContextType, Action, CartItem, Dish, SiteContent, Category, GalleryImage, Testimonial, DesignSettings } from '@/lib/types';
+import type { AppState, AppContextType, Action, CartItem, Dish } from '@/lib/types';
 import { DEFAULT_APP_STATE } from '@/lib/data';
 
 const AppContext = createContext<AppContextType | null>(null);
@@ -10,12 +10,14 @@ const AppContext = createContext<AppContextType | null>(null);
 const appReducer = (state: AppState, action: Action): AppState => {
   switch (action.type) {
     case 'SET_STATE':
-      return { 
+        // This action hydrates the state from localStorage.
+        // It merges the stored state with the default state to ensure new properties are not missed.
+        return { 
           ...DEFAULT_APP_STATE,
           ...action.payload,
           siteContent: { ...DEFAULT_APP_STATE.siteContent, ...action.payload.siteContent },
           design: { ...DEFAULT_APP_STATE.design, ...action.payload.design },
-      };
+        };
     case 'UPDATE_CONTENT':
       return { ...state, siteContent: action.payload };
     case 'ADD_DISH':
@@ -55,21 +57,22 @@ const LS_KEYS = {
 const ADMIN_PASSWORD = 'admin';
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  // state is initialized with default data. This is what the server will render.
   const [state, dispatch] = useReducer(appReducer, DEFAULT_APP_STATE);
   const [cart, setCart] = useState<CartItem[]>([]);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  // isLoading is true initially, to ensure client-side hydration happens before showing stored state.
   const [isLoading, setIsLoading] = useState(true);
 
+  // This effect runs ONLY on the client, after the initial render.
   useEffect(() => {
     try {
       const storedState = localStorage.getItem(LS_KEYS.APP_STATE);
       if (storedState) {
+        // We found a saved state, so we dispatch it to the reducer.
         dispatch({ type: 'SET_STATE', payload: JSON.parse(storedState) });
-      } else {
-        // If nothing is in storage, we start with the default state.
-        dispatch({ type: 'SET_STATE', payload: DEFAULT_APP_STATE });
       }
-
+      
       const storedCart = localStorage.getItem(LS_KEYS.CART);
       if (storedCart) {
         setCart(JSON.parse(storedCart));
@@ -81,13 +84,15 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       }
     } catch (error) {
       console.error("Failed to parse from localStorage, using default state.", error);
-      dispatch({ type: 'SET_STATE', payload: DEFAULT_APP_STATE });
     } finally {
+      // We are done loading client-side data.
       setIsLoading(false);
     }
   }, []);
 
+  // This effect runs ONLY on the client, and saves the state whenever it changes.
   useEffect(() => {
+    // We don't save during the initial loading phase to avoid race conditions.
     if (!isLoading) {
         try {
             localStorage.setItem(LS_KEYS.APP_STATE, JSON.stringify(state));
@@ -170,5 +175,3 @@ export const useApp = (): AppContextType => {
   }
   return context;
 };
-
-    
