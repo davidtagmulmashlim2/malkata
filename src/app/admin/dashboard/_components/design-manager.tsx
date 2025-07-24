@@ -16,6 +16,7 @@ const designSchema = z.object({
   headlineFont: z.string(),
   bodyFont: z.string(),
   logoIcon: z.string(),
+  featuredCategoryId: z.string().optional(),
 });
 
 const themes = [
@@ -57,7 +58,7 @@ const logoIcons = [
 
 export default function DesignManager() {
   const { state, dispatch } = useApp();
-  const { design } = state;
+  const { design, categories } = state;
 
   const form = useForm<z.infer<typeof designSchema>>({
     resolver: zodResolver(designSchema),
@@ -177,6 +178,29 @@ export default function DesignManager() {
                   )}
                 />
             </div>
+             <FormField
+              control={form.control}
+              name="featuredCategoryId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-lg font-headline">קטגוריה מומלצת (להצגה בתפריט ראשי)</FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="בחר קטגוריה להדגשה" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="">ללא</SelectItem>
+                      {categories.map(category => (
+                        <SelectItem key={category.id} value={category.id}>{category.name}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             
             <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>שמור שינויי עיצוב</Button>
           </form>

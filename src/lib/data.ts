@@ -54,5 +54,6 @@ export const DEFAULT_APP_STATE: AppState = {
     headlineFont: 'playfair',
     bodyFont: 'pt-sans',
     logoIcon: 'crown',
+    featuredCategoryId: '',
   },
 };

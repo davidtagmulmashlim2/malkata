@@ -8,7 +8,7 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Menu, UtensilsCrossed, User, Crown as Crown1, Gem, Star, Shield } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useApp } from '@/context/app-context';
-import React from 'react';
+import React, { useMemo } from 'react';
 
 const Crown2 = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" {...props}>
@@ -22,8 +22,7 @@ const Crown3 = (props: React.SVGProps<SVGSVGElement>) => (
     </svg>
 );
 
-
-const navLinks = [
+const baseNavLinks = [
   { href: '/', label: 'בית' },
   { href: '/menu', label: 'תפריט' },
   { href: '/about', label: 'אודות' },
@@ -47,6 +46,26 @@ export function Header() {
   const pathname = usePathname();
   const { state } = useApp();
   const IconComponent = iconMap[state.design.logoIcon] || UtensilsCrossed;
+
+  const navLinks = useMemo(() => {
+    const { featuredCategoryId } = state.design;
+    const featuredCategory = state.categories.find(c => c.id === featuredCategoryId);
+
+    if (featuredCategory) {
+      const featuredLink = {
+        href: `/menu/${featuredCategory.slug}`,
+        label: featuredCategory.name,
+      };
+      
+      const menuIndex = baseNavLinks.findIndex(link => link.href === '/menu');
+      const newLinks = [...baseNavLinks];
+      newLinks.splice(menuIndex + 1, 0, featuredLink);
+      return newLinks;
+    }
+
+    return baseNavLinks;
+  }, [state.design, state.categories]);
+
 
   const Logo = () => (
      <Link href="/" className="flex items-center gap-2 font-headline text-2xl font-bold text-primary">
@@ -97,13 +116,13 @@ export function Header() {
       <div className="container flex h-16 items-center">
         {/* Desktop Layout */}
         <div className="hidden md:flex w-full items-center">
-            <div className="flex-1 flex justify-start">
+            <div className="flex justify-start">
                 <Logo />
             </div>
-            <div className="flex-2 flex justify-center">
+            <div className="flex-1 flex justify-center">
                 <NavLinks />
             </div>
-            <div className="flex-1 flex justify-end">
+            <div className="flex justify-end">
                 <AdminButton />
             </div>
         </div>
