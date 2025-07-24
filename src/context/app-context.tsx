@@ -10,7 +10,13 @@ const AppContext = createContext<AppContextType | null>(null);
 const appReducer = (state: AppState, action: Action): AppState => {
   switch (action.type) {
     case 'SET_STATE':
-      return { ...state, ...action.payload };
+      // When setting state from storage, merge it with default to avoid missing fields
+      return { 
+          ...DEFAULT_APP_STATE,
+          ...action.payload,
+          siteContent: { ...DEFAULT_APP_STATE.siteContent, ...action.payload.siteContent },
+          design: { ...DEFAULT_APP_STATE.design, ...action.payload.design },
+      };
     case 'UPDATE_CONTENT':
       return { ...state, siteContent: action.payload };
     case 'ADD_DISH':
@@ -43,47 +49,27 @@ const appReducer = (state: AppState, action: Action): AppState => {
 };
 
 const LS_KEYS = {
-    SITE_CONTENT: 'malkata_siteContent',
-    DISHES: 'malkata_dishes',
-    CATEGORIES: 'malkata_categories',
-    GALLERY: 'malkata_gallery',
-    TESTIMONIALS: 'malkata_testimonials',
-    DESIGN: 'malkata_design',
+    APP_STATE: 'malkata_appState',
     CART: 'malkata_cart',
-    // Image store is managed separately in IndexedDB
 };
 
-const ADMIN_PASSWORD = 'admin'; // In a real app, use a more secure method.
+const ADMIN_PASSWORD = 'admin';
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [state, dispatch] = useReducer(appReducer, DEFAULT_APP_STATE);
   const [cart, setCart] = useState<CartItem[]>([]);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true); // Start in loading state
 
-  // Effect to load state from localStorage on initial client-side render
+  // Effect to load state from localStorage ONLY on the client-side
   useEffect(() => {
     try {
-      const storedSiteContent = localStorage.getItem(LS_KEYS.SITE_CONTENT);
-      const storedDishes = localStorage.getItem(LS_KEYS.DISHES);
-      const storedCategories = localStorage.getItem(LS_KEYS.CATEGORIES);
-      const storedGallery = localStorage.getItem(LS_KEYS.GALLERY);
-      const storedTestimonials = localStorage.getItem(LS_KEYS.TESTIMONIALS);
-      const storedDesign = localStorage.getItem(LS_KEYS.DESIGN);
-      const storedCart = localStorage.getItem(LS_KEYS.CART);
-      
-      const loadedState: Partial<AppState> = {};
-      if (storedSiteContent) loadedState.siteContent = JSON.parse(storedSiteContent);
-      if (storedDishes) loadedState.dishes = JSON.parse(storedDishes);
-      if (storedCategories) loadedState.categories = JSON.parse(storedCategories);
-      if (storedGallery) loadedState.gallery = JSON.parse(storedGallery);
-      if (storedTestimonials) loadedState.testimonials = JSON.parse(storedTestimonials);
-      if (storedDesign) loadedState.design = JSON.parse(storedDesign);
-
-      if (Object.keys(loadedState).length > 0) {
-          dispatch({ type: 'SET_STATE', payload: loadedState });
+      const storedState = localStorage.getItem(LS_KEYS.APP_STATE);
+      if (storedState) {
+        dispatch({ type: 'SET_STATE', payload: JSON.parse(storedState) });
       }
 
+      const storedCart = localStorage.getItem(LS_KEYS.CART);
       if (storedCart) {
         setCart(JSON.parse(storedCart));
       }
@@ -94,21 +80,20 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       }
     } catch (error) {
       console.error("Failed to parse from localStorage", error);
+      // If parsing fails, we still proceed with default state
     } finally {
-        setIsLoading(false); // Critical: set loading to false after attempting to load
+      // THIS IS THE KEY: We are now finished with the initial client-side load.
+      setIsLoading(false);
     }
   }, []);
 
   // Effect to save state to localStorage whenever it changes
   useEffect(() => {
-    if (!isLoading) { // Only save state after initial load is complete
+    // Only save state if we are done loading, to prevent writing default state over saved state.
+    if (!isLoading) {
         try {
-            localStorage.setItem(LS_KEYS.SITE_CONTENT, JSON.stringify(state.siteContent));
-            localStorage.setItem(LS_KEYS.DISHES, JSON.stringify(state.dishes));
-            localStorage.setItem(LS_KEYS.CATEGORIES, JSON.stringify(state.categories));
-            localStorage.setItem(LS_KEYS.GALLERY, JSON.stringify(state.gallery));
-            localStorage.setItem(LS_KEYS.TESTIMONIALS, JSON.stringify(state.testimonials));
-            localStorage.setItem(LS_KEYS.DESIGN, JSON.stringify(state.design));
+            // Save the entire app state as one object
+            localStorage.setItem(LS_KEYS.APP_STATE, JSON.stringify(state));
             localStorage.setItem(LS_KEYS.CART, JSON.stringify(cart));
         } catch (error) {
              console.error("Failed to save state to localStorage", error);
@@ -163,6 +148,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     sessionStorage.removeItem('malkata_auth');
   }
 
+  // The provided value now includes `isLoading`.
+  // All child components will re-render when isLoading changes from true to false.
   const value = useMemo(() => ({
     state,
     dispatch,
@@ -175,7 +162,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     isAuthenticated,
     login,
     logout,
-    isLoading, // Provide loading state to all consumers
+    isLoading,
   }), [state, cart, isAuthenticated, isLoading]);
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

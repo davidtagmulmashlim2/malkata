@@ -14,7 +14,7 @@ export default function MenuPage() {
         <div>
             <div className="relative h-64 w-full">
                 <AsyncImage
-                    imageKey={siteContent.menu.mainImage}
+                    imageKey={isLoading ? undefined : siteContent.menu.mainImage}
                     alt="תפריט"
                     layout="fill"
                     objectFit="cover"

@@ -12,14 +12,16 @@ export default function CategoryPage() {
     const params = useParams();
     const categorySlug = typeof params.category === 'string' ? params.category : '';
 
-    const category = !isLoading ? state.categories.find(c => c.slug === categorySlug) : undefined;
+    const category = isLoading ? undefined : state.categories.find(c => c.slug === categorySlug);
     
-    if (!isLoading && !category && categorySlug) {
+    // Defer the notFound call until after the client has loaded and we can be sure the category doesn't exist.
+    if (!isLoading && categorySlug && !category) {
         notFound();
     }
 
-    const categoryDishes = !isLoading && category ? state.dishes.filter(d => d.categoryId === category.id) : [];
+    const categoryDishes = isLoading || !category ? [] : state.dishes.filter(d => d.categoryId === category.id);
 
+    // This is the loading state, shown on server and initial client render
     if (isLoading || !category) {
         return (
             <div>
@@ -34,6 +36,7 @@ export default function CategoryPage() {
         );
     }
     
+    // This is the final state, rendered only on the client after isLoading is false
     return (
         <div>
             <div className="relative h-64 w-full">

@@ -18,15 +18,16 @@ import '../styles/themes/luxury.css';
 import '../styles/themes/natural.css';
 import '../styles/themes/minimal.css';
 import '../styles/themes/biblical.css';
-import { useIsClient } from '@/hooks/use-is-client';
 import { useEffect } from 'react';
 
+// This component now handles applying themes and fonts AFTER the initial client load.
 function AppBody({ children }: { children: React.ReactNode }) {
     const { state, isLoading } = useApp();
-    const isClient = useIsClient();
 
     useEffect(() => {
-        if(isClient) {
+        // Only apply theme and font changes on the client side, and after data has loaded.
+        // This prevents hydration mismatches related to dynamic class names or styles.
+        if(!isLoading) {
             const themeClasses = ['theme-default', 'theme-retro', 'theme-urban', 'theme-terminal', 'theme-ocean', 'theme-forest', 'theme-sunrise', 'theme-luxury', 'theme-natural', 'theme-minimal', 'theme-biblical'];
             document.documentElement.classList.remove(...themeClasses);
             document.documentElement.classList.add(`theme-${state.design.theme}`);
@@ -34,10 +35,10 @@ function AppBody({ children }: { children: React.ReactNode }) {
             document.documentElement.style.setProperty('--font-headline-family', `var(--font-${state.design.headlineFont})`);
             document.documentElement.style.setProperty('--font-sans-family', `var(--font-${state.design.bodyFont})`);
         }
-    }, [isClient, state.design]);
+    }, [isLoading, state.design]);
 
-    // The entire body is now rendered on both server and client.
-    // The `isLoading` state within components will handle showing skeletons.
+    // The body structure is now ALWAYS rendered on both server and client.
+    // The `isLoading` state within child components will handle showing skeletons.
     return (
         <body className={cn('min-h-screen flex flex-col')}>
             <Header />
@@ -58,6 +59,7 @@ export default function RootLayout({
     <AppProvider>
         <html lang="he" dir="rtl">
             <head />
+            {/* AppBody now correctly wraps the children and relies on the AppContext */}
             <AppBody>
                 {children}
             </AppBody>
