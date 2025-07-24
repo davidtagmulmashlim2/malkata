@@ -1,4 +1,5 @@
-"use client";
+
+'use client';
 
 import React, { createContext, useContext, useReducer, useEffect, useState, useMemo } from 'react';
 import type { AppState, AppContextType, Action, CartItem, Dish, SiteContent, Category, GalleryImage, Testimonial, DesignSettings } from '@/lib/types';
@@ -60,27 +61,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [cart, setCart] = useState<CartItem[]>([]);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const isClient = useIsClient();
-  
-  const enhancedDispatch = (action: Action) => {
-    dispatch(action);
-    const newState = appReducer(state, action);
-     
-    if (isClient) {
-        try {
-            // Save state to localStorage, but images are in IndexedDB so this won't overflow.
-            if (action.type === 'UPDATE_CONTENT') localStorage.setItem(LS_KEYS.SITE_CONTENT, JSON.stringify(action.payload));
-            if (['ADD_DISH', 'UPDATE_DISH', 'DELETE_DISH'].includes(action.type)) localStorage.setItem(LS_KEYS.DISHES, JSON.stringify(newState.dishes));
-            if (['ADD_CATEGORY', 'UPDATE_CATEGORY', 'DELETE_CATEGORY'].includes(action.type)) localStorage.setItem(LS_KEYS.CATEGORIES, JSON.stringify(newState.categories));
-            if (['ADD_GALLERY_IMAGE', 'DELETE_GALLERY_IMAGE'].includes(action.type)) localStorage.setItem(LS_KEYS.GALLERY, JSON.stringify(newState.gallery));
-            if (['ADD_TESTIMONIAL', 'UPDATE_TESTIMONIAL', 'DELETE_TESTIMONIAL'].includes(action.type)) localStorage.setItem(LS_KEYS.TESTIMONIALS, JSON.stringify(newState.testimonials));
-            if (action.type === 'UPDATE_DESIGN') localStorage.setItem(LS_KEYS.DESIGN, JSON.stringify(action.payload));
-        } catch (error) {
-            console.error("Failed to save state to localStorage", error);
-        }
-    }
-  };
 
-
+  // Effect to load state from localStorage on initial client-side render
   useEffect(() => {
     if (isClient) {
       try {
@@ -102,31 +84,40 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
         if (Object.keys(loadedState).length > 0) {
             dispatch({ type: 'SET_STATE', payload: loadedState });
-        } else {
-             // If nothing is in local storage, initialize with default state
-             dispatch({ type: 'SET_STATE', payload: DEFAULT_APP_STATE });
         }
 
         if (storedCart) {
           setCart(JSON.parse(storedCart));
         }
+        
         const storedAuth = sessionStorage.getItem('malkata_auth');
         if (storedAuth === 'true') {
             setIsAuthenticated(true);
         }
       } catch (error) {
         console.error("Failed to parse from localStorage", error);
-        // If parsing fails, load default state
-        dispatch({ type: 'SET_STATE', payload: DEFAULT_APP_STATE });
+        // If parsing fails, state will remain as DEFAULT_APP_STATE
       }
     }
   }, [isClient]);
 
+  // Effect to save state to localStorage whenever it changes
   useEffect(() => {
     if (isClient) {
-      localStorage.setItem(LS_KEYS.CART, JSON.stringify(cart));
+        try {
+            localStorage.setItem(LS_KEYS.SITE_CONTENT, JSON.stringify(state.siteContent));
+            localStorage.setItem(LS_KEYS.DISHES, JSON.stringify(state.dishes));
+            localStorage.setItem(LS_KEYS.CATEGORIES, JSON.stringify(state.categories));
+            localStorage.setItem(LS_KEYS.GALLERY, JSON.stringify(state.gallery));
+            localStorage.setItem(LS_KEYS.TESTIMONIALS, JSON.stringify(state.testimonials));
+            localStorage.setItem(LS_KEYS.DESIGN, JSON.stringify(state.design));
+            localStorage.setItem(LS_KEYS.CART, JSON.stringify(cart));
+        } catch (error) {
+             console.error("Failed to save state to localStorage", error);
+        }
     }
-  }, [cart, isClient]);
+  }, [state, cart, isClient]);
+
 
   const addToCart = (dishId: string, quantity = 1) => {
     setCart(prevCart => {
@@ -176,7 +167,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const value = {
     state,
-    dispatch: enhancedDispatch,
+    dispatch,
     cart,
     addToCart,
     updateCartQuantity,
