@@ -122,12 +122,13 @@ export default function MenuManager() {
   }
 
   const handleCategorySubmit = (values: z.infer<typeof categorySchema>) => {
+    const categorySlug = slugify(values.name);
     if (editingCategory) {
-      const updatedCategory = { ...editingCategory, ...values, slug: values.slug || slugify(values.name) };
+      const updatedCategory = { ...editingCategory, ...values, slug: categorySlug };
       dispatch({ type: 'UPDATE_CATEGORY', payload: updatedCategory });
       toast({ title: 'קטגוריה עודכנה בהצלחה' })
     } else {
-      const newCategory = { ...values, id: Date.now().toString(), slug: slugify(values.name) };
+      const newCategory = { ...values, id: Date.now().toString(), slug: categorySlug };
       dispatch({ type: 'ADD_CATEGORY', payload: newCategory as Category });
       toast({ title: 'קטגוריה נוספה בהצלחה' })
     }
