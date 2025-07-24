@@ -42,7 +42,8 @@ export default function MenuLayout({
                 </Button>
 
                 {categories.map((category) => {
-                  const isActive = activeSlug === category.slug;
+                  // The button is active only if the slug matches AND we are not on the main /menu page.
+                  const isActive = pathname !== '/menu' && activeSlug === category.slug;
                   return (
                     <Button
                       key={category.id}
