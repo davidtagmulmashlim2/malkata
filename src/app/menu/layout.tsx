@@ -17,20 +17,20 @@ export default function MenuLayout({
   const pathname = usePathname();
   const isClient = useIsClient();
 
-  // חלקים של הנתיב, לדוגמה: ['/menu', 'pasta']
-  const pathParts = pathname.split('/').filter(Boolean); // ['menu'] או ['menu', 'pasta']
-  const activeSlug = pathParts[1]; // אם יש /menu/<slug> – זה יהיה <slug>
+  // חלקים של הנתיב, לדוגמה: ['menu'] או ['menu', 'pasta']
+  const pathParts = pathname.split('/').filter(Boolean); 
+  const activeSlug = pathParts.length > 1 && pathParts[0] === 'menu' ? pathParts[1] : null;
 
   return (
     <div>
       <nav className="border-b bg-card sticky top-16 z-30">
         <div className="container flex justify-center p-2 overflow-x-auto">
-          <div className="flex items-center gap-2 flex-wrap justify-center">
+          <div className="flex items-center gap-2 whitespace-nowrap">
             {isClient ? (
               <>
                 <Button
                   asChild
-                  variant={pathParts.length === 1 && pathParts[0] === 'menu' ? 'default' : 'ghost'}
+                  variant={!activeSlug && pathParts[0] === 'menu' ? 'default' : 'ghost'}
                   size="sm"
                 >
                   <Link href="/menu">כל המנות</Link>
