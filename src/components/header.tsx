@@ -96,10 +96,16 @@ export function Header() {
     <header className="sticky top-0 z-40 w-full border-b bg-background/80 backdrop-blur-sm">
       <div className="container flex h-16 items-center">
         {/* Desktop Layout */}
-        <div className="hidden md:flex w-full justify-between items-center">
-            <Logo />
-            <NavLinks />
-            <AdminButton />
+        <div className="hidden md:flex w-full items-center">
+            <div className="flex-1 flex justify-start">
+                <Logo />
+            </div>
+            <div className="flex-2 flex justify-center">
+                <NavLinks />
+            </div>
+            <div className="flex-1 flex justify-end">
+                <AdminButton />
+            </div>
         </div>
         
         {/* Mobile Layout */}
