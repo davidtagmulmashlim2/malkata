@@ -1,7 +1,7 @@
 
 'use client';
 
-import React, { createContext, useContext, useReducer, useEffect, useState, useMemo } from 'react';
+import React, { createContext, useContext, useReducer, useEffect, useState, useMemo, useCallback } from 'react';
 import type { AppState, AppContextType, Action, CartItem, Dish, SiteContent, Category, GalleryImage, Testimonial, DesignSettings } from '@/lib/types';
 import { DEFAULT_APP_STATE } from '@/lib/data';
 
@@ -102,7 +102,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   }, [state, cart, isLoading]);
 
 
-  const addToCart = (dishId: string, quantity = 1) => {
+  const addToCart = useCallback((dishId: string, quantity = 1) => {
     setCart(prevCart => {
       const existingItem = prevCart.find(item => item.dishId === dishId);
       if (existingItem) {
@@ -112,41 +112,41 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       }
       return [...prevCart, { dishId, quantity }];
     });
-  };
+  }, []);
 
-  const updateCartQuantity = (dishId: string, quantity: number) => {
-    if (quantity <= 0) {
-      removeFromCart(dishId);
-    } else {
-      setCart(prevCart =>
-        prevCart.map(item => (item.dishId === dishId ? { ...item, quantity } : item))
-      );
-    }
-  };
+  const updateCartQuantity = useCallback((dishId: string, quantity: number) => {
+    setCart(prevCart => {
+      if (quantity <= 0) {
+        return prevCart.filter(item => item.dishId !== dishId);
+      } else {
+        return prevCart.map(item => (item.dishId === dishId ? { ...item, quantity } : item));
+      }
+    });
+  }, []);
 
-  const removeFromCart = (dishId: string) => {
+  const removeFromCart = useCallback((dishId: string) => {
     setCart(prevCart => prevCart.filter(item => item.dishId !== dishId));
-  };
+  }, []);
   
-  const clearCart = () => setCart([]);
+  const clearCart = useCallback(() => setCart([]), []);
 
-  const getDishById = (dishId: string): Dish | undefined => {
+  const getDishById = useCallback((dishId: string): Dish | undefined => {
     return state.dishes.find(d => d.id === dishId);
-  }
+  }, [state.dishes]);
 
-  const login = (password: string): boolean => {
+  const login = useCallback((password: string): boolean => {
     if (password === ADMIN_PASSWORD) {
         setIsAuthenticated(true);
         sessionStorage.setItem('malkata_auth', 'true');
         return true;
     }
     return false;
-  }
+  }, []);
 
-  const logout = () => {
+  const logout = useCallback(() => {
     setIsAuthenticated(false);
     sessionStorage.removeItem('malkata_auth');
-  }
+  }, []);
 
   // The provided value now includes `isLoading`.
   // All child components will re-render when isLoading changes from true to false.
@@ -163,7 +163,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     login,
     logout,
     isLoading,
-  }), [state, cart, isAuthenticated, isLoading]);
+  }), [state, cart, isAuthenticated, isLoading, addToCart, updateCartQuantity, removeFromCart, clearCart, getDishById, login, logout]);
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };

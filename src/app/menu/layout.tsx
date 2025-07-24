@@ -16,9 +16,8 @@ export default function MenuLayout({
   const { categories } = state;
   const pathname = usePathname();
 
-  // Parts of the path, e.g., ['menu'] or ['menu', 'pasta']
-  const pathParts = pathname.split('/').filter(Boolean); 
-  const activeSlug = pathParts.length > 1 && pathParts[0] === 'menu' ? pathParts[1] : null;
+  // This correctly gets the current active slug from the URL, e.g., "pasta" from "/menu/pasta"
+  const activeSlug = pathname.split('/').pop();
 
   return (
     <div>
@@ -37,7 +36,7 @@ export default function MenuLayout({
               <>
                 <Button
                   asChild
-                  variant={!activeSlug ? 'default' : 'ghost'}
+                  variant={pathname === '/menu' ? 'default' : 'ghost'}
                   size="sm"
                 >
                   <Link href="/menu">כל המנות</Link>

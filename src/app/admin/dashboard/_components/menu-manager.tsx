@@ -18,7 +18,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { PlusCircle, Edit, Trash2, X } from 'lucide-react'
 import { toast } from '@/hooks/use-toast'
 import type { Dish, Category } from '@/lib/types'
-import { storeImage } from '@/lib/image-store';
+import { storeImage, deleteImage } from '@/lib/image-store';
 import { AsyncImage } from '@/components/async-image'
 
 const slugify = (text: string) => text.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
@@ -82,21 +82,30 @@ export default function MenuManager() {
     })
 
   useEffect(() => {
-    if (isDishDialogOpen) {
-      if (editingDish) {
+    if (!isDishDialogOpen) {
+        setEditingDish(null);
+        dishForm.reset({
+            name: '', shortDescription: '', fullDescription: '', price: 0, categoryId: '',
+            isAvailable: true, isRecommended: false, tags: [], mainImage: '', galleryImages: []
+        });
+    } else if (editingDish) {
         dishForm.reset({
           ...editingDish,
           price: editingDish.price || 0,
+          tags: editingDish.tags || [],
           galleryImages: editingDish.galleryImages || []
         });
-      } else {
-        dishForm.reset({
-          name: '', shortDescription: '', fullDescription: '', price: 0, categoryId: '',
-          isAvailable: true, isRecommended: false, tags: [], mainImage: '', galleryImages: []
-        });
-      }
     }
   }, [isDishDialogOpen, editingDish, dishForm]);
+
+  useEffect(() => {
+    if (!isCategoryDialogOpen) {
+        setEditingCategory(null);
+        categoryForm.reset({ name: '', description: '', image: ''});
+    } else if (editingCategory) {
+        categoryForm.reset(editingCategory);
+    }
+  }, [isCategoryDialogOpen, editingCategory, categoryForm]);
   
   const openDishDialog = (dish: Dish | null = null) => {
     setEditingDish(dish)
@@ -105,20 +114,18 @@ export default function MenuManager() {
 
   const openCategoryDialog = (category: Category | null = null) => {
     setEditingCategory(category)
-    categoryForm.reset(category || { name: '', description: '', image: '' })
     setIsCategoryDialogOpen(true)
   }
 
   const handleDishSubmit = (values: z.infer<typeof dishSchema>) => {
     if (editingDish) {
-      dispatch({ type: 'UPDATE_DISH', payload: { ...editingDish, ...values } })
+      dispatch({ type: 'UPDATE_DISH', payload: { ...values, id: editingDish.id } as Dish })
       toast({ title: 'מנה עודכנה בהצלחה' })
     } else {
       dispatch({ type: 'ADD_DISH', payload: { ...values, id: Date.now().toString() } })
       toast({ title: 'מנה נוספה בהצלחה' })
     }
     setIsDishDialogOpen(false)
-    setEditingDish(null);
   }
 
   const handleCategorySubmit = (values: z.infer<typeof categorySchema>) => {
@@ -128,8 +135,8 @@ export default function MenuManager() {
     };
     
     if (editingCategory) {
-      const updatedCategory = { ...editingCategory, ...categoryData };
-      dispatch({ type: 'UPDATE_CATEGORY', payload: updatedCategory });
+      const updatedCategory = { ...categoryData, id: editingCategory.id };
+      dispatch({ type: 'UPDATE_CATEGORY', payload: updatedCategory as Category });
       toast({ title: 'קטגוריה עודכנה בהצלחה' })
     } else {
       const newCategory = { ...categoryData, id: Date.now().toString() };
@@ -137,7 +144,6 @@ export default function MenuManager() {
       toast({ title: 'קטגוריה נוספה בהצלחה' })
     }
     setIsCategoryDialogOpen(false)
-    setEditingCategory(null);
   }
   
     const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>, onChange: (value: string) => void) => {
@@ -156,11 +162,22 @@ export default function MenuManager() {
 
 
   const deleteDish = (id: string) => {
+    const dishToDelete = dishes.find(d => d.id === id);
+    if(dishToDelete) {
+        if (dishToDelete.mainImage) deleteImage(dishToDelete.mainImage);
+        if (dishToDelete.galleryImages) {
+            dishToDelete.galleryImages.forEach(imgKey => deleteImage(imgKey));
+        }
+    }
     dispatch({ type: 'DELETE_DISH', payload: id })
     toast({ title: 'מנה נמחקה' })
   }
 
   const deleteCategory = (id: string) => {
+    const categoryToDelete = categories.find(c => c.id === id);
+    if(categoryToDelete && categoryToDelete.image) {
+        deleteImage(categoryToDelete.image);
+    }
     dispatch({ type: 'DELETE_CATEGORY', payload: id })
     toast({ title: 'קטגוריה נמחקה' })
   }
@@ -178,9 +195,8 @@ export default function MenuManager() {
     } catch (error) {
         toast({title: "שגיאה בהעלאת תמונת גלריה", variant: "destructive"});
     } finally {
-        // Reset the file input
-        if (event.target) {
-            event.target.value = '';
+        if (galleryImageInputRef.current) {
+            galleryImageInputRef.current.value = '';
         }
     }
   };
@@ -188,6 +204,10 @@ export default function MenuManager() {
 
   const removeGalleryImage = (index: number) => {
       const currentImages = dishForm.getValues('galleryImages') || [];
+      const imageToRemove = currentImages[index];
+      if (imageToRemove) {
+          deleteImage(imageToRemove);
+      }
       const newImages = [...currentImages];
       newImages.splice(index, 1);
       dishForm.setValue('galleryImages', newImages, { shouldValidate: true });
@@ -242,7 +262,7 @@ export default function MenuManager() {
                     <FormField name="price" control={dishForm.control} render={({ field }) => (
                        <FormItem>
                         <FormLabel>מחיר (₪)</FormLabel>
-                        <FormControl><Input type="number" step="0.1" {...field} value={field.value || 0} /></FormControl>
+                        <FormControl><Input type="number" step="0.1" {...field} /></FormControl>
                         <FormMessage />
                       </FormItem>
                     )} />
