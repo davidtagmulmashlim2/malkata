@@ -74,7 +74,7 @@ export interface DesignSettings {
   headlineFont: string;
   bodyFont: string;
   logoIcon: string;
-  featuredCategoryId?: string;
+  featuredCategoryId?: string | undefined;
 }
 
 export interface CartItem {

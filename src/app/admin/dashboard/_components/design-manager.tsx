@@ -72,7 +72,11 @@ export default function DesignManager() {
   }, [design, form]);
 
   const onSubmit = (values: z.infer<typeof designSchema>) => {
-    dispatch({ type: 'UPDATE_DESIGN', payload: values });
+    const payload = {
+        ...values,
+        featuredCategoryId: values.featuredCategoryId === 'none' ? undefined : values.featuredCategoryId
+    }
+    dispatch({ type: 'UPDATE_DESIGN', payload });
     toast({ title: 'הגדרות עיצוב עודכנו!' });
   };
 
@@ -184,14 +188,14 @@ export default function DesignManager() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-lg font-headline">קטגוריה מומלצת (להצגה בתפריט ראשי)</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value}>
+                   <Select onValueChange={field.onChange} value={field.value ?? 'none'}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="בחר קטגוריה להדגשה" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="">ללא</SelectItem>
+                      <SelectItem value="none">ללא</SelectItem>
                       {categories.map(category => (
                         <SelectItem key={category.id} value={category.id}>{category.name}</SelectItem>
                       ))}

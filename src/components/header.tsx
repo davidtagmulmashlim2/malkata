@@ -49,6 +49,10 @@ export function Header() {
 
   const navLinks = useMemo(() => {
     const { featuredCategoryId } = state.design;
+    if (!featuredCategoryId || featuredCategoryId === 'none') {
+        return baseNavLinks;
+    }
+
     const featuredCategory = state.categories.find(c => c.id === featuredCategoryId);
 
     if (featuredCategory) {
