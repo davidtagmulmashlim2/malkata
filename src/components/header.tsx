@@ -9,25 +9,26 @@ import { Menu, UtensilsCrossed, User, Crown as Crown1, Gem, Star, Shield } from 
 import { cn } from '@/lib/utils';
 import { useApp } from '@/context/app-context';
 import React, { useMemo } from 'react';
+import { Skeleton } from './ui/skeleton';
 
 const Crown2 = (props: React.SVGProps<SVGSVGElement>) => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" {...props}>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="currentColor" {...props}>
         <path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5z" />
     </svg>
 );
 
 const Crown3 = (props: React.SVGProps<SVGSVGElement>) => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" {...props}>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="currentColor" {...props}>
         <path d="M12 2C9.2 2 7 4.2 7 7c0 1.5.6 2.8 1.5 3.7L3 14h18l-5.5-3.3c.9-.9 1.5-2.2 1.5-3.7C17 4.2 14.8 2 12 2zm0 2c1.7 0 3 1.3 3 3s-1.3 3-3 3-3-1.3-3-3 1.3-3 3-3z" />
     </svg>
 );
 
 const baseNavLinks = [
-  { href: '/', label: 'בית' },
-  { href: '/menu', label: 'תפריט' },
-  { href: '/about', label: 'אודות' },
-  { href: '/gallery', label: 'גלריה' },
-  { href: '/contact', label: 'יצירת קשר' },
+  { href: '/', label: 'בית', isFeatured: false },
+  { href: '/menu', label: 'תפריט', isFeatured: false },
+  { href: '/about', label: 'אודות', isFeatured: false },
+  { href: '/gallery', label: 'גלריה', isFeatured: false },
+  { href: '/contact', label: 'יצירת קשר', isFeatured: false },
 ];
 
 const iconMap: { [key: string]: React.ElementType | null } = {
@@ -44,12 +45,18 @@ const iconMap: { [key: string]: React.ElementType | null } = {
 
 export function Header() {
   const pathname = usePathname();
-  const { state } = useApp();
+  const { state, isLoading } = useApp();
   const IconComponent = iconMap[state.design.logoIcon] || UtensilsCrossed;
 
   const navLinks = useMemo(() => {
+    // During SSR and initial client load, return base links to prevent hydration mismatch.
+    if (isLoading) {
+        return baseNavLinks;
+    }
+
+    // After hydration, compute the full list of links.
     const { featuredCategoryId } = state.design;
-    const newLinks = [...baseNavLinks.map(l => ({ ...l, isFeatured: false }))];
+    const newLinks = [...baseNavLinks];
 
     if (featuredCategoryId && featuredCategoryId !== 'none') {
         const featuredCategory = state.categories.find(c => c.id === featuredCategoryId);
@@ -59,18 +66,23 @@ export function Header() {
                 label: featuredCategory.name,
                 isFeatured: true,
             };
+            // Insert after 'Gallery' and before 'Contact'
             const galleryIndex = newLinks.findIndex(link => link.href === '/gallery');
             if (galleryIndex !== -1) {
                 newLinks.splice(galleryIndex + 1, 0, featuredLink);
-            } else {
+            } else { // Fallback if gallery is not found
                 const contactIndex = newLinks.findIndex(link => link.href === '/contact');
-                newLinks.splice(contactIndex, 0, featuredLink);
+                 if (contactIndex !== -1) {
+                    newLinks.splice(contactIndex, 0, featuredLink);
+                 } else {
+                    newLinks.push(featuredLink);
+                 }
             }
         }
     }
     
     return newLinks;
-  }, [state.design, state.categories]);
+  }, [isLoading, state.design, state.categories]);
 
 
   const Logo = () => (
@@ -82,21 +94,26 @@ export function Header() {
 
   const NavLinks = ({ className, mobile = false }: { className?: string, mobile?: boolean }) => (
     <nav className={cn('flex items-center gap-4 lg:gap-6', className)}>
-      {navLinks.map(link => (
-        <Link
-          key={link.href}
-          href={link.href}
-          className={cn(
-            'transition-colors hover:text-primary px-3 py-1 rounded-md',
-            link.isFeatured 
-                ? 'btn-featured' 
-                : (pathname === link.href ? 'text-primary font-bold' : 'text-muted-foreground')
-          )}
-        >
-          {link.label}
-        </Link>
-      ))}
-      {mobile && (
+      {isLoading ? (
+            Array(5).fill(0).map((_, i) => <Skeleton key={i} className="h-6 w-16" />)
+        ) : (
+            navLinks.map(link => (
+                <Link
+                key={link.href}
+                href={link.href}
+                className={cn(
+                    'transition-colors hover:text-primary px-3 py-1 rounded-md',
+                    link.isFeatured 
+                        ? 'btn-featured' 
+                        : (pathname.startsWith(link.href) && link.href !== '/' || pathname === link.href ? 'text-primary font-bold' : 'text-muted-foreground')
+                )}
+                >
+                {link.label}
+                </Link>
+            ))
+        )
+      }
+      {mobile && !isLoading && (
          <Link
           href="/admin"
           className={cn(
