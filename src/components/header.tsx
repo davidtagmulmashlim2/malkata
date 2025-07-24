@@ -68,7 +68,7 @@ export function Header() {
             };
             const galleryIndex = newLinks.findIndex(link => link.href === '/gallery');
             if (galleryIndex !== -1) {
-                newLinks.splice(galleryIndex + 1, 0, featuredLink);
+                newLinks.splice(galleryIndex, 0, featuredLink);
             } else { 
                 const contactIndex = newLinks.findIndex(link => link.href === '/contact');
                  if (contactIndex !== -1) {
@@ -96,18 +96,22 @@ export function Header() {
       {isLoading ? (
             Array(5).fill(0).map((_, i) => <Skeleton key={i} className="h-6 w-16" />)
         ) : (
-            navLinks.map(link => (
-                 <Button key={link.href} asChild variant={link.isFeatured ? "default" : "ghost"} className={cn(
-                    (pathname.startsWith(link.href) && link.href !== '/' || pathname === link.href) && !link.isFeatured ? 'text-primary font-bold' : 'text-muted-foreground hover:text-primary',
-                    link.isFeatured ? 'font-bold' : '',
-                    'p-1',
-                    'no-underline'
-                 )}>
-                    <Link href={link.href}>
-                        {link.label}
-                    </Link>
-                </Button>
-            ))
+            navLinks.map(link => {
+                 const customStyle = link.isFeatured && state.design.logoColor ? { backgroundColor: state.design.logoColor, color: 'hsl(var(--primary-foreground))' } : {};
+                 return (
+                     <Button key={link.href} asChild variant={link.isFeatured ? "default" : "ghost"} className={cn(
+                        (pathname.startsWith(link.href) && link.href !== '/' || pathname === link.href) && !link.isFeatured ? 'text-primary font-bold' : 'text-muted-foreground hover:text-primary',
+                        link.isFeatured ? 'font-bold' : '',
+                        'p-1',
+                        'no-underline'
+                     )}
+                     style={customStyle}>
+                        <Link href={link.href}>
+                            {link.label}
+                        </Link>
+                    </Button>
+                );
+            })
         )
       }
       {mobile && !isLoading && (
