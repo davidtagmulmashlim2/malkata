@@ -4,13 +4,11 @@ import { useApp } from '@/context/app-context';
 import { AsyncImage } from '@/components/async-image';
 import { cn } from '@/lib/utils';
 import { Card } from '@/components/ui/card';
-import { useIsClient } from '@/hooks/use-is-client';
 import { Skeleton } from '@/components/ui/skeleton';
 
 export default function GalleryPage() {
-    const { state } = useApp();
+    const { state, isLoading } = useApp();
     const { gallery } = state;
-    const isClient = useIsClient();
     
     return (
         <div className="container py-12 md:py-20">
@@ -18,9 +16,11 @@ export default function GalleryPage() {
                 גלריית תמונות
             </h1>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                {(isClient ? gallery : Array(8).fill(null)).map((image, index) => (
-                    <Card key={isClient ? image.id : index} className="overflow-hidden group aspect-square">
-                        {isClient ? (
+                {(isLoading ? Array(8).fill(null) : gallery).map((image, index) => (
+                    <Card key={isLoading ? index : image.id} className="overflow-hidden group aspect-square">
+                        {isLoading ? (
+                            <Skeleton className="w-full h-full"/>
+                        ) : (
                             <div className="relative w-full h-full">
                                 <AsyncImage
                                     imageKey={image.src}
@@ -31,7 +31,7 @@ export default function GalleryPage() {
                                     data-ai-hint="food restaurant"
                                 />
                             </div>
-                        ) : <Skeleton className="w-full h-full"/>}
+                        )}
                     </Card>
                 ))}
             </div>

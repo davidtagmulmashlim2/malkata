@@ -8,7 +8,6 @@ import { Input } from '@/components/ui/input';
 import { useApp } from '@/context/app-context';
 import { Typewriter } from '@/components/typewriter';
 import { DishCard } from '@/components/dish-card';
-import { useIsClient } from '@/hooks/use-is-client';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 import { useEffect, useMemo, useState } from 'react';
@@ -17,22 +16,21 @@ import { AsyncImage } from '@/components/async-image';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 export default function Home() {
-  const { state } = useApp();
+  const { state, isLoading } = useApp();
   const { siteContent, dishes, testimonials } = state;
   const { hero } = siteContent;
-  const isClient = useIsClient();
   const [typewriterKey, setTypewriterKey] = useState(0);
   const [currentTestimonialIndex, setCurrentTestimonialIndex] = useState(0);
 
   useEffect(() => {
-    if (isClient && siteContent.hero.animationInterval > 0) {
+    if (!isLoading && siteContent.hero.animationInterval > 0) {
       const interval = setInterval(() => {
         setTypewriterKey(prevKey => prevKey + 1);
       }, siteContent.hero.animationInterval * 1000);
 
       return () => clearInterval(interval);
     }
-  }, [isClient, siteContent.hero.animationInterval]);
+  }, [isLoading, siteContent.hero.animationInterval]);
 
   const nextTestimonial = () => {
     setCurrentTestimonialIndex(prev => (prev + 1) % testimonials.length);
@@ -42,12 +40,11 @@ export default function Home() {
     setCurrentTestimonialIndex(prev => (prev - 1 + testimonials.length) % testimonials.length);
   };
 
-
   const recommendedDishes = useMemo(() => {
-    if (!isClient) return Array(3).fill(null);
+    if (isLoading) return Array(3).fill(null);
     const recommended = dishes.filter(d => d.isRecommended);
     return recommended.length > 0 ? recommended : dishes.slice(0, 3);
-  }, [dishes, isClient]);
+  }, [dishes, isLoading]);
 
   const textSizeClasses: { [key: string]: string } = {
       'xs': 'text-xs', 'sm': 'text-sm', 'base': 'text-base', 'lg': 'text-lg', 'xl': 'text-xl', 
@@ -95,7 +92,7 @@ export default function Home() {
         />
         <div className="z-10 p-4">
           <h1 className="font-headline font-bold drop-shadow-lg">
-            {isClient ? (
+            {isLoading ? <Skeleton className="h-16 w-[80vw] max-w-4xl" /> : (
                 <Typewriter
                     key={typewriterKey}
                     textParts={[
@@ -103,10 +100,10 @@ export default function Home() {
                         { text: ` ${siteContent.hero.titleRest}`, style: { color: siteContent.hero.titleRestColor, opacity: siteContent.hero.titleRestOpacity }, className: textSizeClasses[siteContent.hero.titleRestFontSize] },
                     ]}
                 />
-            ) : <Skeleton className="h-16 w-[80vw] max-w-4xl" />}
+            )}
           </h1>
-          <div className={cn("mt-4 text-lg md:text-2xl max-w-2xl drop-shadow-md", horizontalAlignClasses[hero.horizontalAlign] === 'justify-center' ? 'mx-auto' : '')} style={{ opacity: isClient ? siteContent.hero.subtitleOpacity : 1 }}>
-            {isClient ? siteContent.hero.subtitle : <Skeleton className="h-8 w-96 mt-2" />}
+          <div className={cn("mt-4 text-lg md:text-2xl max-w-2xl drop-shadow-md", horizontalAlignClasses[hero.horizontalAlign] === 'justify-center' ? 'mx-auto' : '')} style={{ opacity: isLoading ? 1 : siteContent.hero.subtitleOpacity }}>
+            {isLoading ? <Skeleton className="h-8 w-96 mt-2" /> : siteContent.hero.subtitle}
           </div>
           <Button asChild size="lg" className="mt-8 font-bold">
             <Link href="/menu">הזמן עכשיו</Link>
@@ -128,7 +125,7 @@ export default function Home() {
           <div>
             <h2 className="text-3xl md:text-4xl font-headline font-bold mb-4">הסיפור שלנו</h2>
             <div className="text-muted-foreground mb-6">
-              {isClient ? <p>{siteContent.about.short}</p> : <Skeleton className="h-20 w-full" />}
+              {isLoading ? <Skeleton className="h-20 w-full" /> : <p>{siteContent.about.short}</p>}
             </div>
             <Button asChild variant="outline">
               <Link href="/about">קראו עוד</Link>
@@ -149,7 +146,15 @@ export default function Home() {
       {/* Testimonials Section */}
        <section className="container">
         <h2 className="text-3xl md:text-4xl font-headline font-bold text-right mb-10">לקוחות ממליצים</h2>
-         {isClient && testimonials?.length > 0 ? (
+         {isLoading ? (
+             <div className="p-1">
+                 <Card className="w-full max-w-xl mx-auto">
+                   <CardContent className="flex flex-col items-center justify-center p-6 text-center h-48">
+                      <p>טוען...</p>
+                   </CardContent>
+                 </Card>
+            </div>
+          ) : testimonials?.length > 0 ? (
             <div className="relative w-full max-w-xl mx-auto">
               <Card>
                 <CardContent className="flex flex-col items-center justify-center p-6 text-center h-48 relative">
@@ -183,7 +188,7 @@ export default function Home() {
              <div className="p-1">
                  <Card className="w-full max-w-xl mx-auto">
                    <CardContent className="flex flex-col items-center justify-center p-6 text-center h-48">
-                      <p>{isClient ? 'עדיין אין המלצות.' : 'טוען...'}</p>
+                      <p>עדיין אין המלצות.</p>
                    </CardContent>
                  </Card>
             </div>

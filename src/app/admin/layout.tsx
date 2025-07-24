@@ -1,8 +1,8 @@
+
 'use client';
 import { useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useApp } from '@/context/app-context';
-import { useIsClient } from '@/hooks/use-is-client';
 import { Skeleton } from '@/components/ui/skeleton';
 
 export default function AdminLayout({
@@ -10,18 +10,17 @@ export default function AdminLayout({
 }: {
     children: React.ReactNode;
 }) {
-    const { isAuthenticated, logout } = useApp();
+    const { isAuthenticated, logout, isLoading } = useApp();
     const router = useRouter();
     const pathname = usePathname();
-    const isClient = useIsClient();
     
     useEffect(() => {
-        if (isClient && !isAuthenticated && pathname !== '/admin') {
+        if (!isLoading && !isAuthenticated && pathname !== '/admin') {
             router.push('/admin');
         }
-    }, [isAuthenticated, router, isClient, pathname]);
+    }, [isAuthenticated, router, isLoading, pathname]);
 
-    if (!isClient) {
+    if (isLoading) {
       return (
         <div className="p-8 space-y-4">
           <Skeleton className="h-12 w-1/4" />

@@ -1,10 +1,10 @@
+
 'use client';
 
 import { useApp } from '@/context/app-context';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { useIsClient } from '@/hooks/use-is-client';
 import { Skeleton } from '@/components/ui/skeleton';
 
 export default function MenuLayout({
@@ -12,12 +12,10 @@ export default function MenuLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { state } = useApp();
+  const { state, isLoading } = useApp();
   const { categories } = state;
   const pathname = usePathname();
-  const isClient = useIsClient();
 
-  // חלקים של הנתיב, לדוגמה: ['menu'] או ['menu', 'pasta']
   const pathParts = pathname.split('/').filter(Boolean); 
   const activeSlug = pathParts.length > 1 && pathParts[0] === 'menu' ? pathParts[1] : null;
 
@@ -26,7 +24,15 @@ export default function MenuLayout({
       <nav className="border-b bg-card sticky top-16 z-30">
         <div className="container flex justify-center p-2 overflow-x-auto">
           <div className="flex items-center gap-2 whitespace-nowrap">
-            {isClient ? (
+            {isLoading ? (
+              <div className="flex gap-2">
+                {Array(5)
+                  .fill(0)
+                  .map((_, i) => (
+                    <Skeleton key={i} className="h-9 w-24" />
+                  ))}
+              </div>
+            ) : (
               <>
                 <Button
                   asChild
@@ -52,14 +58,6 @@ export default function MenuLayout({
                   );
                 })}
               </>
-            ) : (
-              <div className="flex gap-2">
-                {Array(5)
-                  .fill(0)
-                  .map((_, i) => (
-                    <Skeleton key={i} className="h-9 w-24" />
-                  ))}
-              </div>
             )}
           </div>
         </div>

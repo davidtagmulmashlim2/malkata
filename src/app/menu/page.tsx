@@ -4,13 +4,11 @@ import { useApp } from '@/context/app-context';
 import { DishCard } from '@/components/dish-card';
 import { cn } from '@/lib/utils';
 import { AsyncImage } from '@/components/async-image';
-import { useIsClient } from '@/hooks/use-is-client';
 import { Skeleton } from '@/components/ui/skeleton';
 
 export default function MenuPage() {
-    const { state } = useApp();
+    const { state, isLoading } = useApp();
     const { dishes, categories, siteContent } = state;
-    const isClient = useIsClient();
 
     return (
         <div>
@@ -31,7 +29,16 @@ export default function MenuPage() {
                 </div>
             </div>
             <div className="container py-12 md:py-20">
-                {isClient ? (
+                {isLoading ? (
+                    Array(3).fill(0).map((_, i) => (
+                         <div key={i} className="mb-16">
+                            <Skeleton className="h-10 w-1/3 mb-8" />
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                                {Array(3).fill(0).map((_, j) => <Skeleton key={j} className="h-96 w-full" />)}
+                            </div>
+                        </div>
+                    ))
+                ) : (
                     categories.map(category => (
                         <div key={category.id} className="mb-16">
                             <h2 className="text-3xl md:text-4xl font-headline font-bold mb-8 border-b-2 border-primary pb-2">
@@ -41,15 +48,6 @@ export default function MenuPage() {
                                 {dishes.filter(d => d.categoryId === category.id).map(dish => (
                                     <DishCard key={dish.id} dish={dish} />
                                 ))}
-                            </div>
-                        </div>
-                    ))
-                ) : (
-                    Array(3).fill(0).map((_, i) => (
-                         <div key={i} className="mb-16">
-                            <Skeleton className="h-10 w-1/3 mb-8" />
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                                {Array(3).fill(0).map((_, j) => <Skeleton key={j} className="h-96 w-full" />)}
                             </div>
                         </div>
                     ))

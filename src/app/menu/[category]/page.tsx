@@ -5,24 +5,22 @@ import { DishCard } from '@/components/dish-card';
 import { notFound, useParams } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { AsyncImage } from '@/components/async-image';
-import { useIsClient } from '@/hooks/use-is-client';
 import { Skeleton } from '@/components/ui/skeleton';
 
 export default function CategoryPage() {
-    const { state } = useApp();
-    const isClient = useIsClient();
+    const { state, isLoading } = useApp();
     const params = useParams();
     const categorySlug = typeof params.category === 'string' ? params.category : '';
 
-    const category = isClient ? state.categories.find(c => c.slug === categorySlug) : undefined;
+    const category = !isLoading ? state.categories.find(c => c.slug === categorySlug) : undefined;
     
-    if (isClient && !category && categorySlug) {
+    if (!isLoading && !category && categorySlug) {
         notFound();
     }
 
-    const categoryDishes = isClient ? state.dishes.filter(d => d.categoryId === category?.id) : [];
+    const categoryDishes = !isLoading && category ? state.dishes.filter(d => d.categoryId === category.id) : [];
 
-    if (!isClient || !category) {
+    if (isLoading || !category) {
         return (
             <div>
                 <Skeleton className="h-64 w-full" />

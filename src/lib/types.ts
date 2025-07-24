@@ -102,6 +102,7 @@ export type AppContextType = {
   isAuthenticated: boolean;
   login: (password: string) => boolean;
   logout: () => void;
+  isLoading: boolean;
 };
 
 export type Action =

@@ -4,7 +4,6 @@
 import React, { createContext, useContext, useReducer, useEffect, useState, useMemo } from 'react';
 import type { AppState, AppContextType, Action, CartItem, Dish, SiteContent, Category, GalleryImage, Testimonial, DesignSettings } from '@/lib/types';
 import { DEFAULT_APP_STATE } from '@/lib/data';
-import { useIsClient } from '@/hooks/use-is-client';
 
 const AppContext = createContext<AppContextType | null>(null);
 
@@ -60,50 +59,49 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [state, dispatch] = useReducer(appReducer, DEFAULT_APP_STATE);
   const [cart, setCart] = useState<CartItem[]>([]);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const isClient = useIsClient();
+  const [isLoading, setIsLoading] = useState(true);
 
   // Effect to load state from localStorage on initial client-side render
   useEffect(() => {
-    if (isClient) {
-      try {
-        const storedSiteContent = localStorage.getItem(LS_KEYS.SITE_CONTENT);
-        const storedDishes = localStorage.getItem(LS_KEYS.DISHES);
-        const storedCategories = localStorage.getItem(LS_KEYS.CATEGORIES);
-        const storedGallery = localStorage.getItem(LS_KEYS.GALLERY);
-        const storedTestimonials = localStorage.getItem(LS_KEYS.TESTIMONIALS);
-        const storedDesign = localStorage.getItem(LS_KEYS.DESIGN);
-        const storedCart = localStorage.getItem(LS_KEYS.CART);
-        
-        const loadedState: Partial<AppState> = {};
-        if (storedSiteContent) loadedState.siteContent = JSON.parse(storedSiteContent);
-        if (storedDishes) loadedState.dishes = JSON.parse(storedDishes);
-        if (storedCategories) loadedState.categories = JSON.parse(storedCategories);
-        if (storedGallery) loadedState.gallery = JSON.parse(storedGallery);
-        if (storedTestimonials) loadedState.testimonials = JSON.parse(storedTestimonials);
-        if (storedDesign) loadedState.design = JSON.parse(storedDesign);
+    try {
+      const storedSiteContent = localStorage.getItem(LS_KEYS.SITE_CONTENT);
+      const storedDishes = localStorage.getItem(LS_KEYS.DISHES);
+      const storedCategories = localStorage.getItem(LS_KEYS.CATEGORIES);
+      const storedGallery = localStorage.getItem(LS_KEYS.GALLERY);
+      const storedTestimonials = localStorage.getItem(LS_KEYS.TESTIMONIALS);
+      const storedDesign = localStorage.getItem(LS_KEYS.DESIGN);
+      const storedCart = localStorage.getItem(LS_KEYS.CART);
+      
+      const loadedState: Partial<AppState> = {};
+      if (storedSiteContent) loadedState.siteContent = JSON.parse(storedSiteContent);
+      if (storedDishes) loadedState.dishes = JSON.parse(storedDishes);
+      if (storedCategories) loadedState.categories = JSON.parse(storedCategories);
+      if (storedGallery) loadedState.gallery = JSON.parse(storedGallery);
+      if (storedTestimonials) loadedState.testimonials = JSON.parse(storedTestimonials);
+      if (storedDesign) loadedState.design = JSON.parse(storedDesign);
 
-        if (Object.keys(loadedState).length > 0) {
-            dispatch({ type: 'SET_STATE', payload: loadedState });
-        }
-
-        if (storedCart) {
-          setCart(JSON.parse(storedCart));
-        }
-        
-        const storedAuth = sessionStorage.getItem('malkata_auth');
-        if (storedAuth === 'true') {
-            setIsAuthenticated(true);
-        }
-      } catch (error) {
-        console.error("Failed to parse from localStorage", error);
-        // If parsing fails, state will remain as DEFAULT_APP_STATE
+      if (Object.keys(loadedState).length > 0) {
+          dispatch({ type: 'SET_STATE', payload: loadedState });
       }
+
+      if (storedCart) {
+        setCart(JSON.parse(storedCart));
+      }
+      
+      const storedAuth = sessionStorage.getItem('malkata_auth');
+      if (storedAuth === 'true') {
+          setIsAuthenticated(true);
+      }
+    } catch (error) {
+      console.error("Failed to parse from localStorage", error);
+    } finally {
+        setIsLoading(false); // Critical: set loading to false after attempting to load
     }
-  }, [isClient]);
+  }, []);
 
   // Effect to save state to localStorage whenever it changes
   useEffect(() => {
-    if (isClient) {
+    if (!isLoading) { // Only save state after initial load is complete
         try {
             localStorage.setItem(LS_KEYS.SITE_CONTENT, JSON.stringify(state.siteContent));
             localStorage.setItem(LS_KEYS.DISHES, JSON.stringify(state.dishes));
@@ -116,7 +114,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
              console.error("Failed to save state to localStorage", error);
         }
     }
-  }, [state, cart, isClient]);
+  }, [state, cart, isLoading]);
 
 
   const addToCart = (dishId: string, quantity = 1) => {
@@ -154,7 +152,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const login = (password: string): boolean => {
     if (password === ADMIN_PASSWORD) {
         setIsAuthenticated(true);
-        if(isClient) sessionStorage.setItem('malkata_auth', 'true');
+        sessionStorage.setItem('malkata_auth', 'true');
         return true;
     }
     return false;
@@ -162,10 +160,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const logout = () => {
     setIsAuthenticated(false);
-    if(isClient) sessionStorage.removeItem('malkata_auth');
+    sessionStorage.removeItem('malkata_auth');
   }
 
-  const value = {
+  const value = useMemo(() => ({
     state,
     dispatch,
     cart,
@@ -177,7 +175,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     isAuthenticated,
     login,
     logout,
-  };
+    isLoading, // Provide loading state to all consumers
+  }), [state, cart, isAuthenticated, isLoading]);
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };
