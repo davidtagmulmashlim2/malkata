@@ -37,7 +37,12 @@ export const DEFAULT_APP_STATE: AppState = {
       mainImage: 'https://placehold.co/1000x400.png',
     }
   },
-  categories: [],
+  categories: [
+    { id: '1', name: 'מנות עיקריות', slug: 'main', description: 'הלב של הארוחה, מנות עשירות ומנחמות.', image: 'https://placehold.co/1000x400.png' },
+    { id: '2', name: 'תוספות', slug: 'sides', description: 'מה שמשלים את החוויה ליד המנה העיקרית.', image: 'https://placehold.co/1000x400.png' },
+    { id: '3', name: 'סלטים', slug: 'salads', description: 'טרי, רענן וצבעוני.', image: 'https://placehold.co/1000x400.png' },
+    { id: '4', name: 'שבת ודגים', slug: 'shabbat', description: 'מיוחדים של סוף שבוע וטעמים מהים.', image: 'https://placehold.co/1000x400.png' },
+  ],
   dishes: [
     {
       id: 'd1',
