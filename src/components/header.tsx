@@ -27,7 +27,8 @@ const baseNavLinks = [
   { href: '/menu', label: 'תפריט' },
   { href: '/about', label: 'אודות' },
   { href: '/gallery', label: 'גלריה' },
-  { href: '/contact', label: 'צור קשר' },
+  { href: '/testimonials', label: 'המלצות' },
+  { href: '/contact', label: 'יצירת קשר' },
 ];
 
 const iconMap: { [key: string]: React.ElementType | null } = {
