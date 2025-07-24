@@ -1,10 +1,8 @@
-
 'use client';
 
 import { useApp } from '@/context/app-context';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { useIsClient } from '@/hooks/use-is-client';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -19,8 +17,12 @@ export default function MenuLayout({
   const pathname = usePathname();
   const isClient = useIsClient();
 
-  // מזהה אם הנתיב הוא בדיוק /menu
-  const isMenuRoot = pathname === '/menu';
+  // פונקציה שמחשבת אם כפתור הקטגוריה פעיל
+  const isCategoryActive = (slug: string) => {
+    return pathname === `/menu/${slug}`;
+  };
+
+  const isRootMenu = pathname === '/menu';
 
   return (
     <div>
@@ -29,11 +31,16 @@ export default function MenuLayout({
           <div className="flex items-center gap-2 flex-wrap justify-center">
             {isClient ? (
               <>
-                <Button asChild variant={isMenuRoot ? 'default' : 'ghost'} size="sm">
+                <Button
+                  asChild
+                  variant={isRootMenu ? 'default' : 'ghost'}
+                  size="sm"
+                >
                   <Link href="/menu">כל המנות</Link>
                 </Button>
-                {categories.map(category => {
-                  const isActive = pathname === `/menu/${category.slug}`;
+
+                {categories.map((category) => {
+                  const isActive = isCategoryActive(category.slug);
                   return (
                     <Button
                       key={category.id}
@@ -41,16 +48,20 @@ export default function MenuLayout({
                       variant={isActive ? 'default' : 'ghost'}
                       size="sm"
                     >
-                      <Link href={`/menu/${category.slug}`}>{category.name}</Link>
+                      <Link href={`/menu/${category.slug}`}>
+                        {category.name}
+                      </Link>
                     </Button>
                   );
                 })}
               </>
             ) : (
               <div className="flex gap-2">
-                {Array(5).fill(0).map((_, i) => (
-                  <Skeleton key={i} className="h-9 w-24" />
-                ))}
+                {Array(5)
+                  .fill(0)
+                  .map((_, i) => (
+                    <Skeleton key={i} className="h-9 w-24" />
+                  ))}
               </div>
             )}
           </div>
