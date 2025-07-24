@@ -33,7 +33,7 @@ export default function MenuLayout({
                                 <Button
                                     key={category.id}
                                     asChild
-                                    variant={pathname === `/menu/${category.slug}` ? 'default' : 'ghost'}
+                                    variant={pathname.endsWith(category.slug) ? 'default' : 'ghost'}
                                     size="sm"
                                 >
                                     <Link href={`/menu/${category.slug}`}>{category.name}</Link>
