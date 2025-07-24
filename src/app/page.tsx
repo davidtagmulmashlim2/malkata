@@ -106,7 +106,7 @@ export default function Home() {
             {isLoading ? <Skeleton className="h-8 w-96 mt-2" /> : siteContent.hero.subtitle}
           </div>
           <Button asChild size="lg" className="mt-8 font-bold">
-            <Link href="/menu">הזמן עכשיו</Link>
+            <Link href="/menu">הוספה לסל</Link>
           </Button>
         </div>
       </section>

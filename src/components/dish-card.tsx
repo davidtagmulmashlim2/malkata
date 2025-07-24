@@ -4,7 +4,8 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import type { Dish } from '@/lib/types';
-import { Flame, ShoppingCart, Leaf, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Flame, Leaf, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ShoppingBagIcon } from '@/components/icons/shopping-bag-icon';
 import { Badge } from './ui/badge';
 import { useApp } from '@/context/app-context';
 import { toast } from '@/hooks/use-toast';
@@ -42,8 +43,8 @@ export function DishCard({ dish }: DishCardProps) {
   const handleAddToCart = () => {
     addToCart(dish.id);
     toast({
-        title: "נוסף לעגלה",
-        description: `${dish.name} נוסף לעגלת הקניות שלך.`,
+        title: "נוסף לסל",
+        description: `${dish.name} נוסף לסל הקניות שלך.`,
     });
   }
   
@@ -84,8 +85,8 @@ export function DishCard({ dish }: DishCardProps) {
         <CardFooter className="flex justify-between items-center mt-auto">
           <p className="text-xl font-bold text-primary">{dish.price} ₪</p>
           <Button onClick={handleAddToCart} disabled={!dish.isAvailable}>
-            <ShoppingCart className="ms-2 h-4 w-4" />
-            הוסף לעגלה
+            <ShoppingBagIcon className="ms-2 h-4 w-4" />
+            הוספה לסל
           </Button>
         </CardFooter>
       </Card>
@@ -151,8 +152,8 @@ export function DishCard({ dish }: DishCardProps) {
                     <div className="flex justify-between items-center w-full">
                         <p className="text-2xl font-bold text-primary">{dish.price} ₪</p>
                          <Button onClick={handleAddToCart} disabled={!dish.isAvailable} size="lg">
-                            <ShoppingCart className="ms-2 h-5 w-5" />
-                            הוסף לעגלה
+                            <ShoppingBagIcon className="ms-2 h-5 w-5" />
+                            הוספה לסל
                         </Button>
                     </div>
                 </DialogFooter>

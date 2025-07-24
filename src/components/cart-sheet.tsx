@@ -1,7 +1,8 @@
 
 'use client';
 
-import { ShoppingCart, Trash2 } from 'lucide-react';
+import { Trash2 } from 'lucide-react';
+import { ShoppingBagIcon } from '@/components/icons/shopping-bag-icon';
 import { Button } from '@/components/ui/button';
 import {
   Sheet,
@@ -84,7 +85,7 @@ export function CartSheet() {
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
         <Button variant="outline" size="icon" className="fixed bottom-4 right-4 z-50 h-14 w-14 rounded-full shadow-lg lg:bottom-8 lg:right-8">
-          <ShoppingCart className="h-6 w-6" />
+          <ShoppingBagIcon className="h-6 w-6" />
           {isClient && cart.length > 0 && (
             <span className="absolute -top-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs font-bold">
               {cart.reduce((acc, item) => acc + item.quantity, 0)}
@@ -95,7 +96,7 @@ export function CartSheet() {
       </SheetTrigger>
       <SheetContent className="flex flex-col text-right">
         <SheetHeader>
-          <SheetTitle className="text-right">עגלת הקניות שלך</SheetTitle>
+          <SheetTitle className="text-right">סל הקניות שלך</SheetTitle>
         </SheetHeader>
         {!isClient ? (
            <div className="space-y-4 py-4">
@@ -171,8 +172,8 @@ export function CartSheet() {
           </>
         ) : (
           <div className="flex flex-grow flex-col items-center justify-center gap-4 text-center">
-            <ShoppingCart className="h-24 w-24 text-muted" />
-            <h3 className="text-xl font-semibold">העגלה שלך ריקה</h3>
+            <ShoppingBagIcon className="h-24 w-24 text-muted" />
+            <h3 className="text-xl font-semibold">הסל שלך ריק</h3>
             <p className="text-muted-foreground">מוזמנים להוסיף מנות מהתפריט שלנו.</p>
             <SheetClose asChild>
                 <Link href="/menu">
