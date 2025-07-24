@@ -1,6 +1,11 @@
 
 import type { AppState } from './types';
 
+// This file now only contains the INITIAL/DEFAULT state for a new user.
+// All dynamic data (dishes, categories, etc.) will be managed exclusively
+// in localStorage via the AppContext, making it the single source of truth.
+// This prevents hydration errors and data conflicts.
+
 export const DEFAULT_APP_STATE: AppState = {
   siteContent: {
     hero: {
@@ -37,6 +42,9 @@ export const DEFAULT_APP_STATE: AppState = {
       mainImage: 'img-1721294835843-gqvtgpcgo',
     }
   },
+  // These arrays are intentionally empty.
+  // The app will be populated from localStorage, making it the single source of truth.
+  // This prevents hydration mismatches and data conflicts.
   categories: [],
   dishes: [],
   testimonials: [],
@@ -48,5 +56,3 @@ export const DEFAULT_APP_STATE: AppState = {
     logoIcon: 'crown',
   },
 };
-
-    
