@@ -5,6 +5,7 @@ import { useApp } from "@/context/app-context";
 import Link from "next/link";
 import { UtensilsCrossed, Phone, Mail, MapPin, Crown as Crown1, Gem, Star, Shield } from 'lucide-react';
 import React from "react";
+import { WhatsappIcon } from "./icons/whatsapp-icon";
 
 const Crown2 = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" {...props}>
@@ -60,6 +61,10 @@ export function Footer() {
                             <li className="flex items-center gap-2">
                                 <Phone className="h-4 w-4" />
                                 <a href={`tel:${contact?.phone}`} className="hover:text-primary">{contact?.phone}</a>
+                            </li>
+                            <li className="flex items-center gap-2">
+                                <WhatsappIcon className="h-4 w-4" />
+                                <a href={`https://wa.me/${contact.whatsapp}`} target="_blank" rel="noopener noreferrer" className="hover:text-primary">{contact?.whatsapp}</a>
                             </li>
                             <li className="flex items-center gap-2">
                                 <Mail className="h-4 w-4" />

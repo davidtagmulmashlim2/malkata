@@ -11,6 +11,7 @@ import { useApp } from '@/context/app-context';
 import { toast } from '@/hooks/use-toast';
 import { Mail, MapPin, Phone, Clock } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { WhatsappIcon } from '@/components/icons/whatsapp-icon';
 
 const formSchema = z.object({
   name: z.string().min(2, { message: "שם חייב להכיל לפחות 2 תווים." }),
@@ -97,6 +98,13 @@ export default function ContactPage() {
                             <div>
                                 <h3 className="font-semibold">טלפון</h3>
                                 <a href={`tel:${contact.phone}`} className="text-muted-foreground hover:text-primary">{contact.phone}</a>
+                            </div>
+                        </div>
+                         <div className="flex items-start gap-4">
+                            <WhatsappIcon className="h-6 w-6 text-primary mt-1" />
+                            <div>
+                                <h3 className="font-semibold">WhatsApp</h3>
+                                <a href={`https://wa.me/${contact.whatsapp}`} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary">{contact.whatsapp}</a>
                             </div>
                         </div>
                         <div className="flex items-start gap-4">
