@@ -50,7 +50,7 @@ const appReducer = (state: AppState, action: Action): AppState => {
 };
 
 const LS_KEYS = {
-    APP_STATE: 'malkata_appState',
+    APP_STATE: 'malkata_appState_v2', // Changed key to force a reset
     CART: 'malkata_cart',
 };
 
