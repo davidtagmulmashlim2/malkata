@@ -21,7 +21,7 @@ import type { Dish, Category } from '@/lib/types'
 import { storeImage } from '@/lib/image-store';
 import { AsyncImage } from '@/components/async-image'
 
-const slugify = (text: string) => text.toLowerCase().replace(/[\s\W-]+/g, '-')
+const slugify = (text: string) => text.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
 
 const dishSchema = z.object({
   id: z.string().optional(),
@@ -122,13 +122,17 @@ export default function MenuManager() {
   }
 
   const handleCategorySubmit = (values: z.infer<typeof categorySchema>) => {
-    const categorySlug = slugify(values.name);
+    const categoryData = {
+      ...values,
+      slug: slugify(values.name),
+    };
+    
     if (editingCategory) {
-      const updatedCategory = { ...editingCategory, ...values, slug: categorySlug };
+      const updatedCategory = { ...editingCategory, ...categoryData };
       dispatch({ type: 'UPDATE_CATEGORY', payload: updatedCategory });
       toast({ title: 'קטגוריה עודכנה בהצלחה' })
     } else {
-      const newCategory = { ...values, id: Date.now().toString(), slug: categorySlug };
+      const newCategory = { ...categoryData, id: Date.now().toString() };
       dispatch({ type: 'ADD_CATEGORY', payload: newCategory as Category });
       toast({ title: 'קטגוריה נוספה בהצלחה' })
     }

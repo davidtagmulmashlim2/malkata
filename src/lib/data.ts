@@ -156,5 +156,3 @@ export const DEFAULT_APP_STATE: AppState = {
     logoIcon: 'crown',
   },
 };
-
-    
