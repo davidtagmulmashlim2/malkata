@@ -9,17 +9,20 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Checkbox } from '@/components/ui/checkbox'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from '@/components/ui/dialog'
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
-import { PlusCircle, Edit, Trash2, X } from 'lucide-react'
+import { PlusCircle, Edit, Trash2, X, ChevronsUpDown, Check } from 'lucide-react'
 import { toast } from '@/hooks/use-toast'
 import type { Dish, Category } from '@/lib/types'
 import { storeImage, deleteImage } from '@/lib/image-store';
 import { AsyncImage } from '@/components/async-image'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
+import { Badge } from '@/components/ui/badge'
+import { cn } from '@/lib/utils'
 
 const slugify = (text: string): string => {
   if (!text) return '';
@@ -52,7 +55,7 @@ const dishSchema = z.object({
   price: z.coerce.number().min(0, 'המחיר חייב להיות חיובי'),
   mainImage: z.string().min(1, "חובה להעלות תמונה ראשית"),
   galleryImages: z.array(z.string()).optional(),
-  categoryId: z.string().min(1, 'חובה לבחור קטגוריה'),
+  categoryIds: z.array(z.string()).min(1, 'חובה לבחור לפחות קטגוריה אחת'),
   isAvailable: z.boolean(),
   isRecommended: z.boolean().optional(),
   tags: z.array(z.string()),
@@ -93,7 +96,7 @@ export default function MenuManager() {
   const dishForm = useForm<z.infer<typeof dishSchema>>({ 
     resolver: zodResolver(dishSchema),
     defaultValues: {
-        name: '', shortDescription: '', fullDescription: '', price: 0, categoryId: '',
+        name: '', shortDescription: '', fullDescription: '', price: 0, categoryIds: [],
         isAvailable: true, isRecommended: false, tags: [], mainImage: '', galleryImages: []
     }
   })
@@ -106,12 +109,13 @@ export default function MenuManager() {
     if (!isDishDialogOpen) {
         setEditingDish(null);
         dishForm.reset({
-            name: '', shortDescription: '', fullDescription: '', price: 0, categoryId: '',
+            name: '', shortDescription: '', fullDescription: '', price: 0, categoryIds: [],
             isAvailable: true, isRecommended: false, tags: [], mainImage: '', galleryImages: []
         });
     } else if (editingDish) {
         dishForm.reset({
           ...editingDish,
+          categoryIds: editingDish.categoryIds || [],
           price: editingDish.price || 0,
           tags: editingDish.tags || [],
           galleryImages: editingDish.galleryImages || []
@@ -335,18 +339,72 @@ export default function MenuManager() {
                             ))}
                         </div>
                     </FormItem>
-                    <FormField name="categoryId" control={dishForm.control} render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>קטגוריה</FormLabel>
-                        <Select onValueChange={field.onChange} value={field.value}>
-                          <FormControl><SelectTrigger><SelectValue placeholder="בחר קטגוריה" /></SelectTrigger></FormControl>
-                          <SelectContent>
-                            {categories.map(c => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )} />
+                     <FormField
+                        control={dishForm.control}
+                        name="categoryIds"
+                        render={({ field }) => (
+                            <FormItem>
+                            <FormLabel>קטגוריות</FormLabel>
+                            <Popover>
+                                <PopoverTrigger asChild>
+                                <FormControl>
+                                    <Button
+                                    variant="outline"
+                                    role="combobox"
+                                    className={cn(
+                                        "w-full justify-between h-auto min-h-10",
+                                        !field.value?.length && "text-muted-foreground"
+                                    )}
+                                    >
+                                    <div className="flex gap-1 flex-wrap">
+                                        {field.value?.length > 0 ? (
+                                        field.value.map(id => categories.find(c => c.id === id)).filter(Boolean).map(c => (
+                                            <Badge variant="secondary" key={c!.id}>{c!.name}</Badge>
+                                        ))
+                                        ) : ("בחר קטגוריות")}
+                                    </div>
+                                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                    </Button>
+                                </FormControl>
+                                </PopoverTrigger>
+                                <PopoverContent className="w-full p-0">
+                                <Command>
+                                    <CommandInput placeholder="חיפוש קטגוריה..." />
+                                    <CommandList>
+                                        <CommandEmpty>לא נמצאו קטגוריות.</CommandEmpty>
+                                        <CommandGroup>
+                                        {categories.map((category) => (
+                                            <CommandItem
+                                            value={category.name}
+                                            key={category.id}
+                                            onSelect={() => {
+                                                const currentIds = field.value || [];
+                                                const newIds = currentIds.includes(category.id)
+                                                ? currentIds.filter((id) => id !== category.id)
+                                                : [...currentIds, category.id];
+                                                field.onChange(newIds);
+                                            }}
+                                            >
+                                            <Check
+                                                className={cn(
+                                                "mr-2 h-4 w-4",
+                                                field.value?.includes(category.id)
+                                                    ? "opacity-100"
+                                                    : "opacity-0"
+                                                )}
+                                            />
+                                            {category.name}
+                                            </CommandItem>
+                                        ))}
+                                        </CommandGroup>
+                                    </CommandList>
+                                </Command>
+                                </PopoverContent>
+                            </Popover>
+                            <FormMessage />
+                            </FormItem>
+                        )}
+                        />
                     <FormField name="tags" control={dishForm.control} render={() => (
                       <FormItem>
                         <FormLabel>תגים</FormLabel>
@@ -413,7 +471,7 @@ export default function MenuManager() {
             <TableHeader>
               <TableRow>
                 <TableHead>שם</TableHead>
-                <TableHead>קטגוריה</TableHead>
+                <TableHead>קטגוריות</TableHead>
                 <TableHead>מחיר</TableHead>
                 <TableHead>זמינות</TableHead>
                 <TableHead>מומלצת</TableHead>
@@ -424,7 +482,13 @@ export default function MenuManager() {
               {dishes.map(dish => (
                 <TableRow key={dish.id}>
                   <TableCell>{dish.name}</TableCell>
-                  <TableCell>{categories.find(c => c.id === dish.categoryId)?.name}</TableCell>
+                  <TableCell>
+                    <div className="flex flex-wrap gap-1">
+                      {dish.categoryIds.map(catId => categories.find(c => c.id === catId)?.name).filter(Boolean).map(name => (
+                        <Badge key={name} variant="outline">{name}</Badge>
+                      ))}
+                    </div>
+                  </TableCell>
                   <TableCell>{dish.price} ₪</TableCell>
                   <TableCell>{dish.isAvailable ? 'כן' : 'לא'}</TableCell>
                   <TableCell>{dish.isRecommended ? 'כן' : 'לא'}</TableCell>
@@ -546,7 +610,3 @@ export default function MenuManager() {
     </div>
   )
 }
-
-    
-
-    

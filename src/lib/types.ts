@@ -8,7 +8,7 @@ export interface Dish {
   price: number;
   mainImage: string; // This will be an image URL
   galleryImages?: string[]; // This will be an array of image URLs
-  categoryId: string;
+  categoryIds: string[];
   isAvailable: boolean;
   tags: ('vegan' | 'spicy')[];
   isRecommended?: boolean;

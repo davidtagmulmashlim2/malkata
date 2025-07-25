@@ -19,7 +19,7 @@ export default function CategoryPage() {
         notFound();
     }
 
-    const categoryDishes = isLoading || !category ? [] : state.dishes.filter(d => d.categoryId === category.id);
+    const categoryDishes = isLoading || !category ? [] : state.dishes.filter(d => d.categoryIds.includes(category.id));
 
     // This is the loading state, shown on server and initial client render
     if (isLoading || !category) {
