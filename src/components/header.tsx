@@ -12,14 +12,22 @@ import React, { useMemo } from 'react';
 import { Skeleton } from './ui/skeleton';
 
 const Crown2 = (props: React.SVGProps<SVGSVGElement>) => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="currentColor" {...props}>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" {...props}>
         <path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5z" />
     </svg>
 );
 
 const Crown3 = (props: React.SVGProps<SVGSVGElement>) => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="currentColor" {...props}>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" {...props}>
         <path d="M12 2C9.2 2 7 4.2 7 7c0 1.5.6 2.8 1.5 3.7L3 14h18l-5.5-3.3c.9-.9 1.5-2.2 1.5-3.7C17 4.2 14.8 2 12 2zm0 2c1.7 0 3 1.3 3 3s-1.3 3-3 3-3-1.3-3-3 1.3-3 3-3z" />
+    </svg>
+);
+
+const Crown4 = (props: React.SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+        <path d="M12 6L9 12h6l-3-6Z"/>
+        <path d="M5 12.5L2 15h20l-3-2.5"/>
+        <path d="M5 12.5C5 17 9 21 12 21s7-4 7-8.5"/>
     </svg>
 );
 
@@ -36,6 +44,7 @@ const iconMap: { [key: string]: React.ElementType | null } = {
   crown: Crown1,
   crown2: Crown2,
   crown3: Crown3,
+  crown4: Crown4,
   gem: Gem,
   star: Star,
   shield: Shield,

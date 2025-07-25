@@ -52,6 +52,7 @@ const logoIcons = [
     { name: 'כתר (עיצוב 1)', value: 'crown' },
     { name: 'כתר (עיצוב 2)', value: 'crown2' },
     { name: 'כתר (עיצוב 3)', value: 'crown3' },
+    { name: 'כתר (עיצוב 4)', value: 'crown4' },
     { name: 'יהלום', value: 'gem' },
     { name: 'כוכב', value: 'star' },
     { name: 'מגן', value: 'shield' },
