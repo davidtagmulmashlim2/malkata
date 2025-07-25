@@ -9,9 +9,9 @@ import {
   SheetContent,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
   SheetFooter,
   SheetClose,
+  SheetTrigger,
 } from '@/components/ui/sheet';
 import { useApp } from '@/context/app-context';
 import { Input } from './ui/input';
@@ -19,7 +19,7 @@ import { Label } from './ui/label';
 import { ScrollArea } from './ui/scroll-area';
 import { Separator } from './ui/separator';
 import { useIsClient } from '@/hooks/use-is-client';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useRef } from 'react';
 import Link from 'next/link';
 import { Skeleton } from './ui/skeleton';
 import { AsyncImage } from './async-image';
@@ -51,16 +51,33 @@ export function CartSheet() {
   const [customerPhone, setCustomerPhone] = useState('');
   const [customerAddress, setCustomerAddress] = useState('');
   const [deliveryMethod, setDeliveryMethod] = useState('pickup');
+  const addressInputRef = useRef<HTMLInputElement>(null);
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
 
   const cartDetails = useMemo(() => {
     if (!isClient) return [];
-    return cart
+    const validCartItems = cart.filter(item => getDishById(item.dishId));
+    return validCartItems
       .map(item => {
         const dish = getDishById(item.dishId);
         return dish ? { ...item, ...dish } : null; 
       })
-      .filter(item => item && getDishById(item.dishId));
+      .filter(item => item !== null);
   }, [isClient, cart, getDishById]);
+  
+
+  useEffect(() => {
+    if (deliveryMethod === 'delivery' && addressInputRef.current) {
+        setTimeout(() => {
+            if(scrollAreaRef.current) {
+                scrollAreaRef.current.scrollTo({
+                    top: scrollAreaRef.current.scrollHeight,
+                    behavior: 'smooth'
+                });
+            }
+        }, 100);
+    }
+  }, [deliveryMethod]);
 
 
   const total = cartDetails.reduce((sum, item) => sum + item!.price * item!.quantity, 0);
@@ -121,7 +138,7 @@ export function CartSheet() {
             </div>
         ) : cartDetails.length > 0 ? (
           <>
-            <ScrollArea className="flex-grow pr-4 -mr-6">
+            <ScrollArea className="flex-grow pr-4 -mr-6" ref={scrollAreaRef}>
               <div className="flex flex-col gap-4 py-4">
                 {cartDetails.map(item => (
                   <div key={item!.id} className="flex flex-row-reverse items-center gap-4">
@@ -187,14 +204,16 @@ export function CartSheet() {
                                     {cartContent.deliveryLabel}
                                 </Button>
                             </div>
-                             {deliveryMethod === 'delivery' && total < cartContent.freeDeliveryThreshold && (
-                                <p className='text-xs text-muted-foreground text-center pt-1'>({freeDeliveryMessage})</p>
+                           {deliveryMethod === 'delivery' && total < cartContent.freeDeliveryThreshold && (
+                                <p className='text-xs text-muted-foreground text-center pt-1'>
+                                   ({freeDeliveryMessage})
+                                </p>
                             )}
                         </div>
                         {deliveryMethod === 'delivery' && (
                             <div className='space-y-2'>
                                 <Label htmlFor="customerAddress">כתובת למשלוח</Label>
-                                <Input id="customerAddress" value={customerAddress} onChange={(e) => setCustomerAddress(e.target.value)} placeholder='רחוב, מספר בית, עיר' />
+                                <Input id="customerAddress" ref={addressInputRef} value={customerAddress} onChange={(e) => setCustomerAddress(e.target.value)} placeholder='רחוב, מספר בית, עיר' />
                             </div>
                         )}
                     </div>
