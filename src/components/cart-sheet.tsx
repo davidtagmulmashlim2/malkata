@@ -14,17 +14,16 @@ import {
   SheetClose,
 } from '@/components/ui/sheet';
 import { useApp } from '@/context/app-context';
-import Image from 'next/image';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { ScrollArea } from './ui/scroll-area';
 import { Separator } from './ui/separator';
 import { useIsClient } from '@/hooks/use-is-client';
-import { getImage, getImageSync } from '@/lib/image-store';
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { Skeleton } from './ui/skeleton';
 import { AsyncImage } from './async-image';
+import { RadioGroup, RadioGroupItem } from './ui/radio-group';
 
 const CartItemSkeleton = () => (
     <div className="flex justify-between items-center gap-4">
@@ -50,17 +49,16 @@ export function CartSheet() {
   const [customerName, setCustomerName] = useState('');
   const [customerPhone, setCustomerPhone] = useState('');
   const [customerAddress, setCustomerAddress] = useState('');
+  const [deliveryMethod, setDeliveryMethod] = useState('pickup');
 
   const cartDetails = useMemo(() => {
     if (!isClient) return [];
-    // This is the key fix: Filter the cart based on what actually exists in the dishes list
     return cart
       .map(item => {
         const dish = getDishById(item.dishId);
-        // If dish exists, return the combined details
         return dish ? { ...item, ...dish } : null; 
       })
-      .filter(Boolean); // Filter out any null values (for dishes that were deleted)
+      .filter(Boolean);
   }, [isClient, cart, getDishById]);
 
 
@@ -68,14 +66,19 @@ export function CartSheet() {
   const totalItems = cartDetails.reduce((acc, item) => acc + item.quantity, 0);
 
   const handleWhatsAppOrder = () => {
-    if (!customerName || !customerPhone || !customerAddress) {
-        alert('יש למלא שם, טלפון וכתובת לפני שליחת ההזמנה.');
+    const isDelivery = deliveryMethod === 'delivery';
+    if (!customerName || !customerPhone || (isDelivery && !customerAddress)) {
+        alert('יש למלא את כל הפרטים הנדרשים לפני שליחת ההזמנה.');
         return;
     }
-    const { contact } = state.siteContent;
+    const { contact, cart: cartSettings } = state.siteContent;
+
     let message = `שלום, אני ${customerName}, טלפון ${customerPhone}.\n`;
-    message += `כתובת למשלוח: ${customerAddress}\n\n`;
-    message += `ברצוני לבצע הזמנה:\n\n`;
+    message += `אופן קבלה: ${deliveryMethod === 'delivery' ? cartSettings.deliveryLabel : cartSettings.pickupLabel}\n`
+    if (isDelivery) {
+        message += `כתובת למשלוח: ${customerAddress}\n`;
+    }
+    message += `\nברצוני לבצע הזמנה:\n\n`;
     
     cartDetails.forEach(item => {
       message += `${item!.name} (x${item!.quantity}) - ${item!.price * item!.quantity} ₪\n`;
@@ -87,8 +90,11 @@ export function CartSheet() {
     window.open(whatsappUrl, '_blank');
     setOpen(false); // Close the sheet after sending
   };
+  
+  const { cart: cartContent } = state.siteContent;
+  const freeDeliveryMessage = cartContent.freeDeliveryText.replace('{amount}', cartContent.freeDeliveryThreshold.toString());
+  const canSubmit = customerName !== '' && customerPhone !== '' && (deliveryMethod === 'pickup' || customerAddress !== '');
 
-  const canSubmit = customerName !== '' && customerPhone !== '' && customerAddress !== '';
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -161,10 +167,31 @@ export function CartSheet() {
                             <Label htmlFor="customerPhone">טלפון</Label>
                             <Input id="customerPhone" type="tel" value={customerPhone} onChange={(e) => setCustomerPhone(e.target.value)} placeholder='050-1234567' />
                         </div>
+
                          <div className='space-y-2'>
-                            <Label htmlFor="customerAddress">כתובת למשלוח</Label>
-                            <Input id="customerAddress" value={customerAddress} onChange={(e) => setCustomerAddress(e.target.value)} placeholder='רחוב, מספר בית, עיר' />
+                            <Label>{cartContent.deliveryMethodTitle}</Label>
+                             <RadioGroup defaultValue="pickup" onValueChange={setDeliveryMethod} className="flex gap-4 pt-1">
+                                <div className="flex items-center space-x-2 space-x-reverse">
+                                    <RadioGroupItem value="pickup" id="pickup" />
+                                    <Label htmlFor="pickup">{cartContent.pickupLabel}</Label>
+                                </div>
+                                <div className="flex items-center space-x-2 space-x-reverse">
+                                    <RadioGroupItem value="delivery" id="delivery" />
+                                    <Label htmlFor="delivery" className="flex items-baseline gap-2">
+                                      {cartContent.deliveryLabel}
+                                      {total < cartContent.freeDeliveryThreshold && (
+                                        <span className='text-xs text-muted-foreground'>({freeDeliveryMessage})</span>
+                                      )}
+                                      </Label>
+                                </div>
+                            </RadioGroup>
                         </div>
+                        {deliveryMethod === 'delivery' && (
+                            <div className='space-y-2'>
+                                <Label htmlFor="customerAddress">כתובת למשלוח</Label>
+                                <Input id="customerAddress" value={customerAddress} onChange={(e) => setCustomerAddress(e.target.value)} placeholder='רחוב, מספר בית, עיר' />
+                            </div>
+                        )}
                     </div>
               </div>
             </ScrollArea>

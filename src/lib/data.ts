@@ -55,6 +55,13 @@ export const DEFAULT_APP_STATE: AppState = {
       hoursTitle: 'שעות פתיחה',
       copyright: 'מלכתא. כל הזכויות שמורות.',
       hoursContent: 'א׳-ה׳: 11:00 - 22:00\nו׳ וערבי חג: 09:00 - 15:00\nשבת: סגור'
+    },
+    cart: {
+      deliveryMethodTitle: "אופן קבלת ההזמנה",
+      pickupLabel: "איסוף עצמי",
+      deliveryLabel: "משלוח",
+      freeDeliveryThreshold: 200,
+      freeDeliveryText: "משלוח חינם בהזמנה מעל {amount} ₪"
     }
   },
   // These arrays are intentionally empty.

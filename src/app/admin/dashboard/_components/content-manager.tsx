@@ -1,4 +1,5 @@
 
+
 'use client';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -66,6 +67,13 @@ const contentSchema = z.object({
     hoursTitle: z.string().optional(),
     copyright: z.string().optional(),
     hoursContent: z.string().optional(),
+  }),
+  cart: z.object({
+    deliveryMethodTitle: z.string().min(1, 'חובה'),
+    pickupLabel: z.string().min(1, 'חובה'),
+    deliveryLabel: z.string().min(1, 'חובה'),
+    freeDeliveryThreshold: z.coerce.number().min(0),
+    freeDeliveryText: z.string().min(1, 'חובה'),
   }),
 });
 
@@ -141,7 +149,7 @@ export default function ContentManager() {
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            <Accordion type="multiple" defaultValue={['hero', 'about', 'contact', 'menu', 'newsletter', 'testimonials', 'footer']} className="w-full">
+            <Accordion type="multiple" defaultValue={['hero', 'about', 'contact', 'menu', 'newsletter', 'testimonials', 'cart', 'footer']} className="w-full">
               <AccordionItem value="hero">
                 <AccordionTrigger className="font-headline text-xl">עמוד הבית (אזור עליון)</AccordionTrigger>
                 <AccordionContent className="space-y-4 pt-4">
@@ -402,7 +410,7 @@ export default function ContentManager() {
                   <FormField name="contact.instagram" control={form.control} render={({ field }) => (
                     <FormItem>
                       <FormLabel>כתובת עמוד אינסטגרם</FormLabel>
-                      <FormControl><Input type="url" placeholder="https://instagram.com/your-page" {...field} value={field.value || ''} /></FormControl>
+                      <FormControl><Input type="url" placeholder="https://instagram.com/your-page" {...field} value={field.value ?? ''} /></FormControl>
                       <FormMessage />
                     </FormItem>
                   )} />
@@ -410,6 +418,50 @@ export default function ContentManager() {
                     <FormItem>
                       <FormLabel>שעות פתיחה</FormLabel>
                       <FormControl><Textarea {...field} /></FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )} />
+                </AccordionContent>
+              </AccordionItem>
+              
+               <AccordionItem value="cart">
+                <AccordionTrigger className="font-headline text-xl">סל קניות</AccordionTrigger>
+                <AccordionContent className="space-y-4 pt-4">
+                  <FormField name="cart.deliveryMethodTitle" control={form.control} render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>כותרת לבחירת משלוח</FormLabel>
+                      <FormControl><Input {...field} /></FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )} />
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <FormField name="cart.pickupLabel" control={form.control} render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>תווית לאיסוף עצמי</FormLabel>
+                        <FormControl><Input {...field} /></FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )} />
+                    <FormField name="cart.deliveryLabel" control={form.control} render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>תווית למשלוח</FormLabel>
+                        <FormControl><Input {...field} /></FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )} />
+                  </div>
+                  <FormField name="cart.freeDeliveryThreshold" control={form.control} render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>סכום מינימום למשלוח חינם (₪)</FormLabel>
+                      <FormControl><Input type="number" {...field} /></FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )} />
+                  <FormField name="cart.freeDeliveryText" control={form.control} render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>הודעה על משלוח חינם</FormLabel>
+                      <FormControl><Input {...field} /></FormControl>
+                      <p className="text-xs text-muted-foreground pt-1">השתמש ב-`{amount}` כדי להציג את הסכום שהוגדר.</p>
                       <FormMessage />
                     </FormItem>
                   )} />

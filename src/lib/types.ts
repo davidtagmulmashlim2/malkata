@@ -1,4 +1,5 @@
 
+
 export interface Dish {
   id: string;
   name: string;
@@ -88,6 +89,13 @@ export interface SiteContent {
     hoursTitle?: string;
     copyright?: string;
     hoursContent?: string;
+  };
+  cart: {
+    deliveryMethodTitle: string;
+    pickupLabel: string;
+    deliveryLabel: string;
+    freeDeliveryThreshold: number;
+    freeDeliveryText: string;
   };
 }
 
