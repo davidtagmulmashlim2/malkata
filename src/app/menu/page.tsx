@@ -40,7 +40,7 @@ export default function MenuPage() {
                     ))
                 ) : (
                     categories.map(category => {
-                        const categoryDishes = dishes.filter(d => d.categoryIds.includes(category.id));
+                        const categoryDishes = dishes.filter(d => d.categoryIds && d.categoryIds.includes(category.id));
                         if (categoryDishes.length === 0) return null;
 
                         return (
