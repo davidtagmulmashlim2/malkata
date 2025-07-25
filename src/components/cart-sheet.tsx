@@ -24,6 +24,7 @@ import Link from 'next/link';
 import { Skeleton } from './ui/skeleton';
 import { AsyncImage } from './async-image';
 import { RadioGroup, RadioGroupItem } from './ui/radio-group';
+import { cn } from '@/lib/utils';
 
 const CartItemSkeleton = () => (
     <div className="flex justify-between items-center gap-4">
@@ -170,21 +171,26 @@ export function CartSheet() {
 
                          <div className='space-y-2'>
                             <Label>{cartContent.deliveryMethodTitle}</Label>
-                             <RadioGroup defaultValue="pickup" onValueChange={setDeliveryMethod} className="flex gap-4 pt-1">
-                                <div className="flex items-center space-x-2 space-x-reverse">
-                                    <RadioGroupItem value="pickup" id="pickup" />
-                                    <Label htmlFor="pickup">{cartContent.pickupLabel}</Label>
-                                </div>
-                                <div className="flex items-center space-x-2 space-x-reverse">
-                                    <RadioGroupItem value="delivery" id="delivery" />
-                                    <Label htmlFor="delivery" className="flex items-baseline gap-2">
-                                      {cartContent.deliveryLabel}
-                                      {total < cartContent.freeDeliveryThreshold && (
-                                        <span className='text-xs text-muted-foreground'>({freeDeliveryMessage})</span>
-                                      )}
-                                      </Label>
-                                </div>
-                            </RadioGroup>
+                            <div className="grid grid-cols-2 gap-2 pt-1">
+                                <Button
+                                    type="button"
+                                    variant={deliveryMethod === 'pickup' ? 'default' : 'outline'}
+                                    onClick={() => setDeliveryMethod('pickup')}
+                                >
+                                    {cartContent.pickupLabel}
+                                </Button>
+                                <Button
+                                    type="button"
+                                    variant={deliveryMethod === 'delivery' ? 'default' : 'outline'}
+                                    onClick={() => setDeliveryMethod('delivery')}
+                                    className="flex-col h-auto py-2 items-center"
+                                >
+                                    <span>{cartContent.deliveryLabel}</span>
+                                    {total < cartContent.freeDeliveryThreshold && (
+                                        <span className='text-xs font-normal opacity-80'>({freeDeliveryMessage})</span>
+                                    )}
+                                </Button>
+                            </div>
                         </div>
                         {deliveryMethod === 'delivery' && (
                             <div className='space-y-2'>
