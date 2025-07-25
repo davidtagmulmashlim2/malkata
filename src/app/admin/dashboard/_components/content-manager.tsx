@@ -51,7 +51,11 @@ const contentSchema = z.object({
   }),
   menu: z.object({
       mainImage: z.string().min(1, 'חובה'),
-  })
+  }),
+  newsletter: z.object({
+      headline: z.string().min(1, 'חובה'),
+      subheadline: z.string().min(1, 'חובה'),
+  }),
 });
 
 type ContentFormValues = z.infer<typeof contentSchema>;
@@ -126,7 +130,7 @@ export default function ContentManager() {
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            <Accordion type="multiple" defaultValue={['hero', 'about', 'contact', 'menu']} className="w-full">
+            <Accordion type="multiple" defaultValue={['hero', 'about', 'contact', 'menu', 'newsletter']} className="w-full">
               <AccordionItem value="hero">
                 <AccordionTrigger className="font-headline text-xl">עמוד הבית (אזור עליון)</AccordionTrigger>
                 <AccordionContent className="space-y-4 pt-4">
@@ -387,6 +391,26 @@ export default function ContentManager() {
                    <FormField name="contact.hours" control={form.control} render={({ field }) => (
                     <FormItem>
                       <FormLabel>שעות פתיחה</FormLabel>
+                      <FormControl><Textarea {...field} /></FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )} />
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="newsletter">
+                <AccordionTrigger className="font-headline text-xl">מועדון לקוחות (ניוזלטר)</AccordionTrigger>
+                <AccordionContent className="space-y-4 pt-4">
+                  <FormField name="newsletter.headline" control={form.control} render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>כותרת ראשית</FormLabel>
+                      <FormControl><Input {...field} /></FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )} />
+                  <FormField name="newsletter.subheadline" control={form.control} render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>כותרת משנה</FormLabel>
                       <FormControl><Textarea {...field} /></FormControl>
                       <FormMessage />
                     </FormItem>

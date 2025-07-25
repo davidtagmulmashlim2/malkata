@@ -18,7 +18,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 export default function Home() {
   const { state, isLoading } = useApp();
   const { siteContent, dishes, testimonials } = state;
-  const { hero } = siteContent;
+  const { hero, newsletter } = siteContent;
   const [typewriterKey, setTypewriterKey] = useState(0);
   const [currentTestimonialIndex, setCurrentTestimonialIndex] = useState(0);
 
@@ -198,14 +198,14 @@ export default function Home() {
       {/* Newsletter Signup */}
       <section className="bg-primary text-primary-foreground py-16 md:py-24">
         <div className="container text-right max-w-2xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-headline font-bold mb-4">הצטרפו למועדון הלקוחות שלנו</h2>
-            <p className="mb-6 opacity-90">הישארו מעודכנים במבצעים, מנות חדשות ואירועים מיוחדים!</p>
+            <h2 className="text-3xl md:text-4xl font-headline font-bold mb-4">{isLoading ? <Skeleton className="h-10 w-3/4 mx-auto" /> : newsletter.headline}</h2>
+            <p className="mb-6 opacity-90">{isLoading ? <Skeleton className="h-6 w-full max-w-lg mx-auto" /> : newsletter.subheadline}</p>
             <form className="flex flex-col sm:flex-row gap-2 max-w-md mx-auto">
                 <Input 
-                    type="email" 
-                    placeholder="האימייל שלכם" 
+                    type="tel" 
+                    placeholder="הטלפון שלכם" 
                     className="text-foreground"
-                    aria-label="Email for newsletter"
+                    aria-label="Phone number for newsletter"
                 />
                 <Button type="submit" variant="secondary">הרשמה</Button>
             </form>

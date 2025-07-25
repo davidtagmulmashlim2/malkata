@@ -67,6 +67,10 @@ export interface SiteContent {
   menu: {
     mainImage: string; // This will be an image URL
   };
+  newsletter: {
+    headline: string;
+    subheadline: string;
+  };
 }
 
 export interface DesignSettings {

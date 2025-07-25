@@ -40,7 +40,11 @@ export const DEFAULT_APP_STATE: AppState = {
     },
     menu: {
       mainImage: 'img-1721294835843-gqvtgpcgo',
-    }
+    },
+    newsletter: {
+      headline: 'הצטרפו למועדון הלקוחות שלנו',
+      subheadline: 'הישארו מעודכנים במבצעים, מנות חדשות ואירועים מיוחדים!',
+    },
   },
   // These arrays are intentionally empty.
   // The app will be populated from localStorage, making it the single source of truth.
@@ -53,8 +57,8 @@ export const DEFAULT_APP_STATE: AppState = {
     theme: 'default',
     headlineFont: 'playfair',
     bodyFont: 'pt-sans',
-    logoIcon: 'crown',
-    logoColor: '',
+    logoIcon: 'crown4',
+    logoColor: '#e0a84c',
     featuredCategoryId: '',
   },
 };
