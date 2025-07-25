@@ -402,7 +402,7 @@ export default function ContentManager() {
                   <FormField name="contact.instagram" control={form.control} render={({ field }) => (
                     <FormItem>
                       <FormLabel>כתובת עמוד אינסטגרם</FormLabel>
-                      <FormControl><Input type="url" placeholder="https://instagram.com/your-page" {...field} /></FormControl>
+                      <FormControl><Input type="url" placeholder="https://instagram.com/your-page" {...field} value={field.value || ''} /></FormControl>
                       <FormMessage />
                     </FormItem>
                   )} />
