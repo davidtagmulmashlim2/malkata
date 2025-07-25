@@ -89,7 +89,7 @@ export function Footer() {
                     </div>
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">{footer?.hoursTitle}</h3>
-                        <p className="text-sm text-muted-foreground whitespace-pre-line">{contact?.hours}</p>
+                        <p className="text-sm text-muted-foreground whitespace-pre-line">{contact.hours}</p>
                     </div>
                 </div>
                 <div className="mt-12 border-t pt-8 text-center text-sm text-muted-foreground">

@@ -459,8 +459,8 @@ export default function ContentManager() {
                   )} />
                    <FormField name="footer.hoursTitle" control={form.control} render={({ field }) => (
                     <FormItem>
-                      <FormLabel>כותרת עמודת "שעות פתיחה"</FormLabel>
-                      <FormControl><Input {...field} /></FormControl>
+                      <FormLabel>תוכן עמודת "שעות פתיחה"</FormLabel>
+                      <FormControl><Textarea {...field} /></FormControl>
                       <FormMessage />
                     </FormItem>
                   )} />
