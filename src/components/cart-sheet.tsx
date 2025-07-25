@@ -21,7 +21,7 @@ import { ScrollArea } from './ui/scroll-area';
 import { Separator } from './ui/separator';
 import { useIsClient } from '@/hooks/use-is-client';
 import { getImage, getImageSync } from '@/lib/image-store';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { Skeleton } from './ui/skeleton';
 import { AsyncImage } from './async-image';
@@ -51,12 +51,21 @@ export function CartSheet() {
   const [customerPhone, setCustomerPhone] = useState('');
   const [customerAddress, setCustomerAddress] = useState('');
 
-  const cartDetails = isClient ? cart.map(item => {
-    const dish = getDishById(item.dishId);
-    return dish ? { ...item, ...dish } : null;
-  }).filter(Boolean) : [];
+  const cartDetails = useMemo(() => {
+    if (!isClient) return [];
+    // This is the key fix: Filter the cart based on what actually exists in the dishes list
+    return cart
+      .map(item => {
+        const dish = getDishById(item.dishId);
+        // If dish exists, return the combined details
+        return dish ? { ...item, ...dish } : null; 
+      })
+      .filter(Boolean); // Filter out any null values (for dishes that were deleted)
+  }, [isClient, cart, getDishById]);
+
 
   const total = cartDetails.reduce((sum, item) => sum + item!.price * item!.quantity, 0);
+  const totalItems = cartDetails.reduce((acc, item) => acc + item.quantity, 0);
 
   const handleWhatsAppOrder = () => {
     if (!customerName || !customerPhone || !customerAddress) {
@@ -86,9 +95,9 @@ export function CartSheet() {
       <SheetTrigger asChild>
         <Button variant="outline" size="icon" className="fixed bottom-4 right-4 z-50 h-14 w-14 rounded-full shadow-lg lg:bottom-8 lg:right-8">
           <ShoppingBagIcon className="h-6 w-6" />
-          {isClient && cart.length > 0 && (
+          {isClient && totalItems > 0 && (
             <span className="absolute -top-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs font-bold">
-              {cart.reduce((acc, item) => acc + item.quantity, 0)}
+              {totalItems}
             </span>
           )}
           <span className="sr-only">פתח עגלת קניות</span>
@@ -103,7 +112,7 @@ export function CartSheet() {
                 <CartItemSkeleton />
                 <CartItemSkeleton />
             </div>
-        ) : cart.length > 0 ? (
+        ) : cartDetails.length > 0 ? (
           <>
             <ScrollArea className="flex-grow pr-4 -mr-6">
               <div className="flex flex-col gap-4 py-4">
