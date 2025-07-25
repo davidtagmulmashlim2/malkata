@@ -230,7 +230,7 @@ export default function Home() {
       <section className="bg-primary text-primary-foreground py-16 md:py-24">
         <div className="container text-right max-w-2xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-headline font-bold mb-4">{isLoading ? <Skeleton className="h-10 w-3/4 mx-auto" /> : newsletter.headline}</h2>
-            <div className="mb-6 opacity-90">{isLoading ? <Skeleton className="h-6 w-full max-w-lg mx-auto" /> : newsletter.subheadline}</div>
+            <div className="mb-6 opacity-90">{isLoading ? <div className="animate-pulse rounded-md bg-muted/50 h-6 w-full max-w-lg mx-auto" /> : newsletter.subheadline}</div>
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubscriberSubmit)} className="flex flex-col sm:flex-row gap-2 max-w-md mx-auto">
                     <FormField
