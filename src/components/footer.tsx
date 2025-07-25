@@ -58,7 +58,7 @@ export function Footer() {
                             {IconComponent && <IconComponent className="h-7 w-7" />}
                             מלכתא
                         </Link>
-                        <p className="text-muted-foreground text-sm">{footer?.tagline}</p>
+                        {footer?.tagline && <p className="text-muted-foreground text-sm">{footer.tagline}</p>}
                         <div className="flex gap-2">
                            <a href={`https://wa.me/${contact.whatsapp}`} target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp">
                                 <WhatsappIcon className="h-8 w-8 text-green-500 transition-opacity hover:opacity-80" />
@@ -70,31 +70,46 @@ export function Footer() {
                             )}
                         </div>
                     </div>
-                    <div className="space-y-4">
-                        <h3 className="text-lg font-semibold">{footer?.contactTitle}</h3>
-                        <ul className="space-y-2 text-sm text-muted-foreground">
-                            <li className="flex items-start gap-2">
-                                <MapPin className="h-4 w-4 mt-1 shrink-0" />
-                                <span>{contact?.address}</span>
-                            </li>
-                            <li className="flex items-center gap-2">
-                                <Phone className="h-4 w-4" />
-                                <a href={`tel:${contact?.phone}`} className="hover:text-primary">{contact?.phone}</a>
-                            </li>
-                            <li className="flex items-center gap-2">
-                                <Mail className="h-4 w-4" />
-                                <a href={`mailto:${contact?.email}`} className="hover:text-primary">{contact?.email}</a>
-                            </li>
-                        </ul>
-                    </div>
-                    <div className="space-y-4">
-                        <h3 className="text-lg font-semibold">{footer?.hoursTitle}</h3>
-                        <p className="text-sm text-muted-foreground whitespace-pre-line">{footer.hoursContent}</p>
-                    </div>
+                    
+                    {(footer?.contactTitle || contact?.address || contact?.phone || contact?.email) && (
+                        <div className="space-y-4">
+                             {footer?.contactTitle && <h3 className="text-lg font-semibold">{footer.contactTitle}</h3>}
+                            <ul className="space-y-2 text-sm text-muted-foreground">
+                                {contact?.address && (
+                                    <li className="flex items-start gap-2">
+                                        <MapPin className="h-4 w-4 mt-1 shrink-0" />
+                                        <span>{contact.address}</span>
+                                    </li>
+                                )}
+                                 {contact?.phone && (
+                                    <li className="flex items-center gap-2">
+                                        <Phone className="h-4 w-4" />
+                                        <a href={`tel:${contact.phone}`} className="hover:text-primary">{contact.phone}</a>
+                                    </li>
+                                 )}
+                                 {contact?.email && (
+                                    <li className="flex items-center gap-2">
+                                        <Mail className="h-4 w-4" />
+                                        <a href={`mailto:${contact.email}`} className="hover:text-primary">{contact.email}</a>
+                                    </li>
+                                 )}
+                            </ul>
+                        </div>
+                    )}
+                    
+                    {(footer?.hoursTitle || footer?.hoursContent) && (
+                        <div className="space-y-4">
+                            {footer?.hoursTitle && <h3 className="text-lg font-semibold">{footer.hoursTitle}</h3>}
+                            {footer?.hoursContent && <p className="text-sm text-muted-foreground whitespace-pre-line">{footer.hoursContent}</p>}
+                        </div>
+                    )}
+
                 </div>
-                <div className="mt-12 border-t pt-8 text-center text-sm text-muted-foreground">
-                    <p>&copy; {new Date().getFullYear()} {footer?.copyright}</p>
-                </div>
+                {footer?.copyright && (
+                    <div className="mt-12 border-t pt-8 text-center text-sm text-muted-foreground">
+                        <p>&copy; {new Date().getFullYear()} {footer.copyright}</p>
+                    </div>
+                )}
             </div>
         </footer>
     );

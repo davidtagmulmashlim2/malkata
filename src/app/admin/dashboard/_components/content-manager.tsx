@@ -61,11 +61,11 @@ const contentSchema = z.object({
     headline: z.string().min(1, 'חובה'),
   }),
   footer: z.object({
-    tagline: z.string().min(1, 'חובה'),
-    contactTitle: z.string().min(1, 'חובה'),
-    hoursTitle: z.string().min(1, 'חובה'),
-    copyright: z.string().min(1, 'חובה'),
-    hoursContent: z.string().min(1, 'חובה'),
+    tagline: z.string().optional(),
+    contactTitle: z.string().optional(),
+    hoursTitle: z.string().optional(),
+    copyright: z.string().optional(),
+    hoursContent: z.string().optional(),
   }),
 });
 
@@ -455,35 +455,35 @@ export default function ContentManager() {
                    <FormField name="footer.tagline" control={form.control} render={({ field }) => (
                     <FormItem>
                       <FormLabel>שורת תיאור (מתחת ללוגו)</FormLabel>
-                      <FormControl><Input {...field} /></FormControl>
+                      <FormControl><Input {...field} value={field.value ?? ''} /></FormControl>
                       <FormMessage />
                     </FormItem>
                   )} />
                   <FormField name="footer.contactTitle" control={form.control} render={({ field }) => (
                     <FormItem>
                       <FormLabel>כותרת עמודת "יצירת קשר"</FormLabel>
-                      <FormControl><Input {...field} /></FormControl>
+                      <FormControl><Input {...field} value={field.value ?? ''} /></FormControl>
                       <FormMessage />
                     </FormItem>
                   )} />
                   <FormField name="footer.hoursTitle" control={form.control} render={({ field }) => (
                     <FormItem>
                       <FormLabel>כותרת עמודת "שעות פתיחה"</FormLabel>
-                      <FormControl><Input {...field} /></FormControl>
+                      <FormControl><Input {...field} value={field.value ?? ''} /></FormControl>
                       <FormMessage />
                     </FormItem>
                   )} />
                    <FormField name="footer.hoursContent" control={form.control} render={({ field }) => (
                     <FormItem>
                       <FormLabel>תוכן עמודת "שעות פתיחה"</FormLabel>
-                      <FormControl><Textarea {...field} rows={4} /></FormControl>
+                      <FormControl><Textarea {...field} value={field.value ?? ''} rows={4} /></FormControl>
                       <FormMessage />
                     </FormItem>
                   )} />
                   <FormField name="footer.copyright" control={form.control} render={({ field }) => (
                     <FormItem>
                       <FormLabel>שורת זכויות יוצרים</FormLabel>
-                      <FormControl><Input {...field} /></FormControl>
+                      <FormControl><Input {...field} value={field.value ?? ''} /></FormControl>
                       <FormMessage />
                     </FormItem>
                   )} />

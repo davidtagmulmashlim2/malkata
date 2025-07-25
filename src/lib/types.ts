@@ -83,11 +83,11 @@ export interface SiteContent {
     headline: string;
   };
   footer: {
-    tagline: string;
-    contactTitle: string;
-    hoursTitle: string;
-    copyright: string;
-    hoursContent: string;
+    tagline?: string;
+    contactTitle?: string;
+    hoursTitle?: string;
+    copyright?: string;
+    hoursContent?: string;
   };
 }
 
