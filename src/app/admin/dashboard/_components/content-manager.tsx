@@ -48,6 +48,7 @@ const contentSchema = z.object({
     whatsapp: z.string().min(1, 'חובה'),
     email: z.string().email('אימייל לא חוקי'),
     hours: z.string().min(1, 'חובה'),
+    instagram: z.string().url('כתובת אינטרנט לא חוקית').optional().or(z.literal('')),
   }),
   menu: z.object({
       mainImage: z.string().min(1, 'חובה'),
@@ -64,6 +65,7 @@ const contentSchema = z.object({
     contactTitle: z.string().min(1, 'חובה'),
     hoursTitle: z.string().min(1, 'חובה'),
     copyright: z.string().min(1, 'חובה'),
+    hoursContent: z.string().min(1, 'חובה'),
   }),
 });
 
@@ -397,6 +399,13 @@ export default function ContentManager() {
                       <FormMessage />
                     </FormItem>
                   )} />
+                  <FormField name="contact.instagram" control={form.control} render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>כתובת עמוד אינסטגרם</FormLabel>
+                      <FormControl><Input type="url" placeholder="https://instagram.com/your-page" {...field} /></FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )} />
                    <FormField name="contact.hours" control={form.control} render={({ field }) => (
                     <FormItem>
                       <FormLabel>שעות פתיחה</FormLabel>
@@ -457,10 +466,17 @@ export default function ContentManager() {
                       <FormMessage />
                     </FormItem>
                   )} />
-                   <FormField name="footer.hoursTitle" control={form.control} render={({ field }) => (
+                  <FormField name="footer.hoursTitle" control={form.control} render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>כותרת עמודת "שעות פתיחה"</FormLabel>
+                      <FormControl><Input {...field} /></FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )} />
+                   <FormField name="footer.hoursContent" control={form.control} render={({ field }) => (
                     <FormItem>
                       <FormLabel>תוכן עמודת "שעות פתיחה"</FormLabel>
-                      <FormControl><Textarea {...field} /></FormControl>
+                      <FormControl><Textarea {...field} rows={4} /></FormControl>
                       <FormMessage />
                     </FormItem>
                   )} />

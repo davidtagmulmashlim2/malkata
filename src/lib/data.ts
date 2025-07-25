@@ -37,6 +37,7 @@ export const DEFAULT_APP_STATE: AppState = {
       whatsapp: '972501234567',
       email: 'contact@malkata.co.il',
       hours: 'א׳-ה׳: 11:00 - 22:00 | ו׳: 09:00 - 15:00',
+      instagram: 'https://instagram.com/malkata',
     },
     menu: {
       mainImage: 'img-1721294835843-gqvtgpcgo',
@@ -53,6 +54,7 @@ export const DEFAULT_APP_STATE: AppState = {
       contactTitle: 'יצירת קשר',
       hoursTitle: 'שעות פתיחה',
       copyright: 'מלכתא. כל הזכויות שמורות.',
+      hoursContent: 'א׳-ה׳: 11:00 - 22:00\nו׳ וערבי חג: 09:00 - 15:00\nשבת: סגור'
     }
   },
   // These arrays are intentionally empty.

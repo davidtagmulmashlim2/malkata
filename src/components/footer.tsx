@@ -6,6 +6,7 @@ import Link from "next/link";
 import { UtensilsCrossed, Phone, Mail, MapPin, Crown as Crown1, Gem, Star, Shield } from 'lucide-react';
 import React from "react";
 import { WhatsappIcon } from "./icons/whatsapp-icon";
+import { InstagramIcon } from "./icons/instagram-icon";
 
 const Crown2 = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" {...props}>
@@ -20,14 +21,10 @@ const Crown3 = (props: React.SVGProps<SVGSVGElement>) => (
 );
 
 const Crown4 = (props: React.SVGProps<SVGSVGElement>) => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
-      <path d="M12.55 3.1a.5.5 0 0 0-.25-.44.5.5 0 0 0-.58.1L8.35 6.08a.5.5 0 0 0-.16.53l.9 3.5a.5.5 0 0 0 .49.38h4.84a.5.5 0 0 0 .49-.38l.9-3.5a.5.5 0 0 0-.16-.53L12.55 3.1Z"/>
-      <path d="M18 10h.5a.5.5 0 0 0 .4-.8l-2.2-3.4a.5.5 0 0 0-.8-.1l-2 1.2a.5.5 0 0 0-.2.4v5.6a.5.5 0 0 0 .5.5h3.5a.5.5 0 0 0 .5-.5V14a.5.5 0 0 0-1 0v1.5h-2.5v-5l1.6-.9L18 10Z"/>
-      <path d="M6 10h-.5a.5.5 0 0 0-.4.8l2.2 3.4a.5.5 0 0 0 .8.1l2-1.2a.5.5 0 0 0 .2-.4V7a.5.5 0 0 0-.5-.5H6.5a.5.5 0 0 0-.5.5V9a.5.5 0 0 0 1 0V7.5h2.5v5l-1.6.9L6 10Z"/>
-      <path d="M12 11.5a2 2 0 1 0 4 0 2 2 0 1 0-4 0Z" fill="currentColor" stroke="none" />
-      <path d="M12 11.5a2 2 0 1 0-4 0 2 2 0 1 0 4 0Z" fill="currentColor" stroke="none"/>
-      <path d="M15 17.5a2.5 2.5 0 1 0 5 0 2.5 2.5 0 1 0-5 0Z" fill="currentColor" stroke="none"/>
-      <path d="M9 17.5a2.5 2.5 0 1 0-5 0 2.5 2.5 0 1 0 5 0Z" fill="currentColor" stroke="none"/>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+      <rect width="20" height="20" x="2" y="2" rx="5" ry="5"/>
+      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+      <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
     </svg>
 );
 
@@ -68,6 +65,11 @@ export function Footer() {
                            <a href={`https://wa.me/${contact.whatsapp}`} target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp">
                                 <WhatsappIcon className="h-8 w-8 text-green-500 transition-opacity hover:opacity-80" />
                             </a>
+                            {contact.instagram && (
+                                <a href={contact.instagram} target="_blank" rel="noopener noreferrer" aria-label="Visit our Instagram">
+                                    <InstagramIcon className="h-8 w-8 text-pink-600 transition-opacity hover:opacity-80" />
+                                </a>
+                            )}
                         </div>
                     </div>
                     <div className="space-y-4">
@@ -89,7 +91,7 @@ export function Footer() {
                     </div>
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">{footer?.hoursTitle}</h3>
-                        <p className="text-sm text-muted-foreground whitespace-pre-line">{contact.hours}</p>
+                        <p className="text-sm text-muted-foreground whitespace-pre-line">{footer.hoursContent}</p>
                     </div>
                 </div>
                 <div className="mt-12 border-t pt-8 text-center text-sm text-muted-foreground">

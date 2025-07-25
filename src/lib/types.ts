@@ -70,6 +70,7 @@ export interface SiteContent {
     whatsapp: string;
     email: string;
     hours: string;
+    instagram?: string;
   };
   menu: {
     mainImage: string; // This will be an image URL
@@ -86,6 +87,7 @@ export interface SiteContent {
     contactTitle: string;
     hoursTitle: string;
     copyright: string;
+    hoursContent: string;
   };
 }
 
