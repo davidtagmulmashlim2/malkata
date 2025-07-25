@@ -19,10 +19,9 @@ import { toast } from '@/hooks/use-toast'
 import type { Dish, Category } from '@/lib/types'
 import { storeImage, deleteImage } from '@/lib/image-store';
 import { AsyncImage } from '@/components/async-image'
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
+import { ScrollArea } from '@/components/ui/scroll-area'
 
 const slugify = (text: string): string => {
   if (!text) return '';
@@ -343,66 +342,47 @@ export default function MenuManager() {
                         control={dishForm.control}
                         name="categoryIds"
                         render={({ field }) => (
-                            <FormItem>
+                          <FormItem>
                             <FormLabel>קטגוריות</FormLabel>
-                            <Popover>
-                                <PopoverTrigger asChild>
-                                <FormControl>
-                                    <Button
-                                    variant="outline"
-                                    role="combobox"
-                                    className={cn(
-                                        "w-full justify-between h-auto min-h-10",
-                                        !field.value?.length && "text-muted-foreground"
-                                    )}
-                                    >
-                                    <div className="flex gap-1 flex-wrap">
-                                        {field.value?.length > 0 ? (
-                                        field.value.map(id => categories.find(c => c.id === id)).filter(Boolean).map(c => (
-                                            <Badge variant="secondary" key={c!.id}>{c!.name}</Badge>
-                                        ))
-                                        ) : ("בחר קטגוריות")}
-                                    </div>
-                                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                                    </Button>
-                                </FormControl>
-                                </PopoverTrigger>
-                                <PopoverContent className="w-full p-0">
-                                <Command>
-                                    <CommandInput placeholder="חיפוש קטגוריה..." />
-                                    <CommandList>
-                                        <CommandEmpty>לא נמצאו קטגוריות.</CommandEmpty>
-                                        <CommandGroup>
-                                        {categories.map((category) => (
-                                            <CommandItem
-                                            value={category.name}
-                                            key={category.id}
-                                            onSelect={() => {
-                                                const currentIds = field.value || [];
-                                                const newIds = currentIds.includes(category.id)
-                                                ? currentIds.filter((id) => id !== category.id)
-                                                : [...currentIds, category.id];
-                                                field.onChange(newIds);
-                                            }}
-                                            >
-                                            <Check
-                                                className={cn(
-                                                "mr-2 h-4 w-4",
-                                                field.value?.includes(category.id)
-                                                    ? "opacity-100"
-                                                    : "opacity-0"
-                                                )}
+                            <ScrollArea className="h-40 w-full rounded-md border p-4">
+                              <div className="space-y-2">
+                                {categories.map((category) => (
+                                  <FormField
+                                    key={category.id}
+                                    control={dishForm.control}
+                                    name="categoryIds"
+                                    render={({ field }) => {
+                                      return (
+                                        <FormItem
+                                          key={category.id}
+                                          className="flex flex-row items-start space-x-3 space-y-0"
+                                        >
+                                          <FormControl>
+                                            <Checkbox
+                                              checked={field.value?.includes(category.id)}
+                                              onCheckedChange={(checked) => {
+                                                return checked
+                                                  ? field.onChange([...(field.value || []), category.id])
+                                                  : field.onChange(
+                                                      field.value?.filter(
+                                                        (value) => value !== category.id
+                                                      )
+                                                    )
+                                              }}
                                             />
+                                          </FormControl>
+                                          <FormLabel className="font-normal">
                                             {category.name}
-                                            </CommandItem>
-                                        ))}
-                                        </CommandGroup>
-                                    </CommandList>
-                                </Command>
-                                </PopoverContent>
-                            </Popover>
+                                          </FormLabel>
+                                        </FormItem>
+                                      )
+                                    }}
+                                  />
+                                ))}
+                              </div>
+                            </ScrollArea>
                             <FormMessage />
-                            </FormItem>
+                          </FormItem>
                         )}
                         />
                     <FormField name="tags" control={dishForm.control} render={() => (
@@ -610,3 +590,5 @@ export default function MenuManager() {
     </div>
   )
 }
+
+    
