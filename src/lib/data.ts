@@ -53,6 +53,7 @@ export const DEFAULT_APP_STATE: AppState = {
   dishes: [],
   gallery: [],
   testimonials: [],
+  subscribers: [],
   design: {
     theme: 'default',
     headlineFont: 'playfair',
@@ -62,3 +63,4 @@ export const DEFAULT_APP_STATE: AppState = {
     featuredCategoryId: '',
   },
 };
+

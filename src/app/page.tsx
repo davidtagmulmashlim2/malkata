@@ -14,13 +14,44 @@ import { useEffect, useMemo, useState } from 'react';
 import type { Testimonial } from '@/lib/types';
 import { AsyncImage } from '@/components/async-image';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { toast } from '@/hooks/use-toast';
+import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
+
+
+const subscriberSchema = z.object({
+    name: z.string().min(2, "שם חייב להכיל לפחות 2 תווים."),
+    phone: z.string().min(9, "מספר טלפון לא חוקי."),
+});
+
 
 export default function Home() {
-  const { state, isLoading } = useApp();
+  const { state, dispatch, isLoading } = useApp();
   const { siteContent, dishes, testimonials } = state;
   const { hero, newsletter } = siteContent;
   const [typewriterKey, setTypewriterKey] = useState(0);
   const [currentTestimonialIndex, setCurrentTestimonialIndex] = useState(0);
+
+  const form = useForm<z.infer<typeof subscriberSchema>>({
+    resolver: zodResolver(subscriberSchema),
+    defaultValues: { name: "", phone: "" },
+  });
+
+  const onSubscriberSubmit = (values: z.infer<typeof subscriberSchema>) => {
+    dispatch({
+        type: 'ADD_SUBSCRIBER',
+        payload: {
+            id: Date.now().toString(),
+            name: values.name,
+            phone: values.phone,
+            date: new Date().toISOString(),
+        }
+    });
+    toast({ title: "נרשמת בהצלחה!", description: "נעדכן אותך בקרוב." });
+    form.reset();
+  };
 
   useEffect(() => {
     if (!isLoading && siteContent.hero.animationInterval > 0) {
@@ -200,15 +231,35 @@ export default function Home() {
         <div className="container text-right max-w-2xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-headline font-bold mb-4">{isLoading ? <Skeleton className="h-10 w-3/4 mx-auto" /> : newsletter.headline}</h2>
             <p className="mb-6 opacity-90">{isLoading ? <Skeleton className="h-6 w-full max-w-lg mx-auto" /> : newsletter.subheadline}</p>
-            <form className="flex flex-col sm:flex-row gap-2 max-w-md mx-auto">
-                <Input 
-                    type="tel" 
-                    placeholder="הטלפון שלכם" 
-                    className="text-foreground"
-                    aria-label="Phone number for newsletter"
-                />
-                <Button type="submit" variant="secondary">הרשמה</Button>
-            </form>
+            <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubscriberSubmit)} className="flex flex-col sm:flex-row gap-2 max-w-md mx-auto">
+                    <FormField
+                        control={form.control}
+                        name="name"
+                        render={({ field }) => (
+                            <FormItem className="flex-1">
+                                <FormControl>
+                                    <Input placeholder="השם שלך" className="text-foreground" {...field} />
+                                </FormControl>
+                                <FormMessage className="text-secondary" />
+                            </FormItem>
+                        )}
+                    />
+                     <FormField
+                        control={form.control}
+                        name="phone"
+                        render={({ field }) => (
+                            <FormItem className="flex-1">
+                                <FormControl>
+                                    <Input type="tel" placeholder="הטלפון שלך" className="text-foreground" {...field} />
+                                </FormControl>
+                                <FormMessage className="text-secondary" />
+                            </FormItem>
+                        )}
+                    />
+                    <Button type="submit" variant="secondary" disabled={form.formState.isSubmitting}>הרשמה</Button>
+                </form>
+            </Form>
         </div>
       </section>
 

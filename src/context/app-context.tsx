@@ -42,6 +42,10 @@ const appReducer = (state: AppState, action: Action): AppState => {
         return { ...state, testimonials: state.testimonials.map(t => t.id === action.payload.id ? action.payload : t) };
     case 'DELETE_TESTIMONIAL':
         return { ...state, testimonials: state.testimonials.filter(t => t.id !== action.payload) };
+    case 'ADD_SUBSCRIBER':
+        return { ...state, subscribers: [action.payload, ...state.subscribers] };
+    case 'DELETE_SUBSCRIBER':
+        return { ...state, subscribers: state.subscribers.filter(s => s.id !== action.payload) };
     case 'UPDATE_DESIGN':
         return { ...state, design: action.payload };
     default:

@@ -33,6 +33,13 @@ export interface Testimonial {
     quote: string;
 }
 
+export interface Subscriber {
+    id: string;
+    name: string;
+    phone: string;
+    date: string;
+}
+
 export interface SiteContent {
   hero: {
     titleFirstWord: string;
@@ -93,6 +100,7 @@ export interface AppState {
   categories: Category[];
   gallery: GalleryImage[];
   testimonials: Testimonial[];
+  subscribers: Subscriber[];
   design: DesignSettings;
 }
 
@@ -125,4 +133,7 @@ export type Action =
   | { type: 'ADD_TESTIMONIAL'; payload: Testimonial }
   | { type: 'UPDATE_TESTIMONIAL'; payload: Testimonial }
   | { type: 'DELETE_TESTIMONIAL'; payload: string }
+  | { type: 'ADD_SUBSCRIBER', payload: Subscriber }
+  | { type: 'DELETE_SUBSCRIBER', payload: string }
   | { type: 'UPDATE_DESIGN'; payload: DesignSettings };
+
