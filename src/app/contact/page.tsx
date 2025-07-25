@@ -12,6 +12,7 @@ import { toast } from '@/hooks/use-toast';
 import { Mail, MapPin, Phone, Clock } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { WhatsappIcon } from '@/components/icons/whatsapp-icon';
+import { InstagramIcon } from '@/components/icons/instagram-icon';
 
 const formSchema = z.object({
   name: z.string().min(2, { message: "שם חייב להכיל לפחות 2 תווים." }),
@@ -100,11 +101,20 @@ export default function ContactPage() {
                                 <a href={`tel:${contact.phone}`} className="text-muted-foreground hover:text-primary">{contact.phone}</a>
                             </div>
                         </div>
-                         <div className="flex items-start gap-4">
-                            <a href={`https://wa.me/${contact.whatsapp}`} target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp">
-                                <WhatsappIcon className="h-10 w-10 text-green-500 transition-opacity hover:opacity-80" />
+                         <div className="flex items-center gap-4">
+                            <a href={`https://wa.me/${contact.whatsapp}`} target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp" className="flex items-center gap-2 text-muted-foreground hover:text-primary">
+                                <WhatsappIcon className="h-6 w-6 text-green-500 transition-opacity hover:opacity-80" />
+                                <span>וואטסאפ</span>
                             </a>
                         </div>
+                        {contact.instagram && (
+                             <div className="flex items-center gap-4">
+                                <a href={contact.instagram} target="_blank" rel="noopener noreferrer" aria-label="Visit our Instagram" className="flex items-center gap-2 text-muted-foreground hover:text-primary">
+                                    <InstagramIcon className="h-6 w-6 text-pink-600 transition-opacity hover:opacity-80" />
+                                    <span>אינסטגרם</span>
+                                </a>
+                            </div>
+                        )}
                         <div className="flex items-start gap-4">
                             <Mail className="h-6 w-6 text-primary mt-1" />
                             <div>
