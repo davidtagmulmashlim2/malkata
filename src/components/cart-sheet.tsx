@@ -51,8 +51,7 @@ export function CartSheet() {
   const [customerPhone, setCustomerPhone] = useState('');
   const [customerAddress, setCustomerAddress] = useState('');
   const [deliveryMethod, setDeliveryMethod] = useState('pickup');
-  const addressInputRef = useRef<HTMLInputElement>(null);
-  const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const viewportRef = useRef<HTMLDivElement>(null);
 
   const cartDetails = useMemo(() => {
     if (!isClient) return [];
@@ -67,15 +66,21 @@ export function CartSheet() {
   
   const handleDeliveryMethodChange = (method: string) => {
     setDeliveryMethod(method);
-    setTimeout(() => {
-        if(scrollAreaRef.current) {
-            scrollAreaRef.current.scrollTo({
-                top: scrollAreaRef.current.scrollHeight,
-                behavior: 'smooth'
-            });
-        }
-    }, 100);
   };
+
+  useEffect(() => {
+      // Scroll to bottom when delivery method changes to 'delivery'
+      if (deliveryMethod === 'delivery' && viewportRef.current) {
+          setTimeout(() => {
+              if(viewportRef.current) {
+                  viewportRef.current.scrollTo({
+                      top: viewportRef.current.scrollHeight,
+                      behavior: 'smooth'
+                  });
+              }
+          }, 100); // Timeout to allow the DOM to update
+      }
+  }, [deliveryMethod]);
 
 
   const total = cartDetails.reduce((sum, item) => sum + item!.price * item!.quantity, 0);
@@ -136,7 +141,7 @@ export function CartSheet() {
             </div>
         ) : cartDetails.length > 0 ? (
           <>
-            <ScrollArea className="flex-grow pr-4 -mr-6" ref={scrollAreaRef}>
+            <ScrollArea className="flex-grow pr-4 -mr-6" viewportRef={viewportRef}>
               <div className="flex flex-col gap-4 py-4">
                 {cartDetails.map(item => (
                   <div key={item!.id} className="flex flex-row-reverse items-center gap-4">
@@ -204,16 +209,16 @@ export function CartSheet() {
                             </div>
                            {deliveryMethod === 'delivery' && total < cartContent.freeDeliveryThreshold && (
                                 <p className='text-xs text-muted-foreground text-center pt-1'>
-                                   ({freeDeliveryTextParts[0]}
-                                   {cartContent.freeDeliveryThreshold}
-                                   {freeDeliveryTextParts[1]})
+                                    {freeDeliveryTextParts[0]}
+                                    {cartContent.freeDeliveryThreshold}
+                                    {freeDeliveryTextParts[1]}
                                 </p>
                             )}
                         </div>
                         {deliveryMethod === 'delivery' && (
                             <div className='space-y-2'>
                                 <Label htmlFor="customerAddress">כתובת למשלוח</Label>
-                                <Input id="customerAddress" ref={addressInputRef} value={customerAddress} onChange={(e) => setCustomerAddress(e.target.value)} placeholder='רחוב, מספר בית, עיר' />
+                                <Input id="customerAddress" value={customerAddress} onChange={(e) => setCustomerAddress(e.target.value)} placeholder='רחוב, מספר בית, עיר' />
                             </div>
                         )}
                     </div>
@@ -248,5 +253,3 @@ export function CartSheet() {
     </Sheet>
   );
 }
-
-    
