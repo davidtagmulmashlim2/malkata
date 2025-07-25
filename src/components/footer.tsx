@@ -21,9 +21,12 @@ const Crown3 = (props: React.SVGProps<SVGSVGElement>) => (
 
 const Crown4 = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
-        <path d="M12 6L9 12h6l-3-6Z"/>
-        <path d="M5 12.5L2 15h20l-3-2.5"/>
-        <path d="M5 12.5C5 17 9 21 12 21s7-4 7-8.5"/>
+      <path d="M2 4h20l-4 12H6L2 4Z" />
+      <path d="m6 16 1.5-6" />
+      <path d="m18 16-1.5-6" />
+      <path d="M12 4v12" />
+      <path d="M12 4a2.5 2.5 0 0 1-2.5-2.5" />
+      <path d="M12 4a2.5 2.5 0 0 0 2.5-2.5" />
     </svg>
 );
 
