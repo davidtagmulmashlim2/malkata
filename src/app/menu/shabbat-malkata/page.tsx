@@ -17,7 +17,7 @@ export default function ShabbatMalkataPage() {
         notFound();
     }
 
-    const categoryDishes = state.dishes.filter(d => d.categoryId === category?.id);
+    const categoryDishes = state.dishes.filter(d => d.categoryIds?.includes(category?.id || ''));
 
     if (!isClient) {
         return (

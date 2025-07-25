@@ -484,7 +484,7 @@ export default function MenuManager() {
                   <TableCell>{dish.name}</TableCell>
                   <TableCell>
                     <div className="flex flex-wrap gap-1">
-                      {dish.categoryIds.map(catId => categories.find(c => c.id === catId)?.name).filter(Boolean).map(name => (
+                      {(dish.categoryIds || []).map(catId => categories.find(c => c.id === catId)?.name).filter(Boolean).map(name => (
                         <Badge key={name} variant="outline">{name}</Badge>
                       ))}
                     </div>
