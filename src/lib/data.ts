@@ -61,7 +61,7 @@ export const DEFAULT_APP_STATE: AppState = {
       pickupLabel: "איסוף עצמי",
       deliveryLabel: "משלוח",
       freeDeliveryThreshold: 200,
-      freeDeliveryText: "משלוח חינם בהזמנה מעל {amount}"
+      freeDeliveryText: "משלוח חינם בהזמנה מעל {amount} ₪"
     }
   },
   // These arrays are intentionally empty.

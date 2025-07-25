@@ -92,7 +92,7 @@ export function CartSheet() {
   };
   
   const { cart: cartContent } = state.siteContent;
-  const freeDeliveryMessage = cartContent.freeDeliveryText.replace('{amount}', `${cartContent.freeDeliveryThreshold} ₪`);
+  const freeDeliveryMessage = cartContent.freeDeliveryText.replace('{amount}', cartContent.freeDeliveryThreshold.toString());
   const canSubmit = customerName !== '' && customerPhone !== '' && (deliveryMethod === 'pickup' || customerAddress !== '');
 
 
