@@ -146,4 +146,5 @@ export type Action =
   | { type: 'DELETE_TESTIMONIAL'; payload: string }
   | { type: 'ADD_SUBSCRIBER', payload: Subscriber }
   | { type: 'DELETE_SUBSCRIBER', payload: string }
-  | { type: 'UPDATE_DESIGN'; payload: DesignSettings };
+  | { type: 'UPDATE_DESIGN'; payload: DesignSettings }
+  | { type: 'REMOVE_ITEM_FROM_CART', payload: string };

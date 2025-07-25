@@ -191,6 +191,7 @@ export default function MenuManager() {
         }
     }
     dispatch({ type: 'DELETE_DISH', payload: id })
+    dispatch({ type: 'REMOVE_ITEM_FROM_CART', payload: id });
     toast({ title: 'מנה נמחקה' })
   }
 

@@ -48,6 +48,13 @@ const appReducer = (state: AppState, action: Action): AppState => {
         return { ...state, subscribers: state.subscribers.filter(s => s.id !== action.payload) };
     case 'UPDATE_DESIGN':
         return { ...state, design: action.payload };
+    
+    // Note: cart actions are handled by useState directly, but a reducer case is here for completeness.
+    case 'REMOVE_ITEM_FROM_CART': {
+        // This is handled by the provider's `setCart` to trigger a re-render.
+        // The logic is in the provider itself.
+        return state;
+    }
     default:
       return state;
   }
@@ -107,6 +114,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
   }, [state, cart, isLoading]);
 
+  const enhancedDispatch = useCallback((action: Action) => {
+    if (action.type === 'REMOVE_ITEM_FROM_CART') {
+      setCart(prevCart => prevCart.filter(item => item.dishId !== action.payload));
+    }
+    dispatch(action);
+  }, [dispatch]);
+
 
   const addToCart = useCallback((dishId: string, quantity = 1) => {
     setCart(prevCart => {
@@ -156,7 +170,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const value = useMemo(() => ({
     state,
-    dispatch,
+    dispatch: enhancedDispatch,
     cart,
     addToCart,
     updateCartQuantity,
@@ -167,7 +181,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     login,
     logout,
     isLoading,
-  }), [state, cart, isAuthenticated, isLoading, addToCart, updateCartQuantity, removeFromCart, clearCart, getDishById, login, logout]);
+  }), [state, cart, isAuthenticated, isLoading, addToCart, updateCartQuantity, removeFromCart, clearCart, getDishById, login, logout, enhancedDispatch]);
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };
