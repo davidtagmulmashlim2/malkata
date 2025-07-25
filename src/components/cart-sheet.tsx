@@ -65,19 +65,17 @@ export function CartSheet() {
       .filter(item => item !== null);
   }, [isClient, cart, getDishById]);
   
-
-  useEffect(() => {
-    if (deliveryMethod === 'delivery' && addressInputRef.current) {
-        setTimeout(() => {
-            if(scrollAreaRef.current) {
-                scrollAreaRef.current.scrollTo({
-                    top: scrollAreaRef.current.scrollHeight,
-                    behavior: 'smooth'
-                });
-            }
-        }, 100);
-    }
-  }, [deliveryMethod]);
+  const handleDeliveryMethodChange = (method: string) => {
+    setDeliveryMethod(method);
+    setTimeout(() => {
+        if(scrollAreaRef.current) {
+            scrollAreaRef.current.scrollTo({
+                top: scrollAreaRef.current.scrollHeight,
+                behavior: 'smooth'
+            });
+        }
+    }, 100);
+  };
 
 
   const total = cartDetails.reduce((sum, item) => sum + item!.price * item!.quantity, 0);
@@ -110,7 +108,7 @@ export function CartSheet() {
   };
   
   const { cart: cartContent } = state.siteContent;
-  const freeDeliveryMessage = cartContent.freeDeliveryText.replace('{amount}', `${cartContent.freeDeliveryThreshold} ₪`);
+  const freeDeliveryTextParts = cartContent.freeDeliveryText.split('{amount}');
   const canSubmit = customerName !== '' && customerPhone !== '' && (deliveryMethod === 'pickup' || customerAddress !== '');
 
 
@@ -192,21 +190,23 @@ export function CartSheet() {
                                 <Button
                                     type="button"
                                     variant={deliveryMethod === 'pickup' ? 'default' : 'outline'}
-                                    onClick={() => setDeliveryMethod('pickup')}
+                                    onClick={() => handleDeliveryMethodChange('pickup')}
                                 >
                                     {cartContent.pickupLabel}
                                 </Button>
                                 <Button
                                     type="button"
                                     variant={deliveryMethod === 'delivery' ? 'default' : 'outline'}
-                                    onClick={() => setDeliveryMethod('delivery')}
+                                    onClick={() => handleDeliveryMethodChange('delivery')}
                                 >
                                     {cartContent.deliveryLabel}
                                 </Button>
                             </div>
                            {deliveryMethod === 'delivery' && total < cartContent.freeDeliveryThreshold && (
                                 <p className='text-xs text-muted-foreground text-center pt-1'>
-                                   ({freeDeliveryMessage})
+                                   ({freeDeliveryTextParts[0]}
+                                   {cartContent.freeDeliveryThreshold}
+                                   {freeDeliveryTextParts[1]})
                                 </p>
                             )}
                         </div>
@@ -248,3 +248,5 @@ export function CartSheet() {
     </Sheet>
   );
 }
+
+    
