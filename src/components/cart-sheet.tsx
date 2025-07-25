@@ -58,7 +58,7 @@ export function CartSheet() {
         const dish = getDishById(item.dishId);
         return dish ? { ...item, ...dish } : null; 
       })
-      .filter(Boolean);
+      .filter(item => item && getDishById(item.dishId));
   }, [isClient, cart, getDishById]);
 
 
@@ -92,7 +92,7 @@ export function CartSheet() {
   };
   
   const { cart: cartContent } = state.siteContent;
-  const freeDeliveryMessage = cartContent.freeDeliveryText.replace('{amount}', cartContent.freeDeliveryThreshold.toString());
+  const freeDeliveryMessage = cartContent.freeDeliveryText.replace('{amount}', `${cartContent.freeDeliveryThreshold} ₪`);
   const canSubmit = customerName !== '' && customerPhone !== '' && (deliveryMethod === 'pickup' || customerAddress !== '');
 
 
