@@ -93,7 +93,7 @@ export function CartSheet() {
   };
   
   const { cart: cartContent } = state.siteContent;
-  const freeDeliveryMessage = cartContent.freeDeliveryText.replace('{amount}', cartContent.freeDeliveryThreshold.toString());
+  const freeDeliveryMessage = cartContent.freeDeliveryText.replace('{amount}', `${cartContent.freeDeliveryThreshold} ₪`);
   const canSubmit = customerName !== '' && customerPhone !== '' && (deliveryMethod === 'pickup' || customerAddress !== '');
 
 
@@ -183,14 +183,13 @@ export function CartSheet() {
                                     type="button"
                                     variant={deliveryMethod === 'delivery' ? 'default' : 'outline'}
                                     onClick={() => setDeliveryMethod('delivery')}
-                                    className="flex-col h-auto py-2 items-center"
                                 >
-                                    <span>{cartContent.deliveryLabel}</span>
-                                    {total < cartContent.freeDeliveryThreshold && (
-                                        <span className='text-xs font-normal opacity-80'>({freeDeliveryMessage})</span>
-                                    )}
+                                    {cartContent.deliveryLabel}
                                 </Button>
                             </div>
+                             {deliveryMethod === 'delivery' && total < cartContent.freeDeliveryThreshold && (
+                                <p className='text-xs text-muted-foreground text-center pt-1'>({freeDeliveryMessage})</p>
+                            )}
                         </div>
                         {deliveryMethod === 'delivery' && (
                             <div className='space-y-2'>
