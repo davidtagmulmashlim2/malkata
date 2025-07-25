@@ -56,6 +56,15 @@ const contentSchema = z.object({
       headline: z.string().min(1, 'חובה'),
       subheadline: z.string().min(1, 'חובה'),
   }),
+  testimonials: z.object({
+    headline: z.string().min(1, 'חובה'),
+  }),
+  footer: z.object({
+    tagline: z.string().min(1, 'חובה'),
+    contactTitle: z.string().min(1, 'חובה'),
+    hoursTitle: z.string().min(1, 'חובה'),
+    copyright: z.string().min(1, 'חובה'),
+  }),
 });
 
 type ContentFormValues = z.infer<typeof contentSchema>;
@@ -130,7 +139,7 @@ export default function ContentManager() {
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            <Accordion type="multiple" defaultValue={['hero', 'about', 'contact', 'menu', 'newsletter']} className="w-full">
+            <Accordion type="multiple" defaultValue={['hero', 'about', 'contact', 'menu', 'newsletter', 'testimonials', 'footer']} className="w-full">
               <AccordionItem value="hero">
                 <AccordionTrigger className="font-headline text-xl">עמוד הבית (אזור עליון)</AccordionTrigger>
                 <AccordionContent className="space-y-4 pt-4">
@@ -412,6 +421,53 @@ export default function ContentManager() {
                     <FormItem>
                       <FormLabel>כותרת משנה</FormLabel>
                       <FormControl><Textarea {...field} /></FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )} />
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="testimonials">
+                <AccordionTrigger className="font-headline text-xl">אזור המלצות</AccordionTrigger>
+                <AccordionContent className="space-y-4 pt-4">
+                  <FormField name="testimonials.headline" control={form.control} render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>כותרת ראשית</FormLabel>
+                      <FormControl><Input {...field} /></FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )} />
+                </AccordionContent>
+              </AccordionItem>
+
+               <AccordionItem value="footer">
+                <AccordionTrigger className="font-headline text-xl">תחתית העמוד (Footer)</AccordionTrigger>
+                <AccordionContent className="space-y-4 pt-4">
+                   <FormField name="footer.tagline" control={form.control} render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>שורת תיאור (מתחת ללוגו)</FormLabel>
+                      <FormControl><Input {...field} /></FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )} />
+                  <FormField name="footer.contactTitle" control={form.control} render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>כותרת עמודת "יצירת קשר"</FormLabel>
+                      <FormControl><Input {...field} /></FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )} />
+                   <FormField name="footer.hoursTitle" control={form.control} render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>כותרת עמודת "שעות פתיחה"</FormLabel>
+                      <FormControl><Input {...field} /></FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )} />
+                  <FormField name="footer.copyright" control={form.control} render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>שורת זכויות יוצרים</FormLabel>
+                      <FormControl><Input {...field} /></FormControl>
                       <FormMessage />
                     </FormItem>
                   )} />

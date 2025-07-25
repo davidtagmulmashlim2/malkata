@@ -78,6 +78,15 @@ export interface SiteContent {
     headline: string;
     subheadline: string;
   };
+  testimonials: {
+    headline: string;
+  };
+  footer: {
+    tagline: string;
+    contactTitle: string;
+    hoursTitle: string;
+    copyright: string;
+  };
 }
 
 export interface DesignSettings {
@@ -136,4 +145,3 @@ export type Action =
   | { type: 'ADD_SUBSCRIBER', payload: Subscriber }
   | { type: 'DELETE_SUBSCRIBER', payload: string }
   | { type: 'UPDATE_DESIGN'; payload: DesignSettings };
-

@@ -45,6 +45,15 @@ export const DEFAULT_APP_STATE: AppState = {
       headline: 'הצטרפו למועדון הלקוחות שלנו',
       subheadline: 'הישארו מעודכנים במבצעים, מנות חדשות ואירועים מיוחדים!',
     },
+    testimonials: {
+      headline: "לקוחות ממליצים"
+    },
+    footer: {
+      tagline: 'אוכל ביתי אותנטי, מוכן באהבה כל יום מחדש.',
+      contactTitle: 'יצירת קשר',
+      hoursTitle: 'שעות פתיחה',
+      copyright: 'מלכתא. כל הזכויות שמורות.',
+    }
   },
   // These arrays are intentionally empty.
   // The app will be populated from localStorage, making it the single source of truth.
