@@ -149,14 +149,7 @@ export function CartSheet() {
                   </div>
                 ))}
               </div>
-            </ScrollArea>
-            <SheetFooter className="mt-auto">
-                <div className="w-full space-y-4 text-right">
-                    <Separator />
-                    <div className="flex justify-between text-lg font-bold">
-                        <span>סה"כ:</span>
-                        <span>{total.toLocaleString()} ₪</span>
-                    </div>
+              <div className="w-full space-y-4 text-right pt-4">
                     <Separator />
                     <div className='space-y-4 text-right'>
                         <h4 className='font-medium text-center'>פרטי הזמנה</h4>
@@ -172,6 +165,15 @@ export function CartSheet() {
                             <Label htmlFor="customerAddress">כתובת למשלוח</Label>
                             <Input id="customerAddress" value={customerAddress} onChange={(e) => setCustomerAddress(e.target.value)} placeholder='רחוב, מספר בית, עיר' />
                         </div>
+                    </div>
+              </div>
+            </ScrollArea>
+            <SheetFooter className="mt-auto pt-4">
+                <div className="w-full space-y-4">
+                    <Separator />
+                    <div className="flex justify-between text-lg font-bold">
+                        <span>סה"כ:</span>
+                        <span>{total.toLocaleString()} ₪</span>
                     </div>
                     <Button type="submit" className="w-full" onClick={handleWhatsAppOrder} disabled={!canSubmit}>
                       שליחת הזמנה ב-WhatsApp
