@@ -461,7 +461,7 @@ export default function ContentManager() {
                     <FormItem>
                       <FormLabel>הודעה על משלוח חינם</FormLabel>
                       <FormControl><Input {...field} /></FormControl>
-                      <p className="text-xs text-muted-foreground pt-1">השתמש ב-`{amount}` כדי להציג את הסכום שהוגדר.</p>
+                      <p className="text-xs text-muted-foreground pt-1">{'השתמש ב `{amount}` כדי להציג את הסכום שהוגדר.'}</p>
                       <FormMessage />
                     </FormItem>
                   )} />
