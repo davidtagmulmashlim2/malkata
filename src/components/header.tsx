@@ -38,7 +38,7 @@ const Crown4 = (props: React.SVGProps<SVGSVGElement>) => (
 const baseNavLinks = [
   { href: '/', label: 'בית', isFeatured: false },
   { href: '/menu', label: 'תפריט', isFeatured: false },
-  { href: '/about', label: 'אודות', isFeatured: false },
+  { href: '/about', label: 'עלינו', isFeatured: false },
   { href: '/gallery', label: 'גלריה', isFeatured: false },
   { href: '/contact', label: 'יצירת קשר', isFeatured: false },
 ];
