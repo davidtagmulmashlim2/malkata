@@ -6,6 +6,7 @@ export interface Dish {
   shortDescription: string;
   fullDescription: string;
   price: number;
+  priceSubtitle?: string;
   mainImage: string; // This will be an image URL
   galleryImages?: string[]; // This will be an array of image URLs
   categoryIds: string[];

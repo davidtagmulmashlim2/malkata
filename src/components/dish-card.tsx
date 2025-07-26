@@ -127,7 +127,10 @@ export function DishCard({ dish }: DishCardProps) {
           <p className="text-muted-foreground text-sm">{dish.shortDescription}</p>
         </CardContent>
         <CardFooter className="flex justify-between items-center mt-auto">
-          <p className="text-xl font-bold text-primary">{dish.price} ₪</p>
+          <div>
+            <p className="text-xl font-bold text-primary">{dish.price} ₪</p>
+            {dish.priceSubtitle && <p className="text-xs text-muted-foreground">{dish.priceSubtitle}</p>}
+          </div>
           <Button onClick={handleAddToCart} disabled={!dish.isAvailable}>
             <ShoppingBagIcon className="ms-2 h-4 w-4" />
             הוספה לסל
@@ -193,7 +196,10 @@ export function DishCard({ dish }: DishCardProps) {
                 </div>
                 <DialogFooter className="mt-6">
                     <div className="flex justify-between items-center w-full gap-4">
-                        <p className="text-2xl font-bold text-primary whitespace-nowrap">{dish.price * quantity} ₪</p>
+                        <div>
+                          <p className="text-2xl font-bold text-primary whitespace-nowrap">{dish.price * quantity} ₪</p>
+                          {dish.priceSubtitle && <p className="text-xs text-muted-foreground">{dish.priceSubtitle}</p>}
+                        </div>
                         <div className="flex items-center gap-2">
                              <div className="flex items-center gap-1 rounded-md border">
                                 <Button variant="ghost" size="icon" className="h-9 w-9" onClick={() => setQuantity(q => Math.max(1, q - 1))}>

@@ -52,6 +52,7 @@ const dishSchema = z.object({
   shortDescription: z.string().min(1, 'תיאור קצר הוא שדה חובה'),
   fullDescription: z.string().min(1, 'תיאור מלא הוא שדה חובה'),
   price: z.coerce.number().min(0, 'המחיר חייב להיות חיובי'),
+  priceSubtitle: z.string().optional(),
   mainImage: z.string().min(1, "חובה להעלות תמונה ראשית"),
   galleryImages: z.array(z.string()).optional(),
   categoryIds: z.array(z.string()).min(1, 'חובה לבחור לפחות קטגוריה אחת'),
@@ -96,7 +97,8 @@ export default function MenuManager() {
     resolver: zodResolver(dishSchema),
     defaultValues: {
         name: '', shortDescription: '', fullDescription: '', price: 0, categoryIds: [],
-        isAvailable: true, isRecommended: false, tags: [], mainImage: '', galleryImages: []
+        isAvailable: true, isRecommended: false, tags: [], mainImage: '', galleryImages: [],
+        priceSubtitle: '',
     }
   })
   const categoryForm = useForm<z.infer<typeof categorySchema>>({ 
@@ -109,7 +111,8 @@ export default function MenuManager() {
         setEditingDish(null);
         dishForm.reset({
             name: '', shortDescription: '', fullDescription: '', price: 0, categoryIds: [],
-            isAvailable: true, isRecommended: false, tags: [], mainImage: '', galleryImages: []
+            isAvailable: true, isRecommended: false, tags: [], mainImage: '', galleryImages: [],
+            priceSubtitle: '',
         });
     } else if (editingDish) {
         dishForm.reset({
@@ -284,13 +287,22 @@ export default function MenuManager() {
                         <FormMessage />
                       </FormItem>
                     )} />
-                    <FormField name="price" control={dishForm.control} render={({ field }) => (
-                       <FormItem>
-                        <FormLabel>מחיר (₪)</FormLabel>
-                        <FormControl><Input type="number" step="0.1" {...field} /></FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )} />
+                    <div className="grid grid-cols-2 gap-4">
+                        <FormField name="price" control={dishForm.control} render={({ field }) => (
+                           <FormItem>
+                            <FormLabel>מחיר (₪)</FormLabel>
+                            <FormControl><Input type="number" step="0.1" {...field} /></FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )} />
+                        <FormField name="priceSubtitle" control={dishForm.control} render={({ field }) => (
+                           <FormItem>
+                            <FormLabel>כתובית מחיר (אופציונלי)</FormLabel>
+                            <FormControl><Input {...field} placeholder="לדוגמה: למנה" /></FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )} />
+                    </div>
                      <FormField
                         name="mainImage"
                         control={dishForm.control}
