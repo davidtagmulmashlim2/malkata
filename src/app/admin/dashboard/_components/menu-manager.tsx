@@ -120,7 +120,8 @@ export default function MenuManager() {
           categoryIds: editingDish.categoryIds || [],
           price: editingDish.price || 0,
           tags: editingDish.tags || [],
-          galleryImages: editingDish.galleryImages || []
+          galleryImages: editingDish.galleryImages || [],
+          priceSubtitle: editingDish.priceSubtitle || '',
         });
     }
   }, [isDishDialogOpen, editingDish, dishForm]);
@@ -298,7 +299,7 @@ export default function MenuManager() {
                         <FormField name="priceSubtitle" control={dishForm.control} render={({ field }) => (
                            <FormItem>
                             <FormLabel>כתובית מחיר (אופציונלי)</FormLabel>
-                            <FormControl><Input {...field} placeholder="לדוגמה: למנה" /></FormControl>
+                            <FormControl><Input {...field} placeholder="לדוגמה: למנה" value={field.value ?? ''} /></FormControl>
                             <FormMessage />
                           </FormItem>
                         )} />
