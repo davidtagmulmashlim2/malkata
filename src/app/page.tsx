@@ -140,9 +140,14 @@ export default function Home() {
             </div>
           )}
 
-          <Button asChild size="lg" className="mt-8 font-bold">
-            <Link href="/menu">הוספה לסל</Link>
-          </Button>
+          <div className="mt-8 flex gap-4">
+             <Button asChild size="lg" className="font-bold">
+                <Link href="/menu">צפה בתפריט</Link>
+             </Button>
+             <Button asChild size="lg" variant="outline" className="font-bold border-2 border-white text-white bg-transparent hover:bg-white hover:text-black">
+                 <Link href="/menu">הזמן משלוח</Link>
+             </Button>
+          </div>
         </div>
       </section>
 
