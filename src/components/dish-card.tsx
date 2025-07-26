@@ -135,7 +135,7 @@ export function DishCard({ dish }: DishCardProps) {
         </CardFooter>
       </Card>
 
-      <DialogContent className="sm:max-w-2xl text-right">
+      <DialogContent className="sm:max-w-4xl text-right">
         <div className="grid md:grid-cols-2 gap-8">
             <div className="w-full">
                 <div className="w-full aspect-square relative">
@@ -196,11 +196,11 @@ export function DishCard({ dish }: DishCardProps) {
                         <p className="text-2xl font-bold text-primary whitespace-nowrap">{dish.price * quantity} ₪</p>
                         <div className="flex items-center gap-2">
                              <div className="flex items-center gap-1 rounded-md border">
-                                <Button variant="ghost" size="icon" className="h-11 w-11" onClick={() => setQuantity(q => Math.max(1, q - 1))}>
+                                <Button variant="ghost" size="icon" className="h-9 w-9" onClick={() => setQuantity(q => Math.max(1, q - 1))}>
                                     <Minus className="h-4 w-4" />
                                 </Button>
-                                <span className="w-10 text-center text-lg font-bold">{quantity}</span>
-                                <Button variant="ghost" size="icon" className="h-11 w-11" onClick={() => setQuantity(q => q + 1)}>
+                                <span className="w-8 text-center text-md font-bold">{quantity}</span>
+                                <Button variant="ghost" size="icon" className="h-9 w-9" onClick={() => setQuantity(q => q + 1)}>
                                     <Plus className="h-4 w-4" />
                                 </Button>
                             </div>
