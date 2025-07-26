@@ -45,7 +45,7 @@ export default function MenuPage() {
 
                         return (
                             <div key={category.id} className="mb-16">
-                                <h2 className="text-3xl md:text-4xl font-headline font-bold mb-8 border-b-2 border-primary pb-2">
+                                <h2 className="text-3xl md:text-4xl font-headline font-bold mb-8 border-b border-border pb-2">
                                     {category.name}
                                 </h2>
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
