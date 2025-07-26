@@ -21,9 +21,9 @@ import { AsyncImage } from '@/components/async-image';
 
 const contentSchema = z.object({
   hero: z.object({
-    titleFirstWord: z.string().min(1, 'חובה'),
+    titleFirstWord: z.string(),
     titleRest: z.string(),
-    subtitle: z.string().min(1, 'חובה'),
+    subtitle: z.string(),
     image: z.string().min(1, 'חובה'),
     titleFirstWordColor: z.string(),
     titleFirstWordFontSize: z.string(),

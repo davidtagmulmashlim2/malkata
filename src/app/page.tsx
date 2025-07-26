@@ -122,8 +122,8 @@ export default function Home() {
           skeletonClassName="w-full h-full"
         />
         <div className="z-10 p-4">
-          <h1 className="font-headline font-bold drop-shadow-lg">
-            {isLoading ? <Skeleton className="h-16 w-[80vw] max-w-4xl" /> : (
+          {isLoading ? <Skeleton className="h-16 w-[80vw] max-w-4xl" /> : (siteContent.hero.titleFirstWord || siteContent.hero.titleRest) && (
+              <h1 className="font-headline font-bold drop-shadow-lg">
                 <Typewriter
                     key={typewriterKey}
                     textParts={[
@@ -131,11 +131,15 @@ export default function Home() {
                         { text: ` ${siteContent.hero.titleRest}`, style: { color: siteContent.hero.titleRestColor, opacity: siteContent.hero.titleRestOpacity }, className: textSizeClasses[siteContent.hero.titleRestFontSize] },
                     ]}
                 />
-            )}
-          </h1>
-          <div className={cn("mt-4 text-lg md:text-2xl max-w-2xl drop-shadow-md", horizontalAlignClasses[hero.horizontalAlign] === 'justify-center' ? 'mx-auto' : '')} style={{ opacity: isLoading ? 1 : siteContent.hero.subtitleOpacity }}>
-            {isLoading ? <Skeleton className="h-8 w-96 mt-2" /> : siteContent.hero.subtitle}
-          </div>
+              </h1>
+          )}
+          
+          {isLoading ? <Skeleton className="h-8 w-96 mt-2" /> : siteContent.hero.subtitle && (
+            <div className={cn("mt-4 text-lg md:text-2xl max-w-2xl drop-shadow-md", horizontalAlignClasses[hero.horizontalAlign] === 'justify-center' ? 'mx-auto' : '')} style={{ opacity: siteContent.hero.subtitleOpacity }}>
+              {siteContent.hero.subtitle}
+            </div>
+          )}
+
           <Button asChild size="lg" className="mt-8 font-bold">
             <Link href="/menu">הוספה לסל</Link>
           </Button>
