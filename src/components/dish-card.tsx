@@ -4,7 +4,7 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import type { Dish } from '@/lib/types';
-import { Flame, Leaf, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Flame, Leaf, ChevronLeft, ChevronRight, Sparkles, Smile } from 'lucide-react';
 import { ShoppingBagIcon } from '@/components/icons/shopping-bag-icon';
 import { Badge } from './ui/badge';
 import { useApp } from '@/context/app-context';
@@ -56,6 +56,19 @@ export function DishCard({ dish }: DishCardProps) {
       setCurrentImageIndex((prevIndex) => (prevIndex - 1 + allImages.length) % allImages.length);
   };
 
+  const renderTags = (tags: Dish['tags']) => {
+    if (!tags || tags.length === 0) return null;
+    return (
+        <>
+            {tags.includes('new') && <Badge variant="default" className="bg-blue-500 text-white"><Sparkles className="w-3 h-3 me-1" /> חדש</Badge>}
+            {tags.includes('vegan') && <Badge variant="default" className="bg-green-600 text-white"><Leaf className="w-3 h-3 me-1" /> טבעוני</Badge>}
+            {tags.includes('spicy') && <Badge variant="destructive"><Flame className="w-3 h-3 me-1" /> חריף</Badge>}
+            {tags.includes('piquant') && <Badge variant="secondary" className="bg-orange-500 text-white"><Flame className="w-3 h-3 me-1" /> פיקנטי</Badge>}
+            {tags.includes('kids-favorite') && <Badge variant="default" className="bg-yellow-500 text-black"><Smile className="w-3 h-3 me-1" /> ילדים אוהבים</Badge>}
+        </>
+    );
+  };
+
   return (
     <Dialog onOpenChange={() => setCurrentImageIndex(0)}>
       <Card className="flex flex-col overflow-hidden h-full transition-all hover:shadow-lg hover:-translate-y-1 group text-right">
@@ -65,9 +78,8 @@ export function DishCard({ dish }: DishCardProps) {
                 <div className="absolute inset-x-0 bottom-0 flex items-center justify-center bg-black/50 text-white text-center py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     הצגה מהירה
                 </div>
-                <div className="absolute top-2 end-2 flex gap-2">
-                    {dish.tags?.includes('vegan') && <Badge variant="default" className="bg-green-600 text-white"><Leaf className="w-3 h-3 me-1" /> טבעוני</Badge>}
-                    {dish.tags?.includes('spicy') && <Badge variant="destructive"><Flame className="w-3 h-3 me-1" /> חריף</Badge>}
+                <div className="absolute top-2 end-2 flex gap-2 flex-wrap justify-end">
+                    {renderTags(dish.tags)}
                 </div>
                 {!dish.isAvailable && (
                     <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
@@ -142,9 +154,8 @@ export function DishCard({ dish }: DishCardProps) {
                     <DialogHeader>
                         <DialogTitle className="font-headline text-3xl mb-2 text-right">{dish.name}</DialogTitle>
                     </DialogHeader>
-                    <div className="flex gap-2 my-4 justify-start">
-                        {dish.tags?.includes('vegan') && <Badge variant="default" className="bg-green-600 text-white"><Leaf className="w-3 h-3 me-1" /> טבעוני</Badge>}
-                        {dish.tags?.includes('spicy') && <Badge variant="destructive"><Flame className="w-3 h-3 me-1" /> חריף</Badge>}
+                    <div className="flex gap-2 my-4 justify-start flex-wrap">
+                        {renderTags(dish.tags)}
                     </div>
                     <p className="text-muted-foreground text-right">{dish.fullDescription}</p>
                 </div>

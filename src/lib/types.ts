@@ -10,7 +10,7 @@ export interface Dish {
   galleryImages?: string[]; // This will be an array of image URLs
   categoryIds: string[];
   isAvailable: boolean;
-  tags: ('vegan' | 'spicy')[];
+  tags: ('vegan' | 'spicy' | 'new' | 'piquant' | 'kids-favorite')[];
   isRecommended?: boolean;
 }
 

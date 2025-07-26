@@ -388,7 +388,22 @@ export default function MenuManager() {
                     <FormField name="tags" control={dishForm.control} render={() => (
                       <FormItem>
                         <FormLabel>תגים</FormLabel>
-                        <div className="flex gap-4">
+                        <div className="flex flex-wrap gap-x-4 gap-y-2">
+                           <FormField control={dishForm.control} name="tags" render={({ field }) => (
+                              <FormItem className="flex items-center gap-2 space-y-0">
+                                  <FormControl>
+                                      <Checkbox 
+                                          checked={field.value?.includes('new')}
+                                          onCheckedChange={(checked) => {
+                                              return checked
+                                                  ? field.onChange([...(field.value || []), 'new'])
+                                                  : field.onChange(field.value?.filter(v => v !== 'new'))
+                                          }}
+                                      />
+                                  </FormControl>
+                                  <FormLabel>מנה חדשה</FormLabel>
+                              </FormItem>
+                          )} />
                           <FormField control={dishForm.control} name="tags" render={({ field }) => (
                               <FormItem className="flex items-center gap-2 space-y-0">
                                   <FormControl>
@@ -417,6 +432,36 @@ export default function MenuManager() {
                                       />
                                   </FormControl>
                                   <FormLabel>חריף</FormLabel>
+                              </FormItem>
+                          )} />
+                           <FormField control={dishForm.control} name="tags" render={({ field }) => (
+                              <FormItem className="flex items-center gap-2 space-y-0">
+                                  <FormControl>
+                                      <Checkbox
+                                          checked={field.value?.includes('piquant')}
+                                          onCheckedChange={(checked) => {
+                                              return checked
+                                                  ? field.onChange([...(field.value || []), 'piquant'])
+                                                  : field.onChange(field.value?.filter(v => v !== 'piquant'))
+                                          }}
+                                      />
+                                  </FormControl>
+                                  <FormLabel>פיקנטי</FormLabel>
+                              </FormItem>
+                          )} />
+                           <FormField control={dishForm.control} name="tags" render={({ field }) => (
+                              <FormItem className="flex items-center gap-2 space-y-0">
+                                  <FormControl>
+                                      <Checkbox
+                                          checked={field.value?.includes('kids-favorite')}
+                                          onCheckedChange={(checked) => {
+                                              return checked
+                                                  ? field.onChange([...(field.value || []), 'kids-favorite'])
+                                                  : field.onChange(field.value?.filter(v => v !== 'kids-favorite'))
+                                          }}
+                                      />
+                                  </FormControl>
+                                  <FormLabel>ילדים אוהבים</FormLabel>
                               </FormItem>
                           )} />
                         </div>
