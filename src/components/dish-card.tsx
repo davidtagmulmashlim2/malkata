@@ -108,7 +108,7 @@ export function DishCard({ dish }: DishCardProps) {
                 <div className="absolute top-2 end-2 flex gap-2 flex-wrap justify-end">
                     {renderTags(dish.tags)}
                 </div>
-                 {cartItem && (
+                 {isClient && cartItem && (
                     <div className="absolute top-2 left-2 bg-primary text-primary-foreground rounded-full h-7 w-7 flex items-center justify-center text-sm font-bold">
                         {cartItem.quantity}
                     </div>
@@ -135,7 +135,7 @@ export function DishCard({ dish }: DishCardProps) {
         </CardFooter>
       </Card>
 
-      <DialogContent className="sm:max-w-4xl text-right">
+      <DialogContent className="sm:max-w-2xl text-right">
         <div className="grid md:grid-cols-2 gap-8">
             <div className="w-full">
                 <div className="w-full aspect-square relative">
