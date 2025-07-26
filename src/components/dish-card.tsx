@@ -21,9 +21,10 @@ interface DishCardProps {
 }
 
 export function DishCard({ dish }: DishCardProps) {
-  const { addToCart } = useApp();
+  const { cart, addToCart, updateCartQuantity } = useApp();
   const isClient = useIsClient();
   const [quantity, setQuantity] = useState(1);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   
   const allImages = useMemo(() => {
     // Create a set to ensure unique image keys
@@ -41,6 +42,14 @@ export function DishCard({ dish }: DishCardProps) {
   
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
+  const cartItem = useMemo(() => cart.find(item => item.dishId === dish.id), [cart, dish.id]);
+
+  useEffect(() => {
+    if (isDialogOpen) {
+        setQuantity(cartItem?.quantity || 1);
+    }
+  }, [isDialogOpen, cartItem]);
+
   const handleAddToCart = () => {
     addToCart(dish.id, 1);
     toast({
@@ -49,12 +58,13 @@ export function DishCard({ dish }: DishCardProps) {
     });
   }
 
-  const handleAddToCartWithQuantity = () => {
-    addToCart(dish.id, quantity);
+  const handleUpdateCart = () => {
+    updateCartQuantity(dish.id, quantity);
     toast({
-        title: "נוסף לסל",
-        description: `${quantity}x ${dish.name} נוספו לסל הקניות שלך.`,
+        title: "הסל עודכן",
+        description: `${quantity}x ${dish.name} בסל הקניות שלך.`,
     });
+    setIsDialogOpen(false);
   };
   
   const nextImage = () => {
@@ -77,9 +87,17 @@ export function DishCard({ dish }: DishCardProps) {
         </>
     );
   };
+  
+  const buttonText = cartItem ? "עדכן כמות בסל" : "הוספה לסל";
+
 
   return (
-    <Dialog onOpenChange={(open) => { setCurrentImageIndex(0); if(!open) setQuantity(1); }}>
+    <Dialog open={isDialogOpen} onOpenChange={(open) => { 
+        setIsDialogOpen(open);
+        if(!open) {
+            setCurrentImageIndex(0);
+        }
+    }}>
       <Card className="flex flex-col overflow-hidden h-full transition-all hover:shadow-lg hover:-translate-y-1 group text-right">
         <DialogTrigger asChild>
             <div className="relative cursor-pointer aspect-square w-full overflow-hidden">
@@ -90,6 +108,11 @@ export function DishCard({ dish }: DishCardProps) {
                 <div className="absolute top-2 end-2 flex gap-2 flex-wrap justify-end">
                     {renderTags(dish.tags)}
                 </div>
+                 {cartItem && (
+                    <div className="absolute top-2 left-2 bg-primary text-primary-foreground rounded-full h-7 w-7 flex items-center justify-center text-sm font-bold">
+                        {cartItem.quantity}
+                    </div>
+                )}
                 {!dish.isAvailable && (
                     <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
                         <p className="text-white text-lg font-bold">אזל מהמלאי</p>
@@ -181,9 +204,9 @@ export function DishCard({ dish }: DishCardProps) {
                                     <Plus className="h-4 w-4" />
                                 </Button>
                             </div>
-                            <Button onClick={handleAddToCartWithQuantity} disabled={!dish.isAvailable} size="lg">
+                            <Button onClick={handleUpdateCart} disabled={!dish.isAvailable} size="lg">
                                 <ShoppingBagIcon className="ms-2 h-5 w-5" />
-                                הוספה לסל
+                                {buttonText}
                             </Button>
                         </div>
                     </div>
