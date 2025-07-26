@@ -117,12 +117,11 @@ export default function Home() {
           skeletonClassName="w-full h-full"
         />
         <div className={cn(
-            "absolute inset-0 flex p-4 z-10",
+            "absolute inset-0 z-10 p-4 flex flex-col",
             verticalAlignClasses[hero.verticalAlign],
-            horizontalAlignClasses[hero.horizontalAlign],
-            textAlignClasses[hero.textAlign]
+            horizontalAlignClasses[hero.horizontalAlign]
         )}>
-          <div>
+          <div className={cn("w-full", textAlignClasses[hero.textAlign])}>
             {isLoading ? <Skeleton className="h-16 w-[80vw] max-w-4xl" /> : (siteContent.hero.titleFirstWord || siteContent.hero.titleRest) && (
                 <h1 className="font-headline font-bold drop-shadow-lg">
                   <Typewriter
