@@ -4,7 +4,7 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import type { Dish } from '@/lib/types';
-import { Flame, Leaf, ChevronLeft, ChevronRight, Sparkles, Smile } from 'lucide-react';
+import { Flame, Leaf, ChevronLeft, ChevronRight, Sparkles, Smile, Plus, Minus } from 'lucide-react';
 import { ShoppingBagIcon } from '@/components/icons/shopping-bag-icon';
 import { Badge } from './ui/badge';
 import { useApp } from '@/context/app-context';
@@ -23,6 +23,7 @@ interface DishCardProps {
 export function DishCard({ dish }: DishCardProps) {
   const { addToCart } = useApp();
   const isClient = useIsClient();
+  const [quantity, setQuantity] = useState(1);
   
   const allImages = useMemo(() => {
     // Create a set to ensure unique image keys
@@ -41,12 +42,20 @@ export function DishCard({ dish }: DishCardProps) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   const handleAddToCart = () => {
-    addToCart(dish.id);
+    addToCart(dish.id, 1);
     toast({
         title: "נוסף לסל",
         description: `${dish.name} נוסף לסל הקניות שלך.`,
     });
   }
+
+  const handleAddToCartWithQuantity = () => {
+    addToCart(dish.id, quantity);
+    toast({
+        title: "נוסף לסל",
+        description: `${quantity}x ${dish.name} נוספו לסל הקניות שלך.`,
+    });
+  };
   
   const nextImage = () => {
       setCurrentImageIndex((prevIndex) => (prevIndex + 1) % allImages.length);
@@ -70,7 +79,7 @@ export function DishCard({ dish }: DishCardProps) {
   };
 
   return (
-    <Dialog onOpenChange={() => setCurrentImageIndex(0)}>
+    <Dialog onOpenChange={(open) => { setCurrentImageIndex(0); if(!open) setQuantity(1); }}>
       <Card className="flex flex-col overflow-hidden h-full transition-all hover:shadow-lg hover:-translate-y-1 group text-right">
         <DialogTrigger asChild>
             <div className="relative cursor-pointer aspect-square w-full overflow-hidden">
@@ -160,12 +169,23 @@ export function DishCard({ dish }: DishCardProps) {
                     <p className="text-muted-foreground text-right">{dish.fullDescription}</p>
                 </div>
                 <DialogFooter className="mt-6">
-                    <div className="flex justify-between items-center w-full">
-                        <p className="text-2xl font-bold text-primary">{dish.price} ₪</p>
-                         <Button onClick={handleAddToCart} disabled={!dish.isAvailable} size="lg">
-                            <ShoppingBagIcon className="ms-2 h-5 w-5" />
-                            הוספה לסל
-                        </Button>
+                    <div className="flex justify-between items-center w-full gap-4">
+                        <p className="text-2xl font-bold text-primary whitespace-nowrap">{dish.price * quantity} ₪</p>
+                        <div className="flex items-center gap-2">
+                             <div className="flex items-center gap-1 rounded-md border">
+                                <Button variant="ghost" size="icon" className="h-11 w-11" onClick={() => setQuantity(q => Math.max(1, q - 1))}>
+                                    <Minus className="h-4 w-4" />
+                                </Button>
+                                <span className="w-10 text-center text-lg font-bold">{quantity}</span>
+                                <Button variant="ghost" size="icon" className="h-11 w-11" onClick={() => setQuantity(q => q + 1)}>
+                                    <Plus className="h-4 w-4" />
+                                </Button>
+                            </div>
+                            <Button onClick={handleAddToCartWithQuantity} disabled={!dish.isAvailable} size="lg">
+                                <ShoppingBagIcon className="ms-2 h-5 w-5" />
+                                הוספה לסל
+                            </Button>
+                        </div>
                     </div>
                 </DialogFooter>
             </div>
