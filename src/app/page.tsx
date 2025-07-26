@@ -187,54 +187,56 @@ export default function Home() {
       
       {/* Testimonials Section */}
        <section className="container">
-        <h2 className="text-3xl md:text-4xl font-headline font-bold text-right mb-10">לקוחות ממליצים</h2>
-         {isLoading ? (
-             <div className="p-1">
-                 <Card className="w-full max-w-xl mx-auto">
-                   <CardContent className="flex flex-col items-center justify-center p-6 text-center h-40">
-                      <p>טוען...</p>
-                   </CardContent>
-                 </Card>
-            </div>
-          ) : testimonials?.length > 0 ? (
-            <div className="relative w-full max-w-xl mx-auto">
-              <Card>
-                <CardContent className="flex flex-col items-center justify-center p-6 text-center h-40 relative">
-                   {testimonials.map((testimonial, index) => (
-                      <div 
-                        key={testimonial.id}
-                        className={cn(
-                          "absolute inset-0 flex flex-col items-center justify-center p-6 transition-opacity duration-300",
-                          index === currentTestimonialIndex ? "opacity-100" : "opacity-0"
-                        )}
-                        style={{transitionDelay: index === currentTestimonialIndex ? '150ms' : '0ms' }}
-                      >
-                        <p className="text-lg italic mb-4 flex-grow">"{testimonial.quote}"</p>
-                        <p className="font-bold text-primary">- {testimonial.name}</p>
-                      </div>
-                    ))}
-                </CardContent>
-              </Card>
-              {testimonials.length > 1 && (
-                <>
-                  <Button variant="outline" size="icon" className="absolute top-1/2 -translate-y-1/2 right-[-2rem] md:right-[-4rem]" onClick={prevTestimonial}>
-                    <ChevronRight className="h-4 w-4" />
-                  </Button>
-                  <Button variant="outline" size="icon" className="absolute top-1/2 -translate-y-1/2 left-[-2rem] md:left-[-4rem]" onClick={nextTestimonial}>
-                    <ChevronLeft className="h-4 w-4" />
-                  </Button>
-                </>
-              )}
-            </div>
-          ) : (
-             <div className="p-1">
-                 <Card className="w-full max-w-xl mx-auto">
-                   <CardContent className="flex flex-col items-center justify-center p-6 text-center h-40">
-                      <p>עדיין אין המלצות.</p>
-                   </CardContent>
-                 </Card>
-            </div>
-          )}
+        <div className="max-w-xl mx-auto">
+            <h2 className="text-3xl md:text-4xl font-headline font-bold text-right mb-10">{siteContent.testimonials.headline}</h2>
+            {isLoading ? (
+                <div className="p-1">
+                    <Card className="w-full">
+                    <CardContent className="flex flex-col items-center justify-center p-6 text-center h-40">
+                        <p>טוען...</p>
+                    </CardContent>
+                    </Card>
+                </div>
+            ) : testimonials?.length > 0 ? (
+                <div className="relative w-full">
+                <Card>
+                    <CardContent className="flex flex-col items-center justify-center p-6 text-center h-40 relative">
+                    {testimonials.map((testimonial, index) => (
+                        <div 
+                            key={testimonial.id}
+                            className={cn(
+                            "absolute inset-0 flex flex-col items-center justify-center p-6 transition-opacity duration-300",
+                            index === currentTestimonialIndex ? "opacity-100" : "opacity-0"
+                            )}
+                            style={{transitionDelay: index === currentTestimonialIndex ? '150ms' : '0ms' }}
+                        >
+                            <p className="text-lg italic mb-4 flex-grow">"{testimonial.quote}"</p>
+                            <p className="font-bold text-primary">- {testimonial.name}</p>
+                        </div>
+                        ))}
+                    </CardContent>
+                </Card>
+                {testimonials.length > 1 && (
+                    <>
+                    <Button variant="outline" size="icon" className="absolute top-1/2 -translate-y-1/2 right-[-2rem] md:right-[-4rem]" onClick={prevTestimonial}>
+                        <ChevronRight className="h-4 w-4" />
+                    </Button>
+                    <Button variant="outline" size="icon" className="absolute top-1/2 -translate-y-1/2 left-[-2rem] md:left-[-4rem]" onClick={nextTestimonial}>
+                        <ChevronLeft className="h-4 w-4" />
+                    </Button>
+                    </>
+                )}
+                </div>
+            ) : (
+                <div className="p-1">
+                    <Card className="w-full">
+                    <CardContent className="flex flex-col items-center justify-center p-6 text-center h-40">
+                        <p>עדיין אין המלצות.</p>
+                    </CardContent>
+                    </Card>
+                </div>
+            )}
+        </div>
       </section>
 
       {/* Newsletter Signup */}
