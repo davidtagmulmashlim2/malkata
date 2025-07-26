@@ -71,6 +71,9 @@
   .animation-slide-up {
     animation: slideUp 0.7s ease-in-out;
   }
+  .animation-slow-zoom-in {
+    animation: slow-zoom-in 20s ease-in-out infinite alternate;
+  }
 
   @keyframes fadeIn {
     from { opacity: 0; }
@@ -80,5 +83,14 @@
   @keyframes slideUp {
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes slow-zoom-in {
+    from {
+      transform: scale(1);
+    }
+    to {
+      transform: scale(1.1);
+    }
   }
 }

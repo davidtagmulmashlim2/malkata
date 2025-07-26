@@ -104,13 +104,13 @@ export default function Home() {
   return (
     <div className="space-y-16 md:space-y-24 text-right">
       {/* Hero Section */}
-      <section className="relative h-[60vh] md:h-[80vh] w-full text-white">
+      <section className="relative h-[60vh] md:h-[80vh] w-full text-white overflow-hidden">
         <AsyncImage
           imageKey={siteContent.hero.image}
           alt="רקע של אוכל ביתי"
           layout="fill"
           objectFit="cover"
-          className="z-0"
+          className="z-0 animation-slow-zoom-in"
           style={{ filter: `brightness(${siteContent.hero.heroImageBrightness}%)` }}
           priority
           data-ai-hint="warm food"
