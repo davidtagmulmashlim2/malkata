@@ -191,7 +191,7 @@ export default function Home() {
          {isLoading ? (
              <div className="p-1">
                  <Card className="w-full max-w-xl mx-auto">
-                   <CardContent className="flex flex-col items-center justify-center p-6 text-center h-48">
+                   <CardContent className="flex flex-col items-center justify-center p-6 text-center h-40">
                       <p>טוען...</p>
                    </CardContent>
                  </Card>
@@ -199,7 +199,7 @@ export default function Home() {
           ) : testimonials?.length > 0 ? (
             <div className="relative w-full max-w-xl mx-auto">
               <Card>
-                <CardContent className="flex flex-col items-center justify-center p-6 text-center h-48 relative">
+                <CardContent className="flex flex-col items-center justify-center p-6 text-center h-40 relative">
                    {testimonials.map((testimonial, index) => (
                       <div 
                         key={testimonial.id}
@@ -229,7 +229,7 @@ export default function Home() {
           ) : (
              <div className="p-1">
                  <Card className="w-full max-w-xl mx-auto">
-                   <CardContent className="flex flex-col items-center justify-center p-6 text-center h-48">
+                   <CardContent className="flex flex-col items-center justify-center p-6 text-center h-40">
                       <p>עדיין אין המלצות.</p>
                    </CardContent>
                  </Card>
