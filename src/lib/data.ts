@@ -47,7 +47,7 @@ export const DEFAULT_APP_STATE: AppState = {
       subheadline: 'הישארו מעודכנים במבצעים, מנות חדשות ואירועים מיוחדים!',
     },
     testimonials: {
-      headline: "לקוחות ממליצים"
+      headline: "מה אומרים עלינו"
     },
     footer: {
       tagline: 'אוכל ביתי אותנטי, מוכן באהבה כל יום מחדש.',
