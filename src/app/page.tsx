@@ -186,7 +186,7 @@ export default function Home() {
       </section>
       
       {/* Testimonials Section */}
-       <section className="container mt-0">
+       <section className="container mt-8 mb-8">
         <div className="max-w-xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-headline font-bold text-right mb-10">{siteContent.testimonials.headline}</h2>
             {isLoading ? (
