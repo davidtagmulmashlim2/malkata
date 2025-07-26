@@ -102,7 +102,7 @@ export default function Home() {
   };
 
   return (
-    <div className="space-y-16 md:space-y-24 text-right">
+    <div className="text-right">
       {/* Hero Section */}
       <section className="relative h-[60vh] md:h-[80vh] w-full text-white overflow-hidden">
         <AsyncImage
@@ -154,7 +154,7 @@ export default function Home() {
       </section>
 
       {/* Recommended Dishes Section */}
-      <section className="container">
+      <section className="container py-16 md:py-24">
         <h2 className="text-3xl md:text-4xl font-headline font-bold text-right mb-10">מנות מומלצות</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {recommendedDishes.map((dish, i) => dish ? <DishCard key={dish.id} dish={dish} /> : <Skeleton key={i} className="h-96 w-full" />)}
@@ -186,7 +186,7 @@ export default function Home() {
       </section>
       
       {/* Testimonials Section */}
-       <section className="container mt-8 mb-8">
+       <section className="container py-8">
         <div className="max-w-xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-headline font-bold text-right mb-10">{siteContent.testimonials.headline}</h2>
             {isLoading ? (
