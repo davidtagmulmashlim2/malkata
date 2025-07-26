@@ -9,15 +9,20 @@ const AppContext = createContext<AppContextType | null>(null);
 
 const appReducer = (state: AppState, action: Action): AppState => {
   switch (action.type) {
-    case 'SET_STATE':
+    case 'SET_STATE': {
         // This action hydrates the state from localStorage.
-        // It merges the stored state with the default state to ensure new properties are not missed.
-        return { 
+        let loadedState = { 
           ...DEFAULT_APP_STATE,
           ...action.payload,
           siteContent: { ...DEFAULT_APP_STATE.siteContent, ...action.payload.siteContent },
           design: { ...DEFAULT_APP_STATE.design, ...action.payload.design },
         };
+        // Migration logic for old testimonial headline
+        if(loadedState.siteContent.testimonials.headline === 'לקוחות ממליצים') {
+            loadedState.siteContent.testimonials.headline = 'מה אומרים עלינו';
+        }
+        return loadedState;
+    }
     case 'UPDATE_CONTENT':
       return { ...state, siteContent: action.payload };
     case 'ADD_DISH':
