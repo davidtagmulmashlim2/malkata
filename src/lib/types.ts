@@ -49,6 +49,15 @@ export interface Subscriber {
     date: string;
 }
 
+export interface ContactSubmission {
+    id: string;
+    name: string;
+    email: string;
+    message: string;
+    date: string;
+    isRead: boolean;
+}
+
 export interface Feature {
     icon: string;
     title: string;
@@ -145,6 +154,7 @@ export interface AppState {
   gallery: GalleryImage[];
   testimonials: Testimonial[];
   subscribers: Subscriber[];
+  submissions: ContactSubmission[];
   design: DesignSettings;
 }
 
@@ -179,6 +189,9 @@ export type Action =
   | { type: 'DELETE_TESTIMONIAL'; payload: string }
   | { type: 'ADD_SUBSCRIBER', payload: Subscriber }
   | { type: 'DELETE_SUBSCRIBER', payload: string }
+  | { type: 'ADD_SUBMISSION', payload: ContactSubmission }
+  | { type: 'UPDATE_SUBMISSION_STATUS', payload: { id: string, isRead: boolean } }
+  | { type: 'DELETE_SUBMISSION', payload: string }
   | { type: 'UPDATE_DESIGN'; payload: DesignSettings }
   | { type: 'REMOVE_ITEM_FROM_CART', payload: string };
 

@@ -21,7 +21,7 @@ const formSchema = z.object({
 });
 
 export default function ContactPage() {
-    const { state } = useApp();
+    const { state, dispatch } = useApp();
     const { contact } = state.siteContent;
 
     const form = useForm<z.infer<typeof formSchema>>({
@@ -30,9 +30,21 @@ export default function ContactPage() {
     });
 
     function onSubmit(values: z.infer<typeof formSchema>) {
+        dispatch({
+            type: 'ADD_SUBMISSION',
+            payload: {
+                id: Date.now().toString(),
+                name: values.name,
+                email: values.email,
+                message: values.message,
+                date: new Date().toISOString(),
+                isRead: false,
+            }
+        });
+
         toast({
             title: "הודעה נשלחה!",
-            description: `תודה ${values.name}, חזר אליך בהקדם.`,
+            description: `תודה ${values.name}, ניצור איתך קשר בהקדם.`,
         });
         form.reset();
     }
@@ -80,7 +92,7 @@ export default function ContactPage() {
                                     </FormItem>
                                 )}
                             />
-                            <Button type="submit" className="w-full">שליחה</Button>
+                            <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>שליחה</Button>
                         </form>
                     </Form>
                 </div>

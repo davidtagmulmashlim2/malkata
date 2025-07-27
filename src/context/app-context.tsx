@@ -51,6 +51,12 @@ const appReducer = (state: AppState, action: Action): AppState => {
         return { ...state, subscribers: [action.payload, ...state.subscribers] };
     case 'DELETE_SUBSCRIBER':
         return { ...state, subscribers: state.subscribers.filter(s => s.id !== action.payload) };
+    case 'ADD_SUBMISSION':
+        return { ...state, submissions: [action.payload, ...state.submissions] };
+    case 'UPDATE_SUBMISSION_STATUS':
+        return { ...state, submissions: state.submissions.map(s => s.id === action.payload.id ? { ...s, isRead: action.payload.isRead } : s) };
+    case 'DELETE_SUBMISSION':
+        return { ...state, submissions: state.submissions.filter(s => s.id !== action.payload) };
     case 'UPDATE_DESIGN':
         return { ...state, design: action.payload };
     

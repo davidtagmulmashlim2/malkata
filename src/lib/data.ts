@@ -96,6 +96,7 @@ export const DEFAULT_APP_STATE: AppState = {
   gallery: [],
   testimonials: [],
   subscribers: [],
+  submissions: [],
   design: {
     theme: 'default',
     headlineFont: 'playfair',
