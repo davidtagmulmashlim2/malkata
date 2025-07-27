@@ -130,17 +130,21 @@ export default function ContactPage() {
                                 <a href={`tel:${contact.phone}`} className="text-muted-foreground hover:text-primary">{contact.phone}</a>
                             </div>
                         </div>
-                         <div className="flex items-center gap-4">
-                            <a href={`https://wa.me/${contact.whatsapp}`} target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp" className="flex items-center gap-2 text-muted-foreground hover:text-primary">
-                                <WhatsappIcon className="h-6 w-6 text-green-500 transition-opacity hover:opacity-80" />
-                                <span>וואטסאפ</span>
+                         <div className="flex items-start gap-4">
+                            <a href={`https://wa.me/${contact.whatsapp}`} target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp" className="flex items-start gap-4 text-muted-foreground hover:text-primary">
+                                <WhatsappIcon className="h-7 w-7 text-green-500 transition-opacity hover:opacity-80 mt-1" />
+                                <div>
+                                    <h3 className="font-semibold">וואטסאפ</h3>
+                                </div>
                             </a>
                         </div>
                         {contact.instagram && (
-                             <div className="flex items-center gap-4">
-                                <a href={contact.instagram} target="_blank" rel="noopener noreferrer" aria-label="Visit our Instagram" className="flex items-center gap-2 text-muted-foreground hover:text-primary">
-                                    <InstagramIcon className="h-6 w-6 text-pink-600 transition-opacity hover:opacity-80" />
-                                    <span>אינסטגרם</span>
+                             <div className="flex items-start gap-4">
+                                <a href={contact.instagram} target="_blank" rel="noopener noreferrer" aria-label="Visit our Instagram" className="flex items-start gap-4 text-muted-foreground hover:text-primary">
+                                    <InstagramIcon className="h-7 w-7 text-pink-600 transition-opacity hover:opacity-80 mt-1" />
+                                     <div>
+                                        <h3 className="font-semibold">אינסטגרם</h3>
+                                    </div>
                                 </a>
                             </div>
                         )}
