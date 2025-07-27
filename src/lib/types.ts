@@ -33,7 +33,7 @@ export interface Category {
 export interface GalleryImage {
   id: string;
   src: string; // This will be an image URL
-  alt: string;
+  alt?: string;
 }
 
 export interface Testimonial {

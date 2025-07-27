@@ -19,13 +19,13 @@ import { AsyncImage } from '@/components/async-image';
 
 const gallerySchema = z.object({
   src: z.string().min(1, 'חובה להעלות תמונה'),
-  alt: z.string().min(1, 'תיאור הוא שדה חובה'),
+  alt: z.string().optional(),
 });
 
 
-const GalleryImagePreview = ({ imageKey, alt }: { imageKey: string, alt: string }) => {
+const GalleryImagePreview = ({ imageKey, alt }: { imageKey: string, alt: string | undefined }) => {
     if (!imageKey) return null;
-    return <AsyncImage imageKey={imageKey} alt={alt} width={200} height={200} className="rounded-md object-cover aspect-square" />;
+    return <AsyncImage imageKey={imageKey} alt={alt || "תמונת גלריה"} width={200} height={200} className="rounded-md object-cover aspect-square" />;
 }
 
 const fileToDataUrl = (file: File): Promise<string> => {
@@ -143,8 +143,8 @@ export default function GalleryManager() {
                   name="alt"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>תיאור תמונה (טקסט חלופי)</FormLabel>
-                      <FormControl><Input placeholder="תיאור קצר של התמונה" {...field} /></FormControl>
+                      <FormLabel>תיאור תמונה (אופציונלי)</FormLabel>
+                      <FormControl><Input placeholder="תיאור קצר של התמונה" {...field} value={field.value ?? ''} /></FormControl>
                       <FormMessage />
                     </FormItem>
                   )}

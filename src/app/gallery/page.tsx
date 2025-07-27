@@ -24,12 +24,17 @@ export default function GalleryPage() {
                             <div className="relative w-full h-full">
                                 <AsyncImage
                                     imageKey={image.src}
-                                    alt={image.alt}
+                                    alt={image.alt || "תמונת גלריה"}
                                     layout="fill"
                                     objectFit="cover"
                                     className="transition-transform duration-300 group-hover:scale-110"
                                     data-ai-hint="food restaurant"
                                 />
+                                {image.alt && (
+                                    <div className="absolute inset-0 flex items-end justify-end bg-gradient-to-t from-black/60 to-transparent p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                        <p className="text-white text-sm text-right">{image.alt}</p>
+                                    </div>
+                                )}
                             </div>
                         )}
                     </Card>
