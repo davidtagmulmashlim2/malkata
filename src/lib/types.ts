@@ -141,11 +141,11 @@ export interface SiteContent {
     orderNotesPlaceholder?: string;
   };
   shabbatNotice?: {
-      enabled: boolean;
-      text: string;
-      color: string;
-      fontSize: string;
-      isBold: boolean;
+      enabled?: boolean;
+      text?: string;
+      color?: string;
+      fontSize?: string;
+      isBold?: boolean;
   };
 }
 
