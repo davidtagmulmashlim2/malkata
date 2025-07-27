@@ -28,7 +28,6 @@ export default {
         'open-sans': ['var(--font-open-sans)'],
         'frank-ruhl-libre': ['var(--font-frank-ruhl-libre)'],
         'heebo': ['var(--font-heebo)'],
-        'dana': ['var(--font-dana)'],
         sans: "var(--font-sans-family)",
         headline: "var(--font-headline-family)",
       },

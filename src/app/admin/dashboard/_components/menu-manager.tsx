@@ -61,7 +61,6 @@ const fonts = [
     { name: 'Open Sans', value: 'open-sans' },
     { name: 'Frank Ruhl Libre', value: 'frank-ruhl-libre' },
     { name: 'היבו (דפוס)', value: 'heebo' },
-    { name: 'דנה (כתב)', value: 'dana' },
 ];
 
 const dishSchema = z.object({
