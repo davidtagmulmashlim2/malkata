@@ -61,6 +61,7 @@ const fonts = [
     { name: 'Open Sans', value: 'open-sans' },
     { name: 'Frank Ruhl Libre', value: 'frank-ruhl-libre' },
     { name: 'היבו (דפוס)', value: 'heebo' },
+    { name: 'דנה (כתב)', value: 'dana' },
 ];
 
 const dishSchema = z.object({
@@ -90,6 +91,7 @@ const categorySchema = z.object({
   titleOpacity: z.number().min(0).max(1).optional(),
   imageBrightness: z.coerce.number().min(0).max(100).optional(),
   showDescription: z.boolean().optional(),
+  showDescriptionBelowBanner: z.boolean().optional(),
 })
 
 const fileToDataUrl = (file: File): Promise<string> => {
@@ -129,7 +131,7 @@ export default function MenuManager() {
       defaultValues: { 
           name: '', description: '', image: '',
           titleColor: '#FFFFFF', titleFontSize: '5xl', titleFont: 'default', titleOpacity: 1, 
-          imageBrightness: 50, showDescription: true
+          imageBrightness: 50, showDescription: true, showDescriptionBelowBanner: false,
       } 
     })
 
@@ -161,6 +163,7 @@ export default function MenuManager() {
             titleColor: '#FFFFFF', titleFontSize: '5xl', titleFont: 'default',
             titleOpacity: 1,
             imageBrightness: 50, showDescription: true,
+            showDescriptionBelowBanner: false
         });
     } else if (editingCategory) {
         categoryForm.reset({
@@ -171,6 +174,7 @@ export default function MenuManager() {
             titleOpacity: editingCategory.titleOpacity ?? 1,
             imageBrightness: editingCategory.imageBrightness ?? 50,
             showDescription: editingCategory.showDescription ?? true,
+            showDescriptionBelowBanner: editingCategory.showDescriptionBelowBanner ?? false,
         });
     }
   }, [isCategoryDialogOpen, editingCategory, categoryForm]);
@@ -692,7 +696,13 @@ export default function MenuManager() {
                         <FormField name="showDescription" control={categoryForm.control} render={({ field }) => (
                             <FormItem className="flex items-center gap-2 space-y-0 pt-2">
                               <FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl>
-                              <FormLabel>הצג תיאור מתחת לכותרת</FormLabel>
+                              <FormLabel>הצג תיאור על גבי הבאנר</FormLabel>
+                            </FormItem>
+                          )} />
+                         <FormField name="showDescriptionBelowBanner" control={categoryForm.control} render={({ field }) => (
+                            <FormItem className="flex items-center gap-2 space-y-0 pt-2">
+                              <FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl>
+                              <FormLabel>הצג תיאור מתחת לבאנר</FormLabel>
                             </FormItem>
                           )} />
                     </div>
@@ -745,3 +755,4 @@ export default function MenuManager() {
     
 
     
+

@@ -27,6 +27,7 @@ export interface Category {
   titleOpacity?: number;
   imageBrightness?: number;
   showDescription?: boolean;
+  showDescriptionBelowBanner?: boolean;
 }
 
 export interface GalleryImage {
