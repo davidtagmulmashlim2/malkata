@@ -18,7 +18,7 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { storeImage } from '@/lib/image-store';
 import { AsyncImage } from '@/components/async-image';
-import { Leaf, ChefHat, Bike, PartyPopper } from 'lucide-react';
+import { Leaf, ChefHat, Bike, PartyPopper, Carrot, Rocket, Send, Smartphone } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 
 
@@ -27,7 +27,10 @@ const featureIcons = [
     { name: 'כובע שף', value: 'ChefHat', icon: ChefHat },
     { name: 'אופניים', value: 'Bike', icon: Bike },
     { name: 'קונפטי', value: 'PartyPopper', icon: PartyPopper },
-    { name: 'גזר', value: 'Carrot', icon: ChefHat },
+    { name: 'גזר', value: 'Carrot', icon: Carrot },
+    { name: 'טיל', value: 'Rocket', icon: Rocket },
+    { name: 'שליחה', value: 'Send', icon: Send },
+    { name: 'סמארטפון', value: 'Smartphone', icon: Smartphone },
 ];
 
 const FeatureIconSelect = ({ field, onValueChange, value }: any) => (
