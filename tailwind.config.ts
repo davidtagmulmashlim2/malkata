@@ -26,6 +26,8 @@ export default {
         'montserrat': 'var(--font-montserrat)',
         'open-sans': 'var(--font-open-sans)',
         'frank-ruhl-libre': 'var(--font-frank-ruhl-libre)',
+        'gveret-levin': 'var(--font-gveret-levin)',
+        'karantina': 'var(--font-karantina)',
         sans: "var(--font-sans-family)",
         headline: "var(--font-headline-family)",
       },
