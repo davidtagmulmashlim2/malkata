@@ -4,7 +4,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@700&family=Lato:wght@400;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Open+Sans:wght@400;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Gveret+Levin&family=Karantina:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Heebo:wght@400;700&family=Sulamit:wght@400;700&display=swap');
 
 
 @tailwind base;
@@ -45,8 +45,8 @@
     --font-montserrat: 'Montserrat', sans-serif;
     --font-open-sans: 'Open Sans', sans-serif;
     --font-frank-ruhl-libre: 'Frank Ruhl Libre', serif;
-    --font-gveret-levin: 'Gveret Levin', cursive;
-    --font-karantina: 'Karantina', cursive;
+    --font-heebo: 'Heebo', sans-serif;
+    --font-sulamit: 'Sulamit', cursive;
 
     /* Dynamic Font Variables */
     --font-sans-family: var(--font-pt-sans);

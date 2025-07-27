@@ -45,8 +45,8 @@ const fonts = [
     { name: 'Montserrat', value: 'montserrat' },
     { name: 'Open Sans', value: 'open-sans' },
     { name: 'Frank Ruhl Libre', value: 'frank-ruhl-libre' },
-    { name: 'גברת לוין (כתב)', value: 'gveret-levin' },
-    { name: 'קרנטינה (כתב)', value: 'karantina' },
+    { name: 'היבו (דפוס)', value: 'heebo' },
+    { name: 'סולמית (כתב)', value: 'sulamit' },
 ];
 
 const logoIcons = [

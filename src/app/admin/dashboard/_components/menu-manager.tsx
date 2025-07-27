@@ -60,8 +60,8 @@ const fonts = [
     { name: 'Montserrat', value: 'montserrat' },
     { name: 'Open Sans', value: 'open-sans' },
     { name: 'Frank Ruhl Libre', value: 'frank-ruhl-libre' },
-    { name: 'גברת לוין (כתב)', value: 'gveret-levin' },
-    { name: 'קרנטינה (כתב)', value: 'karantina' },
+    { name: 'היבו (דפוס)', value: 'heebo' },
+    { name: 'סולמית (כתב)', value: 'sulamit' },
 ];
 
 const dishSchema = z.object({
@@ -159,7 +159,8 @@ export default function MenuManager() {
         setEditingCategory(null);
         categoryForm.reset({ 
             name: '', description: '', image: '',
-            titleColor: '#FFFFFF', titleFontSize: '5xl', titleFont: 'default', titleOpacity: 1,
+            titleColor: '#FFFFFF', titleFontSize: '5xl', titleFont: 'default',
+            titleOpacity: 1,
             imageBrightness: 50, showDescription: true,
         });
     } else if (editingCategory) {
