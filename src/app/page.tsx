@@ -13,7 +13,7 @@ import { cn } from '@/lib/utils';
 import { useEffect, useMemo, useState } from 'react';
 import type { Testimonial, Feature, OptionalFeature } from '@/lib/types';
 import { AsyncImage } from '@/components/async-image';
-import { ChevronLeft, ChevronRight, ChefHat, Carrot, Bike, PartyPopper, Leaf } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ChefHat, Carrot, Bike, PartyPopper, Leaf, Rocket, Send, Smartphone } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -32,7 +32,10 @@ const iconMap: { [key: string]: React.ElementType } = {
   Carrot,
   Bike,
   PartyPopper,
-  Leaf
+  Leaf,
+  Rocket,
+  Send,
+  Smartphone
 };
 
 const FeaturesSection = () => {
@@ -70,7 +73,7 @@ const FeaturesSection = () => {
     <section className="container py-16 md:py-24">
         <div className={cn(
             "grid grid-cols-1 md:grid-cols-2 gap-12 text-center",
-            features.length === 3 ? "lg:grid-cols-3" : "lg:grid-cols-4"
+            features.length === 3 ? "lg:grid-cols-3 justify-center" : "lg:grid-cols-4"
         )}>
             {features.map((feature, index) => {
                 const IconComponent = iconMap[feature.icon] || Leaf;
