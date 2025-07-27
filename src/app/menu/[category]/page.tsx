@@ -21,6 +21,12 @@ export default function CategoryPage() {
 
     const categoryDishes = isLoading || !category ? [] : state.dishes.filter(d => d.categoryIds && d.categoryIds.includes(category.id));
 
+    const textSizeClasses: { [key: string]: string } = {
+      'xs': 'text-xs', 'sm': 'text-sm', 'base': 'text-base', 'lg': 'text-lg', 'xl': 'text-xl', 
+      '2xl': 'text-2xl', '3xl': 'text-3xl', '4xl': 'text-4xl', '5xl': 'text-5xl', 
+      '6xl': 'text-6xl', '7xl': 'text-7xl', '8xl': 'text-8xl', '9xl': 'text-9xl',
+    };
+
     // This is the loading state, shown on server and initial client render
     if (isLoading || !category) {
         return (
@@ -45,15 +51,26 @@ export default function CategoryPage() {
                     alt={category.name}
                     layout="fill"
                     objectFit="cover"
-                    className="brightness-50"
+                    style={{ filter: `brightness(${category.imageBrightness ?? 50}%)` }}
                     data-ai-hint="food category"
                     skeletonClassName="w-full h-full"
                 />
                 <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-4">
-                    <h1 className="text-5xl font-headline font-bold text-white drop-shadow-lg">
+                    <h1 
+                        className={cn(
+                            "font-headline font-bold text-white drop-shadow-lg",
+                            textSizeClasses[category.titleFontSize ?? '5xl']
+                        )}
+                        style={{
+                            color: category.titleColor ?? '#FFFFFF',
+                            opacity: category.titleOpacity ?? 1,
+                        }}
+                    >
                         {category.name}
                     </h1>
-                    <p className="text-lg text-white mt-2 max-w-2xl">{category.description}</p>
+                    {(category.showDescription ?? true) && (
+                        <p className="text-lg text-white mt-2 max-w-2xl">{category.description}</p>
+                    )}
                 </div>
             </div>
             <div className="container py-12 md:py-20">
@@ -70,3 +87,5 @@ export default function CategoryPage() {
         </div>
     );
 }
+
+    

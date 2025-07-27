@@ -21,6 +21,11 @@ export interface Category {
   slug: string;
   description: string;
   image: string; // This will be an image URL
+  titleColor?: string;
+  titleFontSize?: string;
+  titleOpacity?: number;
+  imageBrightness?: number;
+  showDescription?: boolean;
 }
 
 export interface GalleryImage {
@@ -157,3 +162,5 @@ export type Action =
   | { type: 'DELETE_SUBSCRIBER', payload: string }
   | { type: 'UPDATE_DESIGN'; payload: DesignSettings }
   | { type: 'REMOVE_ITEM_FROM_CART', payload: string };
+
+    

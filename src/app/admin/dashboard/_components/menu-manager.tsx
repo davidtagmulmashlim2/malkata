@@ -22,6 +22,8 @@ import { AsyncImage } from '@/components/async-image'
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Slider } from '@/components/ui/slider'
 
 const slugify = (text: string): string => {
   if (!text) return '';
@@ -46,6 +48,8 @@ const slugify = (text: string): string => {
   return slug;
 }
 
+const fontSizes = ['xs', 'sm', 'base', 'lg', 'xl', '2xl', '3xl', '4xl', '5xl', '6xl', '7xl', '8xl', '9xl'];
+
 const dishSchema = z.object({
   id: z.string().optional(),
   name: z.string().min(1, 'שם המנה הוא שדה חובה'),
@@ -67,6 +71,11 @@ const categorySchema = z.object({
   description: z.string().min(1, 'תיאור הוא שדה חובה'),
   image: z.string().min(1, 'חובה להעלות תמונה'),
   slug: z.string().optional(), // Slug is generated, so optional in form
+  titleColor: z.string().optional(),
+  titleFontSize: z.string().optional(),
+  titleOpacity: z.number().min(0).max(1).optional(),
+  imageBrightness: z.coerce.number().min(0).max(100).optional(),
+  showDescription: z.boolean().optional(),
 })
 
 const fileToDataUrl = (file: File): Promise<string> => {
@@ -103,7 +112,11 @@ export default function MenuManager() {
   })
   const categoryForm = useForm<z.infer<typeof categorySchema>>({ 
       resolver: zodResolver(categorySchema),
-      defaultValues: { name: '', description: '', image: ''} 
+      defaultValues: { 
+          name: '', description: '', image: '',
+          titleColor: '#FFFFFF', titleFontSize: '5xl', titleOpacity: 1, 
+          imageBrightness: 50, showDescription: true
+      } 
     })
 
   useEffect(() => {
@@ -129,9 +142,20 @@ export default function MenuManager() {
   useEffect(() => {
     if (!isCategoryDialogOpen) {
         setEditingCategory(null);
-        categoryForm.reset({ name: '', description: '', image: ''});
+        categoryForm.reset({ 
+            name: '', description: '', image: '',
+            titleColor: '#FFFFFF', titleFontSize: '5xl', titleOpacity: 1,
+            imageBrightness: 50, showDescription: true,
+        });
     } else if (editingCategory) {
-        categoryForm.reset(editingCategory);
+        categoryForm.reset({
+            ...editingCategory,
+            titleColor: editingCategory.titleColor ?? '#FFFFFF',
+            titleFontSize: editingCategory.titleFontSize ?? '5xl',
+            titleOpacity: editingCategory.titleOpacity ?? 1,
+            imageBrightness: editingCategory.imageBrightness ?? 50,
+            showDescription: editingCategory.showDescription ?? true,
+        });
     }
   }, [isCategoryDialogOpen, editingCategory, categoryForm]);
   
@@ -565,7 +589,7 @@ export default function MenuManager() {
                   <PlusCircle className="mr-2 h-4 w-4" /> הוסף קטגוריה
                 </Button>
               </DialogTrigger>
-              <DialogContent>
+              <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
                   <DialogTitle>{editingCategory ? 'עריכת קטגוריה' : 'הוספת קטגוריה חדשה'}</DialogTitle>
                 </DialogHeader>
@@ -585,7 +609,7 @@ export default function MenuManager() {
                         <FormMessage />
                       </FormItem>
                     )} />
-                    <FormField
+                     <FormField
                         name="image"
                         control={categoryForm.control}
                         render={({ field }) => (
@@ -603,6 +627,48 @@ export default function MenuManager() {
                            </FormItem>
                         )}
                      />
+                    <div className="border p-4 rounded-md space-y-4">
+                        <h3 className="text-lg font-medium">הגדרות עיצוב באנר</h3>
+                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                             <FormField name="titleColor" control={categoryForm.control} render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>צבע כותרת</FormLabel>
+                                  <FormControl><Input type="color" {...field} className="p-1 h-10 w-full" value={field.value ?? ''} /></FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )} />
+                             <FormField name="titleFontSize" control={categoryForm.control} render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>גודל כותרת</FormLabel>
+                                  <Select onValueChange={field.onChange} value={field.value}>
+                                    <FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl>
+                                    <SelectContent>{fontSizes.map(s => <SelectItem key={s} value={s}>text-{s}</SelectItem>)}</SelectContent>
+                                  </Select>
+                                  <FormMessage />
+                                </FormItem>
+                              )} />
+                        </div>
+                        <FormField name="titleOpacity" control={categoryForm.control} render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>שקיפות כותרת ({Math.round((field.value ?? 1) * 100)}%)</FormLabel>
+                              <FormControl><Slider value={[field.value ?? 1]} min={0} max={1} step={0.05} onValueChange={(v) => field.onChange(v[0])} /></FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )} />
+                        <FormField name="imageBrightness" control={categoryForm.control} render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>בהירות תמונת רקע ({field.value ?? 100}%)</FormLabel>
+                              <FormControl><Slider value={[field.value ?? 100]} min={0} max={100} step={5} onValueChange={(v) => field.onChange(v[0])} /></FormControl>
+                              <FormMessage />
+                            </FormItem>
+                        )} />
+                        <FormField name="showDescription" control={categoryForm.control} render={({ field }) => (
+                            <FormItem className="flex items-center gap-2 space-y-0 pt-2">
+                              <FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl>
+                              <FormLabel>הצג תיאור מתחת לכותרת</FormLabel>
+                            </FormItem>
+                          )} />
+                    </div>
                     <DialogFooter>
                       <Button type="submit">שמור</Button>
                     </DialogFooter>
@@ -648,5 +714,7 @@ export default function MenuManager() {
     </div>
   )
 }
+
+    
 
     
