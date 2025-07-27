@@ -100,11 +100,13 @@ export interface SiteContent {
     email: string;
     hours: string;
     instagram?: string;
+    facebook?: string;
     showAddress?: boolean;
     showPhone?: boolean;
     showWhatsapp?: boolean;
     showEmail?: boolean;
     showInstagram?: boolean;
+    showFacebook?: boolean;
     showHours?: boolean;
   };
   menu: {

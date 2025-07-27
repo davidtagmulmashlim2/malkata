@@ -13,6 +13,7 @@ import { Mail, MapPin, Phone, Clock } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { WhatsappIcon } from '@/components/icons/whatsapp-icon';
 import { InstagramIcon } from '@/components/icons/instagram-icon';
+import { FacebookIcon } from '@/components/icons/facebook-icon';
 
 const formSchema = z.object({
   name: z.string().min(2, { message: "שם חייב להכיל לפחות 2 תווים." }),
@@ -149,6 +150,15 @@ export default function ContactPage() {
                                  <div>
                                     <h3 className="font-semibold">אינסטגרם</h3>
                                      <span className="text-sm">עקבו אחרינו</span>
+                                </div>
+                            </a>
+                        )}
+                        {contact.showFacebook && contact.facebook && (
+                             <a href={contact.facebook} target="_blank" rel="noopener noreferrer" aria-label="Visit our Facebook page" className="flex items-start gap-4 text-muted-foreground hover:text-primary">
+                                <FacebookIcon className="h-8 w-8 text-blue-600 transition-opacity hover:opacity-80" />
+                                 <div>
+                                    <h3 className="font-semibold">פייסבוק</h3>
+                                     <span className="text-sm">בקרו בעמוד שלנו</span>
                                 </div>
                             </a>
                         )}

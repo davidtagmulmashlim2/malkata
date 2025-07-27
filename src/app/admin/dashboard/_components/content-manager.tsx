@@ -86,11 +86,13 @@ const contentSchema = z.object({
     email: z.string().email('אימייל לא חוקי'),
     hours: z.string().min(1, 'חובה'),
     instagram: z.string().url('כתובת אינטרנט לא חוקית').optional().or(z.literal('')),
+    facebook: z.string().url('כתובת אינטרנט לא חוקית').optional().or(z.literal('')),
     showAddress: z.boolean().optional(),
     showPhone: z.boolean().optional(),
     showWhatsapp: z.boolean().optional(),
     showEmail: z.boolean().optional(),
     showInstagram: z.boolean().optional(),
+    showFacebook: z.boolean().optional(),
     showHours: z.boolean().optional(),
   }),
   menu: z.object({
@@ -505,6 +507,13 @@ export default function ContentManager() {
                       <FormMessage />
                     </FormItem>
                   )} />
+                  <FormField name="contact.facebook" control={form.control} render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>כתובת עמוד פייסבוק</FormLabel>
+                      <FormControl><Input type="url" placeholder="https://facebook.com/your-page" {...field} value={field.value ?? ''} /></FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )} />
                    <FormField name="contact.hours" control={form.control} render={({ field }) => (
                     <FormItem>
                       <FormLabel>שעות פתיחה</FormLabel>
@@ -523,6 +532,7 @@ export default function ContentManager() {
                       <FormField control={form.control} name="contact.showWhatsapp" render={({ field }) => ( <FormItem className="flex items-center gap-2 space-y-0"><FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl><FormLabel>וואטסאפ</FormLabel></FormItem> )} />
                       <FormField control={form.control} name="contact.showEmail" render={({ field }) => ( <FormItem className="flex items-center gap-2 space-y-0"><FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl><FormLabel>אימייל</FormLabel></FormItem> )} />
                       <FormField control={form.control} name="contact.showInstagram" render={({ field }) => ( <FormItem className="flex items-center gap-2 space-y-0"><FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl><FormLabel>אינסטגרם</FormLabel></FormItem> )} />
+                      <FormField control={form.control} name="contact.showFacebook" render={({ field }) => ( <FormItem className="flex items-center gap-2 space-y-0"><FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl><FormLabel>פייסבוק</FormLabel></FormItem> )} />
                       <FormField control={form.control} name="contact.showHours" render={({ field }) => ( <FormItem className="flex items-center gap-2 space-y-0"><FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl><FormLabel>שעות פתיחה</FormLabel></FormItem> )} />
                     </div>
                   </div>

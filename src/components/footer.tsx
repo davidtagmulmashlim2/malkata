@@ -7,6 +7,7 @@ import { UtensilsCrossed, Phone, Mail, MapPin, Crown as Crown1, Gem, Star, Shiel
 import React from "react";
 import { WhatsappIcon } from "./icons/whatsapp-icon";
 import { InstagramIcon } from "./icons/instagram-icon";
+import { FacebookIcon } from "./icons/facebook-icon";
 
 const Crown2 = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" {...props}>
@@ -68,10 +69,15 @@ export function Footer() {
                                     <InstagramIcon className="h-8 w-8 text-pink-600 transition-opacity hover:opacity-80" />
                                 </a>
                             )}
+                             {contact.facebook && (
+                                <a href={contact.facebook} target="_blank" rel="noopener noreferrer" aria-label="Visit our Facebook">
+                                    <FacebookIcon className="h-8 w-8 text-blue-600 transition-opacity hover:opacity-80" />
+                                </a>
+                            )}
                         </div>
                     </div>
                     
-                    {(footer?.contactTitle || contact?.address || contact?.phone || contact?.email) && (
+                    {(footer?.contactTitle || contact?.address || contact?.phone) && (
                         <div className="space-y-4">
                              {footer?.contactTitle && <h3 className="text-lg font-semibold">{footer.contactTitle}</h3>}
                             <ul className="space-y-2 text-sm text-muted-foreground">
@@ -87,23 +93,10 @@ export function Footer() {
                                         <a href={`tel:${contact.phone}`} className="hover:text-primary">{contact.phone}</a>
                                     </li>
                                  )}
-                                 {contact?.email && (
-                                    <li className="flex items-center gap-2">
-                                        <Mail className="h-4 w-4" />
-                                        <a href={`mailto:${contact.email}`} className="hover:text-primary">{contact.email}</a>
-                                    </li>
-                                 )}
                             </ul>
                         </div>
                     )}
                     
-                    {(footer?.hoursTitle || footer?.hoursContent) && (
-                        <div className="space-y-4">
-                            {footer?.hoursTitle && <h3 className="text-lg font-semibold">{footer.hoursTitle}</h3>}
-                            {footer?.hoursContent && <p className="text-sm text-muted-foreground whitespace-pre-line">{footer.hoursContent}</p>}
-                        </div>
-                    )}
-
                 </div>
                 {footer?.copyright && (
                     <div className="mt-12 border-t pt-8 text-center text-sm text-muted-foreground">
