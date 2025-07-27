@@ -246,7 +246,7 @@ export default function Home() {
           <div>
             <h2 className="text-3xl md:text-4xl font-headline font-bold mb-4">הסיפור שלנו</h2>
             <div className="text-muted-foreground mb-6">
-              {isLoading ? <Skeleton className="h-20 w-full" /> : <p>{siteContent.about.short}</p>}
+              {isLoading ? <div className="space-y-2"><Skeleton className="h-4 w-full" /><Skeleton className="h-4 w-11/12" /><Skeleton className="h-4 w-3/4" /></div> : <p>{siteContent.about.short}</p>}
             </div>
             <Button asChild variant="outline">
               <Link href="/about">קראו עוד</Link>
@@ -270,12 +270,13 @@ export default function Home() {
       {/* Testimonials Section */}
        <section className="py-8">
         <div className="max-w-xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-headline font-bold text-right mb-10">{siteContent.testimonials.headline}</h2>
+            <h2 className="text-3xl md:text-4xl font-headline font-bold text-right mb-10">{isLoading ? <Skeleton className="h-9 w-48" /> : siteContent.testimonials.headline}</h2>
             {isLoading ? (
                 <div className="p-1">
                     <Card className="w-full">
                     <CardContent className="flex flex-col items-center justify-center p-6 text-center h-40">
-                        <p>טוען...</p>
+                        <Skeleton className="h-4 w-3/4 mb-4" />
+                        <Skeleton className="h-4 w-1/4" />
                     </CardContent>
                     </Card>
                 </div>
@@ -325,7 +326,7 @@ export default function Home() {
       <section className="bg-primary text-primary-foreground py-16 md:py-24">
         <div className="container text-right max-w-2xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-headline font-bold mb-4">{isLoading ? <Skeleton className="h-10 w-3/4 mx-auto" /> : newsletter.headline}</h2>
-            <div className="mb-6 opacity-90">{isLoading ? <div className="animate-pulse rounded-md bg-muted/50 h-6 w-full max-w-lg mx-auto" /> : newsletter.subheadline}</div>
+            <div className="mb-6 opacity-90">{isLoading ? <div className="space-y-2"><Skeleton className="h-4 w-full max-w-lg mx-auto" /><Skeleton className="h-4 w-2/3 max-w-md mx-auto" /></div> : newsletter.subheadline}</div>
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubscriberSubmit)} className="flex flex-col sm:flex-row gap-2 max-w-md mx-auto">
                     <FormField

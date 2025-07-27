@@ -19,12 +19,17 @@ export function AsyncImage({ imageKey, alt, skeletonClassName, className, ...pro
 
   useEffect(() => {
     let isMounted = true;
-    setSrc(null); // Reset on key change to show loader
-    setError(false);
-
-    if(isLoading) {
-      return;
+    
+    // Always show loader if the app context is loading
+    if (isLoading) {
+        setSrc(null);
+        setError(false);
+        return;
     }
+
+    // Reset on key change to show loader
+    setSrc(null); 
+    setError(false);
 
     const fetchImage = async () => {
       if (!imageKey) {
@@ -50,7 +55,7 @@ export function AsyncImage({ imageKey, alt, skeletonClassName, className, ...pro
     return () => { isMounted = false; };
   }, [imageKey, isLoading]);
 
-  if (isLoading) {
+  if (isLoading || !src) {
     return <Skeleton className={cn("w-full h-full", skeletonClassName)} />;
   }
 
@@ -60,10 +65,6 @@ export function AsyncImage({ imageKey, alt, skeletonClassName, className, ...pro
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-image-off h-8 w-8"><line x1="2" x2="22" y1="2" y2="22"/><path d="M10.41 10.41a2 2 0 1 1-2.83-2.83"/><path d="M13.5 13.5L21 21"/><path d="M12 21H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h1"/><path d="M21 16.5V13a2 2 0 0 0-2-2h-1.5"/></svg>
          </div>
       );
-  }
-
-  if (!src) {
-    return <Skeleton className={cn("w-full h-full", skeletonClassName)} />;
   }
 
   return (

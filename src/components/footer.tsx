@@ -10,6 +10,7 @@ import { WhatsappIcon } from "./icons/whatsapp-icon";
 import { InstagramIcon } from "./icons/instagram-icon";
 import { FacebookIcon } from "./icons/facebook-icon";
 import { cn } from "@/lib/utils";
+import { Skeleton } from "./ui/skeleton";
 
 const Crown2 = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" {...props}>
@@ -44,7 +45,7 @@ const iconMap: { [key: string]: React.ElementType | null } = {
 
 
 export function Footer() {
-    const { state } = useApp();
+    const { state, isLoading } = useApp();
     const { siteContent, design } = state;
     const { contact, footer } = siteContent;
     
@@ -67,18 +68,18 @@ export function Footer() {
                             מלכתא
                         </Link>
                         {footer?.tagline && <p className="text-muted-foreground text-sm">{footer.tagline}</p>}
-                        <div className="flex gap-2">
+                        <div className="flex gap-4">
                            <a href={`https://wa.me/${contact.whatsapp}`} target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp">
-                                <WhatsappIcon className="h-8 w-8 text-green-500 transition-opacity hover:opacity-80" />
+                                <WhatsappIcon className="h-7 w-7 text-green-500 transition-opacity hover:opacity-80" />
                             </a>
-                            {contact.instagram && (
+                            {contact.showInstagram && contact.instagram && (
                                 <a href={contact.instagram} target="_blank" rel="noopener noreferrer" aria-label="Visit our Instagram">
-                                    <InstagramIcon className="h-8 w-8 text-pink-600 transition-opacity hover:opacity-80" />
+                                    <InstagramIcon className="h-7 w-7 text-pink-600 transition-opacity hover:opacity-80" />
                                 </a>
                             )}
-                             {contact.facebook && (
+                             {contact.showFacebook && contact.facebook && (
                                 <a href={contact.facebook} target="_blank" rel="noopener noreferrer" aria-label="Visit our Facebook">
-                                    <FacebookIcon className="h-8 w-8 text-blue-600 transition-opacity hover:opacity-80" />
+                                    <FacebookIcon className="h-7 w-7 text-blue-600 transition-opacity hover:opacity-80" />
                                 </a>
                             )}
                         </div>
@@ -104,23 +105,31 @@ export function Footer() {
                         </div>
                     )}
 
-                    {(footer?.hoursTitle || footer?.hoursContent) && (
-                        <div className="space-y-4">
-                             {footer?.hoursTitle && <h3 className="text-lg font-semibold">{footer.hoursTitle}</h3>}
-                            {footer?.hoursContent && (
-                                <div 
-                                    className={cn(
-                                        "text-muted-foreground whitespace-pre-line",
-                                        footer.hoursContentFontSize ? textSizeClasses[footer.hoursContentFontSize] : "text-sm",
-                                        footer.hoursContentIsBold && "font-bold"
-                                    )}
-                                    style={{ color: footer.hoursContentColor || undefined }}
-                                >
-                                    {footer.hoursContent}
-                                </div>
-                            )}
-                        </div>
-                    )}
+                    <div className="space-y-4">
+                        {isLoading ? (
+                            <>
+                                <Skeleton className="h-6 w-32"/>
+                                <Skeleton className="h-4 w-48"/>
+                                <Skeleton className="h-4 w-40"/>
+                            </>
+                        ) : (
+                            <>
+                                {footer?.hoursTitle && <h3 className="text-lg font-semibold">{footer.hoursTitle}</h3>}
+                                {footer?.hoursContent && (
+                                    <div 
+                                        className={cn(
+                                            "text-muted-foreground whitespace-pre-line",
+                                            footer.hoursContentFontSize ? textSizeClasses[footer.hoursContentFontSize] : "text-sm",
+                                            footer.hoursContentIsBold && "font-bold"
+                                        )}
+                                        style={{ color: footer.hoursContentColor || undefined }}
+                                    >
+                                        {footer.hoursContent}
+                                    </div>
+                                )}
+                            </>
+                        )}
+                    </div>
                     
                 </div>
                 {footer?.copyright && (
