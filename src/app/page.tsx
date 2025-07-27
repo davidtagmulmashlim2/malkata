@@ -68,7 +68,10 @@ const FeaturesSection = () => {
 
   return (
     <section className="container py-16 md:py-24">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 text-center">
+        <div className={cn(
+            "grid grid-cols-1 md:grid-cols-2 gap-12 text-center",
+            features.length === 3 ? "lg:grid-cols-3" : "lg:grid-cols-4"
+        )}>
             {features.map((feature, index) => {
                 const IconComponent = iconMap[feature.icon] || Leaf;
                 return (
