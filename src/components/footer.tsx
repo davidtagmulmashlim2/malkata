@@ -111,10 +111,10 @@ export function Footer() {
                                 <div 
                                     className={cn(
                                         "text-muted-foreground whitespace-pre-line",
-                                        textSizeClasses[footer.hoursContentFontSize ?? 'sm'],
+                                        footer.hoursContentFontSize ? textSizeClasses[footer.hoursContentFontSize] : "text-sm",
                                         footer.hoursContentIsBold && "font-bold"
                                     )}
-                                    style={{ color: footer.hoursContentColor }}
+                                    style={{ color: footer.hoursContentColor || undefined }}
                                 >
                                     {footer.hoursContent}
                                 </div>
