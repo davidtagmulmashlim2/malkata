@@ -195,7 +195,7 @@ export function CartSheet() {
                         </div>
                         <div className='space-y-2'>
                            <Label htmlFor="orderNotes">הערות להזמנה</Label>
-                           <Textarea id="orderNotes" value={orderNotes} onChange={(e) => setOrderNotes(e.target.value)} placeholder='למשל: "בלי כוסברה, תודה!"' />
+                           <Textarea id="orderNotes" value={orderNotes} onChange={(e) => setOrderNotes(e.target.value)} placeholder={cartContent.orderNotesPlaceholder} />
                         </div>
                          <div className='space-y-2'>
                             <Label>{cartContent.deliveryMethodTitle}</Label>

@@ -115,6 +115,7 @@ const contentSchema = z.object({
     deliveryLabel: z.string().min(1, 'חובה'),
     freeDeliveryThreshold: z.coerce.number().min(0),
     freeDeliveryText: z.string().min(1, 'חובה'),
+    orderNotesPlaceholder: z.string().optional(),
   }),
 });
 
@@ -545,6 +546,13 @@ export default function ContentManager() {
                       <FormLabel>הודעה על משלוח חינם</FormLabel>
                       <FormControl><Input {...field} /></FormControl>
                       <p className="text-xs text-muted-foreground pt-1">{'השתמש ב `{amount}` כדי להציג את הסכום שהוגדר.'}</p>
+                      <FormMessage />
+                    </FormItem>
+                  )} />
+                  <FormField name="cart.orderNotesPlaceholder" control={form.control} render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>טקסט לדוגמה (Placeholder) לשדה ההערות</FormLabel>
+                      <FormControl><Input {...field} value={field.value ?? ''} /></FormControl>
                       <FormMessage />
                     </FormItem>
                   )} />
