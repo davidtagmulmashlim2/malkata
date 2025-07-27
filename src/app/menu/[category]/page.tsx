@@ -6,6 +6,7 @@ import { notFound, useParams } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { AsyncImage } from '@/components/async-image';
 import { Skeleton } from '@/components/ui/skeleton';
+import React from 'react';
 
 export default function CategoryPage() {
     const { state, isLoading } = useApp();
@@ -59,13 +60,13 @@ export default function CategoryPage() {
                     <h1 
                         className={cn(
                             "font-bold text-white drop-shadow-lg",
-                            category.titleFont ? `font-${category.titleFont}` : 'font-headline',
                             textSizeClasses[category.titleFontSize ?? '5xl']
                         )}
                         style={{
                             color: category.titleColor ?? '#FFFFFF',
                             opacity: category.titleOpacity ?? 1,
-                        }}
+                            fontFamily: category.titleFont ? `var(--font-${category.titleFont})` : 'var(--font-headline-family)',
+                        } as React.CSSProperties}
                     >
                         {category.name}
                     </h1>
