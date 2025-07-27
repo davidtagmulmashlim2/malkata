@@ -49,6 +49,16 @@ export interface Subscriber {
     date: string;
 }
 
+export interface Feature {
+    icon: string;
+    title: string;
+    description: string;
+}
+
+export interface OptionalFeature extends Feature {
+    enabled: boolean;
+}
+
 export interface SiteContent {
   hero: {
     titleFirstWord: string;
@@ -90,6 +100,12 @@ export interface SiteContent {
   };
   testimonials: {
     headline: string;
+  };
+   features: {
+    feature1: Feature;
+    feature2: Feature;
+    feature3: Feature;
+    feature4: OptionalFeature;
   };
   footer: {
     tagline?: string;

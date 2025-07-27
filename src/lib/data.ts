@@ -49,6 +49,29 @@ export const DEFAULT_APP_STATE: AppState = {
     testimonials: {
       headline: "מה אומרים עלינו"
     },
+    features: {
+        feature1: {
+            icon: 'Leaf',
+            title: 'ללא חומרים משמרים',
+            description: 'בישול ביתי – ללא חומרים משמרים או תוספים תעשייתיים. רק עם חומרי גלם איכותיים וטריים.'
+        },
+        feature2: {
+            icon: 'ChefHat',
+            title: 'טעמים בהתאמה אישית',
+            description: 'חריף כמו של סבתא? או עדין לילדים? כל בקשה מתקבלת באהבה.'
+        },
+        feature3: {
+            icon: 'Bike',
+            title: 'הזמנה מהירה ופשוטה',
+            description: 'בוחרים מנות באתר, שולחים לוואטסאפ, ואנחנו מתחילים לבשל. באהבה.'
+        },
+        feature4: {
+            enabled: true,
+            icon: 'PartyPopper',
+            title: 'קייטרינג ואירועים',
+            description: 'חוגגים אירוע? נשמח להביא את הטעמים של מלכתא עד אליכם.'
+        }
+    },
     footer: {
       tagline: 'אוכל ביתי אותנטי, מוכן באהבה כל יום מחדש.',
       contactTitle: 'יצירת קשר',

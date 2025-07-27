@@ -11,14 +11,15 @@ import { DishCard } from '@/components/dish-card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 import { useEffect, useMemo, useState } from 'react';
-import type { Testimonial } from '@/lib/types';
+import type { Testimonial, Feature, OptionalFeature } from '@/lib/types';
 import { AsyncImage } from '@/components/async-image';
-import { ChevronLeft, ChevronRight, ChefHat, Carrot, Bike, PartyPopper } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ChefHat, Carrot, Bike, PartyPopper, Leaf } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { toast } from '@/hooks/use-toast';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
+import React from 'react';
 
 
 const subscriberSchema = z.object({
@@ -26,44 +27,63 @@ const subscriberSchema = z.object({
     phone: z.string().min(9, "מספר טלפון לא חוקי."),
 });
 
-const features = [
-    {
-        icon: ChefHat,
-        title: "מנות שף",
-        description: "כל מנה יוצאת תחת ידיו של השף שלנו, עם מתכונים שעוברים במשפחה."
-    },
-    {
-        icon: Carrot,
-        title: "חומרי גלם טריים",
-        description: "אנו בוחרים בקפידה ירקות טריים ותבלינים מובחרים מהשוק מדי יום."
-    },
-     {
-        icon: Bike,
-        title: "משלוחים מהירים",
-        description: "האוכל החם והטרי שלנו מגיע אליכם במהירות עד פתח הבית."
-    },
-    {
-        icon: PartyPopper,
-        title: "קייטרינג ואירועים",
-        description: "חוגגים אירוע? נשמח להביא את הטעמים של מלכתא עד אליכם."
-    }
-];
+const iconMap: { [key: string]: React.ElementType } = {
+  ChefHat,
+  Carrot,
+  Bike,
+  PartyPopper,
+  Leaf
+};
 
-const FeaturesSection = () => (
-    <section className="container py-16 md:py-24">
+const FeaturesSection = () => {
+  const { state, isLoading } = useApp();
+
+  const features = useMemo(() => {
+    if (isLoading) return [];
+
+    const { feature1, feature2, feature3, feature4 } = state.siteContent.features;
+    const list: (Feature | OptionalFeature)[] = [feature1, feature2, feature3];
+    if (feature4.enabled) {
+      list.push(feature4);
+    }
+    return list;
+
+  }, [isLoading, state.siteContent.features]);
+
+  if (isLoading) {
+    return (
+      <section className="container py-16 md:py-24">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 text-center">
-            {features.map((feature, index) => (
-                <div key={index} className="flex flex-col items-center">
-                    <div className="flex items-center justify-center h-20 w-20 mb-4 rounded-full bg-primary/10 text-primary">
-                        <feature.icon className="w-10 h-10" />
-                    </div>
-                    <h3 className="text-xl font-headline font-bold mb-2">{feature.title}</h3>
-                    <p className="text-muted-foreground">{feature.description}</p>
+            {Array(4).fill(0).map((_, index) => (
+                 <div key={index} className="flex flex-col items-center">
+                    <Skeleton className="h-20 w-20 mb-4 rounded-full" />
+                    <Skeleton className="h-6 w-32 mb-2" />
+                    <Skeleton className="h-12 w-48" />
                 </div>
             ))}
         </div>
+      </section>
+    );
+  }
+
+  return (
+    <section className="container py-16 md:py-24">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 text-center">
+            {features.map((feature, index) => {
+                const IconComponent = iconMap[feature.icon] || Leaf;
+                return (
+                    <div key={index} className="flex flex-col items-center">
+                        <div className="flex items-center justify-center h-20 w-20 mb-4 rounded-full bg-primary/10 text-primary">
+                            <IconComponent className="w-10 h-10" />
+                        </div>
+                        <h3 className="text-xl font-headline font-bold mb-2">{feature.title}</h3>
+                        <p className="text-muted-foreground">{feature.description}</p>
+                    </div>
+                )
+            })}
+        </div>
     </section>
-);
+)};
 
 
 export default function Home() {

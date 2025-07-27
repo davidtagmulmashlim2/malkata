@@ -18,6 +18,38 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { storeImage } from '@/lib/image-store';
 import { AsyncImage } from '@/components/async-image';
+import { Leaf, ChefHat, Bike, PartyPopper } from 'lucide-react';
+import { Checkbox } from '@/components/ui/checkbox';
+
+
+const featureIcons = [
+    { name: 'עלה', value: 'Leaf', icon: Leaf },
+    { name: 'כובע שף', value: 'ChefHat', icon: ChefHat },
+    { name: 'אופניים', value: 'Bike', icon: Bike },
+    { name: 'קונפטי', value: 'PartyPopper', icon: PartyPopper },
+    { name: 'גזר', value: 'Carrot', icon: ChefHat },
+];
+
+const FeatureIconSelect = ({ field, onValueChange, value }: any) => (
+    <Select onValueChange={onValueChange} value={value}>
+        <FormControl>
+            <SelectTrigger>
+                <SelectValue placeholder="בחר אייקון" />
+            </SelectTrigger>
+        </FormControl>
+        <SelectContent>
+            {featureIcons.map(icon => (
+                <SelectItem key={icon.value} value={icon.value}>
+                    <div className="flex items-center gap-2">
+                        <icon.icon className="h-4 w-4" />
+                        <span>{icon.name}</span>
+                    </div>
+                </SelectItem>
+            ))}
+        </SelectContent>
+    </Select>
+);
+
 
 const contentSchema = z.object({
   hero: z.object({
@@ -60,6 +92,12 @@ const contentSchema = z.object({
   }),
   testimonials: z.object({
     headline: z.string().min(1, 'חובה'),
+  }),
+  features: z.object({
+      feature1: z.object({ icon: z.string(), title: z.string().min(1, 'חובה'), description: z.string().min(1, 'חובה') }),
+      feature2: z.object({ icon: z.string(), title: z.string().min(1, 'חובה'), description: z.string().min(1, 'חובה') }),
+      feature3: z.object({ icon: z.string(), title: z.string().min(1, 'חובה'), description: z.string().min(1, 'חובה') }),
+      feature4: z.object({ enabled: z.boolean(), icon: z.string(), title: z.string(), description: z.string() }),
   }),
   footer: z.object({
     tagline: z.string().optional(),
@@ -149,7 +187,7 @@ export default function ContentManager() {
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            <Accordion type="multiple" defaultValue={['hero', 'about', 'contact', 'menu', 'newsletter', 'testimonials', 'cart', 'footer']} className="w-full">
+            <Accordion type="multiple" defaultValue={['hero', 'about', 'contact', 'menu', 'newsletter', 'testimonials', 'features', 'cart', 'footer']} className="w-full">
               <AccordionItem value="hero">
                 <AccordionTrigger className="font-headline text-xl">עמוד הבית (אזור עליון)</AccordionTrigger>
                 <AccordionContent className="space-y-4 pt-4">
@@ -376,6 +414,48 @@ export default function ContentManager() {
                 </AccordionContent>
               </AccordionItem>
 
+              <AccordionItem value="features">
+                <AccordionTrigger className="font-headline text-xl">מדור יתרונות (עמוד הבית)</AccordionTrigger>
+                <AccordionContent className="space-y-6 pt-4">
+                    <div className="p-4 border rounded-md space-y-4">
+                        <h4 className='font-medium text-md'>יתרון 1</h4>
+                        <FormField name="features.feature1.icon" control={form.control} render={({ field }) => ( <FormItem><FormLabel>אייקון</FormLabel><FeatureIconSelect {...field} /><FormMessage /></FormItem> )} />
+                        <FormField name="features.feature1.title" control={form.control} render={({ field }) => ( <FormItem><FormLabel>כותרת</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem> )} />
+                        <FormField name="features.feature1.description" control={form.control} render={({ field }) => ( <FormItem><FormLabel>תיאור</FormLabel><FormControl><Textarea {...field} /></FormControl><FormMessage /></FormItem> )} />
+                    </div>
+                     <div className="p-4 border rounded-md space-y-4">
+                        <h4 className='font-medium text-md'>יתרון 2</h4>
+                        <FormField name="features.feature2.icon" control={form.control} render={({ field }) => ( <FormItem><FormLabel>אייקון</FormLabel><FeatureIconSelect {...field} /><FormMessage /></FormItem> )} />
+                        <FormField name="features.feature2.title" control={form.control} render={({ field }) => ( <FormItem><FormLabel>כותרת</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem> )} />
+                        <FormField name="features.feature2.description" control={form.control} render={({ field }) => ( <FormItem><FormLabel>תיאור</FormLabel><FormControl><Textarea {...field} /></FormControl><FormMessage /></FormItem> )} />
+                    </div>
+                     <div className="p-4 border rounded-md space-y-4">
+                        <h4 className='font-medium text-md'>יתרון 3</h4>
+                        <FormField name="features.feature3.icon" control={form.control} render={({ field }) => ( <FormItem><FormLabel>אייקון</FormLabel><FeatureIconSelect {...field} /><FormMessage /></FormItem> )} />
+                        <FormField name="features.feature3.title" control={form.control} render={({ field }) => ( <FormItem><FormLabel>כותרת</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem> )} />
+                        <FormField name="features.feature3.description" control={form.control} render={({ field }) => ( <FormItem><FormLabel>תיאור</FormLabel><FormControl><Textarea {...field} /></FormControl><FormMessage /></FormItem> )} />
+                    </div>
+                     <div className="p-4 border rounded-md space-y-4">
+                        <FormField
+                            control={form.control}
+                            name="features.feature4.enabled"
+                            render={({ field }) => (
+                                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                                    <div className="space-y-0.5">
+                                        <FormLabel>יתרון 4 (אופציונלי)</FormLabel>
+                                        <p className="text-xs text-muted-foreground">הפעל כדי להציג את היתרון הרביעי בעמוד הבית.</p>
+                                    </div>
+                                    <FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl>
+                                </FormItem>
+                            )}
+                        />
+                        <FormField name="features.feature4.icon" control={form.control} render={({ field }) => ( <FormItem><FormLabel>אייקון</FormLabel><FeatureIconSelect {...field} /><FormMessage /></FormItem> )} />
+                        <FormField name="features.feature4.title" control={form.control} render={({ field }) => ( <FormItem><FormLabel>כותרת</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem> )} />
+                        <FormField name="features.feature4.description" control={form.control} render={({ field }) => ( <FormItem><FormLabel>תיאור</FormLabel><FormControl><Textarea {...field} /></FormControl><FormMessage /></FormItem> )} />
+                    </div>
+                </AccordionContent>
+              </AccordionItem>
+              
               <AccordionItem value="contact">
                 <AccordionTrigger className="font-headline text-xl">פרטי התקשרות</AccordionTrigger>
                 <AccordionContent className="space-y-4 pt-4">
