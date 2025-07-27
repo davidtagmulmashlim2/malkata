@@ -138,7 +138,7 @@ export interface SiteContent {
     deliveryLabel: string;
     freeDeliveryThreshold: number;
     freeDeliveryText: string;
-    orderNotesPlaceholder: string;
+    orderNotesPlaceholder?: string;
   };
 }
 

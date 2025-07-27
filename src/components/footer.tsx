@@ -53,8 +53,8 @@ export function Footer() {
     return (
         <footer className="bg-card text-card-foreground border-t">
             <div className="container py-12 px-4 sm:px-6 lg:px-8">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+                    <div className="md:col-span-2 space-y-4">
                         <Link href="/" className="flex items-center gap-2 font-headline text-2xl font-bold text-primary" style={logoStyle}>
                             {IconComponent && <IconComponent className="h-7 w-7" />}
                             מלכתא
@@ -94,6 +94,17 @@ export function Footer() {
                                     </li>
                                  )}
                             </ul>
+                        </div>
+                    )}
+
+                    {(footer?.hoursTitle || footer?.hoursContent) && (
+                        <div className="space-y-4">
+                             {footer?.hoursTitle && <h3 className="text-lg font-semibold">{footer.hoursTitle}</h3>}
+                            {footer?.hoursContent && (
+                                <div className="text-sm text-muted-foreground whitespace-pre-line">
+                                    {footer.hoursContent}
+                                </div>
+                            )}
                         </div>
                     )}
                     
