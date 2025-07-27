@@ -2,7 +2,7 @@
 'use client';
 
 import React, { createContext, useContext, useReducer, useEffect, useState, useMemo, useCallback } from 'react';
-import type { AppState, AppContextType, Action, CartItem, Dish, Testimonial } from '@/lib/types';
+import type { AppState, AppContextType, Action, CartItem, Dish, Testimonial, ContactSubmission } from '@/lib/types';
 import { DEFAULT_APP_STATE } from '@/lib/data';
 
 const AppContext = createContext<AppContextType | null>(null);

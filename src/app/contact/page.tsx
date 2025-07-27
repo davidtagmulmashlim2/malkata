@@ -16,9 +16,14 @@ import { InstagramIcon } from '@/components/icons/instagram-icon';
 
 const formSchema = z.object({
   name: z.string().min(2, { message: "שם חייב להכיל לפחות 2 תווים." }),
-  email: z.string().email({ message: "כתובת אימייל לא חוקית." }),
+  email: z.string().email({ message: "כתובת אימייל לא חוקית." }).optional().or(z.literal('')),
+  phone: z.string().min(9, "מספר טלפון לא חוקי").optional().or(z.literal('')),
   message: z.string().min(10, { message: "הודעה חייבת להכיל לפחות 10 תווים." }),
+}).refine(data => data.email || data.phone, {
+    message: "יש להזין אימייל או מספר טלפון",
+    path: ["email"], // You can set the path to which field the error should be attached
 });
+
 
 export default function ContactPage() {
     const { state, dispatch } = useApp();
@@ -26,7 +31,7 @@ export default function ContactPage() {
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
-        defaultValues: { name: "", email: "", message: "" },
+        defaultValues: { name: "", email: "", phone: "", message: "" },
     });
 
     function onSubmit(values: z.infer<typeof formSchema>) {
@@ -36,6 +41,7 @@ export default function ContactPage() {
                 id: Date.now().toString(),
                 name: values.name,
                 email: values.email,
+                phone: values.phone,
                 message: values.message,
                 date: new Date().toISOString(),
                 isRead: false,
@@ -77,6 +83,17 @@ export default function ContactPage() {
                                     <FormItem>
                                         <FormLabel>אימייל</FormLabel>
                                         <FormControl><Input type="email" placeholder="your@email.com" {...field} /></FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                             <FormField
+                                control={form.control}
+                                name="phone"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>טלפון</FormLabel>
+                                        <FormControl><Input type="tel" placeholder="050-1234567" {...field} /></FormControl>
                                         <FormMessage />
                                     </FormItem>
                                 )}

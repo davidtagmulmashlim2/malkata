@@ -31,6 +31,13 @@ export default function InboxManager() {
       }
   }
 
+  const getContactInfo = (submission: ContactSubmission) => {
+    if (submission.email && submission.phone) {
+        return `${submission.email}, ${submission.phone}`;
+    }
+    return submission.email || submission.phone || 'לא צוין';
+  }
+
   return (
     <Card>
       <CardHeader>
@@ -44,7 +51,7 @@ export default function InboxManager() {
                 <TableRow>
                 <TableHead className="w-[80px]">סטטוס</TableHead>
                 <TableHead>שם</TableHead>
-                <TableHead>אימייל</TableHead>
+                <TableHead>פרטי קשר</TableHead>
                 <TableHead>תאריך</TableHead>
                 <TableHead className="text-left w-[120px]">פעולות</TableHead>
                 </TableRow>
@@ -57,7 +64,7 @@ export default function InboxManager() {
                             {!submission.isRead && <Badge>חדש</Badge>}
                         </TableCell>
                         <TableCell>{submission.name}</TableCell>
-                        <TableCell>{submission.email}</TableCell>
+                        <TableCell>{getContactInfo(submission)}</TableCell>
                         <TableCell>{format(new Date(submission.date), 'dd/MM/yyyy HH:mm')}</TableCell>
                         <TableCell className="text-left">
                             <div className="flex gap-2">
@@ -101,7 +108,11 @@ export default function InboxManager() {
                      <DialogHeader className="text-right">
                         <DialogTitle>פרטי הפנייה</DialogTitle>
                         <DialogDescription>
-                            מאת: {selectedSubmission.name} ({selectedSubmission.email})
+                            מאת: {selectedSubmission.name}
+                            <br/>
+                            {selectedSubmission.email && `אימייל: ${selectedSubmission.email}`}
+                            {selectedSubmission.email && selectedSubmission.phone && <br/>}
+                            {selectedSubmission.phone && `טלפון: ${selectedSubmission.phone}`}
                             <br/>
                             בתאריך: {format(new Date(selectedSubmission.date), 'dd/MM/yyyy HH:mm')}
                         </DialogDescription>
