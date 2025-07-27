@@ -50,7 +50,7 @@ const slugify = (text: string): string => {
 
 const fontSizes = ['xs', 'sm', 'base', 'lg', 'xl', '2xl', '3xl', '4xl', '5xl', '6xl', '7xl', '8xl', '9xl'];
 const fonts = [
-    { name: 'ברירת מחדל של האתר', value: '' },
+    { name: 'ברירת מחדל של האתר', value: 'default' },
     { name: 'Playfair Display', value: 'playfair' },
     { name: 'PT Sans', value: 'pt-sans' },
     { name: 'Roboto Mono', value: 'roboto-mono' },
@@ -129,7 +129,7 @@ export default function MenuManager() {
       resolver: zodResolver(categorySchema),
       defaultValues: { 
           name: '', description: '', image: '',
-          titleColor: '#FFFFFF', titleFontSize: '5xl', titleFont: '', titleOpacity: 1, 
+          titleColor: '#FFFFFF', titleFontSize: '5xl', titleFont: 'default', titleOpacity: 1, 
           imageBrightness: 50, showDescription: true
       } 
     })
@@ -159,7 +159,7 @@ export default function MenuManager() {
         setEditingCategory(null);
         categoryForm.reset({ 
             name: '', description: '', image: '',
-            titleColor: '#FFFFFF', titleFontSize: '5xl', titleFont: '', titleOpacity: 1,
+            titleColor: '#FFFFFF', titleFontSize: '5xl', titleFont: 'default', titleOpacity: 1,
             imageBrightness: 50, showDescription: true,
         });
     } else if (editingCategory) {
@@ -167,7 +167,7 @@ export default function MenuManager() {
             ...editingCategory,
             titleColor: editingCategory.titleColor ?? '#FFFFFF',
             titleFontSize: editingCategory.titleFontSize ?? '5xl',
-            titleFont: editingCategory.titleFont ?? '',
+            titleFont: editingCategory.titleFont || 'default',
             titleOpacity: editingCategory.titleOpacity ?? 1,
             imageBrightness: editingCategory.imageBrightness ?? 50,
             showDescription: editingCategory.showDescription ?? true,
@@ -200,6 +200,7 @@ export default function MenuManager() {
     const categoryData = {
       ...values,
       slug: slugify(values.name),
+      titleFont: values.titleFont === 'default' ? '' : values.titleFont
     };
     
     if (editingCategory) {
