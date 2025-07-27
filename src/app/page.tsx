@@ -179,51 +179,57 @@ export default function Home() {
     <div className="text-right">
       {/* Hero Section */}
       <section className="relative h-[60vh] md:h-[80vh] w-full text-white overflow-hidden">
-        <AsyncImage
-          imageKey={siteContent.hero.image}
-          alt="רקע של אוכל ביתי"
-          layout="fill"
-          objectFit="cover"
-          className="z-0 animation-slow-zoom-in"
-          style={{ filter: `brightness(${siteContent.hero.heroImageBrightness}%)` }}
-          priority
-          data-ai-hint="warm food"
-          skeletonClassName="w-full h-full"
-        />
-        <div className={cn(
-            "absolute inset-0 z-10 p-4 flex flex-col",
-            verticalAlignClasses[hero.verticalAlign],
-            horizontalAlignClasses[hero.horizontalAlign]
-        )}>
-          <div className={cn("w-full", textAlignClasses[hero.textAlign])}>
-            {isLoading ? <Skeleton className="h-16 w-[80vw] max-w-4xl" /> : (siteContent.hero.titleFirstWord || siteContent.hero.titleRest) && (
-                <h1 className="font-headline font-bold drop-shadow-lg">
-                  <Typewriter
-                      key={typewriterKey}
-                      textParts={[
-                          { text: siteContent.hero.titleFirstWord, style: { color: siteContent.hero.titleFirstWordColor, opacity: siteContent.hero.titleFirstWordOpacity }, className: textSizeClasses[siteContent.hero.titleFirstWordFontSize] },
-                          { text: ` ${siteContent.hero.titleRest}`, style: { color: siteContent.hero.titleRestColor, opacity: siteContent.hero.titleRestOpacity }, className: textSizeClasses[siteContent.hero.titleRestFontSize] },
-                      ]}
-                  />
-                </h1>
-            )}
-            
-            {isLoading ? <Skeleton className="h-8 w-96 mt-2" /> : siteContent.hero.subtitle && (
-              <div className={cn("mt-4 text-lg md:text-2xl max-w-2xl drop-shadow-md", horizontalAlignClasses[hero.horizontalAlign] === 'justify-center' ? 'mx-auto' : '')} style={{ opacity: siteContent.hero.subtitleOpacity }}>
-                {siteContent.hero.subtitle}
+        {isLoading ? (
+            <Skeleton className="w-full h-full" />
+        ) : (
+        <>
+            <AsyncImage
+              imageKey={siteContent.hero.image}
+              alt="רקע של אוכל ביתי"
+              layout="fill"
+              objectFit="cover"
+              className="z-0 animation-slow-zoom-in"
+              style={{ filter: `brightness(${siteContent.hero.heroImageBrightness}%)` }}
+              priority
+              data-ai-hint="warm food"
+              skeletonClassName="w-full h-full"
+            />
+            <div className={cn(
+                "absolute inset-0 z-10 p-4 flex flex-col",
+                verticalAlignClasses[hero.verticalAlign],
+                horizontalAlignClasses[hero.horizontalAlign]
+            )}>
+              <div className={cn("w-full", textAlignClasses[hero.textAlign])}>
+                {(siteContent.hero.titleFirstWord || siteContent.hero.titleRest) && (
+                    <h1 className="font-headline font-bold drop-shadow-lg">
+                      <Typewriter
+                          key={typewriterKey}
+                          textParts={[
+                              { text: siteContent.hero.titleFirstWord, style: { color: siteContent.hero.titleFirstWordColor, opacity: siteContent.hero.titleFirstWordOpacity }, className: textSizeClasses[siteContent.hero.titleFirstWordFontSize] },
+                              { text: ` ${siteContent.hero.titleRest}`, style: { color: siteContent.hero.titleRestColor, opacity: siteContent.hero.titleRestOpacity }, className: textSizeClasses[siteContent.hero.titleRestFontSize] },
+                          ]}
+                      />
+                    </h1>
+                )}
+                
+                {siteContent.hero.subtitle && (
+                  <div className={cn("mt-4 text-lg md:text-2xl max-w-2xl drop-shadow-md", horizontalAlignClasses[hero.horizontalAlign] === 'justify-center' ? 'mx-auto' : '')} style={{ opacity: siteContent.hero.subtitleOpacity }}>
+                    {siteContent.hero.subtitle}
+                  </div>
+                )}
               </div>
-            )}
-          </div>
-        </div>
+            </div>
 
-        <div className="absolute bottom-12 left-0 right-0 z-10 flex justify-center gap-4 px-4">
-           <Button asChild size="lg" className="font-bold">
-              <Link href="/menu">צפה בתפריט</Link>
-           </Button>
-           <Button asChild size="lg" variant="outline" className="font-bold border-2 border-white text-white bg-transparent hover:bg-white hover:text-black">
-               <Link href="/menu">הזמן משלוח</Link>
-           </Button>
-        </div>
+            <div className="absolute bottom-12 left-0 right-0 z-10 flex justify-center gap-4 px-4">
+               <Button asChild size="lg" className="font-bold">
+                  <Link href="/menu">צפה בתפריט</Link>
+               </Button>
+               <Button asChild size="lg" variant="outline" className="font-bold border-2 border-white text-white bg-transparent hover:bg-white hover:text-black">
+                   <Link href="/menu">הזמן משלוח</Link>
+               </Button>
+            </div>
+        </>
+        )}
       </section>
 
       {/* Recommended Dishes Section */}

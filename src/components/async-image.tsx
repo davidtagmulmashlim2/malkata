@@ -5,6 +5,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 import { useState, useEffect } from 'react';
 import { getImage } from '@/lib/image-store';
+import { useApp } from '@/context/app-context';
 
 interface AsyncImageProps extends Omit<ImageProps, 'src'> {
   imageKey: string | undefined | null;
@@ -14,11 +15,16 @@ interface AsyncImageProps extends Omit<ImageProps, 'src'> {
 export function AsyncImage({ imageKey, alt, skeletonClassName, className, ...props }: AsyncImageProps) {
   const [src, setSrc] = useState<string | null>(null);
   const [error, setError] = useState(false);
+  const { isLoading } = useApp();
 
   useEffect(() => {
     let isMounted = true;
     setSrc(null); // Reset on key change to show loader
     setError(false);
+
+    if(isLoading) {
+      return;
+    }
 
     const fetchImage = async () => {
       if (!imageKey) {
@@ -42,7 +48,11 @@ export function AsyncImage({ imageKey, alt, skeletonClassName, className, ...pro
     fetchImage();
     
     return () => { isMounted = false; };
-  }, [imageKey]);
+  }, [imageKey, isLoading]);
+
+  if (isLoading) {
+    return <Skeleton className={cn("w-full h-full", skeletonClassName)} />;
+  }
 
   if (error) {
       return (
