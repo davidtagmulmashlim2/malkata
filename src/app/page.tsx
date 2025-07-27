@@ -13,7 +13,7 @@ import { cn } from '@/lib/utils';
 import { useEffect, useMemo, useState } from 'react';
 import type { Testimonial } from '@/lib/types';
 import { AsyncImage } from '@/components/async-image';
-import { ChevronLeft, ChevronRight, CookingPot, Leaf, Rocket, Users } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ChefHat, Carrot, Bike, PartyPopper } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -28,22 +28,22 @@ const subscriberSchema = z.object({
 
 const features = [
     {
-        icon: Leaf,
-        title: "חומרי גלם טריים",
-        description: "אנו בוחרים בקפידה ירקות טריים ותבלינים מובחרים מהשוק מדי יום."
-    },
-    {
-        icon: CookingPot,
+        icon: ChefHat,
         title: "מנות שף",
         description: "כל מנה יוצאת תחת ידיו של השף שלנו, עם מתכונים שעוברים במשפחה."
     },
+    {
+        icon: Carrot,
+        title: "חומרי גלם טריים",
+        description: "אנו בוחרים בקפידה ירקות טריים ותבלינים מובחרים מהשוק מדי יום."
+    },
      {
-        icon: Rocket,
+        icon: Bike,
         title: "משלוחים מהירים",
         description: "האוכל החם והטרי שלנו מגיע אליכם במהירות עד פתח הבית."
     },
     {
-        icon: Users,
+        icon: PartyPopper,
         title: "קייטרינג ואירועים",
         description: "חוגגים אירוע? נשמח להביא את הטעמים של מלכתא עד אליכם."
     }
