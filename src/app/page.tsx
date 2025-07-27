@@ -13,7 +13,7 @@ import { cn } from '@/lib/utils';
 import { useEffect, useMemo, useState } from 'react';
 import type { Testimonial } from '@/lib/types';
 import { AsyncImage } from '@/components/async-image';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, CookingPot, Leaf, Rocket, Users } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -25,6 +25,45 @@ const subscriberSchema = z.object({
     name: z.string().min(2, "שם חייב להכיל לפחות 2 תווים."),
     phone: z.string().min(9, "מספר טלפון לא חוקי."),
 });
+
+const features = [
+    {
+        icon: Leaf,
+        title: "חומרי גלם טריים",
+        description: "אנו בוחרים בקפידה ירקות טריים ותבלינים מובחרים מהשוק מדי יום."
+    },
+    {
+        icon: CookingPot,
+        title: "מנות שף",
+        description: "כל מנה יוצאת תחת ידיו של השף שלנו, עם מתכונים שעוברים במשפחה."
+    },
+     {
+        icon: Rocket,
+        title: "משלוחים מהירים",
+        description: "האוכל החם והטרי שלנו מגיע אליכם במהירות עד פתח הבית."
+    },
+    {
+        icon: Users,
+        title: "קייטרינג ואירועים",
+        description: "חוגגים אירוע? נשמח להביא את הטעמים של מלכתא עד אליכם."
+    }
+];
+
+const FeaturesSection = () => (
+    <section className="container py-16 md:py-24">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 text-center">
+            {features.map((feature, index) => (
+                <div key={index} className="flex flex-col items-center">
+                    <div className="flex items-center justify-center h-20 w-20 mb-4 rounded-full bg-primary/10 text-primary">
+                        <feature.icon className="w-10 h-10" />
+                    </div>
+                    <h3 className="text-xl font-headline font-bold mb-2">{feature.title}</h3>
+                    <p className="text-muted-foreground">{feature.description}</p>
+                </div>
+            ))}
+        </div>
+    </section>
+);
 
 
 export default function Home() {
@@ -184,6 +223,9 @@ export default function Home() {
         </div>
       </section>
       
+      {/* Features Section */}
+      <FeaturesSection />
+
       {/* Testimonials Section */}
        <section className="py-8">
         <div className="max-w-xl mx-auto">
