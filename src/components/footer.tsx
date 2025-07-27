@@ -9,6 +9,7 @@ import React from "react";
 import { WhatsappIcon } from "./icons/whatsapp-icon";
 import { InstagramIcon } from "./icons/instagram-icon";
 import { FacebookIcon } from "./icons/facebook-icon";
+import { cn } from "@/lib/utils";
 
 const Crown2 = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" {...props}>
@@ -50,6 +51,11 @@ export function Footer() {
     const IconComponent = iconMap[design.logoIcon] || UtensilsCrossed;
     const logoStyle = design.logoColor ? { color: design.logoColor } : {};
 
+    const textSizeClasses: { [key: string]: string } = {
+      'xs': 'text-xs', 'sm': 'text-sm', 'base': 'text-base', 'lg': 'text-lg', 'xl': 'text-xl', 
+      '2xl': 'text-2xl', '3xl': 'text-3xl', '4xl': 'text-4xl', '5xl': 'text-5xl', 
+      '6xl': 'text-6xl', '7xl': 'text-7xl', '8xl': 'text-8xl', '9xl': 'text-9xl',
+    };
 
     return (
         <footer className="bg-card text-card-foreground border-t">
@@ -102,7 +108,14 @@ export function Footer() {
                         <div className="space-y-4">
                              {footer?.hoursTitle && <h3 className="text-lg font-semibold">{footer.hoursTitle}</h3>}
                             {footer?.hoursContent && (
-                                <div className="text-sm text-muted-foreground whitespace-pre-line">
+                                <div 
+                                    className={cn(
+                                        "text-muted-foreground whitespace-pre-line",
+                                        textSizeClasses[footer.hoursContentFontSize ?? 'sm'],
+                                        footer.hoursContentIsBold && "font-bold"
+                                    )}
+                                    style={{ color: footer.hoursContentColor }}
+                                >
                                     {footer.hoursContent}
                                 </div>
                             )}

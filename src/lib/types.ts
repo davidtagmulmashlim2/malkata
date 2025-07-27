@@ -131,6 +131,9 @@ export interface SiteContent {
     hoursTitle?: string;
     copyright?: string;
     hoursContent?: string;
+    hoursContentColor?: string;
+    hoursContentFontSize?: string;
+    hoursContentIsBold?: boolean;
   };
   cart: {
     deliveryMethodTitle: string;

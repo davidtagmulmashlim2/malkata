@@ -117,6 +117,9 @@ const contentSchema = z.object({
     hoursTitle: z.string().optional(),
     copyright: z.string().optional(),
     hoursContent: z.string().optional(),
+    hoursContentColor: z.string().optional(),
+    hoursContentFontSize: z.string().optional(),
+    hoursContentIsBold: z.boolean().optional(),
   }),
   cart: z.object({
     deliveryMethodTitle: z.string().min(1, 'חובה'),
@@ -712,6 +715,31 @@ export default function ContentManager() {
                       <FormMessage />
                     </FormItem>
                   )} />
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4 border-t pt-4 mt-4">
+                        <FormField name="footer.hoursContentColor" control={form.control} render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>צבע התוכן</FormLabel>
+                                <FormControl><Input type="color" {...field} className="p-1 h-10 w-full" value={field.value ?? ''} /></FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )} />
+                        <FormField name="footer.hoursContentFontSize" control={form.control} render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>גודל גופן</FormLabel>
+                                <Select onValueChange={field.onChange} value={field.value}>
+                                    <FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl>
+                                    <SelectContent>{fontSizes.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent>
+                                </Select>
+                                <FormMessage />
+                            </FormItem>
+                        )} />
+                        <FormField name="footer.hoursContentIsBold" control={form.control} render={({ field }) => (
+                           <FormItem className="flex flex-row items-center justify-start rounded-lg border p-3 shadow-sm h-full mt-auto">
+                                <FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl>
+                                <FormLabel className="mr-2">הדגשה (Bold)</FormLabel>
+                           </FormItem>
+                        )} />
+                    </div>
                   <FormField name="footer.copyright" control={form.control} render={({ field }) => (
                     <FormItem>
                       <FormLabel>שורת זכויות יוצרים</FormLabel>

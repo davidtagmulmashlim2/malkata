@@ -83,9 +83,12 @@ export const DEFAULT_APP_STATE: AppState = {
     footer: {
       tagline: 'אוכל ביתי אותנטי, מוכן באהבה כל יום מחדש.',
       contactTitle: 'יצירת קשר',
-      hoursTitle: 'שעות פתיחה',
+      hoursTitle: 'הזמנות לשבת:',
       copyright: 'מלכתא. כל הזכויות שמורות.',
-      hoursContent: 'א׳-ה׳: 11:00 - 22:00\nו׳ וערבי חג: 09:00 - 15:00\nשבת: סגור'
+      hoursContent: 'הזמנות לשבת יתקבלו עד יום רביעי בשעה 23:00',
+      hoursContentColor: '#52525b',
+      hoursContentFontSize: 'sm',
+      hoursContentIsBold: false,
     },
     cart: {
       deliveryMethodTitle: "אופן קבלת ההזמנה",
