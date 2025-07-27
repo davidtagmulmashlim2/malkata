@@ -61,11 +61,11 @@ export function Footer() {
                         {footer?.tagline && <p className="text-muted-foreground text-sm">{footer.tagline}</p>}
                         <div className="flex gap-2">
                            <a href={`https://wa.me/${contact.whatsapp}`} target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp">
-                                <WhatsappIcon className="h-7 w-7 text-green-500 transition-opacity hover:opacity-80" />
+                                <WhatsappIcon className="h-8 w-8 text-green-500 transition-opacity hover:opacity-80" />
                             </a>
                             {contact.instagram && (
                                 <a href={contact.instagram} target="_blank" rel="noopener noreferrer" aria-label="Visit our Instagram">
-                                    <InstagramIcon className="h-7 w-7 text-pink-600 transition-opacity hover:opacity-80" />
+                                    <InstagramIcon className="h-8 w-8 text-pink-600 transition-opacity hover:opacity-80" />
                                 </a>
                             )}
                         </div>
