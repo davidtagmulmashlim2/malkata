@@ -49,6 +49,20 @@ const slugify = (text: string): string => {
 }
 
 const fontSizes = ['xs', 'sm', 'base', 'lg', 'xl', '2xl', '3xl', '4xl', '5xl', '6xl', '7xl', '8xl', '9xl'];
+const fonts = [
+    { name: 'ברירת מחדל של האתר', value: '' },
+    { name: 'Playfair Display', value: 'playfair' },
+    { name: 'PT Sans', value: 'pt-sans' },
+    { name: 'Roboto Mono', value: 'roboto-mono' },
+    { name: 'Chakra Petch', value: 'chakra-petch' },
+    { name: 'Cormorant Garamond', value: 'cormorant-garamond' },
+    { name: 'Lato', value: 'lato' },
+    { name: 'Montserrat', value: 'montserrat' },
+    { name: 'Open Sans', value: 'open-sans' },
+    { name: 'Frank Ruhl Libre', value: 'frank-ruhl-libre' },
+    { name: 'גברת לוין (כתב)', value: 'gveret-levin' },
+    { name: 'קרנטינה (כתב)', value: 'karantina' },
+];
 
 const dishSchema = z.object({
   id: z.string().optional(),
@@ -73,6 +87,7 @@ const categorySchema = z.object({
   slug: z.string().optional(), // Slug is generated, so optional in form
   titleColor: z.string().optional(),
   titleFontSize: z.string().optional(),
+  titleFont: z.string().optional(),
   titleOpacity: z.number().min(0).max(1).optional(),
   imageBrightness: z.coerce.number().min(0).max(100).optional(),
   showDescription: z.boolean().optional(),
@@ -114,7 +129,7 @@ export default function MenuManager() {
       resolver: zodResolver(categorySchema),
       defaultValues: { 
           name: '', description: '', image: '',
-          titleColor: '#FFFFFF', titleFontSize: '5xl', titleOpacity: 1, 
+          titleColor: '#FFFFFF', titleFontSize: '5xl', titleFont: '', titleOpacity: 1, 
           imageBrightness: 50, showDescription: true
       } 
     })
@@ -144,7 +159,7 @@ export default function MenuManager() {
         setEditingCategory(null);
         categoryForm.reset({ 
             name: '', description: '', image: '',
-            titleColor: '#FFFFFF', titleFontSize: '5xl', titleOpacity: 1,
+            titleColor: '#FFFFFF', titleFontSize: '5xl', titleFont: '', titleOpacity: 1,
             imageBrightness: 50, showDescription: true,
         });
     } else if (editingCategory) {
@@ -152,6 +167,7 @@ export default function MenuManager() {
             ...editingCategory,
             titleColor: editingCategory.titleColor ?? '#FFFFFF',
             titleFontSize: editingCategory.titleFontSize ?? '5xl',
+            titleFont: editingCategory.titleFont ?? '',
             titleOpacity: editingCategory.titleOpacity ?? 1,
             imageBrightness: editingCategory.imageBrightness ?? 50,
             showDescription: editingCategory.showDescription ?? true,
@@ -648,6 +664,16 @@ export default function MenuManager() {
                                 </FormItem>
                               )} />
                         </div>
+                        <FormField name="titleFont" control={categoryForm.control} render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>פונט כותרת</FormLabel>
+                                <Select onValueChange={field.onChange} value={field.value}>
+                                    <FormControl><SelectTrigger><SelectValue placeholder="ברירת מחדל של האתר" /></SelectTrigger></FormControl>
+                                    <SelectContent>{fonts.map(font => <SelectItem key={font.value} value={font.value}>{font.name}</SelectItem>)}</SelectContent>
+                                </Select>
+                                <FormMessage />
+                            </FormItem>
+                        )} />
                         <FormField name="titleOpacity" control={categoryForm.control} render={({ field }) => (
                             <FormItem>
                               <FormLabel>שקיפות כותרת ({Math.round((field.value ?? 1) * 100)}%)</FormLabel>

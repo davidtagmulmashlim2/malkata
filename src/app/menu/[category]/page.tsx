@@ -58,7 +58,8 @@ export default function CategoryPage() {
                 <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-4">
                     <h1 
                         className={cn(
-                            "font-headline font-bold text-white drop-shadow-lg",
+                            "font-bold text-white drop-shadow-lg",
+                            category.titleFont ? `font-${category.titleFont}` : 'font-headline',
                             textSizeClasses[category.titleFontSize ?? '5xl']
                         )}
                         style={{

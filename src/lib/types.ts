@@ -23,6 +23,7 @@ export interface Category {
   image: string; // This will be an image URL
   titleColor?: string;
   titleFontSize?: string;
+  titleFont?: string;
   titleOpacity?: number;
   imageBrightness?: number;
   showDescription?: boolean;
