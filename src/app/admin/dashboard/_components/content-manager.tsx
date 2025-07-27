@@ -33,7 +33,7 @@ const featureIcons = [
     { name: 'סמארטפון', value: 'Smartphone', icon: Smartphone },
 ];
 
-const FeatureIconSelect = ({ field, onValueChange, value }: any) => (
+const FeatureIconSelect = ({ onValueChange, value }: { onValueChange: (value: string) => void; value: string; }) => (
     <Select onValueChange={onValueChange} value={value}>
         <FormControl>
             <SelectTrigger>
@@ -422,19 +422,19 @@ export default function ContentManager() {
                 <AccordionContent className="space-y-6 pt-4">
                     <div className="p-4 border rounded-md space-y-4">
                         <h4 className='font-medium text-md'>יתרון 1</h4>
-                        <FormField name="features.feature1.icon" control={form.control} render={({ field }) => ( <FormItem><FormLabel>אייקון</FormLabel><FeatureIconSelect {...field} /><FormMessage /></FormItem> )} />
+                        <FormField name="features.feature1.icon" control={form.control} render={({ field }) => ( <FormItem><FormLabel>אייקון</FormLabel><FeatureIconSelect onValueChange={field.onChange} value={field.value} /><FormMessage /></FormItem> )} />
                         <FormField name="features.feature1.title" control={form.control} render={({ field }) => ( <FormItem><FormLabel>כותרת</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem> )} />
                         <FormField name="features.feature1.description" control={form.control} render={({ field }) => ( <FormItem><FormLabel>תיאור</FormLabel><FormControl><Textarea {...field} /></FormControl><FormMessage /></FormItem> )} />
                     </div>
                      <div className="p-4 border rounded-md space-y-4">
                         <h4 className='font-medium text-md'>יתרון 2</h4>
-                        <FormField name="features.feature2.icon" control={form.control} render={({ field }) => ( <FormItem><FormLabel>אייקון</FormLabel><FeatureIconSelect {...field} /><FormMessage /></FormItem> )} />
+                        <FormField name="features.feature2.icon" control={form.control} render={({ field }) => ( <FormItem><FormLabel>אייקון</FormLabel><FeatureIconSelect onValueChange={field.onChange} value={field.value} /><FormMessage /></FormItem> )} />
                         <FormField name="features.feature2.title" control={form.control} render={({ field }) => ( <FormItem><FormLabel>כותרת</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem> )} />
                         <FormField name="features.feature2.description" control={form.control} render={({ field }) => ( <FormItem><FormLabel>תיאור</FormLabel><FormControl><Textarea {...field} /></FormControl><FormMessage /></FormItem> )} />
                     </div>
                      <div className="p-4 border rounded-md space-y-4">
                         <h4 className='font-medium text-md'>יתרון 3</h4>
-                        <FormField name="features.feature3.icon" control={form.control} render={({ field }) => ( <FormItem><FormLabel>אייקון</FormLabel><FeatureIconSelect {...field} /><FormMessage /></FormItem> )} />
+                        <FormField name="features.feature3.icon" control={form.control} render={({ field }) => ( <FormItem><FormLabel>אייקון</FormLabel><FeatureIconSelect onValueChange={field.onChange} value={field.value} /><FormMessage /></FormItem> )} />
                         <FormField name="features.feature3.title" control={form.control} render={({ field }) => ( <FormItem><FormLabel>כותרת</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem> )} />
                         <FormField name="features.feature3.description" control={form.control} render={({ field }) => ( <FormItem><FormLabel>תיאור</FormLabel><FormControl><Textarea {...field} /></FormControl><FormMessage /></FormItem> )} />
                     </div>
@@ -452,7 +452,7 @@ export default function ContentManager() {
                                 </FormItem>
                             )}
                         />
-                        <FormField name="features.feature4.icon" control={form.control} render={({ field }) => ( <FormItem><FormLabel>אייקון</FormLabel><FeatureIconSelect {...field} /><FormMessage /></FormItem> )} />
+                        <FormField name="features.feature4.icon" control={form.control} render={({ field }) => ( <FormItem><FormLabel>אייקון</FormLabel><FeatureIconSelect onValueChange={field.onChange} value={field.value} /><FormMessage /></FormItem> )} />
                         <FormField name="features.feature4.title" control={form.control} render={({ field }) => ( <FormItem><FormLabel>כותרת</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem> )} />
                         <FormField name="features.feature4.description" control={form.control} render={({ field }) => ( <FormItem><FormLabel>תיאור</FormLabel><FormControl><Textarea {...field} /></FormControl><FormMessage /></FormItem> )} />
                     </div>
