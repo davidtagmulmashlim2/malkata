@@ -20,6 +20,7 @@ import { storeImage } from '@/lib/image-store';
 import { AsyncImage } from '@/components/async-image';
 import { Leaf, ChefHat, Bike, PartyPopper, Carrot, Rocket, Send, Smartphone } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Separator } from '@/components/ui/separator';
 
 
 const featureIcons = [
@@ -85,6 +86,12 @@ const contentSchema = z.object({
     email: z.string().email('אימייל לא חוקי'),
     hours: z.string().min(1, 'חובה'),
     instagram: z.string().url('כתובת אינטרנט לא חוקית').optional().or(z.literal('')),
+    showAddress: z.boolean().optional(),
+    showPhone: z.boolean().optional(),
+    showWhatsapp: z.boolean().optional(),
+    showEmail: z.boolean().optional(),
+    showInstagram: z.boolean().optional(),
+    showHours: z.boolean().optional(),
   }),
   menu: z.object({
       mainImage: z.string().min(1, 'חובה'),
@@ -505,6 +512,21 @@ export default function ContentManager() {
                       <FormMessage />
                     </FormItem>
                   )} />
+
+                  <Separator />
+
+                  <div className="space-y-4">
+                    <FormLabel className="font-medium">הצגת פרטים בעמוד</FormLabel>
+                    <div className="grid grid-cols-2 gap-4 rounded-lg border p-4">
+                      <FormField control={form.control} name="contact.showAddress" render={({ field }) => ( <FormItem className="flex items-center gap-2 space-y-0"><FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl><FormLabel>כתובת</FormLabel></FormItem> )} />
+                      <FormField control={form.control} name="contact.showPhone" render={({ field }) => ( <FormItem className="flex items-center gap-2 space-y-0"><FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl><FormLabel>טלפון</FormLabel></FormItem> )} />
+                      <FormField control={form.control} name="contact.showWhatsapp" render={({ field }) => ( <FormItem className="flex items-center gap-2 space-y-0"><FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl><FormLabel>וואטסאפ</FormLabel></FormItem> )} />
+                      <FormField control={form.control} name="contact.showEmail" render={({ field }) => ( <FormItem className="flex items-center gap-2 space-y-0"><FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl><FormLabel>אימייל</FormLabel></FormItem> )} />
+                      <FormField control={form.control} name="contact.showInstagram" render={({ field }) => ( <FormItem className="flex items-center gap-2 space-y-0"><FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl><FormLabel>אינסטגרם</FormLabel></FormItem> )} />
+                      <FormField control={form.control} name="contact.showHours" render={({ field }) => ( <FormItem className="flex items-center gap-2 space-y-0"><FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl><FormLabel>שעות פתיחה</FormLabel></FormItem> )} />
+                    </div>
+                  </div>
+
                 </AccordionContent>
               </AccordionItem>
               

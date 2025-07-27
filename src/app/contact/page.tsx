@@ -116,28 +116,34 @@ export default function ContactPage() {
                 <div className="space-y-8">
                     <h2 className="text-2xl font-bold font-headline mb-6 text-right">פרטי התקשרות</h2>
                     <div className="space-y-4 text-lg">
-                        <div className="flex items-start gap-4">
-                            <MapPin className="h-6 w-6 text-primary mt-1" />
-                            <div>
-                                <h3 className="font-semibold">כתובת</h3>
-                                <p className="text-muted-foreground">{contact.address}</p>
+                        {contact.showAddress && (
+                            <div className="flex items-start gap-4">
+                                <MapPin className="h-6 w-6 text-primary mt-1" />
+                                <div>
+                                    <h3 className="font-semibold">כתובת</h3>
+                                    <p className="text-muted-foreground">{contact.address}</p>
+                                </div>
                             </div>
-                        </div>
-                        <div className="flex items-start gap-4">
-                            <Phone className="h-6 w-6 text-primary mt-1" />
-                            <div>
-                                <h3 className="font-semibold">טלפון</h3>
-                                <a href={`tel:${contact.phone}`} className="text-muted-foreground hover:text-primary">{contact.phone}</a>
+                        )}
+                        {contact.showPhone && (
+                            <div className="flex items-start gap-4">
+                                <Phone className="h-6 w-6 text-primary mt-1" />
+                                <div>
+                                    <h3 className="font-semibold">טלפון</h3>
+                                    <a href={`tel:${contact.phone}`} className="text-muted-foreground hover:text-primary">{contact.phone}</a>
+                                </div>
                             </div>
-                        </div>
-                         <a href={`https://wa.me/${contact.whatsapp}`} target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp" className="flex items-start gap-4 text-muted-foreground hover:text-primary">
-                            <WhatsappIcon className="h-8 w-8 text-green-500 transition-opacity hover:opacity-80" />
-                            <div>
-                                <h3 className="font-semibold">וואטסאפ</h3>
-                                <span className="text-sm">שלחו לנו הודעה</span>
-                            </div>
-                        </a>
-                        {contact.instagram && (
+                        )}
+                        {contact.showWhatsapp && (
+                            <a href={`https://wa.me/${contact.whatsapp}`} target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp" className="flex items-start gap-4 text-muted-foreground hover:text-primary">
+                                <WhatsappIcon className="h-8 w-8 text-green-500 transition-opacity hover:opacity-80" />
+                                <div>
+                                    <h3 className="font-semibold">וואטסאפ</h3>
+                                    <span className="text-sm">שלחו לנו הודעה</span>
+                                </div>
+                            </a>
+                        )}
+                        {contact.showInstagram && contact.instagram && (
                              <a href={contact.instagram} target="_blank" rel="noopener noreferrer" aria-label="Visit our Instagram" className="flex items-start gap-4 text-muted-foreground hover:text-primary">
                                 <InstagramIcon className="h-8 w-8 text-pink-600 transition-opacity hover:opacity-80" />
                                  <div>
@@ -146,20 +152,24 @@ export default function ContactPage() {
                                 </div>
                             </a>
                         )}
-                        <div className="flex items-start gap-4">
-                            <Mail className="h-6 w-6 text-primary mt-1" />
-                            <div>
-                                <h3 className="font-semibold">אימייל</h3>
-                                <a href={`mailto:${contact.email}`} className="text-muted-foreground hover:text-primary">{contact.email}</a>
+                        {contact.showEmail && (
+                            <div className="flex items-start gap-4">
+                                <Mail className="h-6 w-6 text-primary mt-1" />
+                                <div>
+                                    <h3 className="font-semibold">אימייל</h3>
+                                    <a href={`mailto:${contact.email}`} className="text-muted-foreground hover:text-primary">{contact.email}</a>
+                                </div>
                             </div>
-                        </div>
-                        <div className="flex items-start gap-4">
-                            <Clock className="h-6 w-6 text-primary mt-1" />
-                            <div>
-                                <h3 className="font-semibold">שעות פתיחה</h3>
-                                <p className="text-muted-foreground whitespace-pre-line">{contact.hours}</p>
+                        )}
+                        {contact.showHours && (
+                            <div className="flex items-start gap-4">
+                                <Clock className="h-6 w-6 text-primary mt-1" />
+                                <div>
+                                    <h3 className="font-semibold">שעות פתיחה</h3>
+                                    <p className="text-muted-foreground whitespace-pre-line">{contact.hours}</p>
+                                </div>
                             </div>
-                        </div>
+                        )}
                     </div>
                 </div>
             </div>

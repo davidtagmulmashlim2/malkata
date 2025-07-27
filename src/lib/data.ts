@@ -38,6 +38,12 @@ export const DEFAULT_APP_STATE: AppState = {
       email: 'contact@malkata.co.il',
       hours: 'א׳-ה׳: 11:00 - 22:00 | ו׳: 09:00 - 15:00',
       instagram: 'https://instagram.com/malkata',
+      showAddress: true,
+      showPhone: true,
+      showWhatsapp: true,
+      showEmail: true,
+      showInstagram: true,
+      showHours: true,
     },
     menu: {
       mainImage: 'img-1721294835843-gqvtgpcgo',

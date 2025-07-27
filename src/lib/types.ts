@@ -100,6 +100,12 @@ export interface SiteContent {
     email: string;
     hours: string;
     instagram?: string;
+    showAddress?: boolean;
+    showPhone?: boolean;
+    showWhatsapp?: boolean;
+    showEmail?: boolean;
+    showInstagram?: boolean;
+    showHours?: boolean;
   };
   menu: {
     mainImage: string; // This will be an image URL
