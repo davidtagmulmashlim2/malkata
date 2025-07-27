@@ -25,6 +25,7 @@ import { Skeleton } from './ui/skeleton';
 import { AsyncImage } from './async-image';
 import { RadioGroup, RadioGroupItem } from './ui/radio-group';
 import { cn } from '@/lib/utils';
+import { Textarea } from './ui/textarea';
 
 const CartItemSkeleton = () => (
     <div className="flex justify-between items-center gap-4">
@@ -51,6 +52,7 @@ export function CartSheet() {
   const [customerPhone, setCustomerPhone] = useState('');
   const [customerAddress, setCustomerAddress] = useState('');
   const [deliveryMethod, setDeliveryMethod] = useState('pickup');
+  const [orderNotes, setOrderNotes] = useState('');
   const viewportRef = useRef<HTMLDivElement>(null);
 
   const cartDetails = useMemo(() => {
@@ -98,6 +100,9 @@ export function CartSheet() {
     message += `אופן קבלה: ${deliveryMethod === 'delivery' ? cartSettings.deliveryLabel : cartSettings.pickupLabel}\n`
     if (isDelivery) {
         message += `כתובת למשלוח: ${customerAddress}\n`;
+    }
+    if (orderNotes) {
+        message += `הערות להזמנה: ${orderNotes}\n`;
     }
     message += `\nברצוני לבצע הזמנה:\n\n`;
     
@@ -188,7 +193,10 @@ export function CartSheet() {
                             <Label htmlFor="customerPhone">טלפון</Label>
                             <Input id="customerPhone" type="tel" value={customerPhone} onChange={(e) => setCustomerPhone(e.target.value)} placeholder='050-1234567' />
                         </div>
-
+                        <div className='space-y-2'>
+                           <Label htmlFor="orderNotes">הערות להזמנה</Label>
+                           <Textarea id="orderNotes" value={orderNotes} onChange={(e) => setOrderNotes(e.target.value)} placeholder='למשל: "בלי כוסברה, תודה!"' />
+                        </div>
                          <div className='space-y-2'>
                             <Label>{cartContent.deliveryMethodTitle}</Label>
                             <div className="grid grid-cols-2 gap-2 pt-1">
