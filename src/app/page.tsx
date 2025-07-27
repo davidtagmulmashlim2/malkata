@@ -135,6 +135,15 @@ export default function Home() {
   const prevTestimonial = () => {
     setCurrentTestimonialIndex(prev => (prev - 1 + testimonials.length) % testimonials.length);
   };
+  
+  useEffect(() => {
+    if (testimonials.length > 1) {
+        const interval = setInterval(() => {
+            nextTestimonial();
+        }, 5000); // Change testimonial every 5 seconds
+        return () => clearInterval(interval);
+    }
+  }, [testimonials.length, currentTestimonialIndex]);
 
   const recommendedDishes = useMemo(() => {
     if (isLoading) return Array(3).fill(null);
