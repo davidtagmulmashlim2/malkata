@@ -94,6 +94,13 @@ export const DEFAULT_APP_STATE: AppState = {
       freeDeliveryThreshold: 200,
       freeDeliveryText: "משלוח חינם בהזמנה מעל {amount} ₪",
       orderNotesPlaceholder: 'למשל: "בלי כוסברה, תודה!"'
+    },
+    shabbatNotice: {
+        enabled: true,
+        text: 'הזמנות לשבת יתקבלו עד יום רביעי בשעה 23:00',
+        color: '#52525b', // zinc-600
+        fontSize: 'base',
+        isBold: false,
     }
   },
   // These arrays are intentionally empty.

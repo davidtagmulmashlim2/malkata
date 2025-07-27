@@ -6,9 +6,11 @@ import { notFound } from 'next/navigation';
 import { useIsClient } from '@/hooks/use-is-client';
 import { Skeleton } from '@/components/ui/skeleton';
 import { AsyncImage } from '@/components/async-image';
+import { cn } from '@/lib/utils';
+import React from 'react';
 
 export default function ShabbatMalkataPage() {
-    const { state } = useApp();
+    const { state, isLoading } = useApp();
     const isClient = useIsClient();
     
     const category = state.categories.find(c => c.slug === 'shabbat-malkata');
@@ -18,6 +20,13 @@ export default function ShabbatMalkataPage() {
     }
 
     const categoryDishes = state.dishes.filter(d => d.categoryIds?.includes(category?.id || ''));
+    const { shabbatNotice } = state.siteContent;
+
+    const textSizeClasses: { [key: string]: string } = {
+        'text-xs': 'text-xs', 'text-sm': 'text-sm', 'text-base': 'text-base', 'text-lg': 'text-lg', 'text-xl': 'text-xl', 
+        'text-2xl': 'text-2xl', 'text-3xl': 'text-3xl', 'text-4xl': 'text-4xl', 'text-5xl': 'text-5xl', 
+        'text-6xl': 'text-6xl', 'text-7xl': 'text-7xl', 'text-8xl': 'text-8xl', 'text-9xl': 'text-9xl',
+    };
 
     if (!isClient) {
         return (
@@ -57,6 +66,21 @@ export default function ShabbatMalkataPage() {
                 </div>
             </div>
             <div className="container py-12 md:py-20">
+                {shabbatNotice?.enabled && shabbatNotice.text && (
+                    <div className="text-center mb-12">
+                         <h2 className="text-2xl font-headline font-semibold">הזמנות לשבת:</h2>
+                         <p 
+                            className={cn(
+                                "mt-2",
+                                textSizeClasses[shabbatNotice.fontSize ?? 'base'],
+                                shabbatNotice.isBold && "font-bold"
+                            )}
+                            style={{ color: shabbatNotice.color }}
+                         >
+                            {shabbatNotice.text}
+                        </p>
+                    </div>
+                )}
                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
                     {categoryDishes.length > 0 ? (
                         categoryDishes.map(dish => (

@@ -126,6 +126,13 @@ const contentSchema = z.object({
     freeDeliveryText: z.string().min(1, 'חובה'),
     orderNotesPlaceholder: z.string().optional(),
   }),
+  shabbatNotice: z.object({
+      enabled: z.boolean().optional(),
+      text: z.string().optional(),
+      color: z.string().optional(),
+      fontSize: z.string().optional(),
+      isBold: z.boolean().optional(),
+  }).optional(),
 });
 
 type ContentFormValues = z.infer<typeof contentSchema>;
@@ -200,7 +207,7 @@ export default function ContentManager() {
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            <Accordion type="multiple" defaultValue={['hero', 'about', 'contact', 'menu', 'newsletter', 'testimonials', 'features', 'cart', 'footer']} className="w-full">
+            <Accordion type="multiple" defaultValue={['hero', 'about', 'contact', 'menu', 'shabbat-notice', 'newsletter', 'testimonials', 'features', 'cart', 'footer']} className="w-full">
               <AccordionItem value="hero">
                 <AccordionTrigger className="font-headline text-xl">עמוד הבית (אזור עליון)</AccordionTrigger>
                 <AccordionContent className="space-y-4 pt-4">
@@ -424,6 +431,56 @@ export default function ContentManager() {
                        </FormItem>
                     )}
                   />
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="shabbat-notice">
+                <AccordionTrigger className="font-headline text-xl">הודעת שבת</AccordionTrigger>
+                <AccordionContent className="space-y-4 pt-4">
+                     <FormField
+                        control={form.control}
+                        name="shabbatNotice.enabled"
+                        render={({ field }) => (
+                            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                                <div className="space-y-0.5">
+                                    <FormLabel>הצג הודעה בעמוד הזמנות לשבת</FormLabel>
+                                </div>
+                                <FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl>
+                            </FormItem>
+                        )}
+                    />
+                    <FormField name="shabbatNotice.text" control={form.control} render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>תוכן ההודעה</FormLabel>
+                            <FormControl><Textarea {...field} value={field.value ?? ''} /></FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )} />
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                        <FormField name="shabbatNotice.color" control={form.control} render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>צבע</FormLabel>
+                                <FormControl><Input type="color" {...field} className="p-1 h-10 w-full" value={field.value ?? ''} /></FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )} />
+                        <FormField name="shabbatNotice.fontSize" control={form.control} render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>גודל גופן</FormLabel>
+                                <Select onValueChange={field.onChange} value={field.value}>
+                                    <FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl>
+                                    <SelectContent>{fontSizes.map(s => <SelectItem key={s} value={`text-${s}`}>{s}</SelectItem>)}</SelectContent>
+                                </Select>
+                                <FormMessage />
+                            </FormItem>
+                        )} />
+                        <FormField name="shabbatNotice.isBold" control={form.control} render={({ field }) => (
+                           <FormItem className="flex flex-row items-center justify-start rounded-lg border p-3 shadow-sm h-full mt-auto">
+                                <FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl>
+                                <FormLabel className="mr-2">הדגשה (Bold)</FormLabel>
+                           </FormItem>
+                        )} />
+                    </div>
                 </AccordionContent>
               </AccordionItem>
 

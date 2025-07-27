@@ -140,6 +140,13 @@ export interface SiteContent {
     freeDeliveryText: string;
     orderNotesPlaceholder?: string;
   };
+  shabbatNotice?: {
+      enabled: boolean;
+      text: string;
+      color: string;
+      fontSize: string;
+      isBold: boolean;
+  };
 }
 
 export interface DesignSettings {
