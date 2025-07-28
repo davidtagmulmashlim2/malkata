@@ -90,39 +90,39 @@ export function DishCard({ dish }: DishCardProps) {
         }
     }}>
       <Card className="flex flex-col overflow-hidden h-full transition-all hover:shadow-lg text-right">
-        <DialogTrigger asChild>
-            <div className="relative aspect-square w-full overflow-hidden group">
-                <AsyncImage imageKey={dish.mainImage} alt={dish.name} layout="fill" objectFit="cover" />
-                <div className="absolute top-2 left-0 right-0 px-2 flex justify-between items-start">
-                    {isClient && cartItem ? (
-                        <div className="bg-primary text-primary-foreground rounded-full h-7 w-7 flex items-center justify-center text-sm font-bold z-10">
-                            {cartItem.quantity}
-                        </div>
-                    ) : <div />}
-                    <div className="flex gap-2 flex-wrap justify-end max-w-[80%]">
-                        {renderTags(dish.tags)}
+        <div className="relative aspect-square w-full overflow-hidden group">
+            <AsyncImage imageKey={dish.mainImage} alt={dish.name} layout="fill" objectFit="cover" />
+            <div className="absolute top-2 left-0 right-0 px-2 flex justify-between items-start">
+                {isClient && cartItem ? (
+                    <div className="bg-primary text-primary-foreground rounded-full h-7 w-7 flex items-center justify-center text-sm font-bold z-10">
+                        {cartItem.quantity}
                     </div>
+                ) : <div />}
+                <div className="flex gap-2 flex-wrap justify-end max-w-[80%]">
+                    {renderTags(dish.tags)}
                 </div>
-                {!dish.isAvailable && (
-                    <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                        <p className="text-white text-lg font-bold">אזל מהמלאי</p>
-                    </div>
-                )}
-                
-                <div className="absolute inset-0 p-0 flex flex-col justify-end items-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <div className="absolute bottom-2 left-2 right-2 flex items-center justify-center gap-2">
-                        <div onClick={(e) => e.stopPropagation()} className="flex-1 text-center py-2 px-3 bg-white/80 backdrop-blur-sm cursor-pointer text-sm font-semibold text-gray-800 flex items-center justify-center gap-1 rounded-lg">
-                            <ShoppingBag className="w-4 h-4"/>
-                            <span>הוספה לסל</span>
-                        </div>
+            </div>
+            {!dish.isAvailable && (
+                <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                    <p className="text-white text-lg font-bold">אזל מהמלאי</p>
+                </div>
+            )}
+            
+            <div className="absolute inset-0 p-0 flex flex-col justify-end items-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div className="absolute bottom-1 left-1 right-1 flex items-center justify-between gap-2">
+                    <DialogTrigger asChild>
                         <div className="flex-1 text-center py-2 px-3 bg-white/80 backdrop-blur-sm cursor-pointer text-sm font-semibold text-gray-800 flex items-center justify-center gap-1 rounded-lg">
                             <Eye className="w-4 h-4"/>
                             <span>הצגה מהירה</span>
                         </div>
+                    </DialogTrigger>
+                    <div onClick={(e) => { e.stopPropagation(); setIsDialogOpen(true); }} className="flex-1 text-center py-2 px-3 bg-white/80 backdrop-blur-sm cursor-pointer text-sm font-semibold text-gray-800 flex items-center justify-center gap-1 rounded-lg">
+                        <ShoppingBag className="w-4 h-4"/>
+                        <span>הוספה לסל</span>
                     </div>
                 </div>
             </div>
-        </DialogTrigger>
+        </div>
         
         <CardHeader>
           <CardTitle className="font-headline">{dish.name}</CardTitle>
