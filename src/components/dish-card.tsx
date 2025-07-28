@@ -50,11 +50,19 @@ export function DishCard({ dish }: DishCardProps) {
   }, [isDialogOpen, cartItem]);
 
   const handleAddToCart = () => {
-    addToCart(dish.id, quantity);
-    toast({
-        title: "נוסף לסל",
-        description: `${quantity}x ${dish.name} נוספו לסל הקניות שלך.`,
-    });
+    if (cartItem) {
+      updateCartQuantity(dish.id, quantity);
+      toast({
+        title: "הכמות עודכנה",
+        description: `הכמות של ${dish.name} עודכנה ל-${quantity}.`,
+      });
+    } else {
+      addToCart(dish.id, quantity);
+      toast({
+          title: "נוסף לסל",
+          description: `${quantity}x ${dish.name} נוספו לסל הקניות שלך.`,
+      });
+    }
     setIsDialogOpen(false);
   };
   
