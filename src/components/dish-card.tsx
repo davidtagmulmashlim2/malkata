@@ -97,8 +97,8 @@ export function DishCard({ dish }: DishCardProps) {
             setCurrentImageIndex(0);
         }
     }}>
-      <Card className="flex flex-col overflow-hidden h-full transition-all hover:shadow-lg group text-right">
-        <div className="relative cursor-pointer aspect-square w-full overflow-hidden">
+      <Card className="flex flex-col overflow-hidden h-full transition-all hover:shadow-lg text-right">
+        <div className="relative cursor-pointer aspect-square w-full overflow-hidden group">
             <AsyncImage imageKey={dish.mainImage} alt={dish.name} layout="fill" objectFit="cover" className="transition-transform duration-300 group-hover:scale-110"/>
             <div className="absolute top-2 left-0 right-0 px-2 flex justify-between items-start">
                 {isClient && cartItem ? (
@@ -118,12 +118,12 @@ export function DishCard({ dish }: DishCardProps) {
             {dish.isAvailable && (
                  <div className="absolute bottom-0 left-0 right-0 p-2 flex items-center justify-between opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <DialogTrigger asChild>
-                        <button className="h-12 w-[48%] flex items-center justify-center bg-white/80 backdrop-blur-sm text-sm font-semibold hover:bg-white/90">
+                        <button className="h-12 w-[45%] flex items-center justify-center bg-white/80 backdrop-blur-sm text-sm font-semibold hover:bg-white/90 rounded-t-lg">
                             <Eye className="ms-2 h-4 w-4" />
                             הצגה מהירה
                         </button>
                     </DialogTrigger>
-                    <button onClick={handleAddToCart} className="h-12 w-[48%] flex items-center justify-center bg-white/80 backdrop-blur-sm text-sm font-semibold hover:bg-white/90">
+                    <button onClick={handleAddToCart} className="h-12 w-[45%] flex items-center justify-center bg-white/80 backdrop-blur-sm text-sm font-semibold hover:bg-white/90 rounded-t-lg">
                         <ShoppingBagIcon className="ms-2 h-4 w-4" />
                         הוספה לסל
                     </button>
@@ -224,4 +224,3 @@ export function DishCard({ dish }: DishCardProps) {
     </Dialog>
   );
 }
-
