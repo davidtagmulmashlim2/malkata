@@ -98,21 +98,9 @@ export function DishCard({ dish }: DishCardProps) {
         }
     }}>
       <Card className="flex flex-col overflow-hidden h-full transition-all hover:shadow-lg hover:-translate-y-1 group text-right">
-        
+        <DialogTrigger asChild>
             <div className="relative cursor-pointer aspect-square w-full overflow-hidden">
                 <AsyncImage imageKey={dish.mainImage} alt={dish.name} layout="fill" objectFit="cover" className="transition-transform duration-300 group-hover:scale-110"/>
-                
-                 <div className="absolute inset-0 flex items-end justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <div className="absolute bottom-0 w-full h-12 bg-white/80 backdrop-blur-sm flex items-center justify-center text-sm font-medium text-foreground">
-                       <DialogTrigger asChild>
-                         <div className="flex-1 h-full flex items-center justify-center cursor-pointer">הצגה מהירה</div>
-                       </DialogTrigger>
-                       <div className="w-px h-6 bg-border"></div>
-                       <div className="flex-1 h-full flex items-center justify-center cursor-pointer" onClick={(e) => {e.stopPropagation(); handleAddToCart();}}>הוספה לסל</div>
-                    </div>
-                </div>
-
-
                 <div className="absolute top-2 left-0 right-0 px-2 flex justify-between items-start">
                     {isClient && cartItem ? (
                         <div className="bg-primary text-primary-foreground rounded-full h-7 w-7 flex items-center justify-center text-sm font-bold z-10">
@@ -129,7 +117,7 @@ export function DishCard({ dish }: DishCardProps) {
                     </div>
                 )}
             </div>
-       
+        </DialogTrigger>
         <CardHeader>
           <CardTitle className="font-headline">{dish.name}</CardTitle>
         </CardHeader>
@@ -233,4 +221,3 @@ export function DishCard({ dish }: DishCardProps) {
     </Dialog>
   );
 }
-
