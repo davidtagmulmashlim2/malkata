@@ -90,35 +90,33 @@ export function DishCard({ dish }: DishCardProps) {
         }
     }}>
       <Card className="flex flex-col overflow-hidden h-full transition-all hover:shadow-lg text-right">
-        <div className="relative aspect-square w-full overflow-hidden group">
-          <AsyncImage imageKey={dish.mainImage} alt={dish.name} layout="fill" objectFit="cover" />
-          <div className="absolute top-2 left-0 right-0 px-2 flex justify-between items-start">
-              {isClient && cartItem ? (
-                  <div className="bg-primary text-primary-foreground rounded-full h-7 w-7 flex items-center justify-center text-sm font-bold z-10">
-                      {cartItem.quantity}
-                  </div>
-              ) : <div />}
-              <div className="flex gap-2 flex-wrap justify-end max-w-[80%]">
-                  {renderTags(dish.tags)}
-              </div>
-          </div>
-          {!dish.isAvailable && (
-              <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                  <p className="text-white text-lg font-bold">אזל מהמלאי</p>
-              </div>
-          )}
-           
-           <div className="absolute inset-0 items-end justify-between p-4 bg-black/20 opacity-0 group-hover:flex transition-opacity duration-300">
-                <div className="cursor-pointer bg-white/80 text-foreground font-medium rounded-full px-4 py-2 text-sm backdrop-blur-sm hover:bg-white/100 flex-1 text-center">
-                    הצגה מהירה
-                </div>
-                <div className="w-2" />
-                <div className="cursor-pointer bg-white/80 text-foreground font-medium rounded-full px-4 py-2 text-sm backdrop-blur-sm hover:bg-white/100 flex-1 text-center">
-                    הוספה לסל
+        <DialogTrigger asChild>
+          <div className="relative aspect-square w-full overflow-hidden group cursor-pointer">
+            <AsyncImage imageKey={dish.mainImage} alt={dish.name} layout="fill" objectFit="cover" />
+            <div className="absolute top-2 left-0 right-0 px-2 flex justify-between items-start">
+                {isClient && cartItem ? (
+                    <div className="bg-primary text-primary-foreground rounded-full h-7 w-7 flex items-center justify-center text-sm font-bold z-10">
+                        {cartItem.quantity}
+                    </div>
+                ) : <div />}
+                <div className="flex gap-2 flex-wrap justify-end max-w-[80%]">
+                    {renderTags(dish.tags)}
                 </div>
             </div>
-
-        </div>
+            {!dish.isAvailable && (
+                <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                    <p className="text-white text-lg font-bold">אזל מהמלאי</p>
+                </div>
+            )}
+             
+            <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div className="flex items-center gap-2 text-white font-bold">
+                    <Eye className="h-5 w-5" />
+                    <span>הצגה מהירה</span>
+                </div>
+            </div>
+          </div>
+        </DialogTrigger>
         
         <CardHeader>
           <CardTitle className="font-headline">{dish.name}</CardTitle>
@@ -128,7 +126,7 @@ export function DishCard({ dish }: DishCardProps) {
         </CardContent>
         <CardFooter className="justify-between">
             <span className="text-xl font-bold text-primary">{dish.price} ₪</span>
-            <Button onClick={() => addToCart(dish.id, 1)} disabled={!dish.isAvailable}>
+            <Button onClick={(e) => { e.stopPropagation(); addToCart(dish.id, 1); }} disabled={!dish.isAvailable}>
               <ShoppingBagIcon className="ms-2 h-4 w-4" />
               הוספה לסל
             </Button>
