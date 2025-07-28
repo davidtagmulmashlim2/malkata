@@ -109,17 +109,17 @@ export function DishCard({ dish }: DishCardProps) {
             )}
              
             {/* Hover buttons container */}
-            <div className="absolute inset-0 p-2 flex-col justify-end items-center hidden group-hover:flex">
-                <div className="w-full flex justify-center items-center gap-2">
+            <div className="absolute inset-0 p-2 flex-col justify-end items-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 hidden md:flex">
+                <div className="w-full flex justify-between items-center gap-2">
+                    {/* Add to Cart Button */}
+                    <div className="flex-1 text-center py-2 px-3 bg-white/80 backdrop-blur-sm rounded-lg cursor-pointer text-sm font-semibold text-gray-800 flex items-center justify-center gap-1">
+                        <ShoppingBag className="w-4 h-4"/>
+                        <span>הוספה לסל</span>
+                    </div>
                     {/* Quick View Button */}
-                    <div className="flex-1 text-center py-2 px-3 bg-white/80 backdrop-blur-sm rounded-md cursor-pointer text-sm font-semibold text-gray-800 flex items-center justify-center gap-1">
+                    <div className="flex-1 text-center py-2 px-3 bg-white/80 backdrop-blur-sm rounded-lg cursor-pointer text-sm font-semibold text-gray-800 flex items-center justify-center gap-1">
                         <Eye className="w-4 h-4"/>
                         <span>הצגה מהירה</span>
-                    </div>
-                    {/* Add to Cart Button */}
-                    <div className="flex-1 text-center py-2 px-3 bg-white/80 backdrop-blur-sm rounded-md cursor-pointer text-sm font-semibold text-gray-800 flex items-center justify-center gap-1">
-                         <ShoppingBag className="w-4 h-4"/>
-                        <span>הוספה לסל</span>
                     </div>
                 </div>
             </div>
@@ -132,8 +132,11 @@ export function DishCard({ dish }: DishCardProps) {
           <p className="text-muted-foreground text-sm">{dish.shortDescription}</p>
         </CardContent>
         <CardFooter className="justify-between">
-            <span className="text-xl font-bold text-primary">{dish.price} ₪</span>
-            <Button onClick={(e) => { e.stopPropagation(); addToCart(dish.id, 1); }} disabled={!dish.isAvailable}>
+            <div>
+              <span className="text-xl font-bold text-primary">{dish.price} ₪</span>
+              {dish.priceSubtitle && <p className="text-xs text-muted-foreground">{dish.priceSubtitle}</p>}
+            </div>
+            <Button onClick={(e) => { e.stopPropagation(); setIsDialogOpen(true); }} disabled={!dish.isAvailable}>
               <ShoppingBagIcon className="ms-2 h-4 w-4" />
               הוספה לסל
             </Button>
