@@ -107,13 +107,13 @@ export function DishCard({ dish }: DishCardProps) {
                     <button 
                         onClick={handleAddToCart} 
                         disabled={!dish.isAvailable}
-                        className="flex items-center justify-center w-[48%] h-12 bg-white/80 backdrop-blur-sm rounded-t-lg text-foreground text-sm"
+                        className="flex items-center justify-center w-[48%] h-12 bg-white/80 backdrop-blur-sm rounded-tr-lg text-foreground text-sm font-medium"
                     >
                         הוספה לסל
                     </button>
                     <DialogTrigger asChild>
                         <button 
-                           className="flex items-center justify-center w-[48%] h-12 bg-white/80 backdrop-blur-sm rounded-t-lg text-foreground text-sm"
+                           className="flex items-center justify-center w-[48%] h-12 bg-white/80 backdrop-blur-sm rounded-tl-lg text-foreground text-sm font-medium"
                         >
                             הצגה מהירה
                         </button>
