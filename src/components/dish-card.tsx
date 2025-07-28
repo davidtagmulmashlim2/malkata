@@ -2,7 +2,7 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import type { Dish } from '@/lib/types';
 import { Flame, Leaf, ChevronLeft, ChevronRight, Sparkles, Smile, Plus, Minus, Eye } from 'lucide-react';
 import { ShoppingBagIcon } from '@/components/icons/shopping-bag-icon';
@@ -116,15 +116,14 @@ export function DishCard({ dish }: DishCardProps) {
                 </div>
             )}
             {dish.isAvailable && (
-                 <div className="absolute bottom-0 left-0 right-0 h-12 flex items-center bg-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                 <div className="absolute bottom-0 left-0 right-0 p-2 flex items-center justify-between opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <DialogTrigger asChild>
-                        <button className="h-full w-1/2 flex items-center justify-center bg-white/80 backdrop-blur-sm rounded-tl-lg text-sm font-semibold hover:bg-white/90">
+                        <button className="h-12 w-[48%] flex items-center justify-center bg-white/80 backdrop-blur-sm text-sm font-semibold hover:bg-white/90">
                             <Eye className="ms-2 h-4 w-4" />
                             הצגה מהירה
                         </button>
                     </DialogTrigger>
-                    <div className="h-full w-px bg-gray-300"></div>
-                    <button onClick={handleAddToCart} className="h-full w-1/2 flex items-center justify-center bg-white/80 backdrop-blur-sm rounded-tr-lg text-sm font-semibold hover:bg-white/90">
+                    <button onClick={handleAddToCart} className="h-12 w-[48%] flex items-center justify-center bg-white/80 backdrop-blur-sm text-sm font-semibold hover:bg-white/90">
                         <ShoppingBagIcon className="ms-2 h-4 w-4" />
                         הוספה לסל
                     </button>
@@ -137,16 +136,7 @@ export function DishCard({ dish }: DishCardProps) {
         <CardContent className="flex-grow">
           <p className="text-muted-foreground text-sm">{dish.shortDescription}</p>
         </CardContent>
-        <CardFooter className="flex justify-between items-center mt-auto">
-          <div>
-            <p className="text-xl font-bold text-primary">{dish.price} ₪</p>
-            {dish.priceSubtitle && <p className="text-xs text-muted-foreground">{dish.priceSubtitle}</p>}
-          </div>
-          <Button onClick={handleAddToCart} disabled={!dish.isAvailable}>
-            <ShoppingBagIcon className="ms-2 h-4 w-4" />
-            הוספה לסל
-          </Button>
-        </CardFooter>
+        
       </Card>
 
       <DialogContent className="sm:max-w-4xl text-right">
@@ -234,3 +224,4 @@ export function DishCard({ dish }: DishCardProps) {
     </Dialog>
   );
 }
+
