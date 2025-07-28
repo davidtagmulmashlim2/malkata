@@ -103,21 +103,28 @@ export function DishCard({ dish }: DishCardProps) {
             <div className="relative cursor-pointer aspect-square w-full overflow-hidden">
                 <AsyncImage imageKey={dish.mainImage} alt={dish.name} layout="fill" objectFit="cover" className="transition-transform duration-300 group-hover:scale-110"/>
                 
-                <div className="absolute inset-x-0 bottom-0 flex items-end justify-between opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div className="absolute inset-x-0 bottom-0 h-12 bg-transparent flex items-end justify-between opacity-0 group-hover:opacity-100 transition-opacity duration-300 overflow-hidden">
+                    {/* Left Button */}
                     <button 
                         onClick={handleAddToCart} 
                         disabled={!dish.isAvailable}
-                        className="flex items-center justify-center w-[48%] h-12 bg-white/80 backdrop-blur-sm rounded-tr-lg text-foreground text-sm font-medium"
+                        className="flex-1 h-full flex items-center justify-center bg-white/80 backdrop-blur-sm text-foreground text-sm font-medium"
                     >
                         הוספה לסל
                     </button>
-                    <DialogTrigger asChild>
+                    {/* Right Button */}
+                     <DialogTrigger asChild>
                         <button 
-                           className="flex items-center justify-center w-[48%] h-12 bg-white/80 backdrop-blur-sm rounded-tl-lg text-foreground text-sm font-medium"
+                           className="flex-1 h-full flex items-center justify-center bg-white/80 backdrop-blur-sm text-foreground text-sm font-medium"
                         >
                             הצגה מהירה
                         </button>
                     </DialogTrigger>
+                    
+                    {/* Separator */}
+                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-14 h-14 bg-background group-hover:bg-card rounded-b-full">
+                         <div className="w-full h-1/2 border-r border-border"></div>
+                    </div>
                 </div>
 
 
@@ -241,4 +248,3 @@ export function DishCard({ dish }: DishCardProps) {
     </Dialog>
   );
 }
-
