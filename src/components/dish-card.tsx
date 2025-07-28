@@ -4,7 +4,7 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import type { Dish } from '@/lib/types';
-import { Flame, Leaf, ChevronLeft, ChevronRight, Sparkles, Smile, Plus, Minus } from 'lucide-react';
+import { Flame, Leaf, ChevronLeft, ChevronRight, Sparkles, Smile, Plus, Minus, Eye } from 'lucide-react';
 import { ShoppingBagIcon } from '@/components/icons/shopping-bag-icon';
 import { Badge } from './ui/badge';
 import { useApp } from '@/context/app-context';
@@ -99,12 +99,23 @@ export function DishCard({ dish }: DishCardProps) {
         }
     }}>
       <Card className="flex flex-col overflow-hidden h-full transition-all hover:shadow-lg hover:-translate-y-1 group text-right">
-        <DialogTrigger asChild>
+        
             <div className="relative cursor-pointer aspect-square w-full overflow-hidden">
                 <AsyncImage imageKey={dish.mainImage} alt={dish.name} layout="fill" objectFit="cover" className="transition-transform duration-300 group-hover:scale-110"/>
-                <div className="absolute inset-x-0 bottom-0 flex items-center justify-center bg-black/50 text-white text-center py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    הצגה מהירה
+                
+                <div className="absolute inset-x-0 bottom-4 flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <Button variant="secondary" size="sm" onClick={handleAddToCart} disabled={!dish.isAvailable}>
+                        <ShoppingBagIcon className="ms-2 h-4 w-4" />
+                        הוספה לסל
+                    </Button>
+                     <DialogTrigger asChild>
+                        <Button variant="secondary" size="sm">
+                            <Eye className="ms-2 h-4 w-4" />
+                            הצגה מהירה
+                        </Button>
+                    </DialogTrigger>
                 </div>
+
                 <div className="absolute top-2 left-0 right-0 px-2 flex justify-between items-start">
                     {isClient && cartItem ? (
                         <div className="bg-primary text-primary-foreground rounded-full h-7 w-7 flex items-center justify-center text-sm font-bold z-10">
@@ -121,7 +132,7 @@ export function DishCard({ dish }: DishCardProps) {
                     </div>
                 )}
             </div>
-        </DialogTrigger>
+       
         <CardHeader>
           <CardTitle className="font-headline">{dish.name}</CardTitle>
         </CardHeader>
@@ -225,3 +236,4 @@ export function DishCard({ dish }: DishCardProps) {
     </Dialog>
   );
 }
+
