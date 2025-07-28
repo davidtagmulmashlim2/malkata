@@ -81,7 +81,7 @@ export function DishCard({ dish }: DishCardProps) {
             {tags.includes('new') && <Badge variant="default" className="bg-blue-500 text-white"><Sparkles className="w-3 h-3 me-1" /> חדש</Badge>}
             {tags.includes('vegan') && <Badge variant="default" className="bg-green-600 text-white"><Leaf className="w-3 h-3 me-1" /> טבעוני</Badge>}
             {tags.includes('spicy') && <Badge variant="destructive"><Flame className="w-3 h-3 me-1" /> חריף</Badge>}
-            {tags.includes('piquant') && <Badge variant="secondary" className="bg-orange-500 text-white"><Flame className="w-3 h-3 me-1" /> פיקנטי</Badge>}
+            {tags.includes('piquant') && <Badge variant="secondary" className="bg-orange-500 text-black"><Flame className="w-3 h-3 me-1" /> פיקנטי</Badge>}
             {tags.includes('kids-favorite') && <Badge variant="default" className="bg-yellow-500 text-black"><Smile className="w-3 h-3 me-1" /> ילדים אוהבים</Badge>}
         </>
     );
