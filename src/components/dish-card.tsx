@@ -107,16 +107,17 @@ export function DishCard({ dish }: DishCardProps) {
                   <p className="text-white text-lg font-bold">אזל מהמלאי</p>
               </div>
           )}
-           {dish.isAvailable && (
-             <div className="absolute inset-0 items-end justify-center gap-2 p-4 bg-black/20 opacity-0 group-hover:flex transition-opacity duration-300 pb-4 px-4">
-                <div className="cursor-pointer bg-white/80 text-foreground font-medium rounded-full px-4 py-2 text-sm backdrop-blur-sm hover:bg-white/100">
-                    מבט מהיר במוצר
+           
+           <div className="absolute inset-0 items-end justify-between p-4 bg-black/20 opacity-0 group-hover:flex transition-opacity duration-300">
+                <div className="cursor-pointer bg-white/80 text-foreground font-medium rounded-full px-4 py-2 text-sm backdrop-blur-sm hover:bg-white/100 flex-1 text-center">
+                    הצגה מהירה
                 </div>
-                <div className="cursor-pointer bg-white/80 text-foreground font-medium rounded-full px-4 py-2 text-sm backdrop-blur-sm hover:bg-white/100">
-                    לעמוד מוצר
+                <div className="w-2" />
+                <div className="cursor-pointer bg-white/80 text-foreground font-medium rounded-full px-4 py-2 text-sm backdrop-blur-sm hover:bg-white/100 flex-1 text-center">
+                    הוספה לסל
                 </div>
             </div>
-           )}
+
         </div>
         
         <CardHeader>
