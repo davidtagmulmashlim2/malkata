@@ -110,13 +110,11 @@ export function DishCard({ dish }: DishCardProps) {
              
             <div className="absolute inset-0 p-0 flex flex-col justify-end items-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 <div className="w-full flex justify-between items-center gap-2">
-                    {/* Quick View Button */}
-                    <div className="flex-1 text-center py-2 px-3 bg-white/80 backdrop-blur-sm rounded-s-lg cursor-pointer text-sm font-semibold text-gray-800 flex items-center justify-center gap-1">
+                    <div className="flex-1 text-center py-2 px-3 bg-white/80 backdrop-blur-sm cursor-pointer text-sm font-semibold text-gray-800 flex items-center justify-center gap-1 rounded-l-md">
                         <Eye className="w-4 h-4"/>
                         <span>הצגה מהירה</span>
                     </div>
-                    {/* Add to Cart Button */}
-                    <div className="flex-1 text-center py-2 px-3 bg-white/80 backdrop-blur-sm rounded-e-lg cursor-pointer text-sm font-semibold text-gray-800 flex items-center justify-center gap-1">
+                    <div className="flex-1 text-center py-2 px-3 bg-white/80 backdrop-blur-sm cursor-pointer text-sm font-semibold text-gray-800 flex items-center justify-center gap-1 rounded-r-md">
                         <ShoppingBag className="w-4 h-4"/>
                         <span>הוספה לסל</span>
                     </div>
