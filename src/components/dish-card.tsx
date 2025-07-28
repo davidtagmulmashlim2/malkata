@@ -2,9 +2,8 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import type { Dish } from '@/lib/types';
-import { Flame, Leaf, ChevronLeft, ChevronRight, Sparkles, Smile, Plus, Minus, Eye, ShoppingBag } from 'lucide-react';
+import { Flame, Leaf, ChevronLeft, ChevronRight, Sparkles, Smile, Plus, Minus, Eye } from 'lucide-react';
 import { ShoppingBagIcon } from '@/components/icons/shopping-bag-icon';
 import { Badge } from './ui/badge';
 import { useApp } from '@/context/app-context';
@@ -113,8 +112,8 @@ export function DishCard({ dish }: DishCardProps) {
             setCurrentImageIndex(0);
         }
     }}>
-      <Card className="flex flex-col overflow-hidden h-full transition-all hover:shadow-lg text-right">
-        <div className="relative aspect-square w-full overflow-hidden group">
+      <div className="flex flex-col h-full text-right">
+        <div className="relative aspect-square w-full overflow-hidden group rounded-lg">
             <AsyncImage imageKey={dish.mainImage} alt={dish.name} layout="fill" objectFit="cover" />
             <div className="absolute top-2 left-0 right-0 px-2 flex justify-between items-start">
                 {isClient && cartItem ? (
@@ -127,25 +126,25 @@ export function DishCard({ dish }: DishCardProps) {
                 </div>
             </div>
             {!dish.isAvailable && (
-                <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                <div className="absolute inset-0 bg-black/50 flex items-center justify-center rounded-lg">
                     <p className="text-white text-lg font-bold">אזל מהמלאי</p>
                 </div>
             )}
              <DialogTrigger asChild>
-                <div className="absolute bottom-0 left-0 right-0 p-2 bg-black/50 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 cursor-pointer">
+                <div className="absolute bottom-0 left-0 right-0 p-2 bg-black/50 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 cursor-pointer rounded-b-lg">
                     <Eye className="w-5 h-5 ml-2" />
                     הצגה מהירה
                 </div>
             </DialogTrigger>
         </div>
         
-        <CardHeader>
-          <CardTitle className="font-headline">{dish.name}</CardTitle>
-        </CardHeader>
-        <CardContent className="flex-grow">
+        <div className="pt-4">
+          <h3 className="text-lg font-headline font-bold">{dish.name}</h3>
+        </div>
+        <div className="flex-grow pt-1">
           <p className="text-muted-foreground text-sm">{dish.shortDescription}</p>
-        </CardContent>
-        <CardFooter className="justify-between">
+        </div>
+        <div className="flex justify-between items-center pt-4">
             <div>
               <span className="text-xl font-bold text-primary">{dish.price} ₪</span>
               {dish.priceSubtitle && <p className="text-xs text-muted-foreground">{dish.priceSubtitle}</p>}
@@ -154,8 +153,8 @@ export function DishCard({ dish }: DishCardProps) {
               <ShoppingBagIcon className="ms-2 h-4 w-4" />
               הוספה לסל
             </Button>
-        </CardFooter>
-      </Card>
+        </div>
+      </div>
 
       <DialogContent className="sm:max-w-4xl text-right">
         <div className="grid md:grid-cols-2 gap-8">
@@ -242,3 +241,4 @@ export function DishCard({ dish }: DishCardProps) {
     </Dialog>
   );
 }
+
