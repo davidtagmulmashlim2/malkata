@@ -4,7 +4,7 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import type { Dish } from '@/lib/types';
-import { Flame, Leaf, ChevronLeft, ChevronRight, Sparkles, Smile, Plus, Minus, Eye } from 'lucide-react';
+import { Flame, Leaf, ChevronLeft, ChevronRight, Sparkles, Smile, Plus, Minus, Eye, ShoppingBag } from 'lucide-react';
 import { ShoppingBagIcon } from '@/components/icons/shopping-bag-icon';
 import { Badge } from './ui/badge';
 import { useApp } from '@/context/app-context';
@@ -90,8 +90,7 @@ export function DishCard({ dish }: DishCardProps) {
         }
     }}>
       <Card className="flex flex-col overflow-hidden h-full transition-all hover:shadow-lg text-right">
-        <DialogTrigger asChild>
-          <div className="relative aspect-square w-full overflow-hidden group cursor-pointer">
+        <div className="relative aspect-square w-full overflow-hidden group">
             <AsyncImage imageKey={dish.mainImage} alt={dish.name} layout="fill" objectFit="cover" />
             <div className="absolute top-2 left-0 right-0 px-2 flex justify-between items-start">
                 {isClient && cartItem ? (
@@ -109,14 +108,22 @@ export function DishCard({ dish }: DishCardProps) {
                 </div>
             )}
              
-            <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <div className="flex items-center gap-2 text-white font-bold">
-                    <Eye className="h-5 w-5" />
-                    <span>הצגה מהירה</span>
+            {/* Hover buttons container */}
+            <div className="absolute inset-0 p-2 flex-col justify-end items-center hidden group-hover:flex">
+                <div className="w-full flex justify-center items-center gap-2">
+                    {/* Quick View Button */}
+                    <div className="flex-1 text-center py-2 px-3 bg-white/80 backdrop-blur-sm rounded-md cursor-pointer text-sm font-semibold text-gray-800 flex items-center justify-center gap-1">
+                        <Eye className="w-4 h-4"/>
+                        <span>הצגה מהירה</span>
+                    </div>
+                    {/* Add to Cart Button */}
+                    <div className="flex-1 text-center py-2 px-3 bg-white/80 backdrop-blur-sm rounded-md cursor-pointer text-sm font-semibold text-gray-800 flex items-center justify-center gap-1">
+                         <ShoppingBag className="w-4 h-4"/>
+                        <span>הוספה לסל</span>
+                    </div>
                 </div>
             </div>
-          </div>
-        </DialogTrigger>
+        </div>
         
         <CardHeader>
           <CardTitle className="font-headline">{dish.name}</CardTitle>
