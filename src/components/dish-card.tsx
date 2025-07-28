@@ -108,19 +108,14 @@ export function DishCard({ dish }: DishCardProps) {
               </div>
           )}
           {dish.isAvailable && (
-            <div className="absolute inset-0 flex items-end opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-t from-black/20 via-transparent to-transparent">
-                 <div className="absolute bottom-2 left-2 right-2 flex items-center justify-center gap-2">
-                    <DialogTrigger asChild>
-                      <button className="flex-1 flex items-center justify-center gap-2 h-12 bg-white/90 backdrop-blur-sm rounded-lg text-sm font-medium text-foreground hover:bg-white/100 transition-all">
-                        <Eye className="h-4 w-4" />
-                        הצגה מהירה
-                      </button>
-                    </DialogTrigger>
-                    <button onClick={() => addToCart(dish.id, 1)} className="flex-1 flex items-center justify-center gap-2 h-12 bg-white/90 backdrop-blur-sm rounded-lg text-sm font-medium text-foreground hover:bg-white/100 transition-all">
-                      <ShoppingBagIcon className="h-4 w-4" />
-                      הוספה לסל
-                    </button>
-                  </div>
+            <div className="absolute inset-0 flex items-center justify-center gap-2 p-4 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              {/* These are the two hover buttons, styled exactly as requested */}
+              <div className="cursor-pointer bg-white/80 text-foreground font-medium rounded-full px-4 py-2 text-sm backdrop-blur-sm hover:bg-white/100">
+                מבט מהיר במוצר
+              </div>
+              <div className="cursor-pointer bg-white/80 text-foreground font-medium rounded-full px-4 py-2 text-sm backdrop-blur-sm hover:bg-white/100">
+                לעמוד מוצר
+              </div>
             </div>
           )}
         </div>
@@ -131,8 +126,12 @@ export function DishCard({ dish }: DishCardProps) {
         <CardContent className="flex-grow">
           <p className="text-muted-foreground text-sm">{dish.shortDescription}</p>
         </CardContent>
-        <CardFooter>
+        <CardFooter className="justify-between">
             <span className="text-xl font-bold text-primary">{dish.price} ₪</span>
+            <Button onClick={() => addToCart(dish.id, 1)} disabled={!dish.isAvailable}>
+              <ShoppingBagIcon className="ms-2 h-4 w-4" />
+              הוספה לסל
+            </Button>
         </CardFooter>
       </Card>
 
