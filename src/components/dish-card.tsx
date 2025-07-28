@@ -109,12 +109,12 @@ export function DishCard({ dish }: DishCardProps) {
             )}
              
             <div className="absolute inset-0 p-0 flex flex-col justify-end items-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <div className="w-full flex justify-between items-center gap-2">
-                    <div className="flex-1 text-center py-2 px-3 bg-white/80 backdrop-blur-sm cursor-pointer text-sm font-semibold text-gray-800 flex items-center justify-center gap-1 rounded-l-md">
+                <div className="w-full flex justify-between items-center px-2 pb-2 gap-2">
+                    <div className="w-[45%] text-center py-2 px-3 bg-white/80 backdrop-blur-sm cursor-pointer text-sm font-semibold text-gray-800 flex items-center justify-center gap-1 rounded-r-md">
                         <Eye className="w-4 h-4"/>
                         <span>הצגה מהירה</span>
                     </div>
-                    <div className="flex-1 text-center py-2 px-3 bg-white/80 backdrop-blur-sm cursor-pointer text-sm font-semibold text-gray-800 flex items-center justify-center gap-1 rounded-r-md">
+                    <div className="w-[45%] text-center py-2 px-3 bg-white/80 backdrop-blur-sm cursor-pointer text-sm font-semibold text-gray-800 flex items-center justify-center gap-1 rounded-l-md">
                         <ShoppingBag className="w-4 h-4"/>
                         <span>הוספה לסל</span>
                     </div>
