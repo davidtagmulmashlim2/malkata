@@ -233,3 +233,4 @@ export function DishCard({ dish }: DishCardProps) {
     </Dialog>
   );
 }
+
