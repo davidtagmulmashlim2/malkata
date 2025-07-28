@@ -49,21 +49,11 @@ export function DishCard({ dish }: DishCardProps) {
     }
   }, [isDialogOpen, cartItem]);
 
-  const handleAddToCart = (e: React.MouseEvent<HTMLElement>) => {
-    e.stopPropagation(); 
-    e.preventDefault();
-    addToCart(dish.id, 1);
+  const handleAddToCart = () => {
+    addToCart(dish.id, quantity);
     toast({
         title: "נוסף לסל",
-        description: `${dish.name} נוסף לסל הקניות שלך.`,
-    });
-  }
-
-  const handleUpdateCart = () => {
-    updateCartQuantity(dish.id, quantity);
-    toast({
-        title: "הסל עודכן",
-        description: `${quantity}x ${dish.name} בסל הקניות שלך.`,
+        description: `${quantity}x ${dish.name} נוספו לסל הקניות שלך.`,
     });
     setIsDialogOpen(false);
   };
@@ -118,19 +108,19 @@ export function DishCard({ dish }: DishCardProps) {
               </div>
           )}
           {dish.isAvailable && (
-            <div className="absolute inset-0 flex items-end opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/20">
-                <div className="flex w-full p-2 gap-2">
-                    <DialogTrigger asChild className="flex-1">
-                        <Button variant="outline" className="bg-white/80 backdrop-blur-sm hover:bg-white/90 border-0 rounded-lg h-12">
-                            <Eye className="ms-2 h-4 w-4" />
-                            הצגה מהירה
-                        </Button>
+            <div className="absolute inset-0 flex items-end opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-t from-black/20 via-transparent to-transparent">
+                 <div className="absolute bottom-2 left-2 right-2 flex items-center justify-center gap-2">
+                    <DialogTrigger asChild>
+                      <button className="flex-1 flex items-center justify-center gap-2 h-12 bg-white/90 backdrop-blur-sm rounded-lg text-sm font-medium text-foreground hover:bg-white/100 transition-all">
+                        <Eye className="h-4 w-4" />
+                        הצגה מהירה
+                      </button>
                     </DialogTrigger>
-                    <Button onClick={handleAddToCart} className="flex-1 bg-white/80 backdrop-blur-sm hover:bg-white/90 border-0 rounded-lg h-12 text-black">
-                        <ShoppingBagIcon className="ms-2 h-4 w-4" />
-                        הוספה לסל
-                    </Button>
-                </div>
+                    <button onClick={() => addToCart(dish.id, 1)} className="flex-1 flex items-center justify-center gap-2 h-12 bg-white/90 backdrop-blur-sm rounded-lg text-sm font-medium text-foreground hover:bg-white/100 transition-all">
+                      <ShoppingBagIcon className="h-4 w-4" />
+                      הוספה לסל
+                    </button>
+                  </div>
             </div>
           )}
         </div>
@@ -218,7 +208,7 @@ export function DishCard({ dish }: DishCardProps) {
                                     <Plus className="h-4 w-4" />
                                 </Button>
                             </div>
-                            <Button onClick={handleUpdateCart} disabled={!dish.isAvailable} size="lg">
+                            <Button onClick={handleAddToCart} disabled={!dish.isAvailable} size="lg">
                                 <ShoppingBagIcon className="ms-2 h-5 w-5" />
                                 {buttonText}
                             </Button>
@@ -231,4 +221,3 @@ export function DishCard({ dish }: DishCardProps) {
     </Dialog>
   );
 }
-
