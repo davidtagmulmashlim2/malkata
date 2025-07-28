@@ -49,7 +49,7 @@ export function DishCard({ dish }: DishCardProps) {
     }
   }, [isDialogOpen, cartItem]);
 
-  const handleAddToCart = () => {
+  const handleUpdateCart = () => {
     if (cartItem) {
       updateCartQuantity(dish.id, quantity);
       toast({
@@ -66,6 +66,22 @@ export function DishCard({ dish }: DishCardProps) {
     setIsDialogOpen(false);
   };
   
+  const handleDirectAddToCart = () => {
+    if (cartItem) {
+      updateCartQuantity(dish.id, cartItem.quantity + 1);
+      toast({
+        title: "הכמות עודכנה",
+        description: `כמות מעודכנת בסל: ${cartItem.quantity + 1}`,
+      });
+    } else {
+      addToCart(dish.id, 1);
+      toast({
+          title: "נוסף לסל",
+          description: `${dish.name} נוסף לסל הקניות שלך.`,
+      });
+    }
+  };
+
   const nextImage = () => {
       setCurrentImageIndex((prevIndex) => (prevIndex + 1) % allImages.length);
   };
@@ -134,7 +150,7 @@ export function DishCard({ dish }: DishCardProps) {
               <span className="text-xl font-bold text-primary">{dish.price} ₪</span>
               {dish.priceSubtitle && <p className="text-xs text-muted-foreground">{dish.priceSubtitle}</p>}
             </div>
-            <Button onClick={(e) => { e.stopPropagation(); setIsDialogOpen(true); }} disabled={!dish.isAvailable}>
+            <Button onClick={handleDirectAddToCart} disabled={!dish.isAvailable}>
               <ShoppingBagIcon className="ms-2 h-4 w-4" />
               הוספה לסל
             </Button>
@@ -213,7 +229,7 @@ export function DishCard({ dish }: DishCardProps) {
                                     <Plus className="h-4 w-4" />
                                 </Button>
                             </div>
-                            <Button onClick={handleAddToCart} disabled={!dish.isAvailable} size="lg">
+                            <Button onClick={handleUpdateCart} disabled={!dish.isAvailable} size="lg">
                                 <ShoppingBagIcon className="ms-2 h-5 w-5" />
                                 {buttonText}
                             </Button>
