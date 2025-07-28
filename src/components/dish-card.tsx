@@ -103,17 +103,17 @@ export function DishCard({ dish }: DishCardProps) {
             <div className="relative cursor-pointer aspect-square w-full overflow-hidden">
                 <AsyncImage imageKey={dish.mainImage} alt={dish.name} layout="fill" objectFit="cover" className="transition-transform duration-300 group-hover:scale-110"/>
                 
-                <div className="absolute inset-x-0 bottom-0 flex justify-between items-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div className="absolute inset-x-0 bottom-0 p-1 flex items-center gap-px opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <Button 
                         onClick={handleAddToCart} 
                         disabled={!dish.isAvailable}
-                        className="w-1/2 h-10 bg-white/80 hover:bg-white text-black rounded-none text-sm"
+                        className="flex-1 h-10 bg-white/80 hover:bg-white text-black text-sm rounded-none rounded-br-md"
                     >
                         הוספה לסל
                     </Button>
                     <DialogTrigger asChild>
                         <Button 
-                           className="w-1/2 h-10 bg-white/80 hover:bg-white text-black rounded-none text-sm"
+                           className="flex-1 h-10 bg-white/80 hover:bg-white text-black text-sm rounded-none rounded-bl-md"
                         >
                             הצגה מהירה
                         </Button>
