@@ -109,14 +109,14 @@ export function DishCard({ dish }: DishCardProps) {
             )}
             
             <div className="absolute inset-0 p-0 flex flex-col justify-end items-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <div className="absolute bottom-1 left-1 right-1 flex items-center justify-between gap-2">
+                 <div className="absolute bottom-0 left-0 right-0 flex items-center justify-between gap-2">
                     <DialogTrigger asChild>
-                        <div className="flex-1 text-center py-2 px-3 bg-white/80 backdrop-blur-sm cursor-pointer text-sm font-semibold text-gray-800 flex items-center justify-center gap-1 rounded-lg">
+                        <div className="flex-1 text-center py-2 px-3 bg-white/80 backdrop-blur-sm cursor-pointer text-sm font-semibold text-gray-800 flex items-center justify-center gap-1 rounded-r-md">
                             <Eye className="w-4 h-4"/>
                             <span>הצגה מהירה</span>
                         </div>
                     </DialogTrigger>
-                    <div onClick={(e) => { e.stopPropagation(); setIsDialogOpen(true); }} className="flex-1 text-center py-2 px-3 bg-white/80 backdrop-blur-sm cursor-pointer text-sm font-semibold text-gray-800 flex items-center justify-center gap-1 rounded-lg">
+                    <div onClick={(e) => { e.stopPropagation(); setIsDialogOpen(true); }} className="flex-1 text-center py-2 px-3 bg-white/80 backdrop-blur-sm cursor-pointer text-sm font-semibold text-gray-800 flex items-center justify-center gap-1 rounded-l-md">
                         <ShoppingBag className="w-4 h-4"/>
                         <span>הוספה לסל</span>
                     </div>
@@ -227,3 +227,5 @@ export function DishCard({ dish }: DishCardProps) {
     </Dialog>
   );
 }
+
+    
