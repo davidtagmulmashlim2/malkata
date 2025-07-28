@@ -102,7 +102,7 @@ export function DishCard({ dish }: DishCardProps) {
             <div className="relative cursor-pointer aspect-square w-full overflow-hidden">
                 <AsyncImage imageKey={dish.mainImage} alt={dish.name} layout="fill" objectFit="cover" className="transition-transform duration-300 group-hover:scale-110"/>
                 
-                <div className="absolute inset-0 flex items-end justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                 <div className="absolute inset-0 flex items-end justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <div className="absolute bottom-0 w-full h-12 bg-white/80 backdrop-blur-sm flex items-center justify-center text-sm font-medium text-foreground">
                        <DialogTrigger asChild>
                          <div className="flex-1 h-full flex items-center justify-center cursor-pointer">הצגה מהירה</div>
@@ -165,10 +165,10 @@ export function DishCard({ dish }: DishCardProps) {
                             />
                             {allImages.length > 1 && (
                                 <>
-                                    <Button size="icon" variant="ghost" className="absolute top-1/2 -translate-y-1/2 left-2 bg-black/30 hover:bg-black/50 text-white" onClick={nextImage}>
+                                    <Button size="icon" variant="ghost" className="absolute top-1/2 -translate-y-1/2 left-2 bg-black/30 hover:bg-black/50 text-white" onClick={prevImage}>
                                         <ChevronLeft className="h-6 w-6" />
                                     </Button>
-                                    <Button size="icon" variant="ghost" className="absolute top-1/2 -translate-y-1/2 right-2 bg-black/30 hover:bg-black/50 text-white" onClick={prevImage}>
+                                    <Button size="icon" variant="ghost" className="absolute top-1/2 -translate-y-1/2 right-2 bg-black/30 hover:bg-black/50 text-white" onClick={nextImage}>
                                         <ChevronRight className="h-6 w-6" />
                                     </Button>
                                 </>
