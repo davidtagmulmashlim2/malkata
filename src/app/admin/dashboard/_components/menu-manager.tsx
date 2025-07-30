@@ -14,7 +14,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, Dialog
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
-import { PlusCircle, Edit, Trash2, X, ChevronsUpDown, Check } from 'lucide-react'
+import { PlusCircle, Edit, Trash2, X, ChevronsUpDown, Check, Eye } from 'lucide-react'
 import { toast } from '@/hooks/use-toast'
 import type { Dish, Category } from '@/lib/types'
 import { storeImage, deleteImage } from '@/lib/image-store';
@@ -52,16 +52,24 @@ const fontSizes = ['xs', 'sm', 'base', 'lg', 'xl', '2xl', '3xl', '4xl', '5xl', '
 const fonts = [
     { name: 'ברירת מחדל של האתר', value: 'default' },
     { name: 'Playfair Display', value: 'playfair' },
-    { name: 'PT Sans', value: 'pt-sans' },
-    { name: 'Roboto Mono', value: 'roboto-mono' },
-    { name: 'Chakra Petch', value: 'chakra-petch' },
-    { name: 'Cormorant Garamond', value: 'cormorant-garamond' },
-    { name: 'Lato', value: 'lato' },
-    { name: 'Montserrat', value: 'montserrat' },
     { name: 'Open Sans', value: 'open-sans' },
+    { name: 'Alef', value: 'alef' },
+    { name: 'Amatic SC', value: 'amatic-sc' },
+    { name: 'Arimo', value: 'arimo' },
+    { name: 'Assistant', value: 'assistant' },
+    { name: 'Bellefair', value: 'bellefair' },
+    { name: 'David Libre', value: 'david-libre' },
     { name: 'Frank Ruhl Libre', value: 'frank-ruhl-libre' },
-    { name: 'היבו (דפוס)', value: 'heebo' },
-    { name: 'דנה (כתב)', value: 'dana' },
+    { name: 'Heebo', value: 'heebo' },
+    { name: 'M PLUS Rounded 1c', value: 'm-plus-rounded-1c' },
+    { name: 'Miriam Libre', value: 'miriam-libre' },
+    { name: 'Noto Sans Hebrew', value: 'noto-sans-hebrew' },
+    { name: 'Noto Serif Hebrew', value: 'noto-serif-hebrew' },
+    { name: 'Rubik', value: 'rubik' },
+    { name: 'Secular One', value: 'secular-one' },
+    { name: 'Suez One', value: 'suez-one' },
+    { name: 'Varela Round', value: 'varela-round' },
+    { name: 'Dana', value: 'dana' },
 ];
 
 const dishSchema = z.object({
@@ -755,4 +763,5 @@ export default function MenuManager() {
     
 
     
+
 

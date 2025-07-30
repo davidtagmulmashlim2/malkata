@@ -5,7 +5,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Open+Sans:wght@400;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@400;700&display=swap');
-
+@import url('https://fonts.googleapis.com/css2?family=Alef:wght@400;700&family=Amatic+SC:wght@400;700&family=Arimo:wght@400;700&family=Assistant:wght@400;700&family=Bellefair&family=David+Libre:wght@400;700&family=M+PLUS+Rounded+1c:wght@400;700&family=Miriam+Libre:wght@400;700&family=Noto+Sans+Hebrew:wght@400;700&family=Noto+Serif+Hebrew:wght@400;700&family=Rubik:wght@400;700&family=Secular+One&family=Suez+One&family=Varela+Round&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -46,6 +46,22 @@
     --font-open-sans: 'Open Sans', sans-serif;
     --font-frank-ruhl-libre: 'Frank Ruhl Libre', serif;
     --font-heebo: 'Heebo', sans-serif;
+    --font-alef: 'Alef', sans-serif;
+    --font-amatic-sc: 'Amatic SC', cursive;
+    --font-arimo: 'Arimo', sans-serif;
+    --font-assistant: 'Assistant', sans-serif;
+    --font-bellefair: 'Bellefair', serif;
+    --font-david-libre: 'David Libre', serif;
+    --font-m-plus-rounded-1c: 'M PLUS Rounded 1c', sans-serif;
+    --font-miriam-libre: 'Miriam Libre', sans-serif;
+    --font-noto-sans-hebrew: 'Noto Sans Hebrew', sans-serif;
+    --font-noto-serif-hebrew: 'Noto Serif Hebrew', serif;
+    --font-rubik: 'Rubik', sans-serif;
+    --font-secular-one: 'Secular One', sans-serif;
+    --font-suez-one: 'Suez One', serif;
+    --font-varela-round: 'Varela Round', sans-serif;
+    --font-dana: 'Dana', sans-serif; /* Assuming Dana is a custom font you might have */
+
 
     /* Dynamic Font Variables */
     --font-sans-family: var(--font-pt-sans);
