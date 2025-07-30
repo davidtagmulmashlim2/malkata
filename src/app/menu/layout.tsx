@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
+import { cn } from '@/lib/utils';
 
 export default function MenuLayout({
   children,
@@ -33,25 +34,34 @@ export default function MenuLayout({
               </div>
             ) : (
               <>
-                <Button
-                  asChild
-                  variant={pathname === '/menu' ? 'default' : 'ghost'}
-                  size="sm"
-                >
-                  <Link href="/menu">כל המנות</Link>
+                <Button asChild variant="ghost" size="sm" className="relative">
+                  <Link
+                    href="/menu"
+                    className={cn(
+                      'pb-1',
+                      pathname === '/menu' &&
+                        'font-bold border-t-2 border-primary'
+                    )}
+                  >
+                    כל המנות
+                  </Link>
                 </Button>
 
                 {categories.map((category) => {
-                  // The button is active only if the slug matches AND we are not on the main /menu page.
-                  const isActive = pathname !== '/menu' && activeSlug === category.slug;
+                  const isActive =
+                    pathname !== '/menu' && activeSlug === category.slug;
                   return (
                     <Button
                       key={category.id}
                       asChild
-                      variant={isActive ? 'default' : 'ghost'}
+                      variant="ghost"
                       size="sm"
+                      className="relative"
                     >
-                      <Link href={`/menu/${category.slug}`}>
+                      <Link
+                        href={`/menu/${category.slug}`}
+                        className={cn('pb-1', isActive && 'font-bold border-t-2 border-primary')}
+                      >
                         {category.name}
                       </Link>
                     </Button>
@@ -66,5 +76,3 @@ export default function MenuLayout({
     </div>
   );
 }
-
-    

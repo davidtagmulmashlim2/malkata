@@ -115,7 +115,7 @@ export function Header() {
                 
                 if (link.isFeatured) {
                     return (
-                        <Button key={link.href} asChild size="sm" style={customStyle}>
+                        <Button key={link.href} asChild size="sm" style={customStyle} className="rounded-full">
                             <Link href={link.href}>
                                 {link.label}
                             </Link>
