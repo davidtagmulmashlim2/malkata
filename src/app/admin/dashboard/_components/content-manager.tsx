@@ -70,7 +70,7 @@ const contentSchema = z.object({
     subtitleOpacity: z.number().min(0).max(1),
     animationInterval: z.coerce.number().min(0, 'חייב להיות מספר חיובי'),
     heroImageBrightness: z.coerce.number().min(0).max(100),
-    heroHeight: z.coerce.number().min(400).max(1000),
+    heroHeight: z.coerce.number().min(40).max(100),
     verticalAlign: z.enum(['top', 'center', 'bottom']),
     horizontalAlign: z.enum(['left', 'center', 'right']),
     textAlign: z.enum(['left', 'center', 'right']),
@@ -375,7 +375,7 @@ export default function ContentManager() {
                   )} />
                    <FormField name="hero.heroHeight" control={form.control} render={({ field }) => (
                     <FormItem>
-                      <FormLabel>גובה תמונת רקע ({field.value ?? 80}vh)</FormLabel>
+                      <FormLabel>גובה תמונת רקע (400-1000px)</FormLabel>
                       <FormControl><Slider value={[field.value ?? 80]} min={40} max={100} step={5} onValueChange={(v) => field.onChange(v[0])} /></FormControl>
                       <FormMessage />
                     </FormItem>
