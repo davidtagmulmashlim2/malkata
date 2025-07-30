@@ -84,6 +84,7 @@ export interface SiteContent {
     subtitleOpacity: number;
     animationInterval: number;
     heroImageBrightness: number;
+    heroHeight: number;
     verticalAlign: 'top' | 'center' | 'bottom';
     horizontalAlign: 'left' | 'center' | 'right';
     textAlign: 'left' | 'center' | 'right';

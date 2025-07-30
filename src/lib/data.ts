@@ -22,6 +22,7 @@ export const DEFAULT_APP_STATE: AppState = {
       subtitleOpacity: 1,
       animationInterval: 5,
       heroImageBrightness: 50,
+      heroHeight: 80,
       verticalAlign: 'center',
       horizontalAlign: 'center',
       textAlign: 'center',
