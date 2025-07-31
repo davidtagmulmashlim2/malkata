@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 import { Buffer } from 'buffer';
 
-const BUCKET_NAME = 'images';
+const BUCKET_NAME = 'YOUR_BUCKET_NAME';
 
 const generateFileKey = (mimeType: string) => {
     const extension = mimeType.split('/')[1] || 'png';

@@ -2,7 +2,7 @@
 'use client';
 import { supabase } from './supabase';
 
-const BUCKET_NAME = 'images';
+const BUCKET_NAME = 'YOUR_BUCKET_NAME';
 
 // This function now sends the image data URL to our own API route
 export async function storeImage(dataUrl: string): Promise<string> {
