@@ -68,9 +68,9 @@ export function Footer() {
         ) : (
             <>
                 {IconComponent && <IconComponent className="h-7 w-7" />}
+                <span>מלכתא</span>
             </>
         )}
-        <span>מלכתא</span>
     </Link>
   );
 

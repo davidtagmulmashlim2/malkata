@@ -99,9 +99,9 @@ export function Header() {
     // On the server, or during client-side hydration, render a static version.
     if (!isClient || isLoading) {
       return (
-        <Link href="/" className="flex items-center gap-2 font-headline text-2xl font-bold text-primary">
-          <UtensilsCrossed className="h-7 w-7" />
-          <span>מלכתא</span>
+         <Link href="/" className="flex items-center gap-2 font-headline text-2xl font-bold text-primary">
+            <UtensilsCrossed className="h-7 w-7" />
+            <span>מלכתא</span>
         </Link>
       );
     }
@@ -110,14 +110,16 @@ export function Header() {
     return (
       <Link href="/" className="flex items-center gap-2 font-headline text-2xl font-bold text-primary" style={logoStyle}>
         {state.design.logoImage ? (
-          <div className="relative h-10 w-auto flex items-center" style={{maxWidth: '112px'}}>
-            <AsyncImage imageKey={state.design.logoImage} alt="לוגו" height={40} width={112} className="h-10 w-auto object-contain" />
-          </div>
+             <div className="relative h-10 flex items-center">
+                 <AsyncImage imageKey={state.design.logoImage} alt="לוגו" height={40} width={112} className="h-10 w-auto object-contain" />
+             </div>
         ) : (
-          IconComponent && <IconComponent className="h-7 w-7" />
+            <>
+                {IconComponent && <IconComponent className="h-7 w-7" />}
+                <span>מלכתא</span>
+            </>
         )}
-        <span>מלכתא</span>
-      </Link>
+    </Link>
     );
   };
 
