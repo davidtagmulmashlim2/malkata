@@ -1,49 +1,27 @@
 
 import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
-import { promises as fs } from 'fs';
-import formidable, { File } from 'formidable';
 import { v4 as uuidv4 } from 'uuid';
-
-export const config = {
-    api: {
-        bodyParser: false,
-    },
-};
 
 const BUCKET_NAME = 'images';
 
-const parseForm = (req: Request): Promise<{ fields: formidable.Fields; files: formidable.Files }> => {
-    return new Promise((resolve, reject) => {
-        const form = formidable({});
-        form.parse(req as any, (err, fields, files) => {
-            if (err) {
-                reject(err);
-                return;
-            }
-            resolve({ fields, files });
-        });
-    });
-};
-
 export async function POST(request: Request) {
     try {
-        const { files } = await parseForm(request);
-        
-        const file = (files.file as File[])?.[0];
+        const formData = await request.formData();
+        const file = formData.get('file') as File;
 
         if (!file) {
             return NextResponse.json({ error: 'No file was uploaded.' }, { status: 400 });
         }
 
-        const fileContent = await fs.readFile(file.filepath);
-        const fileExtension = file.mimetype?.split('/')[1] || 'png';
+        const fileBuffer = Buffer.from(await file.arrayBuffer());
+        const fileExtension = file.type.split('/')[1] || 'png';
         const fileKey = `img-${Date.now()}-${uuidv4()}.${fileExtension}`;
         
         const { data, error } = await supabase.storage
             .from(BUCKET_NAME)
-            .upload(fileKey, fileContent, {
-                contentType: file.mimetype || 'image/png',
+            .upload(fileKey, fileBuffer, {
+                contentType: file.type || 'image/png',
                 upsert: false,
             });
 
