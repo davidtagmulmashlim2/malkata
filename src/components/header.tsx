@@ -11,6 +11,7 @@ import { useApp } from '@/context/app-context';
 import React, { useMemo } from 'react';
 import { Skeleton } from './ui/skeleton';
 import { AsyncImage } from './async-image';
+import { useIsClient } from '@/hooks/use-is-client';
 
 const Crown2 = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" {...props}>
@@ -55,12 +56,13 @@ const iconMap: { [key: string]: React.ElementType | null } = {
 export function Header() {
   const pathname = usePathname();
   const { state, isLoading } = useApp();
-  const IconComponent = iconMap[state.design.logoIcon] || UtensilsCrossed;
-  const logoStyle = state.design.logoColor ? { color: state.design.logoColor } : {};
+  const isClient = useIsClient();
 
+  const IconComponent = useMemo(() => iconMap[state.design.logoIcon] || UtensilsCrossed, [state.design.logoIcon]);
+  const logoStyle = useMemo(() => state.design.logoColor ? { color: state.design.logoColor } : {}, [state.design.logoColor]);
 
   const navLinks = useMemo(() => {
-    if (isLoading) {
+    if (isLoading || !isClient) {
         return baseNavLinks;
     }
 
@@ -90,29 +92,32 @@ export function Header() {
     }
     
     return newLinks;
-  }, [isLoading, state.design, state.categories]);
+  }, [isLoading, state.design, state.categories, isClient]);
 
 
   const Logo = () => {
+    // On the server, or during client-side hydration, render a static version.
+    if (!isClient || isLoading) {
+      return (
+        <Link href="/" className="flex items-center gap-2 font-headline text-2xl font-bold text-primary">
+          <UtensilsCrossed className="h-7 w-7" />
+          <span>מלכתא</span>
+        </Link>
+      );
+    }
+
+    // After hydration on the client, render the dynamic, user-configured logo.
     return (
-     <Link href="/" className="flex items-center gap-2 font-headline text-2xl font-bold text-primary" style={logoStyle}>
-        {isLoading ? (
-            <Skeleton className="h-10 w-28" />
+      <Link href="/" className="flex items-center gap-2 font-headline text-2xl font-bold text-primary" style={logoStyle}>
+        {state.design.logoImage ? (
+          <div className="relative h-10 w-auto flex items-center" style={{maxWidth: '112px'}}>
+            <AsyncImage imageKey={state.design.logoImage} alt="לוגו" height={40} width={112} className="h-10 w-auto object-contain" />
+          </div>
         ) : (
-            <>
-                {state.design.logoImage ? (
-                     <div className="relative h-10 flex items-center">
-                         <AsyncImage imageKey={state.design.logoImage} alt="לוגו" height={40} width={112} className="h-10 w-auto object-contain" />
-                     </div>
-                ) : (
-                    <>
-                        {IconComponent && <IconComponent className="h-7 w-7" />}
-                    </>
-                )}
-                <span>מלכתא</span>
-            </>
+          IconComponent && <IconComponent className="h-7 w-7" />
         )}
-    </Link>
+        <span>מלכתא</span>
+      </Link>
     );
   };
 
