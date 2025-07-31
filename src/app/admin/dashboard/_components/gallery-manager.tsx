@@ -57,9 +57,13 @@ export default function GalleryManager() {
           const dataUrl = await fileToDataUrl(file);
           const imageKey = await storeImage(dataUrl);
           form.setValue('src', imageKey, { shouldValidate: true });
-      } catch (error) {
+      } catch (error: any) {
           console.error("Error uploading image:", error);
-          toast({ title: 'שגיאה בהעלאת תמונה', variant: 'destructive' });
+          toast({ 
+              title: 'שגיאה בהעלאת תמונה', 
+              description: error.message || 'An unknown error occurred.',
+              variant: 'destructive' 
+          });
       }
   };
 

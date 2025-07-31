@@ -144,9 +144,13 @@ export default function DesignManager() {
           const imageKey = await storeImage(dataUrl);
           form.setValue('logoImage', imageKey, { shouldValidate: true });
           toast({ title: 'תמונת לוגו הועלתה' });
-      } catch (error) {
+      } catch (error: any) {
           console.error("Error uploading image:", error);
-          toast({ title: 'שגיאה בהעלאת תמונה', variant: 'destructive' });
+          toast({ 
+              title: 'שגיאה בהעלאת תמונה', 
+              description: error.message || 'An unknown error occurred.',
+              variant: 'destructive' 
+          });
       }
   };
 

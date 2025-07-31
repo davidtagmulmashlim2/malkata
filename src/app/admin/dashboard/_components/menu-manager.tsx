@@ -235,9 +235,13 @@ export default function MenuManager() {
             const dataUrl = await fileToDataUrl(file);
             const imageKey = await storeImage(dataUrl);
             onChange(imageKey);
-        } catch (error) {
+        } catch (error: any) {
             console.error("Error uploading image:", error);
-            toast({ title: 'שגיאה בהעלאת תמונה', variant: 'destructive' });
+            toast({ 
+                title: 'שגיאה בהעלאת תמונה',
+                description: error.message || 'An unknown error occurred.',
+                variant: 'destructive' 
+            });
         }
     };
 
@@ -274,8 +278,12 @@ export default function MenuManager() {
         const currentImages = dishForm.getValues('galleryImages') || [];
         dishForm.setValue('galleryImages', [...currentImages, imageKey], { shouldValidate: true });
         toast({title: "תמונה נוספה לגלריה"});
-    } catch (error) {
-        toast({title: "שגיאה בהעלאת תמונת גלריה", variant: "destructive"});
+    } catch (error: any) {
+        toast({
+            title: "שגיאה בהעלאת תמונת גלריה",
+            description: error.message || 'An unknown error occurred.',
+            variant: "destructive"
+        });
     } finally {
         if (galleryImageInputRef.current) {
             galleryImageInputRef.current.value = '';
@@ -763,5 +771,6 @@ export default function MenuManager() {
     
 
     
+
 
 

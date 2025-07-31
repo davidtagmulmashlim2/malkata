@@ -21,8 +21,15 @@ export async function storeImage(dataUrl: string): Promise<string> {
         });
 
         if (!apiResponse.ok) {
-            const errorData = await apiResponse.json().catch(() => ({ error: 'Image upload failed with non-JSON response' }));
-            throw new Error(errorData.error || `Image upload failed with status: ${apiResponse.status}`);
+            let errorText = `Image upload failed with status: ${apiResponse.status}`;
+            try {
+                const errorData = await apiResponse.json();
+                errorText = errorData.error || JSON.stringify(errorData);
+            } catch (e) {
+                // If response is not JSON, use the status text.
+                errorText = apiResponse.statusText || errorText;
+            }
+            throw new Error(errorText);
         }
 
         const { key } = await apiResponse.json();
@@ -32,12 +39,10 @@ export async function storeImage(dataUrl: string): Promise<string> {
 
         return key;
 
-    } catch (error) {
+    } catch (error: any) {
         console.error('Error in storeImage:', error);
-        if (error instanceof Error && (error.message.includes('fetch') || error.message.includes('network'))) {
-             return "https://placehold.co/600x400.png?text=Network+Error";
-        }
-        return "https://placehold.co/600x400.png?text=Upload+Error";
+        // Re-throw the error so the calling component can catch it and display a toast
+        throw error;
     }
 }
 

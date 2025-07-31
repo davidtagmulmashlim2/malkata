@@ -189,9 +189,13 @@ export default function ContentManager() {
           const [section, key] = (fieldName as string).split('.');
           form.setValue(fieldName as any, imageKey, { shouldValidate: true });
           
-      } catch (error) {
+      } catch (error: any) {
           console.error("Error uploading image:", error);
-          toast({ title: 'שגיאה בהעלאת תמונה', variant: 'destructive' });
+          toast({ 
+              title: 'שגיאה בהעלאת תמונה', 
+              description: error.message || 'An unknown error occurred.',
+              variant: 'destructive' 
+          });
       }
   };
 
