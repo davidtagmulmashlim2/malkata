@@ -1,10 +1,10 @@
 
 'use client';
 import { supabase } from './supabase';
-import { v4 as uuidv4 } from 'uuid';
 
 const BUCKET_NAME = 'images';
 
+// This function now sends the image data URL to our own API route
 export async function storeImage(dataUrl: string): Promise<string> {
     // If it's not a data URL, it's probably an existing key or a placeholder. Don't re-upload.
     if (!dataUrl.startsWith('data:image')) {
@@ -12,33 +12,29 @@ export async function storeImage(dataUrl: string): Promise<string> {
     }
 
     try {
-        const response = await fetch(dataUrl);
-        const fileBuffer = await response.arrayBuffer();
-        const file = new File([fileBuffer], "upload", { type: response.headers.get('content-type') ?? 'image/png' });
+        const apiResponse = await fetch('/api/upload', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ image: dataUrl }),
+        });
 
-        const fileExtension = file.type.split('/')[1] || 'png';
-        const fileKey = `img-${Date.now()}-${uuidv4()}.${fileExtension}`;
-
-        const { data, error } = await supabase.storage
-            .from(BUCKET_NAME)
-            .upload(fileKey, file, {
-                contentType: file.type,
-                upsert: false,
-            });
-
-        if (error) {
-            console.error('Error uploading to Supabase:', error.message);
-            throw error;
+        if (!apiResponse.ok) {
+            const errorData = await apiResponse.json().catch(() => ({ error: 'Image upload failed with non-JSON response' }));
+            throw new Error(errorData.error || `Image upload failed with status: ${apiResponse.status}`);
         }
 
-        if (!data?.path) {
-            throw new Error('Upload succeeded but no path was returned.');
+        const { key } = await apiResponse.json();
+        if (!key) {
+             throw new Error('Upload succeeded but no key was returned from API.');
         }
 
-        return data.path;
+        return key;
+
     } catch (error) {
         console.error('Error in storeImage:', error);
-        if (error instanceof Error && error.message.includes('fetch')) {
+        if (error instanceof Error && (error.message.includes('fetch') || error.message.includes('network'))) {
              return "https://placehold.co/600x400.png?text=Network+Error";
         }
         return "https://placehold.co/600x400.png?text=Upload+Error";
