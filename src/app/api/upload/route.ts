@@ -1,8 +1,6 @@
 
 import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
-import { promises as fs } from 'fs';
-import formidable from 'formidable';
 import { NextRequest } from 'next/server';
 
 const BUCKET_NAME = 'images';
@@ -16,11 +14,12 @@ function dataURLToBuffer(dataURL: string) {
     return Buffer.from(base64, 'base64');
 }
 
-export const config = {
-    api: {
-        bodyParser: false,
-    },
-};
+// We don't need formidable, so we remove the config
+// export const config = {
+//     api: {
+//         bodyParser: false,
+//     },
+// };
 
 export async function POST(req: NextRequest) {
     try {
