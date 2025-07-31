@@ -101,15 +101,15 @@ export function Header() {
   const Logo = () => (
      <Link href="/" className="flex items-center gap-2 font-headline text-2xl font-bold text-primary" style={logoStyle}>
         {state.design.logoImage ? (
-             <div className="relative h-auto w-auto max-w-28 max-h-10">
-                 <AsyncImage imageKey={state.design.logoImage} alt="לוגו" layout="fill" objectFit="contain" />
+             <div className="relative h-10 flex items-center">
+                 <AsyncImage imageKey={state.design.logoImage} alt="לוגו" height={40} width={112} className="h-10 w-auto object-contain" />
              </div>
         ) : (
             <>
                 {IconComponent && <IconComponent className="h-7 w-7" />}
-                מלכתא
             </>
         )}
+        <span>מלכתא</span>
     </Link>
   );
 

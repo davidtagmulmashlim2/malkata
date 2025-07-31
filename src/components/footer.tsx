@@ -11,6 +11,7 @@ import { InstagramIcon } from "./icons/instagram-icon";
 import { FacebookIcon } from "./icons/facebook-icon";
 import { cn } from "@/lib/utils";
 import { Skeleton } from "./ui/skeleton";
+import { AsyncImage } from "./async-image";
 
 const Crown2 = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" {...props}>
@@ -58,15 +59,27 @@ export function Footer() {
       '6xl': 'text-6xl', '7xl': 'text-7xl', '8xl': 'text-8xl', '9xl': 'text-9xl',
     };
 
+    const Logo = () => (
+     <Link href="/" className="flex items-center gap-2 font-headline text-2xl font-bold text-primary" style={logoStyle}>
+        {state.design.logoImage ? (
+             <div className="relative h-10 flex items-center">
+                 <AsyncImage imageKey={state.design.logoImage} alt="לוגו" height={40} width={112} className="h-10 w-auto object-contain" />
+             </div>
+        ) : (
+            <>
+                {IconComponent && <IconComponent className="h-7 w-7" />}
+            </>
+        )}
+        <span>מלכתא</span>
+    </Link>
+  );
+
     return (
         <footer className="bg-card text-card-foreground border-t">
             <div className="container py-12 px-4 sm:px-6 lg:px-8">
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                     <div className="md:col-span-2 space-y-4">
-                        <Link href="/" className="flex items-center gap-2 font-headline text-2xl font-bold text-primary" style={logoStyle}>
-                            {IconComponent && <IconComponent className="h-7 w-7" />}
-                            מלכתא
-                        </Link>
+                        <Logo />
                         {footer?.tagline && <p className="text-muted-foreground text-sm">{footer.tagline}</p>}
                         <div className="flex gap-4">
                            <a href={`https://wa.me/${contact.whatsapp}`} target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp">
