@@ -15,7 +15,7 @@ interface AsyncImageProps extends Omit<ImageProps, 'src'> {
 export function AsyncImage({ imageKey, alt, skeletonClassName, className, ...props }: AsyncImageProps) {
   const [src, setSrc] = useState<string | null>(null);
   const [error, setError] = useState(false);
-  const { isLoading: isAppLoading } = useApp(); // Renamed to avoid conflict with internal loading state
+  const { isLoading: isAppLoading } = useApp();
   const [isImageLoading, setIsImageLoading] = useState(true);
 
   useEffect(() => {
@@ -29,18 +29,19 @@ export function AsyncImage({ imageKey, alt, skeletonClassName, className, ...pro
     setIsImageLoading(true);
     setError(false);
 
-    const fetchImage = async () => {
+    const fetchImage = () => {
       if (!imageKey) {
         if(isMounted) setSrc("https://placehold.co/600x400.png");
         setIsImageLoading(false);
         return;
       }
       
-      const imageSrc = await getImage(imageKey);
+      // The new getImage function from Supabase returns the URL directly.
+      const imageUrl = getImage(imageKey);
       
       if (isMounted) {
-        if (imageSrc) {
-            setSrc(imageSrc);
+        if (imageUrl) {
+            setSrc(imageUrl);
         } else {
             setError(true);
             setSrc("https://placehold.co/600x400.png");
