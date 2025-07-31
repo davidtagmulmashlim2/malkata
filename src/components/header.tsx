@@ -25,13 +25,8 @@ const Crown3 = (props: React.SVGProps<SVGSVGElement>) => (
 );
 
 const Crown4 = (props: React.SVGProps<SVGSVGElement>) => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
-      <path d="M2 4h20l-4 12H6L2 4Z" />
-      <path d="m6 16 1.5-6" />
-      <path d="m18 16-1.5-6" />
-      <path d="M12 4v12" />
-      <path d="M12 4a2.5 2.5 0 0 1-2.5-2.5" />
-      <path d="M12 4a2.5 2.5 0 0 0 2.5-2.5" />
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="1" {...props}>
+        <path d="M12 2L9.5 7h-6L6 11.5 3.5 17h6l2.5-5 2.5 5h6l-2.5-5.5L18 7h-6z"/>
     </svg>
 );
 
@@ -98,10 +93,19 @@ export function Header() {
   }, [isLoading, state.design, state.categories]);
 
 
-  const Logo = () => (
+  const Logo = () => {
+    if (isLoading) {
+        return (
+            <div className="flex items-center gap-2">
+                <Skeleton className="h-10 w-28" />
+            </div>
+        )
+    }
+
+    return (
      <Link href="/" className="flex items-center gap-2 font-headline text-2xl font-bold text-primary" style={logoStyle}>
         {state.design.logoImage ? (
-             <div className="relative h-10 flex items-center">
+             <div className="relative h-10 w-auto flex items-center" style={{maxWidth: '112px'}}>
                  <AsyncImage imageKey={state.design.logoImage} alt="לוגו" height={40} width={112} className="h-10 w-auto object-contain" />
              </div>
         ) : (
@@ -111,7 +115,8 @@ export function Header() {
         )}
         <span>מלכתא</span>
     </Link>
-  );
+    );
+  };
 
   const NavLinks = ({ className, mobile = false }: { className?: string, mobile?: boolean }) => (
     <nav className={cn('flex items-center gap-4 lg:gap-6', className)}>
@@ -210,5 +215,3 @@ export function Header() {
     </header>
   );
 }
-
-    
