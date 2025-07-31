@@ -31,6 +31,8 @@ export async function storeImage(dataUrl: string): Promise<string> {
             .upload(fileKey, blob, {
                 cacheControl: '3600',
                 upsert: false,
+                // @ts-ignore
+                duplex: 'half'
             });
 
         if (error) {
