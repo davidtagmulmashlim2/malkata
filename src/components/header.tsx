@@ -94,26 +94,24 @@ export function Header() {
 
 
   const Logo = () => {
-    if (isLoading) {
-        return (
-            <div className="flex items-center gap-2">
-                <Skeleton className="h-10 w-28" />
-            </div>
-        )
-    }
-
     return (
      <Link href="/" className="flex items-center gap-2 font-headline text-2xl font-bold text-primary" style={logoStyle}>
-        {state.design.logoImage ? (
-             <div className="relative h-10 w-auto flex items-center" style={{maxWidth: '112px'}}>
-                 <AsyncImage imageKey={state.design.logoImage} alt="לוגו" height={40} width={112} className="h-10 w-auto object-contain" />
-             </div>
+        {isLoading ? (
+            <Skeleton className="h-10 w-28" />
         ) : (
             <>
-                {IconComponent && <IconComponent className="h-7 w-7" />}
+                {state.design.logoImage ? (
+                     <div className="relative h-10 flex items-center">
+                         <AsyncImage imageKey={state.design.logoImage} alt="לוגו" height={40} width={112} className="h-10 w-auto object-contain" />
+                     </div>
+                ) : (
+                    <>
+                        {IconComponent && <IconComponent className="h-7 w-7" />}
+                    </>
+                )}
+                <span>מלכתא</span>
             </>
         )}
-        <span>מלכתא</span>
     </Link>
     );
   };
