@@ -12,6 +12,12 @@ const dataUrlToBlob = async (dataUrl: string): Promise<Blob> => {
 };
 
 export async function storeImage(dataUrl: string): Promise<string> {
+    if (!supabase) {
+        console.error("Supabase client is not initialized. Cannot store image.");
+        // Return a placeholder or throw an error, depending on desired behavior
+        return "https://placehold.co/600x400.png?text=Error";
+    }
+
     if (!dataUrl.startsWith('data:image')) {
         return dataUrl;
     }
@@ -42,7 +48,12 @@ export async function storeImage(dataUrl: string): Promise<string> {
 }
 
 export function getImage(key: string): string | null {
-    if (!key || key.startsWith('http')) {
+    if (!supabase) {
+        // Return a placeholder if supabase is not configured
+        return "https://placehold.co/600x400.png?text=Config+Error";
+    }
+    
+    if (!key || key.startsWith('http') || key.startsWith('data:')) {
         return key;
     }
     
@@ -60,6 +71,10 @@ export function getImage(key: string): string | null {
 }
 
 export async function deleteImage(key: string): Promise<void> {
+     if (!supabase) {
+        console.error("Supabase client is not initialized. Cannot delete image.");
+        return;
+    }
     if (!key || key.startsWith('http')) {
         return;
     }
