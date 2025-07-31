@@ -10,6 +10,7 @@ import { cn } from '@/lib/utils';
 import { useApp } from '@/context/app-context';
 import React, { useMemo } from 'react';
 import { Skeleton } from './ui/skeleton';
+import { AsyncImage } from './async-image';
 
 const Crown2 = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" {...props}>
@@ -99,8 +100,16 @@ export function Header() {
 
   const Logo = () => (
      <Link href="/" className="flex items-center gap-2 font-headline text-2xl font-bold text-primary" style={logoStyle}>
-        {IconComponent && <IconComponent className="h-7 w-7" />}
-        מלכתא
+        {state.design.logoImage ? (
+             <div className="relative h-10 w-28">
+                 <AsyncImage imageKey={state.design.logoImage} alt="לוגו" layout="fill" objectFit="contain" />
+             </div>
+        ) : (
+            <>
+                {IconComponent && <IconComponent className="h-7 w-7" />}
+                מלכתא
+            </>
+        )}
     </Link>
   );
 

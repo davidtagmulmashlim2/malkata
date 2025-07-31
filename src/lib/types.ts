@@ -159,6 +159,7 @@ export interface DesignSettings {
   bodyFont: string;
   logoIcon: string;
   logoColor?: string;
+  logoImage?: string;
   featuredCategoryId?: string | undefined;
 }
 

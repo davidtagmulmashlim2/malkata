@@ -1,6 +1,6 @@
 
 'use client';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useApp } from '@/context/app-context';
@@ -9,8 +9,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { toast } from '@/hooks/use-toast';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Input } from '@/components/ui/input';
+import { storeImage } from '@/lib/image-store';
+import { AsyncImage } from '@/components/async-image';
 
 const designSchema = z.object({
   theme: z.string(),
@@ -18,8 +20,23 @@ const designSchema = z.object({
   bodyFont: z.string(),
   logoIcon: z.string(),
   logoColor: z.string().optional(),
+  logoImage: z.string().optional(),
   featuredCategoryId: z.string().optional(),
 });
+
+const fileToDataUrl = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+    });
+};
+
+const ImagePreview = ({ imageKey, alt }: { imageKey: string | undefined, alt: string }) => {
+    if (!imageKey) return null;
+    return <AsyncImage imageKey={imageKey} alt={alt} width={80} height={80} className="mt-2 h-20 w-auto rounded-md object-contain" />;
+}
 
 const themes = [
     { name: 'ברירת מחדל (חם)', value: 'default' },
@@ -83,12 +100,29 @@ export default function DesignManager() {
     resolver: zodResolver(designSchema),
     defaultValues: design,
   });
+  
+  const logoImagePreview = form.watch('logoImage');
 
   useEffect(() => {
     if (design) {
       form.reset(design);
     }
   }, [design, form]);
+
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+      const file = event.target.files?.[0];
+      if (!file) return;
+
+      try {
+          const dataUrl = await fileToDataUrl(file);
+          const imageKey = await storeImage(dataUrl);
+          form.setValue('logoImage', imageKey, { shouldValidate: true });
+          toast({ title: 'תמונת לוגו הועלתה' });
+      } catch (error) {
+          console.error("Error uploading image:", error);
+          toast({ title: 'שגיאה בהעלאת תמונה', variant: 'destructive' });
+      }
+  };
 
   const onSubmit = (values: z.infer<typeof designSchema>) => {
     const payload = {
@@ -108,35 +142,36 @@ export default function DesignManager() {
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <FormField
+              control={form.control}
+              name="theme"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-lg font-headline">ערכת נושא</FormLabel>
+                   <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="בחר ערכת נושא" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {themes.map(theme => (
+                        <SelectItem key={theme.value} value={theme.value}>{theme.name}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField
-                  control={form.control}
-                  name="theme"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-lg font-headline">ערכת נושא</FormLabel>
-                       <Select onValueChange={field.onChange} value={field.value}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="בחר ערכת נושא" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {themes.map(theme => (
-                            <SelectItem key={theme.value} value={theme.value}>{theme.name}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                 <FormField
                   control={form.control}
                   name="logoIcon"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-lg font-headline">סמל לוגו</FormLabel>
+                      <FormLabel className="text-lg font-headline">סמל לוגו (ללא תמונה)</FormLabel>
                        <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
                           <SelectTrigger>
@@ -153,22 +188,41 @@ export default function DesignManager() {
                     </FormItem>
                   )}
                 />
+                <FormField
+                  control={form.control}
+                  name="logoColor"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-lg font-headline">צבע הלוגו (ללא תמונה)</FormLabel>
+                      <FormControl>
+                        <Input type="color" {...field} className="p-1 h-10 w-full" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
             </div>
-
-            <FormField
-              control={form.control}
-              name="logoColor"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-lg font-headline">צבע הלוגו</FormLabel>
-                  <FormControl>
-                    <Input type="color" {...field} className="p-1 h-10 w-full" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
             
+            <Controller
+                control={form.control}
+                name="logoImage"
+                render={({ field }) => (
+                   <FormItem>
+                     <FormLabel className="text-lg font-headline">תמונת לוגו (אופציונלי)</FormLabel>
+                      <p className="text-sm text-muted-foreground">העלאת תמונה תחליף את האייקון שבחרת.</p>
+                      <FormControl>
+                        <Input 
+                            type="file" 
+                            accept="image/*" 
+                            onChange={handleFileChange}
+                        />
+                      </FormControl>
+                     <FormMessage />
+                     <ImagePreview imageKey={logoImagePreview} alt="תצוגה מקדימה של לוגו" />
+                   </FormItem>
+                )}
+              />
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                  <FormField
                   control={form.control}

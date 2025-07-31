@@ -122,6 +122,7 @@ export const DEFAULT_APP_STATE: AppState = {
     bodyFont: 'pt-sans',
     logoIcon: 'crown4',
     logoColor: '#e0a84c',
+    logoImage: '',
     featuredCategoryId: '',
   },
 };
