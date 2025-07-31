@@ -7,8 +7,8 @@ import { createClient } from '@supabase/supabase-js'
 // 2. Select your project
 // 3. Go to Settings (cog icon) -> API
 // 4. Copy the URL and the anon public key
-const supabaseUrl = 'https://pvjyjyrrszvepmseszle.supabase.com';
-const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB2anlqeXJyc3p2ZXBtc2VzemxlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjE1ODQ1NTgsImV4cCI6MjAzNzE2MDU1OH0.8QZkF_d1K7uL2gKCKaQzHxN8T5Rj6S5D5a4R36B4D6c';
+const supabaseUrl = 'https://YOUR_PROJECT_URL.supabase.co';
+const supabaseAnonKey = 'YOUR_SUPABASE_ANON_KEY';
 
 
 // The Supabase client is initialized directly with the provided URL and key.
