@@ -1,134 +1,86 @@
 
-"use client";
+'use client';
+import { storage } from './firebase';
+import { ref, uploadString, getDownloadURL, deleteObject } from 'firebase/storage';
 
-// This is a simple client-side storage for base64 images to avoid localStorage quota issues.
-// In a real-world app, you'd use a cloud storage service like Firebase Storage.
+const imageCache = new Map<string, string>();
 
-const DB_NAME = 'MalkataImageStore';
-const STORE_NAME = 'images';
-
-interface DBRequest extends EventTarget {
-    result: IDBDatabase;
-    error?: DOMException;
-}
-
-interface OpenDBRequest extends IDBOpenDBRequest {
-    target: DBRequest;
-}
-
-const openDB = (): Promise<IDBDatabase> => {
-  return new Promise((resolve, reject) => {
-    if (typeof window === 'undefined' || !window.indexedDB) {
-        // Mock DB for SSR or unsupported environments
-        const mockDB = {
-            transaction: () => ({
-                objectStore: () => ({
-                    put: () => ({ onsuccess: null, onerror: null }),
-                    get: () => ({ onsuccess: (e: any) => { e.target.result = null; }, onerror: null }),
-                    delete: () => ({ onsuccess: null, onerror: null }),
-                }),
-                oncomplete: null,
-                onerror: null,
-            }),
-            close: () => {}
-        } as unknown as IDBDatabase;
-        return resolve(mockDB);
+function dataUrlToBlob(dataUrl: string): Blob {
+    const arr = dataUrl.split(',');
+    if (arr.length < 2) {
+        throw new Error('Invalid data URL');
     }
-      
-    const request = indexedDB.open(DB_NAME, 1) as OpenDBRequest;
-
-    request.onupgradeneeded = (event: IDBVersionChangeEvent) => {
-        const db = (event.target as any).result as IDBDatabase;
-        if (!db.objectStoreNames.contains(STORE_NAME)) {
-            db.createObjectStore(STORE_NAME, { keyPath: 'id', autoIncrement: true });
-        }
-    };
-    
-    request.onsuccess = (event: Event) => resolve((event.target as any).result as IDBDatabase);
-    request.onerror = (event: Event) => reject((event.target as any).error);
-  });
-};
+    const mimeMatch = arr[0].match(/:(.*?);/);
+    if (!mimeMatch || mimeMatch.length < 2) {
+        throw new Error('Could not find MIME type in data URL');
+    }
+    const mime = mimeMatch[1];
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while (n--) {
+        u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new Blob([u8arr], { type: mime });
+}
 
 
 export async function storeImage(dataUrl: string): Promise<string> {
     if (!dataUrl.startsWith('data:image')) {
-        // If it's already a regular URL, just return it
-        return dataUrl;
+        return dataUrl; // It's likely already a URL
     }
-    const db = await openDB();
-    return new Promise((resolve, reject) => {
-        const transaction = db.transaction([STORE_NAME], 'readwrite');
-        const store = transaction.objectStore(STORE_NAME);
-        const imageKey = `img-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
-        const request = store.put({ id: imageKey, data: dataUrl });
 
-        request.onsuccess = () => resolve(imageKey);
-        request.onerror = (event) => reject((event.target as any).error);
-    });
+    const imageKey = `img-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+    const storageRef = ref(storage, `images/${imageKey}`);
+    
+    // Firebase Storage's uploadString with 'data_url' expects the full data URL.
+    await uploadString(storageRef, dataUrl, 'data_url');
+    
+    // After uploading, we store the key, not the URL. The URL will be fetched on demand.
+    return imageKey;
 }
 
-// In-memory cache for synchronous access
-const imageCache = new Map<string, string>();
-
 export async function getImage(key: string): Promise<string | null> {
-    if (!key || key.startsWith('http') || key.startsWith('data:')) {
+    if (!key || key.startsWith('http')) {
         return key;
     }
-    if (imageCache.has(key)) {
+     if (imageCache.has(key)) {
         return imageCache.get(key)!;
     }
 
-    const db = await openDB();
-    return new Promise((resolve, reject) => {
-        const transaction = db.transaction([STORE_NAME], 'readonly');
-        const store = transaction.objectStore(STORE_NAME);
-        const request = store.get(key);
-        
-        request.onsuccess = (event) => {
-            const result = (event.target as any).result;
-            if (result && result.data) {
-                imageCache.set(key, result.data);
-                resolve(result.data);
-            } else {
-                // To prevent repeated DB lookups for keys that don't exist
-                resolve("https://placehold.co/600x400.png"); 
-            }
-        };
-        request.onerror = (event) => reject((event.target as any).error);
-    });
-}
-
-export function getImageSync(key: string): string | null {
-    if (!key || key.startsWith('http') || key.startsWith('data:')) {
-        return key;
+    try {
+        const storageRef = ref(storage, `images/${key}`);
+        const url = await getDownloadURL(storageRef);
+        imageCache.set(key, url);
+        return url;
+    } catch (error: any) {
+        if (error.code === 'storage/object-not-found') {
+            console.warn(`Image with key "${key}" not found in Firebase Storage.`);
+        } else {
+            console.error(`Error fetching image with key "${key}":`, error);
+        }
+        return "https://placehold.co/600x400.png";
     }
-    return imageCache.get(key) || null;
 }
-
 
 export async function deleteImage(key: string): Promise<void> {
+    if (!key || key.startsWith('http')) {
+        return;
+    }
+
     if (imageCache.has(key)) {
         imageCache.delete(key);
     }
-    const db = await openDB();
-    return new Promise((resolve, reject) => {
-        const transaction = db.transaction([STORE_NAME], 'readwrite');
-        const store = transaction.objectStore(STORE_NAME);
-        const request = store.delete(key);
-        request.onsuccess = () => resolve();
-        request.onerror = (event) => reject((event.target as any).error);
-    });
-}
 
-// Pre-populate cache on load
-if (typeof window !== 'undefined') {
-    openDB().then(db => {
-        const transaction = db.transaction([STORE_NAME], 'readonly');
-        const store = transaction.objectStore(STORE_NAME);
-        const request = store.getAll();
-        request.onsuccess = (event) => {
-            const results = (event.target as any).result as {id: string, data: string}[];
-            results.forEach(item => imageCache.set(item.id, item.data));
+    try {
+        const storageRef = ref(storage, `images/${key}`);
+        await deleteObject(storageRef);
+    } catch (error: any) {
+        if (error.code === 'storage/object-not-found') {
+            // It's already deleted or never existed, so we can consider the operation successful.
+            console.warn(`Image with key "${key}" not found for deletion, but that's okay.`);
+        } else {
+            console.error(`Error deleting image with key "${key}":`, error);
         }
-    });
+    }
 }
