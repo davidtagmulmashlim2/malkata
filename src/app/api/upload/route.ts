@@ -32,14 +32,16 @@ export async function POST(req: NextRequest) {
         }
         
         const fileBuffer = dataURLToBuffer(fileDataUrl);
-        const fileKey = `img-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+        const contentType = fileDataUrl.substring(fileDataUrl.indexOf(':') + 1, fileDataUrl.indexOf(';'));
+        const fileExtension = contentType.split('/')[1];
+        const fileKey = `img-${Date.now()}-${Math.random().toString(36).substring(2, 9)}.${fileExtension}`;
         
         const { data, error } = await supabase.storage
             .from(BUCKET_NAME)
             .upload(fileKey, fileBuffer, {
                 cacheControl: '3600',
                 upsert: false,
-                contentType: fileDataUrl.substring(fileDataUrl.indexOf(':') + 1, fileDataUrl.indexOf(';')),
+                contentType: contentType,
             });
 
         if (error) {
