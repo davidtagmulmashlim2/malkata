@@ -6,7 +6,7 @@ const BUCKET_NAME = 'images';
 
 // Helper function to convert data URL to Blob
 function dataURLtoBlob(dataurl: string): Blob | null {
-    if (!dataurl) return null;
+    if (!dataurl || !dataurl.startsWith('data:')) return null;
     const arr = dataurl.split(',');
     if (arr.length < 2) return null;
     const mimeMatch = arr[0].match(/:(.*?);/);
@@ -21,7 +21,6 @@ function dataURLtoBlob(dataurl: string): Blob | null {
     return new Blob([u8arr], {type:mime});
 }
 
-
 export async function storeImage(dataUrl: string): Promise<string> {
     // If it's not a data URL, it's probably an existing key or a placeholder. Don't re-upload.
     if (!dataUrl.startsWith('data:image')) {
@@ -34,32 +33,32 @@ export async function storeImage(dataUrl: string): Promise<string> {
             throw new Error('Failed to convert data URL to blob.');
         }
 
-        const formData = new FormData();
-        formData.append('file', blob, `upload.${blob.type.split('/')[1] || 'png'}`);
-        
-        const response = await fetch('/api/upload', {
-            method: 'POST',
-            body: formData,
-        });
+        const fileExtension = blob.type.split('/')[1] || 'png';
+        const fileKey = `img-${Date.now()}-${Math.random().toString(36).substring(2, 9)}.${fileExtension}`;
 
-        if (!response.ok) {
-            const errorData = await response.json().catch(() => ({ error: 'Image upload failed with non-JSON response' }));
-            throw new Error(errorData.error || 'Image upload failed');
+        const { data, error } = await supabase.storage
+            .from(BUCKET_NAME)
+            .upload(fileKey, blob, {
+                contentType: blob.type,
+                upsert: false,
+            });
+
+        if (error) {
+            console.error('Supabase upload error:', error);
+            throw error;
         }
 
-        const { key } = await response.json();
-        if (!key) {
-            throw new Error('Image upload succeeded but did not return a key.');
+        if (!data?.path) {
+            throw new Error('Upload succeeded but no path returned.');
         }
 
-        return key;
+        return data.path;
 
     } catch (error) {
         console.error('Error in storeImage:', error);
         return "https://placehold.co/600x400.png?text=Upload+Error";
     }
 }
-
 
 export function getImage(key: string): string | null {
     if (!supabase) {
