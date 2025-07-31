@@ -1,6 +1,7 @@
 
 'use client';
 import { supabase } from './supabase';
+import { v4 as uuidv4 } from 'uuid';
 
 const BUCKET_NAME = 'images';
 
@@ -11,31 +12,35 @@ export async function storeImage(dataUrl: string): Promise<string> {
     }
 
     try {
-        // Convert data URL to Blob for FormData
         const response = await fetch(dataUrl);
-        const blob = await response.blob();
-        
-        const formData = new FormData();
-        formData.append('file', blob, 'upload.png'); // The name 'upload.png' is arbitrary
+        const fileBuffer = await response.arrayBuffer();
+        const file = new File([fileBuffer], "upload", { type: response.headers.get('content-type') ?? 'image/png' });
 
-        const apiResponse = await fetch('/api/upload', {
-            method: 'POST',
-            body: formData,
-        });
+        const fileExtension = file.type.split('/')[1] || 'png';
+        const fileKey = `img-${Date.now()}-${uuidv4()}.${fileExtension}`;
 
-        if (!apiResponse.ok) {
-            const errorData = await apiResponse.json().catch(() => ({ error: 'Image upload failed with non-JSON response' }));
-            throw new Error(errorData.error || `Image upload failed with status: ${apiResponse.status}`);
+        const { data, error } = await supabase.storage
+            .from(BUCKET_NAME)
+            .upload(fileKey, file, {
+                contentType: file.type,
+                upsert: false,
+            });
+
+        if (error) {
+            console.error('Error uploading to Supabase:', error.message);
+            throw error;
         }
 
-        const { key } = await apiResponse.json();
-        if (!key) {
-            throw new Error('Upload succeeded but no key was returned.');
+        if (!data?.path) {
+            throw new Error('Upload succeeded but no path was returned.');
         }
-        return key;
 
+        return data.path;
     } catch (error) {
         console.error('Error in storeImage:', error);
+        if (error instanceof Error && error.message.includes('fetch')) {
+             return "https://placehold.co/600x400.png?text=Network+Error";
+        }
         return "https://placehold.co/600x400.png?text=Upload+Error";
     }
 }
