@@ -4,50 +4,42 @@ import { supabase } from './supabase';
 
 const BUCKET_NAME = 'images';
 
-// Helper to convert data URL to Blob
-const dataUrlToBlob = async (dataUrl: string): Promise<Blob> => {
-    const response = await fetch(dataUrl);
-    const blob = await response.blob();
-    return blob;
-};
-
 export async function storeImage(dataUrl: string): Promise<string> {
-    if (!supabase) {
-        console.error("Supabase client is not initialized. Cannot store image.");
-        // Return a placeholder or throw an error, depending on desired behavior
-        return "https://placehold.co/600x400.png?text=Error";
-    }
-
     if (!dataUrl.startsWith('data:image')) {
+        // If it's not a data URL, assume it's already a valid key/URL
         return dataUrl;
     }
 
     try {
-        const blob = await dataUrlToBlob(dataUrl);
-        const fileKey = `img-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
-        
-        const { data, error } = await supabase.storage
-            .from(BUCKET_NAME)
-            .upload(fileKey, blob, {
-                cacheControl: '3600',
-                upsert: false,
-                // @ts-ignore
-                duplex: 'half'
-            });
+        // Use the new API route for uploading
+        const response = await fetch('/api/upload', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ file: dataUrl }),
+        });
 
-        if (error) {
-            console.error('Error uploading to Supabase:', error.message);
-            throw error;
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'Image upload failed');
         }
 
-        // We store the key, not the full URL.
-        return fileKey;
+        const { key } = await response.json();
+        if (!key) {
+            throw new Error('Image upload succeeded but did not return a key.');
+        }
+        
+        return key;
 
     } catch (error) {
         console.error('Error in storeImage:', error);
-        throw error;
+        // Fallback or rethrow, depending on desired behavior
+        // Using a placeholder to indicate an error to the user
+        return "https://placehold.co/600x400.png?text=Upload+Error";
     }
 }
+
 
 export function getImage(key: string): string | null {
     if (!supabase) {
