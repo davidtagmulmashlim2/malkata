@@ -123,6 +123,7 @@ export const DEFAULT_APP_STATE: AppState = {
     logoIcon: 'crown4',
     logoColor: '#e0a84c',
     logoImage: '',
+    logoWidth: 120,
     featuredCategoryId: '',
   },
 };

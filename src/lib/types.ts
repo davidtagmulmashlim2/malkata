@@ -160,6 +160,7 @@ export interface DesignSettings {
   logoIcon: string;
   logoColor?: string;
   logoImage?: string;
+  logoWidth?: number;
   featuredCategoryId?: string | undefined;
 }
 

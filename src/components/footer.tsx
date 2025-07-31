@@ -12,6 +12,7 @@ import { FacebookIcon } from "./icons/facebook-icon";
 import { cn } from "@/lib/utils";
 import { Skeleton } from "./ui/skeleton";
 import { AsyncImage } from "./async-image";
+import { useIsClient } from "@/hooks/use-is-client";
 
 const Crown2 = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" {...props}>
@@ -49,6 +50,7 @@ export function Footer() {
     const { state, isLoading } = useApp();
     const { siteContent, design } = state;
     const { contact, footer } = siteContent;
+    const isClient = useIsClient();
     
     const IconComponent = iconMap[design.logoIcon] || UtensilsCrossed;
     const logoStyle = design.logoColor ? { color: design.logoColor } : {};
@@ -59,20 +61,38 @@ export function Footer() {
       '6xl': 'text-6xl', '7xl': 'text-7xl', '8xl': 'text-8xl', '9xl': 'text-9xl',
     };
 
-    const Logo = () => (
-     <Link href="/" className="flex items-center gap-2 font-headline text-2xl font-bold text-primary" style={logoStyle}>
-        {state.design.logoImage ? (
-             <div className="relative h-10 flex items-center">
-                 <AsyncImage imageKey={state.design.logoImage} alt="לוגו" height={40} width={112} className="h-10 w-auto object-contain" />
-             </div>
-        ) : (
-            <>
-                {IconComponent && <IconComponent className="h-7 w-7" />}
+    const Logo = () => {
+        if (!isClient || isLoading) {
+          return (
+             <Link href="/" className="flex items-center gap-2 font-headline text-2xl font-bold text-primary">
+                <UtensilsCrossed className="h-7 w-7" />
                 <span>מלכתא</span>
-            </>
-        )}
-    </Link>
-  );
+            </Link>
+          );
+        }
+
+        return (
+         <Link href="/" className="flex items-center gap-2 font-headline text-2xl font-bold text-primary" style={logoStyle}>
+            {design.logoImage ? (
+                <div className="relative flex items-center" style={{height: '40px'}}>
+                     <AsyncImage 
+                        imageKey={design.logoImage} 
+                        alt="לוגו" 
+                        height={40} 
+                        width={design.logoWidth || 120} 
+                        style={{width: `${design.logoWidth || 120}px`, height: 'auto'}}
+                        className="object-contain" 
+                     />
+                 </div>
+            ) : (
+                <>
+                    {IconComponent && <IconComponent className="h-7 w-7" />}
+                    <span>מלכתא</span>
+                </>
+            )}
+        </Link>
+      );
+    }
 
     return (
         <footer className="bg-card text-card-foreground border-t">

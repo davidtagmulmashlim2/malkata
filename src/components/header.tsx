@@ -96,8 +96,7 @@ export function Header() {
 
 
   const Logo = () => {
-    // On the server, or during client-side hydration, render a static version.
-    if (!isClient || isLoading) {
+    if (!isClient) {
       return (
          <Link href="/" className="flex items-center gap-2 font-headline text-2xl font-bold text-primary">
             <UtensilsCrossed className="h-7 w-7" />
@@ -105,13 +104,26 @@ export function Header() {
         </Link>
       );
     }
+    
+    if (isLoading) {
+        return (
+            <Link href="/" className="flex items-center gap-2 font-headline text-2xl font-bold text-primary">
+                <Skeleton className="h-10" style={{ width: `${state.design.logoWidth || 120}px` }}/>
+            </Link>
+        )
+    }
 
-    // After hydration on the client, render the dynamic, user-configured logo.
     return (
       <Link href="/" className="flex items-center gap-2 font-headline text-2xl font-bold text-primary" style={logoStyle}>
         {state.design.logoImage ? (
-             <div className="relative h-10 flex items-center">
-                 <AsyncImage imageKey={state.design.logoImage} alt="לוגו" height={40} width={112} className="h-10 w-auto object-contain" />
+             <div className="relative flex items-center" style={{height: '40px'}}>
+                 <AsyncImage 
+                    imageKey={state.design.logoImage} 
+                    alt="לוגו" height={40} 
+                    width={state.design.logoWidth || 120} 
+                    style={{width: `${state.design.logoWidth || 120}px`, height: 'auto'}}
+                    className="object-contain" 
+                 />
              </div>
         ) : (
             <>

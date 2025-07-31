@@ -15,6 +15,7 @@ import { storeImage, deleteImage } from '@/lib/image-store';
 import { AsyncImage } from '@/components/async-image';
 import { Trash2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Slider } from '@/components/ui/slider';
 
 const designSchema = z.object({
   theme: z.string(),
@@ -23,6 +24,7 @@ const designSchema = z.object({
   logoIcon: z.string(),
   logoColor: z.string().optional(),
   logoImage: z.string().optional(),
+  logoWidth: z.coerce.number().min(50).max(300).optional(),
   featuredCategoryId: z.string().optional(),
 });
 
@@ -35,11 +37,11 @@ const fileToDataUrl = (file: File): Promise<string> => {
     });
 };
 
-const ImagePreview = ({ imageKey, alt, onRemove }: { imageKey: string | undefined, alt: string, onRemove?: () => void }) => {
+const ImagePreview = ({ imageKey, alt, onRemove, width }: { imageKey: string | undefined, alt: string, onRemove?: () => void, width?: number }) => {
     if (!imageKey) return null;
     return (
         <div className="mt-2 relative w-fit">
-            <AsyncImage imageKey={imageKey} alt={alt} height={40} width={112} className="h-10 w-auto rounded-md object-contain border p-1" />
+            <AsyncImage imageKey={imageKey} alt={alt} height={40} width={width || 112} className="h-10 object-contain border p-1 rounded-md" style={{width: `${width || 112}px`}} />
             {onRemove && (
                 <Button 
                     type="button" 
@@ -120,6 +122,7 @@ export default function DesignManager() {
   });
   
   const logoImagePreview = form.watch('logoImage');
+  const logoWidthPreview = form.watch('logoWidth');
 
   useEffect(() => {
     if (design) {
@@ -246,7 +249,7 @@ export default function DesignManager() {
                 render={({ field }) => (
                    <FormItem>
                      <FormLabel className="text-lg font-headline">תמונת לוגו (אופציונלי)</FormLabel>
-                      <p className="text-sm text-muted-foreground">העלאת תמונה תחליף את האייקון שבחרת.</p>
+                      <p className="text-sm text-muted-foreground">העלאת תמונה תחליף את האייקון שבחרת ואת שם האתר.</p>
                       <FormControl>
                         <Input 
                             type="file" 
@@ -255,11 +258,19 @@ export default function DesignManager() {
                         />
                       </FormControl>
                      <FormMessage />
-                     <ImagePreview imageKey={logoImagePreview} alt="תצוגה מקדימה של לוגו" onRemove={handleRemoveImage} />
+                     <ImagePreview imageKey={logoImagePreview} alt="תצוגה מקדימה של לוגו" onRemove={handleRemoveImage} width={logoWidthPreview} />
                    </FormItem>
                 )}
               />
-
+              {logoImagePreview && (
+                <FormField name="logoWidth" control={form.control} render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>רוחב הלוגו ({field.value || 120}px)</FormLabel>
+                    <FormControl><Slider value={[field.value || 120]} min={50} max={300} step={5} onValueChange={(v) => field.onChange(v[0])} /></FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )} />
+              )}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                  <FormField
                   control={form.control}
