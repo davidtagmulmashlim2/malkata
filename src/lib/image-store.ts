@@ -23,6 +23,7 @@ function dataURLtoBlob(dataurl: string): Blob | null {
 
 
 export async function storeImage(dataUrl: string): Promise<string> {
+    // If it's not a data URL, it's probably an existing key or a placeholder. Don't re-upload.
     if (!dataUrl.startsWith('data:image')) {
         return dataUrl;
     }
