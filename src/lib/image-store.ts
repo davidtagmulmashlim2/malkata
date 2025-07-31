@@ -4,24 +4,45 @@ import { supabase } from './supabase';
 
 const BUCKET_NAME = 'images';
 
+// Helper function to convert data URL to Blob
+function dataURLtoBlob(dataurl: string): Blob | null {
+    if (!dataurl) return null;
+    const arr = dataurl.split(',');
+    if (arr.length < 2) return null;
+    const mimeMatch = arr[0].match(/:(.*?);/);
+    if (!mimeMatch || mimeMatch.length < 2) return null;
+    const mime = mimeMatch[1];
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while(n--){
+        u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new Blob([u8arr], {type:mime});
+}
+
+
 export async function storeImage(dataUrl: string): Promise<string> {
     if (!dataUrl.startsWith('data:image')) {
-        // If it's not a data URL, assume it's already a valid key/URL from Supabase
         return dataUrl;
     }
 
     try {
-        // Send the data URL to our new serverless function endpoint
+        const blob = dataURLtoBlob(dataUrl);
+        if (!blob) {
+            throw new Error('Failed to convert data URL to blob.');
+        }
+
+        const formData = new FormData();
+        formData.append('file', blob, `upload.${blob.type.split('/')[1] || 'png'}`);
+        
         const response = await fetch('/api/upload', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ dataUrl }),
+            body: formData,
         });
 
         if (!response.ok) {
-            const errorData = await response.json();
+            const errorData = await response.json().catch(() => ({ error: 'Image upload failed with non-JSON response' }));
             throw new Error(errorData.error || 'Image upload failed');
         }
 
@@ -41,7 +62,6 @@ export async function storeImage(dataUrl: string): Promise<string> {
 
 export function getImage(key: string): string | null {
     if (!supabase) {
-        // Return a placeholder if supabase is not configured
         return "https://placehold.co/600x400.png?text=Config+Error";
     }
     

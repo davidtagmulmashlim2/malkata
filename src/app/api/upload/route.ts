@@ -1,37 +1,46 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
+import formidable from 'formidable';
+import fs from 'fs';
 
 const BUCKET_NAME = 'images';
 
-function base64ToBuffer(base64: string): Buffer {
-    return Buffer.from(base64, 'base64');
-}
+export const config = {
+    api: {
+        bodyParser: false,
+    },
+};
+
+const parseForm = (req: NextRequest): Promise<{ fields: formidable.Fields; files: formidable.Files }> => {
+    return new Promise((resolve, reject) => {
+        const form = formidable({});
+        form.parse(req as any, (err, fields, files) => {
+            if (err) {
+                reject(err);
+            }
+            resolve({ fields, files });
+        });
+    });
+};
 
 export async function POST(req: NextRequest) {
     try {
-        const body = await req.json();
-        const { dataUrl } = body;
+        const { files } = await parseForm(req);
+        const file = files.file?.[0];
 
-        if (!dataUrl || !dataUrl.startsWith('data:image')) {
-            return NextResponse.json({ error: 'Invalid data URL provided.' }, { status: 400 });
+        if (!file) {
+            return NextResponse.json({ error: 'No file uploaded.' }, { status: 400 });
         }
 
-        const contentType = dataUrl.substring(dataUrl.indexOf(':') + 1, dataUrl.indexOf(';'));
-        const base64Data = dataUrl.split(',')[1];
-        
-        if (!base64Data) {
-            return NextResponse.json({ error: 'Invalid base64 data.' }, { status: 400 });
-        }
-        
-        const fileBuffer = base64ToBuffer(base64Data);
-        const fileExtension = contentType.split('/')[1] || 'png';
+        const fileContent = fs.readFileSync(file.filepath);
+        const fileExtension = file.mimetype?.split('/')[1] || 'png';
         const fileKey = `img-${Date.now()}-${Math.random().toString(36).substring(2, 9)}.${fileExtension}`;
 
         const { data, error } = await supabase.storage
             .from(BUCKET_NAME)
-            .upload(fileKey, fileBuffer, {
-                contentType: contentType,
+            .upload(fileKey, fileContent, {
+                contentType: file.mimetype || 'image/png',
                 upsert: false,
             });
 
