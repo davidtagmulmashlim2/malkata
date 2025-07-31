@@ -5,35 +5,16 @@ import { ref, uploadString, getDownloadURL, deleteObject } from 'firebase/storag
 
 const imageCache = new Map<string, string>();
 
-function dataUrlToBlob(dataUrl: string): Blob {
-    const arr = dataUrl.split(',');
-    if (arr.length < 2) {
-        throw new Error('Invalid data URL');
-    }
-    const mimeMatch = arr[0].match(/:(.*?);/);
-    if (!mimeMatch || mimeMatch.length < 2) {
-        throw new Error('Could not find MIME type in data URL');
-    }
-    const mime = mimeMatch[1];
-    const bstr = atob(arr[1]);
-    let n = bstr.length;
-    const u8arr = new Uint8Array(n);
-    while (n--) {
-        u8arr[n] = bstr.charCodeAt(n);
-    }
-    return new Blob([u8arr], { type: mime });
-}
-
-
 export async function storeImage(dataUrl: string): Promise<string> {
     if (!dataUrl.startsWith('data:image')) {
-        return dataUrl; // It's likely already a URL
+        // It's not a new upload, but likely an existing key or URL.
+        return dataUrl;
     }
 
     const imageKey = `img-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
     const storageRef = ref(storage, `images/${imageKey}`);
     
-    // Firebase Storage's uploadString with 'data_url' expects the full data URL.
+    // Firebase Storage's uploadString with 'data_url' correctly handles the Data URL format.
     await uploadString(storageRef, dataUrl, 'data_url');
     
     // After uploading, we store the key, not the URL. The URL will be fetched on demand.
@@ -59,12 +40,14 @@ export async function getImage(key: string): Promise<string | null> {
         } else {
             console.error(`Error fetching image with key "${key}":`, error);
         }
+        // Return a placeholder if the image is not found or an error occurs.
         return "https://placehold.co/600x400.png";
     }
 }
 
 export async function deleteImage(key: string): Promise<void> {
     if (!key || key.startsWith('http')) {
+        // This is a URL, not a key, so we can't delete it.
         return;
     }
 
