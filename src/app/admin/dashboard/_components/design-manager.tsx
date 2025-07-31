@@ -11,8 +11,10 @@ import { toast } from '@/hooks/use-toast';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useEffect, useState } from 'react';
 import { Input } from '@/components/ui/input';
-import { storeImage } from '@/lib/image-store';
+import { storeImage, deleteImage } from '@/lib/image-store';
 import { AsyncImage } from '@/components/async-image';
+import { Trash2 } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 const designSchema = z.object({
   theme: z.string(),
@@ -33,10 +35,26 @@ const fileToDataUrl = (file: File): Promise<string> => {
     });
 };
 
-const ImagePreview = ({ imageKey, alt }: { imageKey: string | undefined, alt: string }) => {
+const ImagePreview = ({ imageKey, alt, onRemove }: { imageKey: string | undefined, alt: string, onRemove?: () => void }) => {
     if (!imageKey) return null;
-    return <AsyncImage imageKey={imageKey} alt={alt} width={80} height={80} className="mt-2 h-20 w-auto rounded-md object-contain" />;
-}
+    return (
+        <div className="mt-2 relative w-fit">
+            <AsyncImage imageKey={imageKey} alt={alt} height={40} width={112} className="h-10 w-auto rounded-md object-contain border p-1" />
+            {onRemove && (
+                <Button 
+                    type="button" 
+                    variant="destructive" 
+                    size="icon" 
+                    className="absolute -top-2 -right-2 h-6 w-6"
+                    onClick={onRemove}
+                >
+                    <Trash2 className="h-3 w-3" />
+                </Button>
+            )}
+        </div>
+    );
+};
+
 
 const themes = [
     { name: 'ברירת מחדל (חם)', value: 'default' },
@@ -115,6 +133,11 @@ export default function DesignManager() {
 
       try {
           const dataUrl = await fileToDataUrl(file);
+          // If there's an old image, delete it from the store first
+          const oldImageKey = form.getValues('logoImage');
+          if (oldImageKey) {
+            await deleteImage(oldImageKey);
+          }
           const imageKey = await storeImage(dataUrl);
           form.setValue('logoImage', imageKey, { shouldValidate: true });
           toast({ title: 'תמונת לוגו הועלתה' });
@@ -123,6 +146,20 @@ export default function DesignManager() {
           toast({ title: 'שגיאה בהעלאת תמונה', variant: 'destructive' });
       }
   };
+
+  const handleRemoveImage = async () => {
+    const imageKey = form.getValues('logoImage');
+    if (imageKey) {
+        try {
+            await deleteImage(imageKey);
+            form.setValue('logoImage', '', { shouldValidate: true });
+            toast({ title: 'תמונת לוגו הוסרה' });
+        } catch (error) {
+             console.error("Error deleting image:", error);
+             toast({ title: 'שגיאה במחיקת תמונה', variant: 'destructive' });
+        }
+    }
+  }
 
   const onSubmit = (values: z.infer<typeof designSchema>) => {
     const payload = {
@@ -218,7 +255,7 @@ export default function DesignManager() {
                         />
                       </FormControl>
                      <FormMessage />
-                     <ImagePreview imageKey={logoImagePreview} alt="תצוגה מקדימה של לוגו" />
+                     <ImagePreview imageKey={logoImagePreview} alt="תצוגה מקדימה של לוגו" onRemove={handleRemoveImage} />
                    </FormItem>
                 )}
               />
@@ -300,3 +337,5 @@ export default function DesignManager() {
     </Card>
   );
 }
+
+    

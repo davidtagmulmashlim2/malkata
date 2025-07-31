@@ -101,7 +101,7 @@ export function Header() {
   const Logo = () => (
      <Link href="/" className="flex items-center gap-2 font-headline text-2xl font-bold text-primary" style={logoStyle}>
         {state.design.logoImage ? (
-             <div className="relative h-10 w-28">
+             <div className="relative h-auto w-auto max-w-28 max-h-10">
                  <AsyncImage imageKey={state.design.logoImage} alt="לוגו" layout="fill" objectFit="contain" />
              </div>
         ) : (
@@ -210,3 +210,5 @@ export function Header() {
     </header>
   );
 }
+
+    
