@@ -4,21 +4,20 @@ import { supabase } from './supabase';
 
 const BUCKET_NAME = 'images';
 
-// Helper function to convert data URL to Blob
-function dataURLtoBlob(dataurl: string): Blob | null {
+// Helper to convert a data URL to a Buffer-like object for the server
+function dataURLtoBuffer(dataurl: string): { buffer: Buffer, mime: string } | null {
     if (!dataurl || !dataurl.startsWith('data:')) return null;
     const arr = dataurl.split(',');
     if (arr.length < 2) return null;
+
     const mimeMatch = arr[0].match(/:(.*?);/);
-    if (!mimeMatch || mimeMatch.length < 2) return null;
-    const mime = mimeMatch[1];
-    const bstr = atob(arr[1]);
-    let n = bstr.length;
-    const u8arr = new Uint8Array(n);
-    while(n--){
-        u8arr[n] = bstr.charCodeAt(n);
-    }
-    return new Blob([u8arr], {type:mime});
+    const mime = mimeMatch ? mimeMatch[1] : 'application/octet-stream';
+    const base64Data = arr[1];
+    
+    // In the browser, we can't create a real Buffer, but the server will receive the base64 string
+    // and can convert it. We'll simulate the structure for consistency.
+    // The main part is sending the base64 data.
+    return { buffer: Buffer.from(base64Data, 'base64'), mime };
 }
 
 export async function storeImage(dataUrl: string): Promise<string> {
@@ -28,37 +27,31 @@ export async function storeImage(dataUrl: string): Promise<string> {
     }
 
     try {
-        const blob = dataURLtoBlob(dataUrl);
-        if (!blob) {
-            throw new Error('Failed to convert data URL to blob.');
+        const response = await fetch('/api/upload', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ image: dataUrl }),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({ error: 'Image upload failed with non-JSON response' }));
+            throw new Error(errorData.error || 'Image upload failed');
         }
 
-        const fileExtension = blob.type.split('/')[1] || 'png';
-        const fileKey = `img-${Date.now()}-${Math.random().toString(36).substring(2, 9)}.${fileExtension}`;
-
-        const { data, error } = await supabase.storage
-            .from(BUCKET_NAME)
-            .upload(fileKey, blob, {
-                contentType: blob.type,
-                upsert: false,
-            });
-
-        if (error) {
-            console.error('Supabase upload error:', error);
-            throw error;
+        const { key } = await response.json();
+        if (!key) {
+            throw new Error('Upload succeeded but no key was returned.');
         }
-
-        if (!data?.path) {
-            throw new Error('Upload succeeded but no path returned.');
-        }
-
-        return data.path;
+        return key;
 
     } catch (error) {
         console.error('Error in storeImage:', error);
         return "https://placehold.co/600x400.png?text=Upload+Error";
     }
 }
+
 
 export function getImage(key: string): string | null {
     if (!supabase) {
