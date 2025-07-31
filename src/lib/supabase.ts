@@ -1,5 +1,5 @@
 
-import { createClient, SupabaseClient } from '@supabase/supabase-js'
+import { createClient } from '@supabase/supabase-js'
 
 // IMPORTANT: Replace with your Supabase project URL and anon key
 // You can find these in your Supabase project's settings under "API".
@@ -7,16 +7,10 @@ import { createClient, SupabaseClient } from '@supabase/supabase-js'
 // 2. Select your project
 // 3. Go to Settings (cog icon) -> API
 // 4. Copy the URL and the anon public key
-const supabaseUrl = 'YOUR_SUPABASE_URL';
-const supabaseAnonKey = 'YOUR_SUPABASE_ANON_KEY';
+const supabaseUrl = 'https://pvjyjyrrszvepmseszle.supabase.co';
+const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB2anlqeXJyc3p2ZXBtc2VzemxlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjE1ODQ1NTgsImV4cCI6MjAzNzE2MDU1OH0.8QZkF_d1K7uL2gKCKaQzHxN8T5Rj6S5D5a4R36B4D6c';
 
-let supabaseInstance: SupabaseClient | null = null;
 
-if (supabaseUrl !== 'YOUR_SUPABASE_URL' && supabaseAnonKey !== 'YOUR_SUPABASE_ANON_KEY') {
-    supabaseInstance = createClient(supabaseUrl, supabaseAnonKey);
-} else {
-    console.warn("Supabase credentials are not set. Please update src/lib/supabase.ts. Image storage will not work.");
-}
-
-// Export a potentially null client and handle it in the functions that use it.
-export const supabase = supabaseInstance;
+// The Supabase client is initialized directly with the provided URL and key.
+// No need for conditional checks here anymore as the user has provided the credentials.
+export const supabase = createClient(supabaseUrl, supabaseAnonKey);
