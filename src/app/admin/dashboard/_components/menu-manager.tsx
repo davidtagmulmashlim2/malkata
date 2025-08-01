@@ -414,40 +414,40 @@ export default function MenuManager() {
                      <FormItem>
                         <FormLabel>קטגוריות</FormLabel>
                         <ScrollArea className="h-40 w-full rounded-md border p-4">
-                          <div className="space-y-2">
+                            <div className="space-y-2">
                             {categories.map((category) => (
-                              <FormField
-                                key={category.id}
-                                control={dishForm.control}
-                                name="categoryIds"
-                                render={({ field }) => {
-                                  return (
-                                    <FormItem
-                                      className="flex flex-row items-start space-x-3 space-y-0"
-                                    >
-                                      <FormControl>
-                                        <Checkbox
-                                          checked={field.value?.includes(category.id!)}
-                                          onCheckedChange={(checked) => {
-                                            return checked
-                                              ? field.onChange([...(field.value || []), category.id!])
-                                              : field.onChange(
-                                                  field.value?.filter(
+                                <FormField
+                                    key={category.id}
+                                    control={dishForm.control}
+                                    name="categoryIds"
+                                    render={({ field }) => {
+                                    return (
+                                        <FormItem
+                                            key={category.id}
+                                            className="flex flex-row items-start space-x-3 space-y-0"
+                                        >
+                                        <FormControl>
+                                            <Checkbox
+                                            checked={field.value?.includes(category.id!)}
+                                            onCheckedChange={(checked) => {
+                                                const newCategoryIds = checked
+                                                ? [...(field.value || []), category.id!]
+                                                : (field.value || []).filter(
                                                     (value) => value !== category.id
-                                                  )
-                                                )
-                                          }}
-                                        />
-                                      </FormControl>
-                                      <FormLabel className="font-normal">
-                                        {category.name}
-                                      </FormLabel>
-                                    </FormItem>
-                                  )
-                                }}
-                              />
-                            ))}
-                          </div>
+                                                    );
+                                                field.onChange(newCategoryIds);
+                                            }}
+                                            />
+                                        </FormControl>
+                                        <FormLabel className="font-normal">
+                                            {category.name}
+                                        </FormLabel>
+                                        </FormItem>
+                                    );
+                                    }}
+                                />
+                                ))}
+                            </div>
                         </ScrollArea>
                         <FormMessage />
                       </FormItem>
@@ -759,3 +759,5 @@ export default function MenuManager() {
     </div>
   )
 }
+
+    
