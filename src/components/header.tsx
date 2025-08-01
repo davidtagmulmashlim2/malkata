@@ -77,7 +77,7 @@ export function Header() {
                 label: featuredCategory.name,
                 isFeatured: true,
             };
-            // Insert featured link after 'גלריה' or before 'יצירת קשר'
+            // Insert featured link after 'גלריה'
             const galleryIndex = newLinks.findIndex(link => link.href === '/gallery');
             if (galleryIndex !== -1) {
                 newLinks.splice(galleryIndex + 1, 0, featuredLink);
@@ -135,10 +135,9 @@ export function Header() {
         ) : (
             navLinks.map(link => {
                 const isActive = (pathname.startsWith(link.href) && link.href !== '/') || pathname === link.href;
-                const LinkComponent = mobile ? 'div' : Link;
                 
                 const linkContent = (
-                    <LinkComponent
+                    <Link
                         href={link.href}
                         onClick={() => mobile && setIsMobileMenuOpen(false)}
                         className={cn(
@@ -153,12 +152,12 @@ export function Header() {
                         ) : (
                             link.label
                         )}
-                    </LinkComponent>
+                    </Link>
                 );
 
                 return (
                     <React.Fragment key={link.href}>
-                      {mobile ? <div onClick={() => setIsMobileMenuOpen(false)}>{linkContent}</div> : linkContent}
+                      {linkContent}
                     </React.Fragment>
                 );
             })
