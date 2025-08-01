@@ -164,7 +164,7 @@ export interface DesignSettings {
   logoColor?: string;
   logoImage?: string;
   logoWidth?: number;
-  featuredCategoryId?: string | undefined;
+  featuredCategoryId?: string | null;
 }
 
 export interface CartItem {
@@ -219,3 +219,5 @@ export type Action =
   | { type: 'DELETE_SUBMISSION', payload: string }
   | { type: 'UPDATE_DESIGN'; payload: DesignSettings }
   | { type: 'REMOVE_ITEM_FROM_CART', payload: string };
+
+    

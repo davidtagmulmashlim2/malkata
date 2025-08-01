@@ -25,7 +25,7 @@ const designSchema = z.object({
   logoColor: z.string().optional(),
   logoImage: z.string().optional(),
   logoWidth: z.coerce.number().min(50).max(300).optional(),
-  featuredCategoryId: z.string().optional(),
+  featuredCategoryId: z.string().optional().nullable(),
 });
 
 const fileToDataUrl = (file: File): Promise<string> => {
@@ -171,7 +171,7 @@ export default function DesignManager() {
   const onSubmit = (values: z.infer<typeof designSchema>) => {
     const payload = {
         ...values,
-        featuredCategoryId: values.featuredCategoryId === 'none' ? undefined : values.featuredCategoryId
+        featuredCategoryId: values.featuredCategoryId === 'none' ? null : values.featuredCategoryId
     }
     dispatch({ type: 'UPDATE_DESIGN', payload });
     toast({ title: 'הגדרות עיצוב עודכנו!' });
@@ -336,7 +336,7 @@ export default function DesignManager() {
                     <SelectContent>
                       <SelectItem value="none">ללא</SelectItem>
                       {categories.map(category => (
-                        <SelectItem key={category.id} value={category.id}>{category.name}</SelectItem>
+                        <SelectItem key={category.id} value={category.id!}>{category.name}</SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
@@ -352,5 +352,7 @@ export default function DesignManager() {
     </Card>
   );
 }
+
+    
 
     
