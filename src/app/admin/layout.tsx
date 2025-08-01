@@ -14,23 +14,22 @@ export default function AdminLayout({
     const router = useRouter();
     const pathname = usePathname();
     
+    // This effect ensures that if a user is NOT authenticated,
+    // they are redirected to the login page if they try to access
+    // any page within the /admin/dashboard/* route.
     useEffect(() => {
-        if (!isLoading && !isAuthenticated && pathname !== '/admin') {
+        if (!isLoading && !isAuthenticated && pathname.startsWith('/admin/dashboard')) {
             router.push('/admin');
         }
     }, [isAuthenticated, router, isLoading, pathname]);
 
-    if (isLoading) {
+    if (isLoading && pathname.startsWith('/admin/dashboard')) {
       return (
         <div className="p-8 space-y-4">
           <Skeleton className="h-12 w-1/4" />
           <Skeleton className="h-64 w-full" />
         </div>
       );
-    }
-    
-    if (!isAuthenticated && pathname !== '/admin') {
-        return <div className="flex items-center justify-center min-h-screen"><p>טוען...</p></div>;
     }
 
     return (

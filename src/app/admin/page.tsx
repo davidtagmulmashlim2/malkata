@@ -13,14 +13,15 @@ import { Lock } from 'lucide-react';
 
 export default function AdminLoginPage() {
     const [password, setPassword] = useState('');
-    const { login, isAuthenticated } = useApp();
+    const { login, isAuthenticated, isLoading } = useApp();
     const router = useRouter();
 
+    // This effect redirects the user to the dashboard if they are already logged in.
     useEffect(() => {
-        if (isAuthenticated) {
+        if (!isLoading && isAuthenticated) {
             router.push('/admin/dashboard');
         }
-    }, [isAuthenticated, router]);
+    }, [isAuthenticated, router, isLoading]);
 
     const handleLogin = (e: React.FormEvent) => {
         e.preventDefault();
@@ -35,9 +36,11 @@ export default function AdminLoginPage() {
             });
         }
     };
-
-    if(isAuthenticated) {
-        return <div className="flex items-center justify-center min-h-screen"><p>Redirecting...</p></div>;
+    
+    // While loading or if already authenticated, show a loading/redirecting message.
+    // This prevents the login form from flashing on the screen for logged-in users.
+    if(isLoading || isAuthenticated) {
+        return <div className="flex items-center justify-center min-h-screen"><p>טוען...</p></div>;
     }
 
     return (

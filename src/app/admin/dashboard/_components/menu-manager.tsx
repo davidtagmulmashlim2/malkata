@@ -420,37 +420,37 @@ export default function MenuManager() {
                             <ScrollArea className="h-40 w-full rounded-md border p-4">
                               <div className="space-y-2">
                                 {categories.map((category) => (
-                                  <FormField
-                                    key={category.id}
-                                    control={dishForm.control}
-                                    name="categoryIds"
-                                    render={({ field }) => {
-                                      return (
-                                        <FormItem
-                                          key={category.id}
-                                          className="flex flex-row items-start space-x-3 space-y-0"
-                                        >
-                                          <FormControl>
-                                            <Checkbox
-                                              checked={field.value?.includes(category.id)}
-                                              onCheckedChange={(checked) => {
-                                                return checked
-                                                  ? field.onChange([...(field.value || []), category.id])
-                                                  : field.onChange(
-                                                      field.value?.filter(
-                                                        (value) => value !== category.id
+                                  <div key={category.id}>
+                                    <FormField
+                                      control={dishForm.control}
+                                      name="categoryIds"
+                                      render={({ field }) => {
+                                        return (
+                                          <FormItem
+                                            className="flex flex-row items-start space-x-3 space-y-0"
+                                          >
+                                            <FormControl>
+                                              <Checkbox
+                                                checked={field.value?.includes(category.id!)}
+                                                onCheckedChange={(checked) => {
+                                                  return checked
+                                                    ? field.onChange([...(field.value || []), category.id!])
+                                                    : field.onChange(
+                                                        field.value?.filter(
+                                                          (value) => value !== category.id
+                                                        )
                                                       )
-                                                    )
-                                              }}
-                                            />
-                                          </FormControl>
-                                          <FormLabel className="font-normal">
-                                            {category.name}
-                                          </FormLabel>
-                                        </FormItem>
-                                      )
-                                    }}
-                                  />
+                                                }}
+                                              />
+                                            </FormControl>
+                                            <FormLabel className="font-normal">
+                                              {category.name}
+                                            </FormLabel>
+                                          </FormItem>
+                                        )
+                                      }}
+                                    />
+                                  </div>
                                 ))}
                               </div>
                             </ScrollArea>
@@ -599,7 +599,7 @@ export default function MenuManager() {
                             <AlertDialogHeader><AlertDialogTitle>האם אתה בטוח?</AlertDialogTitle><AlertDialogDescription>פעולה זו תמחק את המנה לצמיתות.</AlertDialogDescription></AlertDialogHeader>
                             <AlertDialogFooter>
                               <AlertDialogCancel>ביטול</AlertDialogCancel>
-                              <AlertDialogAction onClick={() => deleteDish(dish.id)}>מחק</AlertDialogAction>
+                              <AlertDialogAction onClick={() => deleteDish(dish.id!)}>מחק</AlertDialogAction>
                             </AlertDialogFooter>
                           </AlertDialogContent>
                       </AlertDialog>
@@ -751,7 +751,7 @@ export default function MenuManager() {
                             <AlertDialogHeader><AlertDialogTitle>האם אתה בטוח?</AlertDialogTitle><AlertDialogDescription>פעולה זו תמחק את הקטגוריה לצמיתות. כל המנות המשויכות יאבדו את שיוכן.</AlertDialogDescription></AlertDialogHeader>
                             <AlertDialogFooter>
                               <AlertDialogCancel>ביטול</AlertDialogCancel>
-                              <AlertDialogAction onClick={() => deleteCategory(category.id)}>מחק</AlertDialogAction>
+                              <AlertDialogAction onClick={() => deleteCategory(category.id!)}>מחק</AlertDialogAction>
                             </AlertDialogFooter>
                           </AlertDialogContent>
                       </AlertDialog>
