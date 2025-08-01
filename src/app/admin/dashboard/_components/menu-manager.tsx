@@ -739,8 +739,8 @@ export default function MenuManager() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {categories.map(category => (
-                <TableRow key={category.id}>
+              {categories.map((category, index) => (
+                <TableRow key={category.id || `category-${index}`}>
                   <TableCell>{category.name}</TableCell>
                   <TableCell className="text-right">
                      <div className="flex gap-2 justify-end">
