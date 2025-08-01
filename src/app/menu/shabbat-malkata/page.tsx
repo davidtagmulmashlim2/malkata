@@ -3,7 +3,6 @@
 import { useApp } from '@/context/app-context';
 import { DishCard } from '@/components/dish-card';
 import { notFound } from 'next/navigation';
-import { useIsClient } from '@/hooks/use-is-client';
 import { Skeleton } from '@/components/ui/skeleton';
 import { AsyncImage } from '@/components/async-image';
 import { cn } from '@/lib/utils';
@@ -11,15 +10,15 @@ import React from 'react';
 
 export default function ShabbatMalkataPage() {
     const { state, isLoading } = useApp();
-    const isClient = useIsClient();
     
-    const category = state.categories.find(c => c.slug === 'shabbat-malkata');
+    const category = isLoading ? undefined : state.categories.find(c => c.slug === 'shabbat-malkata');
     
-    if (isClient && !category) {
+    // Defer the notFound call until after the client has loaded and we can be sure the category doesn't exist.
+    if (!isLoading && !category) {
         notFound();
     }
 
-    const categoryDishes = state.dishes.filter(d => d.categoryIds?.includes(category?.id || ''));
+    const categoryDishes = isLoading || !category ? [] : state.dishes.filter(d => d.categoryIds?.includes(category.id!));
     const { shabbatNotice } = state.siteContent;
 
     const textSizeClasses: { [key: string]: string } = {
@@ -28,7 +27,7 @@ export default function ShabbatMalkataPage() {
         'text-6xl': 'text-6xl', 'text-7xl': 'text-7xl', 'text-8xl': 'text-8xl', 'text-9xl': 'text-9xl',
     };
 
-    if (!isClient) {
+    if (isLoading || !category) {
         return (
             <div>
                 <Skeleton className="h-64 w-full" />
@@ -40,10 +39,6 @@ export default function ShabbatMalkataPage() {
                 </div>
             </div>
         );
-    }
-    
-    if (!category) {
-        return null;
     }
 
     return (
@@ -72,10 +67,10 @@ export default function ShabbatMalkataPage() {
                          <p 
                             className={cn(
                                 "mt-2",
-                                textSizeClasses[shabbatNotice.fontSize ?? 'base'],
+                                shabbatNotice.fontSize ? textSizeClasses[shabbatNotice.fontSize] : 'text-base',
                                 shabbatNotice.isBold && "font-bold"
                             )}
-                            style={{ color: shabbatNotice.color }}
+                            style={{ color: shabbatNotice.color || undefined }}
                          >
                             {shabbatNotice.text}
                         </p>
