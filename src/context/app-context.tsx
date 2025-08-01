@@ -166,77 +166,75 @@ export const AppProvider: React.FC<{ children: React.ReactNode, initialAppState:
     }
   }, [cart, isLoading]);
   
-  const handleDbAction = async (action: Action) => {
+  const enhancedDispatch = useCallback(async (action: Action) => {
     let error;
+
+    const insertAndRefresh = async (tableName: string, payload: any, actionType: Action['type']) => {
+        const { data, error } = await supabase.from(tableName).insert(payload).select().single();
+        if (error) {
+            toast({ title: `שגיאה בשמירת ${tableName}`, description: error.message, variant: 'destructive' });
+        } else if (data) {
+            dispatch({ type: actionType, payload: data });
+        }
+        return { data, error };
+    };
+
     switch(action.type) {
         case 'ADD_DISH':
-            ({ error } = await supabase.from('dishes').insert([action.payload]));
+            await insertAndRefresh('dishes', action.payload, 'ADD_DISH');
             break;
         case 'DELETE_DISH':
             ({ error } = await supabase.from('dishes').delete().eq('id', action.payload));
+            if (!error) dispatch(action);
             break;
         case 'ADD_CATEGORY':
-            ({ error } = await supabase.from('categories').insert([action.payload]));
+            await insertAndRefresh('categories', action.payload, 'ADD_CATEGORY');
             break;
         case 'DELETE_CATEGORY':
             ({ error } = await supabase.from('categories').delete().eq('id', action.payload));
+            if (!error) dispatch(action);
             break;
         case 'ADD_GALLERY_IMAGE':
-            ({ error } = await supabase.from('gallery').insert([action.payload]));
+            await insertAndRefresh('gallery', action.payload, 'ADD_GALLERY_IMAGE');
             break;
         case 'DELETE_GALLERY_IMAGE':
             ({ error } = await supabase.from('gallery').delete().eq('id', action.payload));
+            if (!error) dispatch(action);
             break;
         case 'ADD_TESTIMONIAL':
-            ({ error } = await supabase.from('testimonials').insert([action.payload]));
+            await insertAndRefresh('testimonials', action.payload, 'ADD_TESTIMONIAL');
             break;
         case 'DELETE_TESTIMONIAL':
             ({ error } = await supabase.from('testimonials').delete().eq('id', action.payload));
+             if (!error) dispatch(action);
             break;
         case 'ADD_SUBSCRIBER':
-            ({ error } = await supabase.from('subscribers').insert([action.payload]));
+            await insertAndRefresh('subscribers', action.payload, 'ADD_SUBSCRIBER');
             break;
         case 'DELETE_SUBSCRIBER':
             ({ error } = await supabase.from('subscribers').delete().eq('id', action.payload));
+             if (!error) dispatch(action);
             break;
         case 'ADD_SUBMISSION':
-            ({ error } = await supabase.from('submissions').insert([action.payload]));
+            await insertAndRefresh('submissions', action.payload, 'ADD_SUBMISSION');
             break;
         case 'DELETE_SUBMISSION':
              ({ error } = await supabase.from('submissions').delete().eq('id', action.payload));
+             if (!error) dispatch(action);
+            break;
+        case 'REMOVE_ITEM_FROM_CART':
+             setCart(prevCart => prevCart.filter(item => item.dishId !== action.payload));
+             dispatch(action); // Let reducer handle other state changes if needed
+             break;
+        default:
+            // For updates or non-DB actions, dispatch directly for optimistic UI
+            dispatch(action);
             break;
     }
     
     if (error) {
         toast({ title: 'שגיאת מסד נתונים', description: error.message, variant: 'destructive' });
-        // Optionally, revert the optimistic UI update
-        // This would require a more complex state management approach
-    } else {
-        // Run original dispatch for optimistic UI update
-        dispatch(action);
     }
-  };
-
-  const enhancedDispatch = useCallback((action: Action) => {
-    // For actions that write to DB, we first update UI optimistically, then send to DB.
-    const writeActions: Action['type'][] = [
-        'ADD_DISH', 'DELETE_DISH', 'ADD_CATEGORY', 'DELETE_CATEGORY', 'ADD_GALLERY_IMAGE',
-        'DELETE_GALLERY_IMAGE', 'ADD_TESTIMONIAL', 'DELETE_TESTIMONIAL', 'ADD_SUBSCRIBER', 
-        'DELETE_SUBSCRIBER', 'ADD_SUBMISSION', 'DELETE_SUBMISSION'
-    ];
-    
-    const isWriteAction = writeActions.includes(action.type);
-    
-    if (isWriteAction) {
-        handleDbAction(action);
-    }
-
-    if (action.type === 'REMOVE_ITEM_FROM_CART') {
-      setCart(prevCart => prevCart.filter(item => item.dishId !== action.payload));
-    }
-    
-    // Always dispatch for UI updates (including debounced ones)
-    dispatch(action);
   }, [dispatch]);
 
 

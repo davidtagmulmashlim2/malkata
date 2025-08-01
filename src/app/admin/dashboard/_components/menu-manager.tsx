@@ -1,7 +1,7 @@
 
 'use client'
 import { useState, useEffect, useRef } from 'react'
-import { useForm, Controller } from 'react-hook-form'
+import { useForm, Controller, useFieldArray } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useApp } from '@/context/app-context'
@@ -411,36 +411,29 @@ export default function MenuManager() {
                             ))}
                         </div>
                     </FormItem>
-                    <FormField
-                        control={dishForm.control}
+                     <Controller
                         name="category_ids"
-                        render={() => (
+                        control={dishForm.control}
+                        render={({ field }) => (
                             <FormItem>
                                 <FormLabel>קטגוריות</FormLabel>
                                 <ScrollArea className="h-40 w-full rounded-md border p-4">
                                 <div className="space-y-2">
-                                {categories.map((category) => (
-                                    <FormField
-                                        key={category.id}
-                                        control={dishForm.control}
-                                        name="category_ids"
-                                        render={({ field }) => (
-                                            <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                                                <FormControl>
-                                                    <Checkbox
-                                                        checked={field.value?.includes(category.id!)}
-                                                        onCheckedChange={(checked) => {
-                                                            return checked
-                                                            ? field.onChange([...field.value, category.id!])
-                                                            : field.onChange(field.value?.filter((value) => value !== category.id!));
-                                                        }}
-                                                    />
-                                                </FormControl>
-                                                <FormLabel className="font-normal">{category.name}</FormLabel>
-                                            </FormItem>
-                                        )}
-                                    />
-                                ))}
+                                    {categories.map((category) => (
+                                        <div key={category.id} className="flex flex-row items-start space-x-3 space-y-0">
+                                            <Checkbox
+                                                id={`category-${category.id}`}
+                                                checked={field.value?.includes(category.id!)}
+                                                onCheckedChange={(checked) => {
+                                                    const newCategoryIds = checked
+                                                        ? [...(field.value || []), category.id!]
+                                                        : (field.value || []).filter((value) => value !== category.id!);
+                                                    field.onChange(newCategoryIds);
+                                                }}
+                                            />
+                                            <label htmlFor={`category-${category.id}`} className="font-normal">{category.name}</label>
+                                        </div>
+                                    ))}
                                 </div>
                                 </ScrollArea>
                                 <FormMessage />
@@ -728,8 +721,8 @@ export default function MenuManager() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {categories.map((category, index) => (
-                <TableRow key={category.id || `category-${index}`}>
+              {categories.map((category) => (
+                <TableRow key={category.id}>
                   <TableCell>{category.name}</TableCell>
                   <TableCell className="text-right">
                      <div className="flex gap-2 justify-end">
