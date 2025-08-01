@@ -97,7 +97,7 @@ export function CartSheet() {
     const { contact, cart: cartSettings } = state.siteContent;
 
     let message = `שלום, אני ${customerName}, טלפון ${customerPhone}.\n`;
-    message += `אופן קבלה: ${deliveryMethod === 'delivery' ? cartSettings.deliveryLabel : cartSettings.pickupLabel}\n`
+    message += `אופן קבלה: ${deliveryMethod === 'delivery' ? cartSettings.delivery_label : cartSettings.pickup_label}\n`
     if (isDelivery) {
         message += `כתובת למשלוח: ${customerAddress}\n`;
     }
@@ -118,7 +118,7 @@ export function CartSheet() {
   };
   
   const { cart: cartContent } = state.siteContent;
-  const freeDeliveryTextParts = cartContent.freeDeliveryText.split('{amount}');
+  const freeDeliveryTextParts = cartContent.free_delivery_text.split('{amount}');
   const canSubmit = customerName !== '' && customerPhone !== '' && (deliveryMethod === 'pickup' || customerAddress !== '');
 
 
@@ -152,7 +152,7 @@ export function CartSheet() {
                   <div key={item!.id} className="flex flex-row-reverse items-center gap-4">
                     <div className="shrink-0">
                        <AsyncImage 
-                          imageKey={item!.mainImage} 
+                          imageKey={item!.main_image} 
                           alt={item!.name} 
                           width={64}
                           height={64}
@@ -195,30 +195,30 @@ export function CartSheet() {
                         </div>
                         <div className='space-y-2'>
                            <Label htmlFor="orderNotes">הערות להזמנה</Label>
-                           <Textarea id="orderNotes" value={orderNotes} onChange={(e) => setOrderNotes(e.target.value)} placeholder={cartContent.orderNotesPlaceholder} />
+                           <Textarea id="orderNotes" value={orderNotes} onChange={(e) => setOrderNotes(e.target.value)} placeholder={cartContent.order_notes_placeholder} />
                         </div>
                          <div className='space-y-2'>
-                            <Label>{cartContent.deliveryMethodTitle}</Label>
+                            <Label>{cartContent.delivery_method_title}</Label>
                             <div className="grid grid-cols-2 gap-2 pt-1">
                                 <Button
                                     type="button"
                                     variant={deliveryMethod === 'pickup' ? 'default' : 'outline'}
                                     onClick={() => handleDeliveryMethodChange('pickup')}
                                 >
-                                    {cartContent.pickupLabel}
+                                    {cartContent.pickup_label}
                                 </Button>
                                 <Button
                                     type="button"
                                     variant={deliveryMethod === 'delivery' ? 'default' : 'outline'}
                                     onClick={() => handleDeliveryMethodChange('delivery')}
                                 >
-                                    {cartContent.deliveryLabel}
+                                    {cartContent.delivery_label}
                                 </Button>
                             </div>
-                           {deliveryMethod === 'delivery' && total < cartContent.freeDeliveryThreshold && (
+                           {deliveryMethod === 'delivery' && total < cartContent.free_delivery_threshold && (
                                 <p className='text-xs text-muted-foreground text-center pt-1'>
                                     {freeDeliveryTextParts[0]}
-                                    {cartContent.freeDeliveryThreshold}
+                                    {cartContent.free_delivery_threshold}
                                     {freeDeliveryTextParts[1]}
                                 </p>
                             )}

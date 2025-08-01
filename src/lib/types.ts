@@ -4,16 +4,16 @@
 export interface Dish {
   id?: string;
   name: string;
-  shortDescription: string;
-  fullDescription: string;
+  short_description: string;
+  full_description: string;
   price: number;
-  priceSubtitle?: string;
-  mainImage: string; 
-  galleryImages?: string[];
-  categoryIds: string[];
-  isAvailable: boolean;
+  price_subtitle?: string;
+  main_image: string; 
+  gallery_images?: string[];
+  category_ids: string[];
+  is_available: boolean;
   tags: ('vegan' | 'spicy' | 'new' | 'piquant' | 'kids-favorite')[];
-  isRecommended?: boolean;
+  is_recommended?: boolean;
 }
 
 export interface Category {
@@ -22,13 +22,13 @@ export interface Category {
   slug: string;
   description: string;
   image: string;
-  titleColor?: string;
-  titleFontSize?: string;
-  titleFont?: string;
-  titleOpacity?: number;
-  imageBrightness?: number;
-  showDescription?: boolean;
-  showDescriptionBelowBanner?: boolean;
+  title_color?: string;
+  title_font_size?: string;
+  title_font?: string;
+  title_opacity?: number;
+  image_brightness?: number;
+  show_description?: boolean;
+  show_description_below_banner?: boolean;
 }
 
 export interface GalleryImage {
@@ -59,7 +59,7 @@ export interface ContactSubmission {
     phone?: string;
     message: string;
     date: string;
-    isRead: boolean;
+    is_read: boolean;
 }
 
 export interface Feature {
@@ -74,23 +74,23 @@ export interface OptionalFeature extends Feature {
 
 export interface SiteContent {
   hero: {
-    titleFirstWord: string;
-    titleRest: string;
+    title_first_word: string;
+    title_rest: string;
     subtitle: string;
     image: string;
-    titleFirstWordColor: string;
-    titleFirstWordFontSize: string;
-    titleFirstWordOpacity: number;
-    titleRestColor: string;
-    titleRestFontSize: string;
-    titleRestOpacity: number;
-    subtitleOpacity: number;
-    animationInterval: number;
-    heroImageBrightness: number;
-    heroHeight: number;
-    verticalAlign: 'top' | 'center' | 'bottom';
-    horizontalAlign: 'left' | 'center' | 'right';
-    textAlign: 'left' | 'center' | 'right';
+    title_first_word_color: string;
+    title_first_word_font_size: string;
+    title_first_word_opacity: number;
+    title_rest_color: string;
+    title_rest_font_size: string;
+    title_rest_opacity: number;
+    subtitle_opacity: number;
+    animation_interval: number;
+    hero_image_brightness: number;
+    hero_height: number;
+    vertical_align: 'top' | 'center' | 'bottom';
+    horizontal_align: 'left' | 'center' | 'right';
+    text_align: 'left' | 'center' | 'right';
   };
   about: {
     short: string;
@@ -105,16 +105,16 @@ export interface SiteContent {
     hours: string;
     instagram?: string;
     facebook?: string;
-    showAddress?: boolean;
-    showPhone?: boolean;
-    showWhatsapp?: boolean;
-    showEmail?: boolean;
-    showInstagram?: boolean;
-    showFacebook?: boolean;
-    showHours?: boolean;
+    show_address?: boolean;
+    show_phone?: boolean;
+    show_whatsapp?: boolean;
+    show_email?: boolean;
+    show_instagram?: boolean;
+    show_facebook?: boolean;
+    show_hours?: boolean;
   };
   menu: {
-    mainImage: string;
+    main_image: string;
   };
   newsletter: {
     headline: string;
@@ -131,40 +131,40 @@ export interface SiteContent {
   };
   footer: {
     tagline?: string;
-    contactTitle?: string;
-    hoursTitle?: string;
+    contact_title?: string;
+    hours_title?: string;
     copyright?: string;
-    hoursContent?: string;
-    hoursContentColor?: string;
-    hoursContentFontSize?: string;
-    hoursContentIsBold?: boolean;
+    hours_content?: string;
+    hours_content_color?: string;
+    hours_content_font_size?: string;
+    hours_content_is_bold?: boolean;
   };
   cart: {
-    deliveryMethodTitle: string;
-    pickupLabel: string;
-    deliveryLabel: string;
-    freeDeliveryThreshold: number;
-    freeDeliveryText: string;
-    orderNotesPlaceholder?: string;
+    delivery_method_title: string;
+    pickup_label: string;
+    delivery_label: string;
+    free_delivery_threshold: number;
+    free_delivery_text: string;
+    order_notes_placeholder?: string;
   };
-  shabbatNotice?: {
+  shabbat_notice?: {
       enabled?: boolean;
       text?: string;
       color?: string;
-      fontSize?: string;
-      isBold?: boolean;
+      font_size?: string;
+      is_bold?: boolean;
   };
 }
 
 export interface DesignSettings {
   theme: string;
-  headlineFont: string;
-  bodyFont: string;
-  logoIcon: string;
-  logoColor?: string;
-  logoImage?: string;
-  logoWidth?: number;
-  featuredCategoryId?: string | null;
+  headline_font: string;
+  body_font: string;
+  logo_icon: string;
+  logo_color?: string;
+  logo_image?: string;
+  logo_width?: number;
+  featured_category_id?: string | null;
 }
 
 export interface CartItem {
@@ -215,9 +215,7 @@ export type Action =
   | { type: 'ADD_SUBSCRIBER', payload: Subscriber }
   | { type: 'DELETE_SUBSCRIBER', payload: string }
   | { type: 'ADD_SUBMISSION', payload: ContactSubmission }
-  | { type: 'UPDATE_SUBMISSION_STATUS', payload: { id: string, isRead: boolean } }
+  | { type: 'UPDATE_SUBMISSION_STATUS', payload: { id: string, is_read: boolean } }
   | { type: 'DELETE_SUBMISSION', payload: string }
   | { type: 'UPDATE_DESIGN'; payload: DesignSettings }
   | { type: 'REMOVE_ITEM_FROM_CART', payload: string };
-
-    

@@ -1,4 +1,5 @@
 
+
 'use client';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -19,13 +20,13 @@ import { Slider } from '@/components/ui/slider';
 
 const designSchema = z.object({
   theme: z.string(),
-  headlineFont: z.string(),
-  bodyFont: z.string(),
-  logoIcon: z.string(),
-  logoColor: z.string().optional(),
-  logoImage: z.string().optional(),
-  logoWidth: z.coerce.number().min(50).max(300).optional(),
-  featuredCategoryId: z.string().optional().nullable(),
+  headline_font: z.string(),
+  body_font: z.string(),
+  logo_icon: z.string(),
+  logo_color: z.string().optional(),
+  logo_image: z.string().optional(),
+  logo_width: z.coerce.number().min(50).max(300).optional(),
+  featured_category_id: z.string().optional().nullable(),
 });
 
 const fileToDataUrl = (file: File): Promise<string> => {
@@ -121,8 +122,8 @@ export default function DesignManager() {
     defaultValues: design,
   });
   
-  const logoImagePreview = form.watch('logoImage');
-  const logoWidthPreview = form.watch('logoWidth');
+  const logoImagePreview = form.watch('logo_image');
+  const logoWidthPreview = form.watch('logo_width');
 
   useEffect(() => {
     if (design) {
@@ -137,12 +138,12 @@ export default function DesignManager() {
       try {
           const dataUrl = await fileToDataUrl(file);
           // If there's an old image, delete it from the store first
-          const oldImageKey = form.getValues('logoImage');
+          const oldImageKey = form.getValues('logo_image');
           if (oldImageKey) {
             await deleteImage(oldImageKey);
           }
           const imageKey = await storeImage(dataUrl);
-          form.setValue('logoImage', imageKey, { shouldValidate: true });
+          form.setValue('logo_image', imageKey, { shouldValidate: true });
           toast({ title: 'תמונת לוגו הועלתה' });
       } catch (error: any) {
           console.error("Error uploading image:", error);
@@ -155,11 +156,11 @@ export default function DesignManager() {
   };
 
   const handleRemoveImage = async () => {
-    const imageKey = form.getValues('logoImage');
+    const imageKey = form.getValues('logo_image');
     if (imageKey) {
         try {
             await deleteImage(imageKey);
-            form.setValue('logoImage', '', { shouldValidate: true });
+            form.setValue('logo_image', '', { shouldValidate: true });
             toast({ title: 'תמונת לוגו הוסרה' });
         } catch (error) {
              console.error("Error deleting image:", error);
@@ -171,7 +172,7 @@ export default function DesignManager() {
   const onSubmit = (values: z.infer<typeof designSchema>) => {
     const payload = {
         ...values,
-        featuredCategoryId: values.featuredCategoryId === 'none' ? null : values.featuredCategoryId
+        featured_category_id: values.featured_category_id === 'none' ? null : values.featured_category_id
     }
     dispatch({ type: 'UPDATE_DESIGN', payload });
     toast({ title: 'הגדרות עיצוב עודכנו!' });
@@ -212,7 +213,7 @@ export default function DesignManager() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField
                   control={form.control}
-                  name="logoIcon"
+                  name="logo_icon"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-lg font-headline">סמל לוגו (ללא תמונה)</FormLabel>
@@ -234,7 +235,7 @@ export default function DesignManager() {
                 />
                 <FormField
                   control={form.control}
-                  name="logoColor"
+                  name="logo_color"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-lg font-headline">צבע הלוגו (ללא תמונה)</FormLabel>
@@ -249,7 +250,7 @@ export default function DesignManager() {
             
             <Controller
                 control={form.control}
-                name="logoImage"
+                name="logo_image"
                 render={({ field }) => (
                    <FormItem>
                      <FormLabel className="text-lg font-headline">תמונת לוגו (אופציונלי)</FormLabel>
@@ -267,7 +268,7 @@ export default function DesignManager() {
                 )}
               />
               {logoImagePreview && (
-                <FormField name="logoWidth" control={form.control} render={({ field }) => (
+                <FormField name="logo_width" control={form.control} render={({ field }) => (
                   <FormItem>
                     <FormLabel>רוחב הלוגו ({field.value || 120}px)</FormLabel>
                     <FormControl><Slider value={[field.value || 120]} min={50} max={300} step={5} onValueChange={(v) => field.onChange(v[0])} /></FormControl>
@@ -278,7 +279,7 @@ export default function DesignManager() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                  <FormField
                   control={form.control}
-                  name="headlineFont"
+                  name="headline_font"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-lg font-headline">פונט לכותרות (Headline)</FormLabel>
@@ -300,7 +301,7 @@ export default function DesignManager() {
                 />
                  <FormField
                   control={form.control}
-                  name="bodyFont"
+                  name="body_font"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-lg font-headline">פונט לטקסט רץ (Body)</FormLabel>
@@ -323,7 +324,7 @@ export default function DesignManager() {
             </div>
              <FormField
               control={form.control}
-              name="featuredCategoryId"
+              name="featured_category_id"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-lg font-headline">קטגוריה מומלצת (להצגה בתפריט ראשי)</FormLabel>

@@ -57,23 +57,23 @@ const FeatureIconSelect = ({ onValueChange, value }: { onValueChange: (value: st
 
 const contentSchema = z.object({
   hero: z.object({
-    titleFirstWord: z.string(),
-    titleRest: z.string(),
+    title_first_word: z.string(),
+    title_rest: z.string(),
     subtitle: z.string(),
     image: z.string().min(1, 'חובה'),
-    titleFirstWordColor: z.string(),
-    titleFirstWordFontSize: z.string(),
-    titleFirstWordOpacity: z.number().min(0).max(1),
-    titleRestColor: z.string(),
-    titleRestFontSize: z.string(),
-    titleRestOpacity: z.number().min(0).max(1),
-    subtitleOpacity: z.number().min(0).max(1),
-    animationInterval: z.coerce.number().min(0, 'חייב להיות מספר חיובי'),
-    heroImageBrightness: z.coerce.number().min(0).max(100),
-    heroHeight: z.coerce.number().min(40).max(100),
-    verticalAlign: z.enum(['top', 'center', 'bottom']),
-    horizontalAlign: z.enum(['left', 'center', 'right']),
-    textAlign: z.enum(['left', 'center', 'right']),
+    title_first_word_color: z.string(),
+    title_first_word_font_size: z.string(),
+    title_first_word_opacity: z.number().min(0).max(1),
+    title_rest_color: z.string(),
+    title_rest_font_size: z.string(),
+    title_rest_opacity: z.number().min(0).max(1),
+    subtitle_opacity: z.number().min(0).max(1),
+    animation_interval: z.coerce.number().min(0, 'חייב להיות מספר חיובי'),
+    hero_image_brightness: z.coerce.number().min(0).max(100),
+    hero_height: z.coerce.number().min(40).max(100),
+    vertical_align: z.enum(['top', 'center', 'bottom']),
+    horizontal_align: z.enum(['left', 'center', 'right']),
+    text_align: z.enum(['left', 'center', 'right']),
   }),
   about: z.object({
     short: z.string().min(1, 'חובה'),
@@ -88,16 +88,16 @@ const contentSchema = z.object({
     hours: z.string().min(1, 'חובה'),
     instagram: z.string().url('כתובת אינטרנט לא חוקית').optional().or(z.literal('')),
     facebook: z.string().url('כתובת אינטרנט לא חוקית').optional().or(z.literal('')),
-    showAddress: z.boolean().optional(),
-    showPhone: z.boolean().optional(),
-    showWhatsapp: z.boolean().optional(),
-    showEmail: z.boolean().optional(),
-    showInstagram: z.boolean().optional(),
-    showFacebook: z.boolean().optional(),
-    showHours: z.boolean().optional(),
+    show_address: z.boolean().optional(),
+    show_phone: z.boolean().optional(),
+    show_whatsapp: z.boolean().optional(),
+    show_email: z.boolean().optional(),
+    show_instagram: z.boolean().optional(),
+    show_facebook: z.boolean().optional(),
+    show_hours: z.boolean().optional(),
   }),
   menu: z.object({
-      mainImage: z.string().min(1, 'חובה'),
+      main_image: z.string().min(1, 'חובה'),
   }),
   newsletter: z.object({
       headline: z.string().min(1, 'חובה'),
@@ -114,28 +114,28 @@ const contentSchema = z.object({
   }),
   footer: z.object({
     tagline: z.string().optional(),
-    contactTitle: z.string().optional(),
-    hoursTitle: z.string().optional(),
+    contact_title: z.string().optional(),
+    hours_title: z.string().optional(),
     copyright: z.string().optional(),
-    hoursContent: z.string().optional(),
-    hoursContentColor: z.string().optional(),
-    hoursContentFontSize: z.string().optional(),
-    hoursContentIsBold: z.boolean().optional(),
+    hours_content: z.string().optional(),
+    hours_content_color: z.string().optional(),
+    hours_content_font_size: z.string().optional(),
+    hours_content_is_bold: z.boolean().optional(),
   }),
   cart: z.object({
-    deliveryMethodTitle: z.string().min(1, 'חובה'),
-    pickupLabel: z.string().min(1, 'חובה'),
-    deliveryLabel: z.string().min(1, 'חובה'),
-    freeDeliveryThreshold: z.coerce.number().min(0),
-    freeDeliveryText: z.string().min(1, 'חובה'),
-    orderNotesPlaceholder: z.string().optional(),
+    delivery_method_title: z.string().min(1, 'חובה'),
+    pickup_label: z.string().min(1, 'חובה'),
+    delivery_label: z.string().min(1, 'חובה'),
+    free_delivery_threshold: z.coerce.number().min(0),
+    free_delivery_text: z.string().min(1, 'חובה'),
+    order_notes_placeholder: z.string().optional(),
   }),
-  shabbatNotice: z.object({
+  shabbat_notice: z.object({
       enabled: z.boolean().optional(),
       text: z.string().optional(),
       color: z.string().optional(),
-      fontSize: z.string().optional(),
-      isBold: z.boolean().optional(),
+      font_size: z.string().optional(),
+      is_bold: z.boolean().optional(),
   }).optional(),
 });
 
@@ -169,7 +169,7 @@ export default function ContentManager() {
 
   const heroImage = form.watch('hero.image');
   const aboutImage = form.watch('about.image');
-  const menuImage = form.watch('menu.mainImage');
+  const menuImage = form.watch('menu.main_image');
 
   useEffect(() => {
     if (siteContent) {
@@ -220,14 +220,14 @@ export default function ContentManager() {
                 <AccordionTrigger className="font-headline text-xl">עמוד הבית (אזור עליון)</AccordionTrigger>
                 <AccordionContent className="space-y-4 pt-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <FormField name="hero.titleFirstWord" control={form.control} render={({ field }) => (
+                    <FormField name="hero.title_first_word" control={form.control} render={({ field }) => (
                       <FormItem>
                         <FormLabel>כותרת - מילה ראשונה</FormLabel>
                         <FormControl><Input {...field} /></FormControl>
                         <FormMessage />
                       </FormItem>
                     )} />
-                     <FormField name="hero.titleRest" control={form.control} render={({ field }) => (
+                     <FormField name="hero.title_rest" control={form.control} render={({ field }) => (
                       <FormItem>
                         <FormLabel>כותרת - שאר המשפט</FormLabel>
                         <FormControl><Input {...field} /></FormControl>
@@ -236,14 +236,14 @@ export default function ContentManager() {
                     )} />
                   </div>
                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 items-end">
-                      <FormField name="hero.titleFirstWordColor" control={form.control} render={({ field }) => (
+                      <FormField name="hero.title_first_word_color" control={form.control} render={({ field }) => (
                         <FormItem>
                           <FormLabel>צבע מילה ראשונה</FormLabel>
                           <FormControl><Input type="color" {...field} className="p-1 h-10 w-full" /></FormControl>
                           <FormMessage />
                         </FormItem>
                       )} />
-                       <FormField name="hero.titleFirstWordFontSize" control={form.control} render={({ field }) => (
+                       <FormField name="hero.title_first_word_font_size" control={form.control} render={({ field }) => (
                         <FormItem>
                           <FormLabel>גודל מילה ראשונה</FormLabel>
                           <Select onValueChange={field.onChange} value={field.value}>
@@ -253,14 +253,14 @@ export default function ContentManager() {
                           <FormMessage />
                         </FormItem>
                       )} />
-                       <FormField name="hero.titleRestColor" control={form.control} render={({ field }) => (
+                       <FormField name="hero.title_rest_color" control={form.control} render={({ field }) => (
                         <FormItem>
                           <FormLabel>צבע שאר המשפט</FormLabel>
                           <FormControl><Input type="color" {...field} className="p-1 h-10 w-full" /></FormControl>
                           <FormMessage />
                         </FormItem>
                       )} />
-                       <FormField name="hero.titleRestFontSize" control={form.control} render={({ field }) => (
+                       <FormField name="hero.title_rest_font_size" control={form.control} render={({ field }) => (
                         <FormItem>
                           <FormLabel>גודל שאר המשפט</FormLabel>
                           <Select onValueChange={field.onChange} value={field.value}>
@@ -272,14 +272,14 @@ export default function ContentManager() {
                       )} />
                   </div>
                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
-                     <FormField name="hero.titleFirstWordOpacity" control={form.control} render={({ field }) => (
+                     <FormField name="hero.title_first_word_opacity" control={form.control} render={({ field }) => (
                         <FormItem>
                           <FormLabel>שקיפות מילה ראשונה ({Math.round((field.value ?? 1) * 100)}%)</FormLabel>
                           <FormControl><Slider value={[field.value ?? 1]} min={0} max={1} step={0.05} onValueChange={(v) => field.onChange(v[0])} /></FormControl>
                           <FormMessage />
                         </FormItem>
                       )} />
-                       <FormField name="hero.titleRestOpacity" control={form.control} render={({ field }) => (
+                       <FormField name="hero.title_rest_opacity" control={form.control} render={({ field }) => (
                         <FormItem>
                           <FormLabel>שקיפות שאר המשפט ({Math.round((field.value ?? 1) * 100)}%)</FormLabel>
                           <FormControl><Slider value={[field.value ?? 1]} min={0} max={1} step={0.05} onValueChange={(v) => field.onChange(v[0])} /></FormControl>
@@ -294,14 +294,14 @@ export default function ContentManager() {
                       <FormMessage />
                     </FormItem>
                   )} />
-                  <FormField name="hero.subtitleOpacity" control={form.control} render={({ field }) => (
+                  <FormField name="hero.subtitle_opacity" control={form.control} render={({ field }) => (
                     <FormItem>
                         <FormLabel>שקיפות כותרת משנה ({Math.round((field.value ?? 1) * 100)}%)</FormLabel>
                         <FormControl><Slider value={[field.value ?? 1]} min={0} max={1} step={0.05} onValueChange={(v) => field.onChange(v[0])} /></FormControl>
                         <FormMessage />
                     </FormItem>
                   )} />
-                   <FormField name="hero.animationInterval" control={form.control} render={({ field }) => (
+                   <FormField name="hero.animation_interval" control={form.control} render={({ field }) => (
                     <FormItem>
                       <FormLabel>מרווח הנפשה חוזרת (בשניות, 0 להפעלה חד-פעמית)</FormLabel>
                       <FormControl><Input type="number" {...field} /></FormControl>
@@ -309,7 +309,7 @@ export default function ContentManager() {
                     </FormItem>
                   )} />
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      <FormField name="hero.verticalAlign" control={form.control} render={({ field }) => (
+                      <FormField name="hero.vertical_align" control={form.control} render={({ field }) => (
                         <FormItem>
                           <FormLabel>יישור אנכי</FormLabel>
                           <Select onValueChange={field.onChange} value={field.value}>
@@ -323,7 +323,7 @@ export default function ContentManager() {
                           <FormMessage />
                         </FormItem>
                       )} />
-                      <FormField name="hero.horizontalAlign" control={form.control} render={({ field }) => (
+                      <FormField name="hero.horizontal_align" control={form.control} render={({ field }) => (
                         <FormItem>
                           <FormLabel>יישור אופקי</FormLabel>
                            <Select onValueChange={field.onChange} value={field.value}>
@@ -337,7 +337,7 @@ export default function ContentManager() {
                           <FormMessage />
                         </FormItem>
                       )} />
-                      <FormField name="hero.textAlign" control={form.control} render={({ field }) => (
+                      <FormField name="hero.text_align" control={form.control} render={({ field }) => (
                         <FormItem>
                           <FormLabel>יישור טקסט</FormLabel>
                            <Select onValueChange={field.onChange} value={field.value}>
@@ -370,14 +370,14 @@ export default function ContentManager() {
                        </FormItem>
                     )}
                   />
-                  <FormField name="hero.heroImageBrightness" control={form.control} render={({ field }) => (
+                  <FormField name="hero.hero_image_brightness" control={form.control} render={({ field }) => (
                     <FormItem>
                       <FormLabel>בהירות תמונת רקע ({field.value ?? 100}%)</FormLabel>
                       <FormControl><Slider value={[field.value ?? 100]} min={0} max={100} step={5} onValueChange={(v) => field.onChange(v[0])} /></FormControl>
                       <FormMessage />
                     </FormItem>
                   )} />
-                   <FormField name="hero.heroHeight" control={form.control} render={({ field }) => (
+                   <FormField name="hero.hero_height" control={form.control} render={({ field }) => (
                     <FormItem>
                       <FormLabel>גובה תמונת רקע (400-1000px)</FormLabel>
                       <FormControl><Slider value={[field.value ?? 80]} min={40} max={100} step={5} onValueChange={(v) => field.onChange(v[0])} /></FormControl>
@@ -430,7 +430,7 @@ export default function ContentManager() {
                 <AccordionContent className="space-y-4 pt-4">
                   <Controller
                     control={form.control}
-                    name="menu.mainImage"
+                    name="menu.main_image"
                     render={({ field }) => (
                        <FormItem>
                          <FormLabel>תמונת באנר ראשית</FormLabel>
@@ -438,7 +438,7 @@ export default function ContentManager() {
                             <Input 
                                 type="file" 
                                 accept="image/*" 
-                                onChange={(e) => handleFileChange(e, 'menu.mainImage')}
+                                onChange={(e) => handleFileChange(e, 'menu.main_image')}
                             />
                            </FormControl>
                          <FormMessage />
@@ -454,7 +454,7 @@ export default function ContentManager() {
                 <AccordionContent className="space-y-4 pt-4">
                      <FormField
                         control={form.control}
-                        name="shabbatNotice.enabled"
+                        name="shabbat_notice.enabled"
                         render={({ field }) => (
                             <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
                                 <div className="space-y-0.5">
@@ -464,7 +464,7 @@ export default function ContentManager() {
                             </FormItem>
                         )}
                     />
-                    <FormField name="shabbatNotice.text" control={form.control} render={({ field }) => (
+                    <FormField name="shabbat_notice.text" control={form.control} render={({ field }) => (
                         <FormItem>
                             <FormLabel>תוכן ההודעה</FormLabel>
                             <FormControl><Textarea {...field} value={field.value ?? ''} /></FormControl>
@@ -472,14 +472,14 @@ export default function ContentManager() {
                         </FormItem>
                     )} />
                     <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                        <FormField name="shabbatNotice.color" control={form.control} render={({ field }) => (
+                        <FormField name="shabbat_notice.color" control={form.control} render={({ field }) => (
                             <FormItem>
                                 <FormLabel>צבע</FormLabel>
                                 <FormControl><Input type="color" {...field} className="p-1 h-10 w-full" value={field.value ?? ''} /></FormControl>
                                 <FormMessage />
                             </FormItem>
                         )} />
-                        <FormField name="shabbatNotice.fontSize" control={form.control} render={({ field }) => (
+                        <FormField name="shabbat_notice.font_size" control={form.control} render={({ field }) => (
                             <FormItem>
                                 <FormLabel>גודל גופן</FormLabel>
                                 <Select onValueChange={field.onChange} value={field.value}>
@@ -489,7 +489,7 @@ export default function ContentManager() {
                                 <FormMessage />
                             </FormItem>
                         )} />
-                        <FormField name="shabbatNotice.isBold" control={form.control} render={({ field }) => (
+                        <FormField name="shabbat_notice.is_bold" control={form.control} render={({ field }) => (
                            <FormItem className="flex flex-row items-center justify-start rounded-lg border p-3 shadow-sm h-full mt-auto">
                                 <FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl>
                                 <FormLabel className="mr-2">הדגשה (Bold)</FormLabel>
@@ -599,13 +599,13 @@ export default function ContentManager() {
                   <div className="space-y-4">
                     <FormLabel className="font-medium">הצגת פרטים בעמוד</FormLabel>
                     <div className="grid grid-cols-2 gap-4 rounded-lg border p-4">
-                      <FormField control={form.control} name="contact.showAddress" render={({ field }) => ( <FormItem className="flex items-center gap-2 space-y-0"><FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl><FormLabel>כתובת</FormLabel></FormItem> )} />
-                      <FormField control={form.control} name="contact.showPhone" render={({ field }) => ( <FormItem className="flex items-center gap-2 space-y-0"><FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl><FormLabel>טלפון</FormLabel></FormItem> )} />
-                      <FormField control={form.control} name="contact.showWhatsapp" render={({ field }) => ( <FormItem className="flex items-center gap-2 space-y-0"><FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl><FormLabel>וואטסאפ</FormLabel></FormItem> )} />
-                      <FormField control={form.control} name="contact.showEmail" render={({ field }) => ( <FormItem className="flex items-center gap-2 space-y-0"><FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl><FormLabel>אימייל</FormLabel></FormItem> )} />
-                      <FormField control={form.control} name="contact.showInstagram" render={({ field }) => ( <FormItem className="flex items-center gap-2 space-y-0"><FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl><FormLabel>אינסטגרם</FormLabel></FormItem> )} />
-                      <FormField control={form.control} name="contact.showFacebook" render={({ field }) => ( <FormItem className="flex items-center gap-2 space-y-0"><FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl><FormLabel>פייסבוק</FormLabel></FormItem> )} />
-                      <FormField control={form.control} name="contact.showHours" render={({ field }) => ( <FormItem className="flex items-center gap-2 space-y-0"><FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl><FormLabel>שעות פתיחה</FormLabel></FormItem> )} />
+                      <FormField control={form.control} name="contact.show_address" render={({ field }) => ( <FormItem className="flex items-center gap-2 space-y-0"><FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl><FormLabel>כתובת</FormLabel></FormItem> )} />
+                      <FormField control={form.control} name="contact.show_phone" render={({ field }) => ( <FormItem className="flex items-center gap-2 space-y-0"><FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl><FormLabel>טלפון</FormLabel></FormItem> )} />
+                      <FormField control={form.control} name="contact.show_whatsapp" render={({ field }) => ( <FormItem className="flex items-center gap-2 space-y-0"><FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl><FormLabel>וואטסאפ</FormLabel></FormItem> )} />
+                      <FormField control={form.control} name="contact.show_email" render={({ field }) => ( <FormItem className="flex items-center gap-2 space-y-0"><FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl><FormLabel>אימייל</FormLabel></FormItem> )} />
+                      <FormField control={form.control} name="contact.show_instagram" render={({ field }) => ( <FormItem className="flex items-center gap-2 space-y-0"><FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl><FormLabel>אינסטגרם</FormLabel></FormItem> )} />
+                      <FormField control={form.control} name="contact.show_facebook" render={({ field }) => ( <FormItem className="flex items-center gap-2 space-y-0"><FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl><FormLabel>פייסבוק</FormLabel></FormItem> )} />
+                      <FormField control={form.control} name="contact.show_hours" render={({ field }) => ( <FormItem className="flex items-center gap-2 space-y-0"><FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl><FormLabel>שעות פתיחה</FormLabel></FormItem> )} />
                     </div>
                   </div>
 
@@ -615,7 +615,7 @@ export default function ContentManager() {
                <AccordionItem value="cart">
                 <AccordionTrigger className="font-headline text-xl">סל קניות</AccordionTrigger>
                 <AccordionContent className="space-y-4 pt-4">
-                  <FormField name="cart.deliveryMethodTitle" control={form.control} render={({ field }) => (
+                  <FormField name="cart.delivery_method_title" control={form.control} render={({ field }) => (
                     <FormItem>
                       <FormLabel>כותרת לבחירת משלוח</FormLabel>
                       <FormControl><Input {...field} /></FormControl>
@@ -623,14 +623,14 @@ export default function ContentManager() {
                     </FormItem>
                   )} />
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <FormField name="cart.pickupLabel" control={form.control} render={({ field }) => (
+                    <FormField name="cart.pickup_label" control={form.control} render={({ field }) => (
                       <FormItem>
                         <FormLabel>תווית לאיסוף עצמי</FormLabel>
                         <FormControl><Input {...field} /></FormControl>
                         <FormMessage />
                       </FormItem>
                     )} />
-                    <FormField name="cart.deliveryLabel" control={form.control} render={({ field }) => (
+                    <FormField name="cart.delivery_label" control={form.control} render={({ field }) => (
                       <FormItem>
                         <FormLabel>תווית למשלוח</FormLabel>
                         <FormControl><Input {...field} /></FormControl>
@@ -638,14 +638,14 @@ export default function ContentManager() {
                       </FormItem>
                     )} />
                   </div>
-                  <FormField name="cart.freeDeliveryThreshold" control={form.control} render={({ field }) => (
+                  <FormField name="cart.free_delivery_threshold" control={form.control} render={({ field }) => (
                     <FormItem>
                       <FormLabel>סכום מינימום למשלוח חינם (₪)</FormLabel>
                       <FormControl><Input type="number" {...field} /></FormControl>
                       <FormMessage />
                     </FormItem>
                   )} />
-                  <FormField name="cart.freeDeliveryText" control={form.control} render={({ field }) => (
+                  <FormField name="cart.free_delivery_text" control={form.control} render={({ field }) => (
                     <FormItem>
                       <FormLabel>הודעה על משלוח חינם</FormLabel>
                       <FormControl><Input {...field} /></FormControl>
@@ -653,7 +653,7 @@ export default function ContentManager() {
                       <FormMessage />
                     </FormItem>
                   )} />
-                  <FormField name="cart.orderNotesPlaceholder" control={form.control} render={({ field }) => (
+                  <FormField name="cart.order_notes_placeholder" control={form.control} render={({ field }) => (
                     <FormItem>
                       <FormLabel>טקסט לדוגמה (Placeholder) לשדה ההערות</FormLabel>
                       <FormControl><Input {...field} value={field.value ?? ''} /></FormControl>
@@ -706,21 +706,21 @@ export default function ContentManager() {
                       <FormMessage />
                     </FormItem>
                   )} />
-                  <FormField name="footer.contactTitle" control={form.control} render={({ field }) => (
+                  <FormField name="footer.contact_title" control={form.control} render={({ field }) => (
                     <FormItem>
                       <FormLabel>כותרת עמודת "יצירת קשר"</FormLabel>
                       <FormControl><Input {...field} value={field.value ?? ''} /></FormControl>
                       <FormMessage />
                     </FormItem>
                   )} />
-                  <FormField name="footer.hoursTitle" control={form.control} render={({ field }) => (
+                  <FormField name="footer.hours_title" control={form.control} render={({ field }) => (
                     <FormItem>
                       <FormLabel>כותרת עמודת "שעות פתיחה"</FormLabel>
                       <FormControl><Input {...field} value={field.value ?? ''} /></FormControl>
                       <FormMessage />
                     </FormItem>
                   )} />
-                   <FormField name="footer.hoursContent" control={form.control} render={({ field }) => (
+                   <FormField name="footer.hours_content" control={form.control} render={({ field }) => (
                     <FormItem>
                       <FormLabel>תוכן עמודת "שעות פתיחה"</FormLabel>
                       <FormControl><Textarea {...field} value={field.value ?? ''} rows={4} /></FormControl>
@@ -728,14 +728,14 @@ export default function ContentManager() {
                     </FormItem>
                   )} />
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-4 border-t pt-4 mt-4">
-                        <FormField name="footer.hoursContentColor" control={form.control} render={({ field }) => (
+                        <FormField name="footer.hours_content_color" control={form.control} render={({ field }) => (
                             <FormItem>
                                 <FormLabel>צבע התוכן</FormLabel>
                                 <FormControl><Input type="color" {...field} className="p-1 h-10 w-full" value={field.value ?? ''} /></FormControl>
                                 <FormMessage />
                             </FormItem>
                         )} />
-                        <FormField name="footer.hoursContentFontSize" control={form.control} render={({ field }) => (
+                        <FormField name="footer.hours_content_font_size" control={form.control} render={({ field }) => (
                             <FormItem>
                                 <FormLabel>גודל גופן</FormLabel>
                                 <Select onValueChange={field.onChange} value={field.value}>
@@ -745,7 +745,7 @@ export default function ContentManager() {
                                 <FormMessage />
                             </FormItem>
                         )} />
-                        <FormField name="footer.hoursContentIsBold" control={form.control} render={({ field }) => (
+                        <FormField name="footer.hours_content_is_bold" control={form.control} render={({ field }) => (
                            <FormItem className="flex flex-row items-center justify-start rounded-lg border p-3 shadow-sm h-full mt-auto">
                                 <FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl>
                                 <FormLabel className="mr-2">הדגשה (Bold)</FormLabel>

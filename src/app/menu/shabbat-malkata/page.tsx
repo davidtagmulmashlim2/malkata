@@ -18,12 +18,12 @@ export default function ShabbatMalkataPage() {
         notFound();
     }
 
-    const categoryDishes = isLoading || !category ? [] : state.dishes.filter(d => d.categoryIds?.includes(category.id!));
-    const { shabbatNotice } = state.siteContent;
+    const categoryDishes = isLoading || !category ? [] : state.dishes.filter(d => d.category_ids?.includes(category.id!));
+    const { shabbat_notice } = state.siteContent;
 
     const textSizeClasses: { [key: string]: string } = {
         'text-xs': 'text-xs', 'text-sm': 'text-sm', 'text-base': 'text-base', 'text-lg': 'text-lg', 'text-xl': 'text-xl', 
-        'text-2xl': 'text-2xl', 'text-3xl': 'text-3xl', 'text-4xl': 'text-4xl', 'text-5xl': 'text-5xl', 
+        'text-2xl': 'text-2xl', 'text-3xl': 'text-3xl', 'text-4xl': 'text-4xl', '5xl': 'text-5xl', 
         'text-6xl': 'text-6xl', 'text-7xl': 'text-7xl', 'text-8xl': 'text-8xl', 'text-9xl': 'text-9xl',
     };
 
@@ -61,18 +61,18 @@ export default function ShabbatMalkataPage() {
                 </div>
             </div>
             <div className="container py-12 md:py-20">
-                {shabbatNotice?.enabled && shabbatNotice.text && (
+                {shabbat_notice?.enabled && shabbat_notice.text && (
                     <div className="text-center mb-12">
                          <h2 className="text-2xl font-headline font-semibold">הזמנות לשבת:</h2>
                          <p 
                             className={cn(
                                 "mt-2",
-                                shabbatNotice.fontSize ? textSizeClasses[shabbatNotice.fontSize] : 'text-base',
-                                shabbatNotice.isBold && "font-bold"
+                                shabbat_notice.font_size ? textSizeClasses[shabbat_notice.font_size] : 'text-base',
+                                shabbat_notice.is_bold && "font-bold"
                             )}
-                            style={{ color: shabbatNotice.color || undefined }}
+                            style={{ color: shabbat_notice.color || undefined }}
                          >
-                            {shabbatNotice.text}
+                            {shabbat_notice.text}
                         </p>
                     </div>
                 )}

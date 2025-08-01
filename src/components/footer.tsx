@@ -50,8 +50,8 @@ export function Footer() {
     const { siteContent, design } = state;
     const { contact, footer } = siteContent;
     
-    const IconComponent = iconMap[design.logoIcon] || UtensilsCrossed;
-    const logoStyle = design.logoColor ? { color: design.logoColor } : {};
+    const IconComponent = iconMap[design.logo_icon] || UtensilsCrossed;
+    const logoStyle = design.logo_color ? { color: design.logo_color } : {};
 
     const textSizeClasses: { [key: string]: string } = {
       'xs': 'text-xs', 'sm': 'text-sm', 'base': 'text-base', 'lg': 'text-lg', 'xl': 'text-xl', 
@@ -71,14 +71,14 @@ export function Footer() {
 
         return (
          <Link href="/" className="flex items-center gap-2 font-headline text-2xl font-bold text-primary" style={logoStyle}>
-            {design.logoImage ? (
+            {design.logo_image ? (
                 <div className="relative flex items-center" style={{height: '40px'}}>
                      <AsyncImage 
-                        imageKey={design.logoImage} 
+                        imageKey={design.logo_image} 
                         alt="לוגו" 
                         height={40} 
-                        width={design.logoWidth || 120} 
-                        style={{width: `${design.logoWidth || 120}px`, height: 'auto'}}
+                        width={design.logo_width || 120} 
+                        style={{width: `${design.logo_width || 120}px`, height: 'auto'}}
                         className="object-contain" 
                      />
                  </div>
@@ -105,12 +105,12 @@ export function Footer() {
                                     <a href={`https://wa.me/${contact.whatsapp}`} target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp">
                                         <WhatsappIcon className="h-7 w-7 text-green-500 transition-opacity hover:opacity-80" />
                                     </a>
-                                    {contact.showInstagram && contact.instagram && (
+                                    {contact.show_instagram && contact.instagram && (
                                         <a href={contact.instagram} target="_blank" rel="noopener noreferrer" aria-label="Visit our Instagram">
                                             <InstagramIcon className="h-7 w-7 text-pink-600 transition-opacity hover:opacity-80" />
                                         </a>
                                     )}
-                                     {contact.showFacebook && contact.facebook && (
+                                     {contact.show_facebook && contact.facebook && (
                                         <a href={contact.facebook} target="_blank" rel="noopener noreferrer" aria-label="Visit our Facebook">
                                             <FacebookIcon className="h-7 w-7 text-blue-600 transition-opacity hover:opacity-80" />
                                         </a>
@@ -120,9 +120,9 @@ export function Footer() {
                         </div>
                     </div>
                     
-                    {(footer?.contactTitle || contact?.address || contact?.phone) && (
+                    {(footer?.contact_title || contact?.address || contact?.phone) && (
                         <div className="space-y-4">
-                             {isLoading ? <Skeleton className="h-6 w-32" /> : (footer?.contactTitle && <h3 className="text-lg font-semibold">{footer.contactTitle}</h3>)}
+                             {isLoading ? <Skeleton className="h-6 w-32" /> : (footer?.contact_title && <h3 className="text-lg font-semibold">{footer.contact_title}</h3>)}
                             <ul className="space-y-2 text-sm text-muted-foreground">
                                 {isLoading ? (
                                     <>
@@ -158,17 +158,17 @@ export function Footer() {
                             </>
                         ) : (
                             <>
-                                {footer?.hoursTitle && <h3 className="text-lg font-semibold">{footer.hoursTitle}</h3>}
-                                {footer?.hoursContent && (
+                                {footer?.hours_title && <h3 className="text-lg font-semibold">{footer.hours_title}</h3>}
+                                {footer?.hours_content && (
                                     <div 
                                         className={cn(
                                             "text-muted-foreground whitespace-pre-line",
-                                            footer.hoursContentFontSize ? textSizeClasses[footer.hoursContentFontSize] : "text-sm",
-                                            footer.hoursContentIsBold && "font-bold"
+                                            footer.hours_content_font_size ? textSizeClasses[footer.hours_content_font_size] : "text-sm",
+                                            footer.hours_content_is_bold && "font-bold"
                                         )}
-                                        style={{ color: footer.hoursContentColor || undefined }}
+                                        style={{ color: footer.hours_content_color || undefined }}
                                     >
-                                        {footer.hoursContent}
+                                        {footer.hours_content}
                                     </div>
                                 )}
                             </>

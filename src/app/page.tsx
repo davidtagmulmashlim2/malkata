@@ -1,4 +1,5 @@
 
+
 'use client';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -118,14 +119,14 @@ export default function Home() {
   };
 
   useEffect(() => {
-    if (!isLoading && siteContent.hero.animationInterval > 0) {
+    if (!isLoading && siteContent.hero.animation_interval > 0) {
       const interval = setInterval(() => {
         setTypewriterKey(prevKey => prevKey + 1);
-      }, siteContent.hero.animationInterval * 1000);
+      }, siteContent.hero.animation_interval * 1000);
 
       return () => clearInterval(interval);
     }
-  }, [isLoading, siteContent.hero.animationInterval]);
+  }, [isLoading, siteContent.hero.animation_interval]);
 
   const nextTestimonial = () => {
     setCurrentTestimonialIndex(prev => (prev + 1) % testimonials.length);
@@ -146,7 +147,7 @@ export default function Home() {
 
   const recommendedDishes = useMemo(() => {
     if (isLoading) return Array(3).fill(null);
-    const recommended = dishes.filter(d => d.isRecommended);
+    const recommended = dishes.filter(d => d.is_recommended);
     return recommended.length > 0 ? recommended : dishes.slice(0, 3);
   }, [dishes, isLoading]);
 
@@ -177,7 +178,7 @@ export default function Home() {
   return (
     <div className="text-right">
       {/* Hero Section */}
-      <section className="relative w-full text-white overflow-hidden" style={{ height: `${hero.heroHeight}vh` }}>
+      <section className="relative w-full text-white overflow-hidden" style={{ height: `${hero.hero_height}vh` }}>
         {isLoading ? (
             <Skeleton className="w-full h-full" />
         ) : (
@@ -188,31 +189,31 @@ export default function Home() {
               layout="fill"
               objectFit="cover"
               className="z-0 animation-slow-zoom-in"
-              style={{ filter: `brightness(${siteContent.hero.heroImageBrightness}%)` }}
+              style={{ filter: `brightness(${siteContent.hero.hero_image_brightness}%)` }}
               priority
               data-ai-hint="warm food"
               skeletonClassName="w-full h-full"
             />
             <div className={cn(
                 "absolute inset-0 z-10 p-4 flex flex-col",
-                verticalAlignClasses[hero.verticalAlign],
-                horizontalAlignClasses[hero.horizontalAlign]
+                verticalAlignClasses[hero.vertical_align],
+                horizontalAlignClasses[hero.horizontal_align]
             )}>
-              <div className={cn("w-full", textAlignClasses[hero.textAlign])}>
-                {(siteContent.hero.titleFirstWord || siteContent.hero.titleRest) && (
+              <div className={cn("w-full", textAlignClasses[hero.text_align])}>
+                {(siteContent.hero.title_first_word || siteContent.hero.title_rest) && (
                     <h1 className="font-headline font-bold drop-shadow-lg">
                       <Typewriter
                           key={typewriterKey}
                           textParts={[
-                              { text: siteContent.hero.titleFirstWord, style: { color: siteContent.hero.titleFirstWordColor, opacity: siteContent.hero.titleFirstWordOpacity }, className: textSizeClasses[siteContent.hero.titleFirstWordFontSize] },
-                              { text: ` ${siteContent.hero.titleRest}`, style: { color: siteContent.hero.titleRestColor, opacity: siteContent.hero.titleRestOpacity }, className: textSizeClasses[siteContent.hero.titleRestFontSize] },
+                              { text: siteContent.hero.title_first_word, style: { color: siteContent.hero.title_first_word_color, opacity: siteContent.hero.title_first_word_opacity }, className: textSizeClasses[siteContent.hero.title_first_word_font_size] },
+                              { text: ` ${siteContent.hero.title_rest}`, style: { color: siteContent.hero.title_rest_color, opacity: siteContent.hero.title_rest_opacity }, className: textSizeClasses[siteContent.hero.title_rest_font_size] },
                           ]}
                       />
                     </h1>
                 )}
                 
                 {siteContent.hero.subtitle && (
-                  <div className={cn("mt-4 text-lg md:text-2xl max-w-2xl drop-shadow-md", horizontalAlignClasses[hero.horizontalAlign] === 'justify-center' ? 'mx-auto' : '')} style={{ opacity: siteContent.hero.subtitleOpacity }}>
+                  <div className={cn("mt-4 text-lg md:text-2xl max-w-2xl drop-shadow-md", horizontalAlignClasses[hero.horizontal_align] === 'justify-center' ? 'mx-auto' : '')} style={{ opacity: siteContent.hero.subtitle_opacity }}>
                     {siteContent.hero.subtitle}
                   </div>
                 )}

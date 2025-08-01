@@ -1,4 +1,5 @@
 
+
 'use client';
 import { AppProvider, useApp } from '@/context/app-context';
 import { Header } from '@/components/header';
@@ -36,8 +37,8 @@ function AppBody({ children }: { children: React.ReactNode }) {
             document.documentElement.classList.remove(...themeClasses);
             document.documentElement.classList.add(`theme-${state.design.theme}`);
             
-            document.documentElement.style.setProperty('--font-headline-family', `var(--font-${state.design.headlineFont})`);
-            document.documentElement.style.setProperty('--font-sans-family', `var(--font-${state.design.bodyFont})`);
+            document.documentElement.style.setProperty('--font-headline-family', `var(--font-${state.design.headline_font})`);
+            document.documentElement.style.setProperty('--font-sans-family', `var(--font-${state.design.body_font})`);
             setThemeLoaded(true);
         }
     }, [isLoading, state.design]);

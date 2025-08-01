@@ -1,4 +1,5 @@
 
+
 'use client';
 import { useApp } from '@/context/app-context';
 import { DishCard } from '@/components/dish-card';
@@ -20,7 +21,7 @@ export default function CategoryPage() {
         notFound();
     }
 
-    const categoryDishes = isLoading || !category ? [] : state.dishes.filter(d => d.categoryIds && d.categoryIds.includes(category.id));
+    const categoryDishes = isLoading || !category ? [] : state.dishes.filter(d => d.category_ids && d.category_ids.includes(category.id!));
 
     const textSizeClasses: { [key: string]: string } = {
       'xs': 'text-xs', 'sm': 'text-sm', 'base': 'text-base', 'lg': 'text-lg', 'xl': 'text-xl', 
@@ -52,7 +53,7 @@ export default function CategoryPage() {
                     alt={category.name}
                     layout="fill"
                     objectFit="cover"
-                    style={{ filter: `brightness(${category.imageBrightness ?? 50}%)` }}
+                    style={{ filter: `brightness(${category.image_brightness ?? 50}%)` }}
                     data-ai-hint="food category"
                     skeletonClassName="w-full h-full"
                 />
@@ -60,23 +61,23 @@ export default function CategoryPage() {
                     <h1 
                         className={cn(
                             "font-bold text-white drop-shadow-lg",
-                            textSizeClasses[category.titleFontSize ?? '5xl']
+                            textSizeClasses[category.title_font_size ?? '5xl']
                         )}
                         style={{
-                            color: category.titleColor ?? '#FFFFFF',
-                            opacity: category.titleOpacity ?? 1,
-                            fontFamily: category.titleFont ? `var(--font-${category.titleFont})` : 'var(--font-headline-family)',
+                            color: category.title_color ?? '#FFFFFF',
+                            opacity: category.title_opacity ?? 1,
+                            fontFamily: category.title_font ? `var(--font-${category.title_font})` : 'var(--font-headline-family)',
                         } as React.CSSProperties}
                     >
                         {category.name}
                     </h1>
-                    {(category.showDescription ?? true) && (
+                    {(category.show_description ?? true) && (
                         <p className="text-lg text-white mt-2 max-w-2xl">{category.description}</p>
                     )}
                 </div>
             </div>
             <div className="container py-12 md:py-20">
-                {category.showDescriptionBelowBanner && (
+                {category.show_description_below_banner && (
                     <div className="mb-12 text-right">
                         <h2 className="text-2xl font-headline font-semibold border-r-4 border-primary pr-4">{category.name}</h2>
                         <p className="text-muted-foreground mt-2 pr-4">{category.description}</p>

@@ -1,4 +1,5 @@
 
+
 'use client';
 import { useApp } from '@/context/app-context';
 import { Button } from '@/components/ui/button';
@@ -26,8 +27,8 @@ export default function InboxManager() {
   
   const handleOpenMessage = (submission: ContactSubmission) => {
       setSelectedSubmission(submission);
-      if(!submission.isRead) {
-          dispatch({ type: 'UPDATE_SUBMISSION_STATUS', payload: { id: submission.id!, isRead: true }})
+      if(!submission.is_read) {
+          dispatch({ type: 'UPDATE_SUBMISSION_STATUS', payload: { id: submission.id!, is_read: true }})
       }
   }
 
@@ -59,9 +60,9 @@ export default function InboxManager() {
             <TableBody>
                 {submissions.length > 0 ? (
                     submissions.map(submission => (
-                    <TableRow key={submission.id} className={cn(!submission.isRead && "font-bold")}>
+                    <TableRow key={submission.id} className={cn(!submission.is_read && "font-bold")}>
                         <TableCell>
-                            {!submission.isRead && <Badge>חדש</Badge>}
+                            {!submission.is_read && <Badge>חדש</Badge>}
                         </TableCell>
                         <TableCell>{submission.name}</TableCell>
                         <TableCell>{getContactInfo(submission)}</TableCell>

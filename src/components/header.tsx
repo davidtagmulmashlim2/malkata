@@ -58,19 +58,19 @@ export function Header() {
   const { state, isLoading } = useApp();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const IconComponent = useMemo(() => iconMap[state.design.logoIcon] || UtensilsCrossed, [state.design.logoIcon]);
-  const logoStyle = useMemo(() => state.design.logoColor ? { color: state.design.logoColor } : {}, [state.design.logoColor]);
+  const IconComponent = useMemo(() => iconMap[state.design.logo_icon] || UtensilsCrossed, [state.design.logo_icon]);
+  const logoStyle = useMemo(() => state.design.logo_color ? { color: state.design.logo_color } : {}, [state.design.logo_color]);
 
   const navLinks = useMemo(() => {
     if (isLoading) {
         return baseNavLinks;
     }
 
-    const { featuredCategoryId } = state.design;
+    const { featured_category_id } = state.design;
     const newLinks = [...baseNavLinks];
 
-    if (featuredCategoryId && featuredCategoryId !== 'none') {
-        const featuredCategory = state.categories.find(c => c.id === featuredCategoryId);
+    if (featured_category_id && featured_category_id !== 'none') {
+        const featuredCategory = state.categories.find(c => c.id === featured_category_id);
         if (featuredCategory) {
             const featuredLink = {
                 href: `/menu/${featuredCategory.slug}`,
@@ -108,13 +108,13 @@ export function Header() {
 
     return (
       <Link href="/" className="flex items-center gap-2 font-headline text-2xl font-bold text-primary" style={logoStyle}>
-        {state.design.logoImage ? (
+        {state.design.logo_image ? (
              <div className="relative flex items-center" style={{height: '40px'}}>
                  <AsyncImage 
-                    imageKey={state.design.logoImage} 
+                    imageKey={state.design.logo_image} 
                     alt="לוגו" height={40} 
-                    width={state.design.logoWidth || 120} 
-                    style={{width: `${state.design.logoWidth || 120}px`, height: 'auto'}}
+                    width={state.design.logo_width || 120} 
+                    style={{width: `${state.design.logo_width || 120}px`, height: 'auto'}}
                     className="object-contain" 
                  />
              </div>

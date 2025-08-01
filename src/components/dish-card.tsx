@@ -27,16 +27,16 @@ export function DishCard({ dish }: DishCardProps) {
   
   const allImages = useMemo(() => {
     const imageSet = new Set<string>();
-    if (dish.mainImage) {
-        imageSet.add(dish.mainImage);
+    if (dish.main_image) {
+        imageSet.add(dish.main_image);
     }
-    if (dish.galleryImages && Array.isArray(dish.galleryImages)) {
-        dish.galleryImages.forEach(imgKey => {
+    if (dish.gallery_images && Array.isArray(dish.gallery_images)) {
+        dish.gallery_images.forEach(imgKey => {
             if (imgKey) imageSet.add(imgKey);
         });
     }
     return Array.from(imageSet);
-  }, [dish.mainImage, dish.galleryImages]);
+  }, [dish.main_image, dish.gallery_images]);
   
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
@@ -50,13 +50,13 @@ export function DishCard({ dish }: DishCardProps) {
 
   const handleUpdateCart = () => {
     if (cartItem) {
-      updateCartQuantity(dish.id, quantity);
+      updateCartQuantity(dish.id!, quantity);
       toast({
         title: "הכמות עודכנה",
         description: `הכמות של ${dish.name} עודכנה ל-${quantity}.`,
       });
     } else {
-      addToCart(dish.id, quantity);
+      addToCart(dish.id!, quantity);
       toast({
           title: "נוסף לסל",
           description: `${quantity}x ${dish.name} נוספו לסל הקניות שלך.`,
@@ -67,13 +67,13 @@ export function DishCard({ dish }: DishCardProps) {
   
   const handleDirectAddToCart = () => {
     if (cartItem) {
-      updateCartQuantity(dish.id, cartItem.quantity + 1);
+      updateCartQuantity(dish.id!, cartItem.quantity + 1);
       toast({
         title: "הכמות עודכנה",
         description: `כמות מעודכנת בסל: ${cartItem.quantity + 1}`,
       });
     } else {
-      addToCart(dish.id, 1);
+      addToCart(dish.id!, 1);
       toast({
           title: "נוסף לסל",
           description: `${dish.name} נוסף לסל הקניות שלך.`,
@@ -114,7 +114,7 @@ export function DishCard({ dish }: DishCardProps) {
     }}>
       <div className="flex flex-col h-full text-right">
         <div className="relative aspect-square w-full overflow-hidden group rounded-lg">
-            <AsyncImage imageKey={dish.mainImage} alt={dish.name} layout="fill" objectFit="cover" />
+            <AsyncImage imageKey={dish.main_image} alt={dish.name} layout="fill" objectFit="cover" />
             <div className="absolute top-2 left-0 right-0 px-2 flex justify-between items-start">
                 {isClient && cartItem ? (
                     <div className="bg-primary text-primary-foreground rounded-full h-7 w-7 flex items-center justify-center text-sm font-bold z-10">
@@ -125,7 +125,7 @@ export function DishCard({ dish }: DishCardProps) {
                     {renderTags(dish.tags)}
                 </div>
             </div>
-            {!dish.isAvailable && (
+            {!dish.is_available && (
                 <div className="absolute inset-0 bg-black/50 flex items-center justify-center rounded-lg">
                     <p className="text-white text-lg font-bold">אזל מהמלאי</p>
                 </div>
@@ -142,14 +142,14 @@ export function DishCard({ dish }: DishCardProps) {
           <h3 className="text-lg font-headline font-bold">{dish.name}</h3>
         </div>
         <div className="flex-grow pt-1">
-          <p className="text-muted-foreground text-sm">{dish.shortDescription}</p>
+          <p className="text-muted-foreground text-sm">{dish.short_description}</p>
         </div>
         <div className="flex justify-between items-center pt-4">
             <div>
               <span className="text-xl font-bold text-primary">{dish.price} ₪</span>
-              {dish.priceSubtitle && <p className="text-xs text-muted-foreground">{dish.priceSubtitle}</p>}
+              {dish.price_subtitle && <p className="text-xs text-muted-foreground">{dish.price_subtitle}</p>}
             </div>
-            <Button onClick={handleDirectAddToCart} disabled={!dish.isAvailable}>
+            <Button onClick={handleDirectAddToCart} disabled={!dish.is_available}>
               <ShoppingBagIcon className="ms-2 h-4 w-4" />
               הוספה לסל
             </Button>
@@ -210,13 +210,13 @@ export function DishCard({ dish }: DishCardProps) {
                     <div className="flex gap-2 my-4 justify-start flex-wrap">
                         {renderTags(dish.tags)}
                     </div>
-                    <p className="text-muted-foreground text-right">{dish.fullDescription}</p>
+                    <p className="text-muted-foreground text-right">{dish.full_description}</p>
                 </div>
                 <DialogFooter className="mt-6">
                     <div className="flex justify-between items-center w-full gap-4">
                         <div>
                           <p className="text-2xl font-bold text-primary whitespace-nowrap">{dish.price * quantity} ₪</p>
-                          {dish.priceSubtitle && <p className="text-xs text-muted-foreground">{dish.priceSubtitle}</p>}
+                          {dish.price_subtitle && <p className="text-xs text-muted-foreground">{dish.price_subtitle}</p>}
                         </div>
                         <div className="flex items-center gap-2">
                              <div className="flex items-center gap-1 rounded-md border">
@@ -228,7 +228,7 @@ export function DishCard({ dish }: DishCardProps) {
                                     <Plus className="h-4 w-4" />
                                 </Button>
                             </div>
-                            <Button onClick={handleUpdateCart} disabled={!dish.isAvailable} size="lg">
+                            <Button onClick={handleUpdateCart} disabled={!dish.is_available} size="lg">
                                 <ShoppingBagIcon className="ms-2 h-5 w-5" />
                                 {buttonText}
                             </Button>
@@ -241,4 +241,3 @@ export function DishCard({ dish }: DishCardProps) {
     </Dialog>
   );
 }
-

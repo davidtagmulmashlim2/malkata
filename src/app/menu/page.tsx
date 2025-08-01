@@ -1,4 +1,5 @@
 
+
 'use client';
 import { useApp } from '@/context/app-context';
 import { DishCard } from '@/components/dish-card';
@@ -14,7 +15,7 @@ export default function MenuPage() {
         <div>
             <div className="relative h-64 w-full">
                 <AsyncImage
-                    imageKey={isLoading ? undefined : siteContent.menu.mainImage}
+                    imageKey={isLoading ? undefined : siteContent.menu.main_image}
                     alt="תפריט"
                     layout="fill"
                     objectFit="cover"
@@ -40,7 +41,7 @@ export default function MenuPage() {
                     ))
                 ) : (
                     categories.map(category => {
-                        const categoryDishes = dishes.filter(d => d.categoryIds && d.categoryIds.includes(category.id));
+                        const categoryDishes = dishes.filter(d => d.category_ids && d.category_ids.includes(category.id!));
                         if (categoryDishes.length === 0) return null;
 
                         return (

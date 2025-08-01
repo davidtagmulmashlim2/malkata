@@ -70,8 +70,8 @@ const appReducer = (state: AppState, action: Action): AppState => {
     case 'ADD_SUBMISSION':
         return { ...state, submissions: [action.payload, ...state.submissions] };
     case 'UPDATE_SUBMISSION_STATUS':
-        debouncedUpdate('submissions', 'id', action.payload.id, { isRead: action.payload.isRead });
-        return { ...state, submissions: state.submissions.map(s => s.id === action.payload.id ? { ...s, isRead: action.payload.isRead } : s) };
+        debouncedUpdate('submissions', 'id', action.payload.id, { is_read: action.payload.is_read });
+        return { ...state, submissions: state.submissions.map(s => s.id === action.payload.id ? { ...s, is_read: action.payload.is_read } : s) };
     case 'DELETE_SUBMISSION':
         return { ...state, submissions: state.submissions.filter(s => s.id !== action.payload) };
     case 'UPDATE_DESIGN':

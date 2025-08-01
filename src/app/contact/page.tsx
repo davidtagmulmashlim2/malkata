@@ -1,4 +1,5 @@
 
+
 'use client';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -45,7 +46,7 @@ export default function ContactPage() {
                 phone: values.phone,
                 message: values.message,
                 date: new Date().toISOString(),
-                isRead: false,
+                is_read: false,
             }
         });
 
@@ -117,7 +118,7 @@ export default function ContactPage() {
                 <div className="space-y-8">
                     <h2 className="text-2xl font-bold font-headline mb-6 text-right">פרטי התקשרות</h2>
                     <div className="space-y-4 text-lg">
-                        {contact.showAddress && (
+                        {contact.show_address && (
                             <div className="flex items-start gap-4">
                                 <MapPin className="h-6 w-6 text-primary mt-1" />
                                 <div>
@@ -126,7 +127,7 @@ export default function ContactPage() {
                                 </div>
                             </div>
                         )}
-                        {contact.showPhone && (
+                        {contact.show_phone && (
                             <div className="flex items-start gap-4">
                                 <Phone className="h-6 w-6 text-primary mt-1" />
                                 <div>
@@ -135,7 +136,7 @@ export default function ContactPage() {
                                 </div>
                             </div>
                         )}
-                        {contact.showWhatsapp && (
+                        {contact.show_whatsapp && (
                             <a href={`https://wa.me/${contact.whatsapp}`} target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp" className="flex items-start gap-4 text-muted-foreground hover:text-primary">
                                 <WhatsappIcon className="h-8 w-8 text-green-500 transition-opacity hover:opacity-80" />
                                 <div>
@@ -144,7 +145,7 @@ export default function ContactPage() {
                                 </div>
                             </a>
                         )}
-                        {contact.showInstagram && contact.instagram && (
+                        {contact.show_instagram && contact.instagram && (
                              <a href={contact.instagram} target="_blank" rel="noopener noreferrer" aria-label="Visit our Instagram" className="flex items-start gap-4 text-muted-foreground hover:text-primary">
                                 <InstagramIcon className="h-8 w-8 text-pink-600 transition-opacity hover:opacity-80" />
                                  <div>
@@ -153,7 +154,7 @@ export default function ContactPage() {
                                 </div>
                             </a>
                         )}
-                        {contact.showFacebook && contact.facebook && (
+                        {contact.show_facebook && contact.facebook && (
                              <a href={contact.facebook} target="_blank" rel="noopener noreferrer" aria-label="Visit our Facebook page" className="flex items-start gap-4 text-muted-foreground hover:text-primary">
                                 <FacebookIcon className="h-8 w-8 text-blue-600 transition-opacity hover:opacity-80" />
                                  <div>
@@ -162,7 +163,7 @@ export default function ContactPage() {
                                 </div>
                             </a>
                         )}
-                        {contact.showEmail && (
+                        {contact.show_email && (
                             <div className="flex items-start gap-4">
                                 <Mail className="h-6 w-6 text-primary mt-1" />
                                 <div>
@@ -171,7 +172,7 @@ export default function ContactPage() {
                                 </div>
                             </div>
                         )}
-                        {contact.showHours && (
+                        {contact.show_hours && (
                             <div className="flex items-start gap-4">
                                 <Clock className="h-6 w-6 text-primary mt-1" />
                                 <div>
