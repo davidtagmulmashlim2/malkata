@@ -9,7 +9,7 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Menu, UtensilsCrossed, User, Crown as Crown1, Gem, Star, Shield } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useApp } from '@/context/app-context';
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Skeleton } from './ui/skeleton';
 import { AsyncImage } from './async-image';
 
@@ -56,6 +56,7 @@ const iconMap: { [key: string]: React.ElementType | null } = {
 export function Header() {
   const pathname = usePathname();
   const { state, isLoading } = useApp();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const IconComponent = useMemo(() => iconMap[state.design.logoIcon] || UtensilsCrossed, [state.design.logoIcon]);
   const logoStyle = useMemo(() => state.design.logoColor ? { color: state.design.logoColor } : {}, [state.design.logoColor]);
@@ -76,6 +77,7 @@ export function Header() {
                 label: featuredCategory.name,
                 isFeatured: true,
             };
+            // Insert featured link after 'גלריה' or before 'יצירת קשר'
             const galleryIndex = newLinks.findIndex(link => link.href === '/gallery');
             if (galleryIndex !== -1) {
                 newLinks.splice(galleryIndex + 1, 0, featuredLink);
@@ -133,42 +135,45 @@ export function Header() {
         ) : (
             navLinks.map(link => {
                 const isActive = (pathname.startsWith(link.href) && link.href !== '/') || pathname === link.href;
-                const customStyle = link.isFeatured && state.design.logoColor ? { backgroundColor: state.design.logoColor, color: 'hsl(var(--primary-foreground))' } : {};
+                const LinkComponent = mobile ? 'div' : Link;
                 
-                if (link.isFeatured) {
-                    return (
-                        <Button key={link.href} asChild size="sm" style={customStyle} className="rounded-full">
-                            <Link href={link.href}>
+                const linkContent = (
+                    <LinkComponent
+                        href={link.href}
+                        onClick={() => mobile && setIsMobileMenuOpen(false)}
+                        className={cn(
+                            'transition-colors hover:text-primary no-underline',
+                             !link.isFeatured && (isActive ? 'text-primary font-bold' : 'text-muted-foreground')
+                        )}
+                    >
+                         {link.isFeatured ? (
+                            <Button size="sm" className="rounded-full">
                                 {link.label}
-                            </Link>
-                        </Button>
-                    );
-                }
+                            </Button>
+                        ) : (
+                            link.label
+                        )}
+                    </LinkComponent>
+                );
 
                 return (
-                     <Link
-                      key={link.href}
-                      href={link.href}
-                      className={cn(
-                        'transition-colors hover:text-primary no-underline',
-                        isActive ? 'text-primary font-bold' : 'text-muted-foreground'
-                      )}
-                    >
-                      {link.label}
-                    </Link>
+                    <React.Fragment key={link.href}>
+                      {mobile ? <div onClick={() => setIsMobileMenuOpen(false)}>{linkContent}</div> : linkContent}
+                    </React.Fragment>
                 );
             })
         )
       }
       {mobile && !isLoading && (
-         <Link
-          href="/admin"
-          className={cn(
-            'transition-colors hover:text-primary no-underline',
-            pathname.startsWith('/admin') ? 'text-primary font-bold' : 'text-muted-foreground'
-          )}
-        >
-          אזור אישי
+        <Link
+            href="/admin"
+            onClick={() => setIsMobileMenuOpen(false)}
+            className={cn(
+                'transition-colors hover:text-primary no-underline',
+                pathname.startsWith('/admin') ? 'text-primary font-bold' : 'text-muted-foreground'
+            )}
+            >
+            אזור אישי
         </Link>
       )}
     </nav>
@@ -202,7 +207,7 @@ export function Header() {
         {/* Mobile Layout */}
         <div className="md:hidden flex w-full justify-between items-center">
           <Logo />
-          <Sheet>
+          <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon">
                 <Menu className="h-6 w-6" />
