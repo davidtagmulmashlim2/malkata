@@ -27,7 +27,7 @@ export default function InboxManager() {
   const handleOpenMessage = (submission: ContactSubmission) => {
       setSelectedSubmission(submission);
       if(!submission.isRead) {
-          dispatch({ type: 'UPDATE_SUBMISSION_STATUS', payload: { id: submission.id, isRead: true }})
+          dispatch({ type: 'UPDATE_SUBMISSION_STATUS', payload: { id: submission.id!, isRead: true }})
       }
   }
 
@@ -86,7 +86,7 @@ export default function InboxManager() {
                                     </AlertDialogHeader>
                                     <AlertDialogFooter>
                                         <AlertDialogCancel>ביטול</AlertDialogCancel>
-                                        <AlertDialogAction onClick={() => deleteSubmission(submission.id)}>מחק</AlertDialogAction>
+                                        <AlertDialogAction onClick={() => deleteSubmission(submission.id!)}>מחק</AlertDialogAction>
                                     </AlertDialogFooter>
                                     </AlertDialogContent>
                                 </AlertDialog>

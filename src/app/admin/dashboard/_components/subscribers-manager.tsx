@@ -55,7 +55,7 @@ export default function SubscribersManager() {
                         </AlertDialogHeader>
                         <AlertDialogFooter>
                             <AlertDialogCancel>ביטול</AlertDialogCancel>
-                            <AlertDialogAction onClick={() => deleteSubscriber(subscriber.id)}>מחק</AlertDialogAction>
+                            <AlertDialogAction onClick={() => deleteSubscriber(subscriber.id!)}>מחק</AlertDialogAction>
                         </AlertDialogFooter>
                         </AlertDialogContent>
                     </AlertDialog>

@@ -11,8 +11,8 @@ import { createClient } from '@supabase/supabase-js'
 // 4. העתק את "Project URL" ואת "anon" "public" key והדבק אותם כאן.
 // =================================================================================
 
-const supabaseUrl = 'https://aapdlpaigmlpddgxctgx.supabase.co'; // <--- הדבק כאן את כתובת הפרויקט
-const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFhcGRscGFpZ21scGRkZ3hjdGd4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM5OTc0OTIsImV4cCI6MjA2OTU3MzQ5Mn0.vUSZ-4PNXlVU40u6RMMjRrAsw2caLnj9R7XYkwHh2i8'; // <--- הדבק כאן את מפתח ה-ANON PUBLIC
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'YOUR_PROJECT_URL'; // <--- הדבק כאן את כתובת הפרויקט
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'YOUR_SUPABASE_ANON_KEY'; // <--- הדבק כאן את מפתח ה-ANON PUBLIC
 
 
 let supabaseInstance: any;

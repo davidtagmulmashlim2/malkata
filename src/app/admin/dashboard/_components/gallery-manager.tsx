@@ -13,7 +13,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { toast } from '@/hooks/use-toast';
 import { Trash2 } from 'lucide-react';
 import type { GalleryImage } from '@/lib/types';
-import { storeImage } from '@/lib/image-store';
+import { storeImage, deleteImage } from '@/lib/image-store';
 import { AsyncImage } from '@/components/async-image';
 
 
@@ -69,15 +69,17 @@ export default function GalleryManager() {
 
 
   const onSubmit = (values: z.infer<typeof gallerySchema>) => {
-    dispatch({ type: 'ADD_GALLERY_IMAGE', payload: { ...values, id: Date.now().toString() } });
+    dispatch({ type: 'ADD_GALLERY_IMAGE', payload: { ...values } });
     toast({ title: 'תמונה נוספה לגלריה!' });
     form.reset();
   };
 
-  const deleteImage = (id: string) => {
-    // TODO: also delete from image-store
-    dispatch({ type: 'DELETE_GALLERY_IMAGE', payload: id });
-    toast({ title: 'התמונה נמחקה מהגלריה.' });
+  const removeImage = (image: GalleryImage) => {
+    if (image.id) {
+        deleteImage(image.src); // Delete from storage
+        dispatch({ type: 'DELETE_GALLERY_IMAGE', payload: image.id });
+        toast({ title: 'התמונה נמחקה מהגלריה.' });
+    }
   };
 
   return (
@@ -104,7 +106,7 @@ export default function GalleryManager() {
                           <AlertDialogHeader><AlertDialogTitle>האם אתה בטוח?</AlertDialogTitle><AlertDialogDescription>פעולה זו תמחק את התמונה לצמיתות.</AlertDialogDescription></AlertDialogHeader>
                           <AlertDialogFooter>
                             <AlertDialogCancel>ביטול</AlertDialogCancel>
-                            <AlertDialogAction onClick={() => deleteImage(image.id)}>מחק</AlertDialogAction>
+                            <AlertDialogAction onClick={() => removeImage(image)}>מחק</AlertDialogAction>
                           </AlertDialogFooter>
                         </AlertDialogContent>
                     </AlertDialog>

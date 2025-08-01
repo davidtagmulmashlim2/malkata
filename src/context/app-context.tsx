@@ -2,38 +2,53 @@
 'use client';
 
 import React, { createContext, useContext, useReducer, useEffect, useState, useMemo, useCallback } from 'react';
-import type { AppState, AppContextType, Action, CartItem, Dish, Testimonial, ContactSubmission } from '@/lib/types';
+import type { AppState, AppContextType, Action, CartItem, Dish, Testimonial, ContactSubmission, Category, GalleryImage, Subscriber, SiteContent, DesignSettings } from '@/lib/types';
 import { DEFAULT_APP_STATE } from '@/lib/data';
+import { supabase } from '@/lib/supabase';
+import { toast } from '@/hooks/use-toast';
 
 const AppContext = createContext<AppContextType | null>(null);
 
+// Debounce function
+const debounce = <F extends (...args: any[]) => any>(func: F, waitFor: number) => {
+  let timeout: ReturnType<typeof setTimeout> | null = null;
+
+  return (...args: Parameters<F>): Promise<ReturnType<F>> => {
+    return new Promise(resolve => {
+      if (timeout) {
+        clearTimeout(timeout);
+      }
+      timeout = setTimeout(() => resolve(func(...args)), waitFor);
+    });
+  };
+};
+
+const debouncedUpdate = debounce(async (table: string, idField: string, id: any, data: any) => {
+    const { error } = await supabase.from(table).update(data).eq(idField, id);
+    if (error) {
+        toast({ title: `שגיאה בעדכון ${table}`, description: error.message, variant: 'destructive' });
+    }
+}, 1000);
+
 const appReducer = (state: AppState, action: Action): AppState => {
   switch (action.type) {
-    case 'SET_STATE': {
-        // This action hydrates the state from localStorage.
-        let loadedState = { 
-          ...DEFAULT_APP_STATE,
-          ...action.payload,
-          siteContent: { ...DEFAULT_APP_STATE.siteContent, ...action.payload.siteContent },
-          design: { ...DEFAULT_APP_STATE.design, ...action.payload.design },
-        };
-        // Migration logic for old testimonial headline
-        if(loadedState.siteContent.testimonials.headline === 'לקוחות ממליצים') {
-            loadedState.siteContent.testimonials.headline = 'מה אומרים עלינו';
-        }
-        return loadedState;
-    }
+    case 'SET_STATE':
+        // This action hydrates the state from Supabase.
+        return action.payload;
     case 'UPDATE_CONTENT':
+      debouncedUpdate('site_content', 'id', 1, { content: action.payload });
       return { ...state, siteContent: action.payload };
     case 'ADD_DISH':
       return { ...state, dishes: [...state.dishes, action.payload] };
     case 'UPDATE_DISH':
+      debouncedUpdate('dishes', 'id', action.payload.id, action.payload);
       return { ...state, dishes: state.dishes.map(d => d.id === action.payload.id ? action.payload : d) };
     case 'DELETE_DISH':
       return { ...state, dishes: state.dishes.filter(d => d.id !== action.payload) };
     case 'ADD_CATEGORY':
         return { ...state, categories: [...state.categories, action.payload] };
     case 'UPDATE_CATEGORY':
+        debouncedUpdate('categories', 'id', action.payload.id, action.payload);
         return { ...state, categories: state.categories.map(c => c.id === action.payload.id ? action.payload : c) };
     case 'DELETE_CATEGORY':
         return { ...state, categories: state.categories.filter(c => c.id !== action.payload) };
@@ -44,6 +59,7 @@ const appReducer = (state: AppState, action: Action): AppState => {
     case 'ADD_TESTIMONIAL':
         return { ...state, testimonials: [...state.testimonials, action.payload] };
     case 'UPDATE_TESTIMONIAL':
+        debouncedUpdate('testimonials', 'id', action.payload.id, action.payload);
         return { ...state, testimonials: state.testimonials.map(t => t.id === action.payload.id ? action.payload : t) };
     case 'DELETE_TESTIMONIAL':
         return { ...state, testimonials: state.testimonials.filter(t => t.id !== action.payload) };
@@ -54,16 +70,15 @@ const appReducer = (state: AppState, action: Action): AppState => {
     case 'ADD_SUBMISSION':
         return { ...state, submissions: [action.payload, ...state.submissions] };
     case 'UPDATE_SUBMISSION_STATUS':
+        debouncedUpdate('submissions', 'id', action.payload.id, { isRead: action.payload.isRead });
         return { ...state, submissions: state.submissions.map(s => s.id === action.payload.id ? { ...s, isRead: action.payload.isRead } : s) };
     case 'DELETE_SUBMISSION':
         return { ...state, submissions: state.submissions.filter(s => s.id !== action.payload) };
     case 'UPDATE_DESIGN':
+        debouncedUpdate('design', 'id', 1, { settings: action.payload });
         return { ...state, design: action.payload };
     
-    // Note: cart actions are handled by useState directly, but a reducer case is here for completeness.
     case 'REMOVE_ITEM_FROM_CART': {
-        // This is handled by the provider's `setCart` to trigger a re-render.
-        // The logic is in the provider itself.
         return state;
     }
     default:
@@ -71,64 +86,154 @@ const appReducer = (state: AppState, action: Action): AppState => {
   }
 };
 
-const LS_KEYS = {
-    APP_STATE: 'malkata_appState_v2', // Changed key to force a reset
-    CART: 'malkata_cart',
-};
 
+const LS_CART_KEY = 'malkata_cart';
 const ADMIN_PASSWORD = 'admin';
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // state is initialized with default data. This is what the server will render.
   const [state, dispatch] = useReducer(appReducer, DEFAULT_APP_STATE);
   const [cart, setCart] = useState<CartItem[]>([]);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  // isLoading is true initially, to ensure client-side hydration happens before showing stored state.
   const [isLoading, setIsLoading] = useState(true);
 
   // This effect runs ONLY on the client, after the initial render.
   useEffect(() => {
-    try {
-      const storedState = localStorage.getItem(LS_KEYS.APP_STATE);
-      if (storedState) {
-        // We found a saved state, so we dispatch it to the reducer.
-        dispatch({ type: 'SET_STATE', payload: JSON.parse(storedState) });
-      }
-      
-      const storedCart = localStorage.getItem(LS_KEYS.CART);
-      if (storedCart) {
-        setCart(JSON.parse(storedCart));
-      }
-      
-      const storedAuth = sessionStorage.getItem('malkata_auth');
-      if (storedAuth === 'true') {
-          setIsAuthenticated(true);
-      }
-    } catch (error) {
-      console.error("Failed to parse from localStorage, using default state.", error);
-    } finally {
-      // We are done loading client-side data.
-      setIsLoading(false);
-    }
+    const fetchInitialData = async () => {
+        try {
+            const [
+                siteContentRes,
+                designRes,
+                dishesRes,
+                categoriesRes,
+                galleryRes,
+                testimonialsRes,
+                subscribersRes,
+                submissionsRes
+            ] = await Promise.all([
+                supabase.from('site_content').select('content').limit(1).single(),
+                supabase.from('design').select('settings').limit(1).single(),
+                supabase.from('dishes').select('*'),
+                supabase.from('categories').select('*'),
+                supabase.from('gallery').select('*').order('created_at', { ascending: false }),
+                supabase.from('testimonials').select('*').order('created_at', { ascending: false }),
+                supabase.from('subscribers').select('*').order('date', { ascending: false }),
+                supabase.from('submissions').select('*').order('date', { ascending: false })
+            ]);
+
+            const loadedState: AppState = {
+                siteContent: { ...DEFAULT_APP_STATE.siteContent, ...(siteContentRes.data?.content || {}) },
+                design: { ...DEFAULT_APP_STATE.design, ...(designRes.data?.settings || {}) },
+                dishes: dishesRes.data || [],
+                categories: categoriesRes.data || [],
+                gallery: galleryRes.data || [],
+                testimonials: testimonialsRes.data || [],
+                subscribers: subscribersRes.data || [],
+                submissions: submissionsRes.data || [],
+            };
+
+            dispatch({ type: 'SET_STATE', payload: loadedState });
+
+        } catch (error) {
+            console.error("Failed to fetch from Supabase, using default state.", error);
+            dispatch({ type: 'SET_STATE', payload: DEFAULT_APP_STATE });
+        } finally {
+            const storedCart = localStorage.getItem(LS_CART_KEY);
+            if (storedCart) {
+                setCart(JSON.parse(storedCart));
+            }
+            
+            const storedAuth = sessionStorage.getItem('malkata_auth');
+            if (storedAuth === 'true') {
+                setIsAuthenticated(true);
+            }
+            setIsLoading(false);
+        }
+    };
+
+    fetchInitialData();
   }, []);
 
-  // This effect runs ONLY on the client, and saves the state whenever it changes.
+  // This effect runs ONLY on the client, and saves the cart state whenever it changes.
   useEffect(() => {
-    // We don't save during the initial loading phase to avoid race conditions.
     if (!isLoading) {
         try {
-            localStorage.setItem(LS_KEYS.APP_STATE, JSON.stringify(state));
-            localStorage.setItem(LS_KEYS.CART, JSON.stringify(cart));
+            localStorage.setItem(LS_CART_KEY, JSON.stringify(cart));
         } catch (error) {
-             console.error("Failed to save state to localStorage", error);
+             console.error("Failed to save cart to localStorage", error);
         }
     }
-  }, [state, cart, isLoading]);
+  }, [cart, isLoading]);
+  
+  const handleDbAction = async (action: Action) => {
+    let error;
+    switch(action.type) {
+        case 'ADD_DISH':
+            ({ error } = await supabase.from('dishes').insert([action.payload]));
+            break;
+        case 'DELETE_DISH':
+            ({ error } = await supabase.from('dishes').delete().eq('id', action.payload));
+            break;
+        case 'ADD_CATEGORY':
+            ({ error } = await supabase.from('categories').insert([action.payload]));
+            break;
+        case 'DELETE_CATEGORY':
+            ({ error } = await supabase.from('categories').delete().eq('id', action.payload));
+            break;
+        case 'ADD_GALLERY_IMAGE':
+            ({ error } = await supabase.from('gallery').insert([action.payload]));
+            break;
+        case 'DELETE_GALLERY_IMAGE':
+            ({ error } = await supabase.from('gallery').delete().eq('id', action.payload));
+            break;
+        case 'ADD_TESTIMONIAL':
+            ({ error } = await supabase.from('testimonials').insert([action.payload]));
+            break;
+        case 'DELETE_TESTIMONIAL':
+            ({ error } = await supabase.from('testimonials').delete().eq('id', action.payload));
+            break;
+        case 'ADD_SUBSCRIBER':
+            ({ error } = await supabase.from('subscribers').insert([action.payload]));
+            break;
+        case 'DELETE_SUBSCRIBER':
+            ({ error } = await supabase.from('subscribers').delete().eq('id', action.payload));
+            break;
+        case 'ADD_SUBMISSION':
+            ({ error } = await supabase.from('submissions').insert([action.payload]));
+            break;
+        case 'DELETE_SUBMISSION':
+             ({ error } = await supabase.from('submissions').delete().eq('id', action.payload));
+            break;
+    }
+    
+    if (error) {
+        toast({ title: 'שגיאת מסד נתונים', description: error.message, variant: 'destructive' });
+        // Optionally, revert the optimistic UI update
+        // This would require a more complex state management approach
+    } else {
+        // Run original dispatch for optimistic UI update
+        dispatch(action);
+    }
+  };
 
   const enhancedDispatch = useCallback((action: Action) => {
+    // For actions that write to DB, we first update UI optimistically, then send to DB.
+    const writeActions: Action['type'][] = [
+        'ADD_DISH', 'DELETE_DISH', 'ADD_CATEGORY', 'DELETE_CATEGORY', 'ADD_GALLERY_IMAGE',
+        'DELETE_GALLERY_IMAGE', 'ADD_TESTIMONIAL', 'DELETE_TESTIMONIAL', 'ADD_SUBSCRIBER', 
+        'DELETE_SUBSCRIBER', 'ADD_SUBMISSION', 'DELETE_SUBMISSION'
+    ];
+    
+    const isWriteAction = writeActions.includes(action.type);
+    
+    if (isWriteAction) {
+        handleDbAction(action);
+    }
+
     if (action.type === 'REMOVE_ITEM_FROM_CART') {
       setCart(prevCart => prevCart.filter(item => item.dishId !== action.payload));
     }
+    
+    // Always dispatch for UI updates (including debounced ones)
     dispatch(action);
   }, [dispatch]);
 

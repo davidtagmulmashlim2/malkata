@@ -1,14 +1,15 @@
 
 
+// All `id` fields are now optional for creation, but will be present when fetched from DB.
 export interface Dish {
-  id: string;
+  id?: string;
   name: string;
   shortDescription: string;
   fullDescription: string;
   price: number;
   priceSubtitle?: string;
-  mainImage: string; // This will be an image URL
-  galleryImages?: string[]; // This will be an array of image URLs
+  mainImage: string; 
+  galleryImages?: string[];
   categoryIds: string[];
   isAvailable: boolean;
   tags: ('vegan' | 'spicy' | 'new' | 'piquant' | 'kids-favorite')[];
@@ -16,11 +17,11 @@ export interface Dish {
 }
 
 export interface Category {
-  id: string;
+  id?: string;
   name: string;
   slug: string;
   description: string;
-  image: string; // This will be an image URL
+  image: string;
   titleColor?: string;
   titleFontSize?: string;
   titleFont?: string;
@@ -31,26 +32,28 @@ export interface Category {
 }
 
 export interface GalleryImage {
-  id: string;
-  src: string; // This will be an image URL
+  id?: string;
+  src: string;
   alt?: string;
+  created_at?: string;
 }
 
 export interface Testimonial {
-    id: string;
+    id?: string;
     name: string;
     quote: string;
+    created_at?: string;
 }
 
 export interface Subscriber {
-    id: string;
+    id?: string;
     name: string;
     phone: string;
     date: string;
 }
 
 export interface ContactSubmission {
-    id: string;
+    id?: string;
     name: string;
     email?: string;
     phone?: string;
@@ -74,7 +77,7 @@ export interface SiteContent {
     titleFirstWord: string;
     titleRest: string;
     subtitle: string;
-    image: string; // This will be an image URL
+    image: string;
     titleFirstWordColor: string;
     titleFirstWordFontSize: string;
     titleFirstWordOpacity: number;
@@ -92,7 +95,7 @@ export interface SiteContent {
   about: {
     short: string;
     long: string;
-    image: string; // This will be an image URL
+    image: string;
   };
   contact: {
     address: string;
@@ -111,7 +114,7 @@ export interface SiteContent {
     showHours?: boolean;
   };
   menu: {
-    mainImage: string; // This will be an image URL
+    mainImage: string;
   };
   newsletter: {
     headline: string;
@@ -196,7 +199,7 @@ export type AppContextType = {
 };
 
 export type Action =
-  | { type: 'SET_STATE'; payload: Partial<AppState> }
+  | { type: 'SET_STATE'; payload: AppState }
   | { type: 'UPDATE_CONTENT'; payload: SiteContent }
   | { type: 'ADD_DISH'; payload: Dish }
   | { type: 'UPDATE_DISH'; payload: Dish }
@@ -216,5 +219,3 @@ export type Action =
   | { type: 'DELETE_SUBMISSION', payload: string }
   | { type: 'UPDATE_DESIGN'; payload: DesignSettings }
   | { type: 'REMOVE_ITEM_FROM_CART', payload: string };
-
-    

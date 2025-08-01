@@ -46,7 +46,7 @@ const FeaturesSection = () => {
 
     const { feature1, feature2, feature3, feature4 } = state.siteContent.features;
     const list: (Feature | OptionalFeature)[] = [feature1, feature2, feature3];
-    if (feature4.enabled) {
+    if (feature4?.enabled) {
       list.push(feature4);
     }
     return list;
@@ -108,7 +108,6 @@ export default function Home() {
     dispatch({
         type: 'ADD_SUBSCRIBER',
         payload: {
-            id: Date.now().toString(),
             name: values.name,
             phone: values.phone,
             date: new Date().toISOString(),

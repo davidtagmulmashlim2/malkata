@@ -73,7 +73,7 @@ const fonts = [
 ];
 
 const dishSchema = z.object({
-  id: z.string().optional(),
+  id: z.string().uuid().optional(),
   name: z.string().min(1, 'שם המנה הוא שדה חובה'),
   shortDescription: z.string().min(1, 'תיאור קצר הוא שדה חובה'),
   fullDescription: z.string().min(1, 'תיאור מלא הוא שדה חובה'),
@@ -81,14 +81,14 @@ const dishSchema = z.object({
   priceSubtitle: z.string().optional(),
   mainImage: z.string().min(1, "חובה להעלות תמונה ראשית"),
   galleryImages: z.array(z.string()).optional(),
-  categoryIds: z.array(z.string()).min(1, 'חובה לבחור לפחות קטגוריה אחת'),
+  categoryIds: z.array(z.string().uuid()).min(1, 'חובה לבחור לפחות קטגוריה אחת'),
   isAvailable: z.boolean(),
   isRecommended: z.boolean().optional(),
   tags: z.array(z.string()),
 })
 
 const categorySchema = z.object({
-  id: z.string().optional(),
+  id: z.string().uuid().optional(),
   name: z.string().min(1, 'שם הקטגוריה הוא שדה חובה'),
   description: z.string().min(1, 'תיאור הוא שדה חובה'),
   image: z.string().min(1, 'חובה להעלות תמונה'),
@@ -202,7 +202,7 @@ export default function MenuManager() {
       dispatch({ type: 'UPDATE_DISH', payload: { ...values, id: editingDish.id } as Dish })
       toast({ title: 'מנה עודכנה בהצלחה' })
     } else {
-      dispatch({ type: 'ADD_DISH', payload: { ...values, id: Date.now().toString() } })
+      dispatch({ type: 'ADD_DISH', payload: values as Dish })
       toast({ title: 'מנה נוספה בהצלחה' })
     }
     setIsDishDialogOpen(false)
@@ -220,8 +220,7 @@ export default function MenuManager() {
       dispatch({ type: 'UPDATE_CATEGORY', payload: updatedCategory as Category });
       toast({ title: 'קטגוריה עודכנה בהצלחה' })
     } else {
-      const newCategory = { ...categoryData, id: Date.now().toString() };
-      dispatch({ type: 'ADD_CATEGORY', payload: newCategory as Category });
+      dispatch({ type: 'ADD_CATEGORY', payload: categoryData as Category });
       toast({ title: 'קטגוריה נוספה בהצלחה' })
     }
     setIsCategoryDialogOpen(false)
@@ -767,10 +766,3 @@ export default function MenuManager() {
     </div>
   )
 }
-
-    
-
-    
-
-
-

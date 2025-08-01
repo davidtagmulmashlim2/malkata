@@ -18,7 +18,7 @@ import { toast } from '@/hooks/use-toast'
 import type { Testimonial } from '@/lib/types'
 
 const testimonialSchema = z.object({
-  id: z.string().optional(),
+  id: z.string().uuid().optional(),
   name: z.string().min(1, 'שם הוא שדה חובה'),
   quote: z.string().min(1, 'ציטוט הוא שדה חובה'),
 })
@@ -42,7 +42,7 @@ export default function TestimonialsManager() {
       dispatch({ type: 'UPDATE_TESTIMONIAL', payload: { ...editingTestimonial, ...values } })
       toast({ title: 'המלצה עודכנה בהצלחה' })
     } else {
-      dispatch({ type: 'ADD_TESTIMONIAL', payload: { ...values, id: Date.now().toString() } })
+      dispatch({ type: 'ADD_TESTIMONIAL', payload: values })
       toast({ title: 'המלצה נוספה בהצלחה' })
     }
     setIsDialogOpen(false)
@@ -119,7 +119,7 @@ export default function TestimonialsManager() {
                         <AlertDialogHeader><AlertDialogTitle>האם אתה בטוח?</AlertDialogTitle><AlertDialogDescription>פעולה זו תמחק את ההמלצה לצמיתות.</AlertDialogDescription></AlertDialogHeader>
                         <AlertDialogFooter>
                           <AlertDialogCancel>ביטול</AlertDialogCancel>
-                          <AlertDialogAction onClick={() => deleteTestimonial(testimonial.id)}>מחק</AlertDialogAction>
+                          <AlertDialogAction onClick={() => deleteTestimonial(testimonial.id!)}>מחק</AlertDialogAction>
                         </AlertDialogFooter>
                       </AlertDialogContent>
                     </AlertDialog>
