@@ -1,9 +1,18 @@
 
 import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@supabase/supabase-js';
 import { Buffer } from 'buffer';
 
-const BUCKET_NAME = 'YOUR_BUCKET_NAME';
+// =================================================================================
+// !! קריטי: יש להחליף את הערכים הבאים בפרטי הפרויקט האמיתיים שלך מ-Supabase !!
+// =================================================================================
+const supabaseUrl = 'https://aapdlpaigmlpddgxctgx.supabase.co'; // <--- הדבק כאן את כתובת הפרויקט
+const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFhcGRscGFpZ21scGRkZ3hjdGd4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM5OTc0OTIsImV4cCI6MjA2OTU3MzQ5Mn0.vUSZ-4PNXlVU40u6RMMjRrAsw2caLnj9R7XYkwHh2i8'; // <--- הדבק כאן את מפתח ה-ANON PUBLIC
+const BUCKET_NAME = 'malakatatest'; // <--- הדבק כאן את שם ה-Bucket
+
+// Initialize Supabase client *inside* the route handler to ensure it's available.
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
 
 const generateFileKey = (mimeType: string) => {
     const extension = mimeType.split('/')[1] || 'png';
