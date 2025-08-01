@@ -136,29 +136,20 @@ export function Header() {
             navLinks.map(link => {
                 const isActive = (pathname.startsWith(link.href) && link.href !== '/') || pathname === link.href;
                 
-                const linkContent = (
+                return (
                     <Link
+                        key={link.href}
                         href={link.href}
                         onClick={() => mobile && setIsMobileMenuOpen(false)}
                         className={cn(
                             'transition-colors hover:text-primary no-underline',
-                             !link.isFeatured && (isActive ? 'text-primary font-bold' : 'text-muted-foreground')
+                             link.isFeatured 
+                                ? 'bg-primary text-primary-foreground hover:bg-primary/90 rounded-full text-xs font-medium px-4 h-8 flex items-center' 
+                                : (isActive ? 'text-primary font-bold' : 'text-muted-foreground')
                         )}
                     >
-                         {link.isFeatured ? (
-                            <Button size="sm" className="rounded-full">
-                                {link.label}
-                            </Button>
-                        ) : (
-                            link.label
-                        )}
+                         {link.label}
                     </Link>
-                );
-
-                return (
-                    <React.Fragment key={link.href}>
-                      {linkContent}
-                    </React.Fragment>
                 );
             })
         )
