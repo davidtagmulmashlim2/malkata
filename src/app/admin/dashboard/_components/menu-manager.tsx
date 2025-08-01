@@ -75,15 +75,15 @@ const fonts = [
 const dishSchema = z.object({
   id: z.string().uuid().optional(),
   name: z.string().min(1, 'שם המנה הוא שדה חובה'),
-  shortDescription: z.string().min(1, 'תיאור קצר הוא שדה חובה'),
-  fullDescription: z.string().min(1, 'תיאור מלא הוא שדה חובה'),
+  short_description: z.string().min(1, 'תיאור קצר הוא שדה חובה'),
+  full_description: z.string().min(1, 'תיאור מלא הוא שדה חובה'),
   price: z.coerce.number().min(0, 'המחיר חייב להיות חיובי'),
-  priceSubtitle: z.string().optional(),
-  mainImage: z.string().min(1, "חובה להעלות תמונה ראשית"),
-  galleryImages: z.array(z.string()).optional(),
-  categoryIds: z.array(z.string().uuid()).min(1, 'חובה לבחור לפחות קטגוריה אחת'),
-  isAvailable: z.boolean(),
-  isRecommended: z.boolean().optional(),
+  price_subtitle: z.string().optional(),
+  main_image: z.string().min(1, "חובה להעלות תמונה ראשית"),
+  gallery_images: z.array(z.string()).optional(),
+  category_ids: z.array(z.string().uuid()).min(1, 'חובה לבחור לפחות קטגוריה אחת'),
+  is_available: z.boolean(),
+  is_recommended: z.boolean().optional(),
   tags: z.array(z.string()),
 })
 
@@ -93,13 +93,13 @@ const categorySchema = z.object({
   description: z.string().min(1, 'תיאור הוא שדה חובה'),
   image: z.string().min(1, 'חובה להעלות תמונה'),
   slug: z.string().optional(), // Slug is generated, so optional in form
-  titleColor: z.string().optional(),
-  titleFontSize: z.string().optional(),
-  titleFont: z.string().optional(),
-  titleOpacity: z.number().min(0).max(1).optional(),
-  imageBrightness: z.coerce.number().min(0).max(100).optional(),
-  showDescription: z.boolean().optional(),
-  showDescriptionBelowBanner: z.boolean().optional(),
+  title_color: z.string().optional(),
+  title_font_size: z.string().optional(),
+  title_font: z.string().optional(),
+  title_opacity: z.number().min(0).max(1).optional(),
+  image_brightness: z.coerce.number().min(0).max(100).optional(),
+  show_description: z.boolean().optional(),
+  show_description_below_banner: z.boolean().optional(),
 })
 
 const fileToDataUrl = (file: File): Promise<string> => {
@@ -129,17 +129,17 @@ export default function MenuManager() {
   const dishForm = useForm<z.infer<typeof dishSchema>>({ 
     resolver: zodResolver(dishSchema),
     defaultValues: {
-        name: '', shortDescription: '', fullDescription: '', price: 0, categoryIds: [],
-        isAvailable: true, isRecommended: false, tags: [], mainImage: '', galleryImages: [],
-        priceSubtitle: '',
+        name: '', short_description: '', full_description: '', price: 0, category_ids: [],
+        is_available: true, is_recommended: false, tags: [], main_image: '', gallery_images: [],
+        price_subtitle: '',
     }
   })
   const categoryForm = useForm<z.infer<typeof categorySchema>>({ 
       resolver: zodResolver(categorySchema),
       defaultValues: { 
           name: '', description: '', image: '',
-          titleColor: '#FFFFFF', titleFontSize: '5xl', titleFont: 'default', titleOpacity: 1, 
-          imageBrightness: 50, showDescription: true, showDescriptionBelowBanner: false,
+          title_color: '#FFFFFF', title_font_size: '5xl', title_font: 'default', title_opacity: 1, 
+          image_brightness: 50, show_description: true, show_description_below_banner: false,
       } 
     })
 
@@ -147,18 +147,18 @@ export default function MenuManager() {
     if (!isDishDialogOpen) {
         setEditingDish(null);
         dishForm.reset({
-            name: '', shortDescription: '', fullDescription: '', price: 0, categoryIds: [],
-            isAvailable: true, isRecommended: false, tags: [], mainImage: '', galleryImages: [],
-            priceSubtitle: '',
+            name: '', short_description: '', full_description: '', price: 0, category_ids: [],
+            is_available: true, is_recommended: false, tags: [], main_image: '', gallery_images: [],
+            price_subtitle: '',
         });
     } else if (editingDish) {
         dishForm.reset({
           ...editingDish,
-          categoryIds: editingDish.categoryIds || [],
+          category_ids: editingDish.category_ids || [],
           price: editingDish.price || 0,
           tags: editingDish.tags || [],
-          galleryImages: editingDish.galleryImages || [],
-          priceSubtitle: editingDish.priceSubtitle || '',
+          gallery_images: editingDish.gallery_images || [],
+          price_subtitle: editingDish.price_subtitle || '',
         });
     }
   }, [isDishDialogOpen, editingDish, dishForm]);
@@ -168,21 +168,21 @@ export default function MenuManager() {
         setEditingCategory(null);
         categoryForm.reset({ 
             name: '', description: '', image: '',
-            titleColor: '#FFFFFF', titleFontSize: '5xl', titleFont: 'default',
-            titleOpacity: 1,
-            imageBrightness: 50, showDescription: true,
-            showDescriptionBelowBanner: false
+            title_color: '#FFFFFF', title_font_size: '5xl', title_font: 'default',
+            title_opacity: 1,
+            image_brightness: 50, show_description: true,
+            show_description_below_banner: false
         });
     } else if (editingCategory) {
         categoryForm.reset({
             ...editingCategory,
-            titleColor: editingCategory.titleColor ?? '#FFFFFF',
-            titleFontSize: editingCategory.titleFontSize ?? '5xl',
-            titleFont: editingCategory.titleFont || 'default',
-            titleOpacity: editingCategory.titleOpacity ?? 1,
-            imageBrightness: editingCategory.imageBrightness ?? 50,
-            showDescription: editingCategory.showDescription ?? true,
-            showDescriptionBelowBanner: editingCategory.showDescriptionBelowBanner ?? false,
+            title_color: editingCategory.title_color ?? '#FFFFFF',
+            title_font_size: editingCategory.title_font_size ?? '5xl',
+            title_font: editingCategory.title_font || 'default',
+            title_opacity: editingCategory.title_opacity ?? 1,
+            image_brightness: editingCategory.image_brightness ?? 50,
+            show_description: editingCategory.show_description ?? true,
+            show_description_below_banner: editingCategory.show_description_below_banner ?? false,
         });
     }
   }, [isCategoryDialogOpen, editingCategory, categoryForm]);
@@ -212,7 +212,7 @@ export default function MenuManager() {
     const categoryData = {
       ...values,
       slug: slugify(values.name),
-      titleFont: values.titleFont === 'default' ? '' : values.titleFont
+      title_font: values.title_font === 'default' ? '' : values.title_font
     };
     
     if (editingCategory) {
@@ -248,9 +248,9 @@ export default function MenuManager() {
   const deleteDish = (id: string) => {
     const dishToDelete = dishes.find(d => d.id === id);
     if(dishToDelete) {
-        if (dishToDelete.mainImage) deleteImage(dishToDelete.mainImage);
-        if (dishToDelete.galleryImages) {
-            dishToDelete.galleryImages.forEach(imgKey => deleteImage(imgKey));
+        if (dishToDelete.main_image) deleteImage(dishToDelete.main_image);
+        if (dishToDelete.gallery_images) {
+            dishToDelete.gallery_images.forEach(imgKey => deleteImage(imgKey));
         }
     }
     dispatch({ type: 'DELETE_DISH', payload: id })
@@ -274,8 +274,8 @@ export default function MenuManager() {
     try {
         const dataUrl = await fileToDataUrl(file);
         const imageKey = await storeImage(dataUrl);
-        const currentImages = dishForm.getValues('galleryImages') || [];
-        dishForm.setValue('galleryImages', [...currentImages, imageKey], { shouldValidate: true });
+        const currentImages = dishForm.getValues('gallery_images') || [];
+        dishForm.setValue('gallery_images', [...currentImages, imageKey], { shouldValidate: true });
         toast({title: "תמונה נוספה לגלריה"});
     } catch (error: any) {
         toast({
@@ -292,18 +292,18 @@ export default function MenuManager() {
 
 
   const removeGalleryImage = (index: number) => {
-      const currentImages = dishForm.getValues('galleryImages') || [];
+      const currentImages = dishForm.getValues('gallery_images') || [];
       const imageToRemove = currentImages[index];
       if (imageToRemove) {
           deleteImage(imageToRemove);
       }
       const newImages = [...currentImages];
       newImages.splice(index, 1);
-      dishForm.setValue('galleryImages', newImages, { shouldValidate: true });
+      dishForm.setValue('gallery_images', newImages, { shouldValidate: true });
   };
     
-  const dishMainImageValue = dishForm.watch('mainImage');
-  const dishGalleryImagesValue = dishForm.watch('galleryImages');
+  const dishMainImageValue = dishForm.watch('main_image');
+  const dishGalleryImagesValue = dishForm.watch('gallery_images');
   const categoryImageValue = categoryForm.watch('image');
 
   return (
@@ -334,14 +334,14 @@ export default function MenuManager() {
                         <FormMessage />
                       </FormItem>
                     )} />
-                    <FormField name="shortDescription" control={dishForm.control} render={({ field }) => (
+                    <FormField name="short_description" control={dishForm.control} render={({ field }) => (
                        <FormItem>
                         <FormLabel>תיאור קצר</FormLabel>
                         <FormControl><Input {...field} /></FormControl>
                         <FormMessage />
                       </FormItem>
                     )} />
-                    <FormField name="fullDescription" control={dishForm.control} render={({ field }) => (
+                    <FormField name="full_description" control={dishForm.control} render={({ field }) => (
                        <FormItem>
                         <FormLabel>תיאור מלא</FormLabel>
                         <FormControl><Textarea {...field} /></FormControl>
@@ -356,7 +356,7 @@ export default function MenuManager() {
                             <FormMessage />
                           </FormItem>
                         )} />
-                        <FormField name="priceSubtitle" control={dishForm.control} render={({ field }) => (
+                        <FormField name="price_subtitle" control={dishForm.control} render={({ field }) => (
                            <FormItem>
                             <FormLabel>כתובית מחיר (אופציונלי)</FormLabel>
                             <FormControl><Input {...field} placeholder="לדוגמה: למנה" value={field.value ?? ''} /></FormControl>
@@ -365,7 +365,7 @@ export default function MenuManager() {
                         )} />
                     </div>
                      <FormField
-                        name="mainImage"
+                        name="main_image"
                         control={dishForm.control}
                         render={({ field }) => (
                            <FormItem>
@@ -413,42 +413,34 @@ export default function MenuManager() {
                     </FormItem>
                      <FormItem>
                         <FormLabel>קטגוריות</FormLabel>
-                        <ScrollArea className="h-40 w-full rounded-md border p-4">
-                            <div className="space-y-2">
-                            {categories.map((category) => (
-                                <FormField
-                                    key={category.id}
-                                    control={dishForm.control}
-                                    name="categoryIds"
-                                    render={({ field }) => {
-                                    return (
-                                        <FormItem
-                                            key={category.id}
-                                            className="flex flex-row items-start space-x-3 space-y-0"
-                                        >
-                                        <FormControl>
+                         <Controller
+                            control={dishForm.control}
+                            name="category_ids"
+                            render={({ field }) => (
+                               <ScrollArea className="h-40 w-full rounded-md border p-4">
+                                  <div className="space-y-2">
+                                  {categories.map((category) => (
+                                        <div key={category.id} className="flex flex-row items-start space-x-3 space-y-0">
                                             <Checkbox
-                                            checked={field.value?.includes(category.id!)}
-                                            onCheckedChange={(checked) => {
-                                                const newCategoryIds = checked
-                                                ? [...(field.value || []), category.id!]
-                                                : (field.value || []).filter(
-                                                    (value) => value !== category.id
-                                                    );
-                                                field.onChange(newCategoryIds);
-                                            }}
+                                                checked={field.value?.includes(category.id!)}
+                                                onCheckedChange={(checked) => {
+                                                    const newCategoryIds = checked
+                                                    ? [...(field.value || []), category.id!]
+                                                    : (field.value || []).filter(
+                                                        (value) => value !== category.id
+                                                        );
+                                                    field.onChange(newCategoryIds);
+                                                }}
                                             />
-                                        </FormControl>
-                                        <FormLabel className="font-normal">
-                                            {category.name}
-                                        </FormLabel>
-                                        </FormItem>
-                                    );
-                                    }}
-                                />
-                                ))}
-                            </div>
-                        </ScrollArea>
+                                            <FormLabel className="font-normal">
+                                                {category.name}
+                                            </FormLabel>
+                                        </div>
+                                    ))}
+                                  </div>
+                               </ScrollArea>
+                            )}
+                         />
                         <FormMessage />
                       </FormItem>
                     <FormField name="tags" control={dishForm.control} render={() => (
@@ -535,13 +527,13 @@ export default function MenuManager() {
                       </FormItem>
                     )} />
                     <div className="flex justify-between">
-                      <FormField name="isAvailable" control={dishForm.control} render={({ field }) => (
+                      <FormField name="is_available" control={dishForm.control} render={({ field }) => (
                         <FormItem className="flex items-center gap-2 space-y-0">
                           <FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl>
                           <FormLabel>זמין במלאי</FormLabel>
                         </FormItem>
                       )} />
-                      <FormField name="isRecommended" control={dishForm.control} render={({ field }) => (
+                      <FormField name="is_recommended" control={dishForm.control} render={({ field }) => (
                         <FormItem className="flex items-center gap-2 space-y-0">
                           <FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl>
                           <FormLabel>מנה מומלצת</FormLabel>
@@ -575,14 +567,14 @@ export default function MenuManager() {
                   <TableCell>{dish.name}</TableCell>
                   <TableCell>
                     <div className="flex flex-wrap gap-1">
-                      {(dish.categoryIds || []).map(catId => categories.find(c => c.id === catId)?.name).filter(Boolean).map(name => (
+                      {(dish.category_ids || []).map(catId => categories.find(c => c.id === catId)?.name).filter(Boolean).map(name => (
                         <Badge key={name} variant="outline">{name}</Badge>
                       ))}
                     </div>
                   </TableCell>
                   <TableCell>{dish.price} ₪</TableCell>
-                  <TableCell>{dish.isAvailable ? 'כן' : 'לא'}</TableCell>
-                  <TableCell>{dish.isRecommended ? 'כן' : 'לא'}</TableCell>
+                  <TableCell>{dish.is_available ? 'כן' : 'לא'}</TableCell>
+                  <TableCell>{dish.is_recommended ? 'כן' : 'לא'}</TableCell>
                   <TableCell className="text-right">
                     <div className="flex gap-2 justify-end">
                       <Button variant="ghost" size="icon" onClick={() => openDishDialog(dish)}><Edit className="h-4 w-4" /></Button>
@@ -659,14 +651,14 @@ export default function MenuManager() {
                     <div className="border p-4 rounded-md space-y-4">
                         <h3 className="text-lg font-medium">הגדרות עיצוב באנר</h3>
                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                             <FormField name="titleColor" control={categoryForm.control} render={({ field }) => (
+                             <FormField name="title_color" control={categoryForm.control} render={({ field }) => (
                                 <FormItem>
                                   <FormLabel>צבע כותרת</FormLabel>
                                   <FormControl><Input type="color" {...field} className="p-1 h-10 w-full" value={field.value ?? ''} /></FormControl>
                                   <FormMessage />
                                 </FormItem>
                               )} />
-                             <FormField name="titleFontSize" control={categoryForm.control} render={({ field }) => (
+                             <FormField name="title_font_size" control={categoryForm.control} render={({ field }) => (
                                 <FormItem>
                                   <FormLabel>גודל כותרת</FormLabel>
                                   <Select onValueChange={field.onChange} value={field.value}>
@@ -677,7 +669,7 @@ export default function MenuManager() {
                                 </FormItem>
                               )} />
                         </div>
-                        <FormField name="titleFont" control={categoryForm.control} render={({ field }) => (
+                        <FormField name="title_font" control={categoryForm.control} render={({ field }) => (
                             <FormItem>
                                 <FormLabel>פונט כותרת</FormLabel>
                                 <Select onValueChange={field.onChange} value={field.value}>
@@ -687,27 +679,27 @@ export default function MenuManager() {
                                 <FormMessage />
                             </FormItem>
                         )} />
-                        <FormField name="titleOpacity" control={categoryForm.control} render={({ field }) => (
+                        <FormField name="title_opacity" control={categoryForm.control} render={({ field }) => (
                             <FormItem>
                               <FormLabel>שקיפות כותרת ({Math.round((field.value ?? 1) * 100)}%)</FormLabel>
                               <FormControl><Slider value={[field.value ?? 1]} min={0} max={1} step={0.05} onValueChange={(v) => field.onChange(v[0])} /></FormControl>
                               <FormMessage />
                             </FormItem>
                           )} />
-                        <FormField name="imageBrightness" control={categoryForm.control} render={({ field }) => (
+                        <FormField name="image_brightness" control={categoryForm.control} render={({ field }) => (
                             <FormItem>
                               <FormLabel>בהירות תמונת רקע ({field.value ?? 100}%)</FormLabel>
                               <FormControl><Slider value={[field.value ?? 100]} min={0} max={100} step={5} onValueChange={(v) => field.onChange(v[0])} /></FormControl>
                               <FormMessage />
                             </FormItem>
                         )} />
-                        <FormField name="showDescription" control={categoryForm.control} render={({ field }) => (
+                        <FormField name="show_description" control={categoryForm.control} render={({ field }) => (
                             <FormItem className="flex items-center gap-2 space-y-0 pt-2">
                               <FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl>
                               <FormLabel>הצג תיאור על גבי הבאנר</FormLabel>
                             </FormItem>
                           )} />
-                         <FormField name="showDescriptionBelowBanner" control={categoryForm.control} render={({ field }) => (
+                         <FormField name="show_description_below_banner" control={categoryForm.control} render={({ field }) => (
                             <FormItem className="flex items-center gap-2 space-y-0 pt-2">
                               <FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl>
                               <FormLabel>הצג תיאור מתחת לבאנר</FormLabel>
