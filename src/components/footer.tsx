@@ -12,7 +12,6 @@ import { FacebookIcon } from "./icons/facebook-icon";
 import { cn } from "@/lib/utils";
 import { Skeleton } from "./ui/skeleton";
 import { AsyncImage } from "./async-image";
-import { useIsClient } from "@/hooks/use-is-client";
 
 const Crown2 = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" {...props}>
@@ -50,7 +49,6 @@ export function Footer() {
     const { state, isLoading } = useApp();
     const { siteContent, design } = state;
     const { contact, footer } = siteContent;
-    const isClient = useIsClient();
     
     const IconComponent = iconMap[design.logoIcon] || UtensilsCrossed;
     const logoStyle = design.logoColor ? { color: design.logoColor } : {};
@@ -62,13 +60,13 @@ export function Footer() {
     };
 
     const Logo = () => {
-        if (!isClient || isLoading) {
-          return (
-             <Link href="/" className="flex items-center gap-2 font-headline text-2xl font-bold text-primary">
-                <UtensilsCrossed className="h-7 w-7" />
-                <span>מלכתא</span>
-            </Link>
-          );
+        if (isLoading) {
+            return (
+                <div className="flex items-center gap-2 font-headline text-2xl font-bold text-primary">
+                    <Skeleton className="h-7 w-7" />
+                    <Skeleton className="h-7 w-24" />
+                </div>
+            )
         }
 
         return (
@@ -100,40 +98,53 @@ export function Footer() {
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                     <div className="md:col-span-2 space-y-4">
                         <Logo />
-                        {footer?.tagline && <p className="text-muted-foreground text-sm">{footer.tagline}</p>}
+                        {isLoading ? <Skeleton className="h-4 w-3/4" /> : (footer?.tagline && <p className="text-muted-foreground text-sm">{footer.tagline}</p>)}
                         <div className="flex gap-4">
-                           <a href={`https://wa.me/${contact.whatsapp}`} target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp">
-                                <WhatsappIcon className="h-7 w-7 text-green-500 transition-opacity hover:opacity-80" />
-                            </a>
-                            {contact.showInstagram && contact.instagram && (
-                                <a href={contact.instagram} target="_blank" rel="noopener noreferrer" aria-label="Visit our Instagram">
-                                    <InstagramIcon className="h-7 w-7 text-pink-600 transition-opacity hover:opacity-80" />
-                                </a>
-                            )}
-                             {contact.showFacebook && contact.facebook && (
-                                <a href={contact.facebook} target="_blank" rel="noopener noreferrer" aria-label="Visit our Facebook">
-                                    <FacebookIcon className="h-7 w-7 text-blue-600 transition-opacity hover:opacity-80" />
-                                </a>
+                            {isLoading ? <Skeleton className="h-7 w-28" /> : (
+                                <>
+                                    <a href={`https://wa.me/${contact.whatsapp}`} target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp">
+                                        <WhatsappIcon className="h-7 w-7 text-green-500 transition-opacity hover:opacity-80" />
+                                    </a>
+                                    {contact.showInstagram && contact.instagram && (
+                                        <a href={contact.instagram} target="_blank" rel="noopener noreferrer" aria-label="Visit our Instagram">
+                                            <InstagramIcon className="h-7 w-7 text-pink-600 transition-opacity hover:opacity-80" />
+                                        </a>
+                                    )}
+                                     {contact.showFacebook && contact.facebook && (
+                                        <a href={contact.facebook} target="_blank" rel="noopener noreferrer" aria-label="Visit our Facebook">
+                                            <FacebookIcon className="h-7 w-7 text-blue-600 transition-opacity hover:opacity-80" />
+                                        </a>
+                                    )}
+                                </>
                             )}
                         </div>
                     </div>
                     
                     {(footer?.contactTitle || contact?.address || contact?.phone) && (
                         <div className="space-y-4">
-                             {footer?.contactTitle && <h3 className="text-lg font-semibold">{footer.contactTitle}</h3>}
+                             {isLoading ? <Skeleton className="h-6 w-32" /> : (footer?.contactTitle && <h3 className="text-lg font-semibold">{footer.contactTitle}</h3>)}
                             <ul className="space-y-2 text-sm text-muted-foreground">
-                                {contact?.address && (
-                                    <li className="flex items-start gap-2">
-                                        <MapPin className="h-4 w-4 mt-1 shrink-0" />
-                                        <span>{contact.address}</span>
-                                    </li>
+                                {isLoading ? (
+                                    <>
+                                        <li className="flex items-start gap-2"><Skeleton className="h-4 w-4 mt-1 shrink-0" /><Skeleton className="h-4 w-40" /></li>
+                                        <li className="flex items-center gap-2"><Skeleton className="h-4 w-4" /><Skeleton className="h-4 w-32" /></li>
+                                    </>
+                                ) : (
+                                    <>
+                                        {contact?.address && (
+                                            <li className="flex items-start gap-2">
+                                                <MapPin className="h-4 w-4 mt-1 shrink-0" />
+                                                <span>{contact.address}</span>
+                                            </li>
+                                        )}
+                                         {contact?.phone && (
+                                            <li className="flex items-center gap-2">
+                                                <Phone className="h-4 w-4" />
+                                                <a href={`tel:${contact.phone}`} className="hover:text-primary">{contact.phone}</a>
+                                            </li>
+                                         )}
+                                    </>
                                 )}
-                                 {contact?.phone && (
-                                    <li className="flex items-center gap-2">
-                                        <Phone className="h-4 w-4" />
-                                        <a href={`tel:${contact.phone}`} className="hover:text-primary">{contact.phone}</a>
-                                    </li>
-                                 )}
                             </ul>
                         </div>
                     )}
@@ -165,11 +176,11 @@ export function Footer() {
                     </div>
                     
                 </div>
-                {footer?.copyright && (
-                    <div className="mt-12 border-t pt-8 text-center text-sm text-muted-foreground">
-                        <p>&copy; {new Date().getFullYear()} {footer.copyright}</p>
-                    </div>
-                )}
+                <div className="mt-12 border-t pt-8 text-center text-sm text-muted-foreground">
+                    {isLoading ? <Skeleton className="h-4 w-1/2 mx-auto" /> : (
+                        footer?.copyright && <p>&copy; {new Date().getFullYear()} {footer.copyright}</p>
+                    )}
+                </div>
             </div>
         </footer>
     );

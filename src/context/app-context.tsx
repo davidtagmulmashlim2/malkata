@@ -98,7 +98,51 @@ export const AppProvider: React.FC<{ children: React.ReactNode, initialAppState:
 
   // This effect runs ONLY on the client, after the initial render.
   useEffect(() => {
-    // We no longer fetch data here. We just load cart and auth status from client storage.
+    // We now fetch all data from the client side.
+    const fetchInitialData = async () => {
+        try {
+            const [
+                siteContentRes,
+                designRes,
+                dishesRes,
+                categoriesRes,
+                galleryRes,
+                testimonialsRes,
+                subscribersRes,
+                submissionsRes
+            ] = await Promise.all([
+                supabase.from('site_content').select('content').limit(1).single(),
+                supabase.from('design').select('settings').limit(1).single(),
+                supabase.from('dishes').select('*'),
+                supabase.from('categories').select('*'),
+                supabase.from('gallery').select('*').order('created_at', { ascending: false }),
+                supabase.from('testimonials').select('*').order('created_at', { ascending: false }),
+                supabase.from('subscribers').select('*').order('date', { ascending: false }),
+                supabase.from('submissions').select('*').order('date', { ascending: false })
+            ]);
+
+            const loadedState: AppState = {
+                siteContent: { ...DEFAULT_APP_STATE.siteContent, ...(siteContentRes.data?.content || {}) },
+                design: { ...DEFAULT_APP_STATE.design, ...(designRes.data?.settings || {}) },
+                dishes: dishesRes.data || [],
+                categories: categoriesRes.data || [],
+                gallery: galleryRes.data || [],
+                testimonials: testimonialsRes.data || [],
+                subscribers: subscribersRes.data || [],
+                submissions: submissionsRes.data || [],
+            };
+            dispatch({ type: 'SET_STATE', payload: loadedState });
+
+        } catch (error) {
+            console.error("Failed to fetch initial state from Supabase, using default.", error);
+            // In case of error, the state is already the default state.
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
+    fetchInitialData();
+    
     const storedCart = localStorage.getItem(LS_CART_KEY);
     if (storedCart) {
         setCart(JSON.parse(storedCart));
@@ -109,8 +153,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode, initialAppState:
         setIsAuthenticated(true);
     }
     
-    // Since data is pre-fetched on the server, loading is complete much faster.
-    setIsLoading(false);
   }, []);
 
   // This effect runs ONLY on the client, and saves the cart state whenever it changes.

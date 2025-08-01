@@ -18,15 +18,15 @@ import '../styles/themes/luxury.css';
 import '../styles/themes/natural.css';
 import '../styles/themes/minimal.css';
 import '../styles/themes/biblical.css';
-import { useEffect } from 'react';
-import { supabase } from '@/lib/supabase';
-import { DEFAULT_APP_STATE } from '@/lib/data';
+import { useEffect, useState } from 'react';
 import type { AppState } from '@/lib/types';
+import { DEFAULT_APP_STATE } from '@/lib/data';
 
 
 // This component now handles applying themes and fonts AFTER the initial client load.
-function AppBody({ children, initialAppState }: { children: React.ReactNode, initialAppState: AppState }) {
+function AppBody({ children }: { children: React.ReactNode }) {
     const { state, isLoading } = useApp();
+    const [themeLoaded, setThemeLoaded] = useState(false);
 
     useEffect(() => {
         // Only apply theme and font changes on the client side, and after data has loaded.
@@ -38,13 +38,14 @@ function AppBody({ children, initialAppState }: { children: React.ReactNode, ini
             
             document.documentElement.style.setProperty('--font-headline-family', `var(--font-${state.design.headlineFont})`);
             document.documentElement.style.setProperty('--font-sans-family', `var(--font-${state.design.bodyFont})`);
+            setThemeLoaded(true);
         }
     }, [isLoading, state.design]);
 
     // The body structure is now ALWAYS rendered on both server and client.
     // The `isLoading` state within child components will handle showing skeletons.
     return (
-        <body className={cn('min-h-screen flex flex-col')}>
+        <body className={cn('min-h-screen flex flex-col', { 'opacity-0': !themeLoaded, 'opacity-100 transition-opacity duration-300': themeLoaded })}>
             <Header />
             <main className="flex-grow">{children}</main>
             <Footer />
@@ -54,58 +55,19 @@ function AppBody({ children, initialAppState }: { children: React.ReactNode, ini
     );
 }
 
-// This function now fetches all data on the server
-async function getInitialAppState(): Promise<AppState> {
-  try {
-    const [
-        siteContentRes,
-        designRes,
-        dishesRes,
-        categoriesRes,
-        galleryRes,
-        testimonialsRes,
-        subscribersRes,
-        submissionsRes
-    ] = await Promise.all([
-        supabase.from('site_content').select('content').limit(1).single(),
-        supabase.from('design').select('settings').limit(1).single(),
-        supabase.from('dishes').select('*'),
-        supabase.from('categories').select('*'),
-        supabase.from('gallery').select('*').order('created_at', { ascending: false }),
-        supabase.from('testimonials').select('*').order('created_at', { ascending: false }),
-        supabase.from('subscribers').select('*').order('date', { ascending: false }),
-        supabase.from('submissions').select('*').order('date', { ascending: false })
-    ]);
 
-    const loadedState: AppState = {
-        siteContent: { ...DEFAULT_APP_STATE.siteContent, ...(siteContentRes.data?.content || {}) },
-        design: { ...DEFAULT_APP_STATE.design, ...(designRes.data?.settings || {}) },
-        dishes: dishesRes.data || [],
-        categories: categoriesRes.data || [],
-        gallery: galleryRes.data || [],
-        testimonials: testimonialsRes.data || [],
-        subscribers: subscribersRes.data || [],
-        submissions: submissionsRes.data || [],
-    };
-    return loadedState;
-  } catch (error) {
-      console.error("Failed to fetch initial state from Supabase on server, using default.", error);
-      return DEFAULT_APP_STATE;
-  }
-}
-
-export default async function RootLayout({
+// Layout no longer fetches data. It provides the context with a default state.
+// The context provider will be responsible for fetching data on the client.
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const initialAppState = await getInitialAppState();
-  
   return (
     <html lang="he" dir="rtl">
         <head />
-        <AppProvider initialAppState={initialAppState}>
-            <AppBody initialAppState={initialAppState}>
+        <AppProvider initialAppState={DEFAULT_APP_STATE}>
+            <AppBody>
                 {children}
             </AppBody>
         </AppProvider>

@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import Link from 'next/link';
@@ -11,7 +12,6 @@ import { useApp } from '@/context/app-context';
 import React, { useMemo } from 'react';
 import { Skeleton } from './ui/skeleton';
 import { AsyncImage } from './async-image';
-import { useIsClient } from '@/hooks/use-is-client';
 
 const Crown2 = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" {...props}>
@@ -56,13 +56,12 @@ const iconMap: { [key: string]: React.ElementType | null } = {
 export function Header() {
   const pathname = usePathname();
   const { state, isLoading } = useApp();
-  const isClient = useIsClient();
 
   const IconComponent = useMemo(() => iconMap[state.design.logoIcon] || UtensilsCrossed, [state.design.logoIcon]);
   const logoStyle = useMemo(() => state.design.logoColor ? { color: state.design.logoColor } : {}, [state.design.logoColor]);
 
   const navLinks = useMemo(() => {
-    if (isLoading || !isClient) {
+    if (isLoading) {
         return baseNavLinks;
     }
 
@@ -92,23 +91,15 @@ export function Header() {
     }
     
     return newLinks;
-  }, [isLoading, state.design, state.categories, isClient]);
+  }, [isLoading, state.design, state.categories]);
 
 
   const Logo = () => {
-    if (!isClient) {
-      return (
-         <Link href="/" className="flex items-center gap-2 font-headline text-2xl font-bold text-primary">
-            <UtensilsCrossed className="h-7 w-7" />
-            <span>מלכתא</span>
-        </Link>
-      );
-    }
-    
     if (isLoading) {
         return (
             <Link href="/" className="flex items-center gap-2 font-headline text-2xl font-bold text-primary">
-                <Skeleton className="h-10" style={{ width: `${state.design.logoWidth || 120}px` }}/>
+                <Skeleton className="h-7 w-7" />
+                <Skeleton className="h-7 w-24" />
             </Link>
         )
     }
