@@ -90,67 +90,27 @@ const appReducer = (state: AppState, action: Action): AppState => {
 const LS_CART_KEY = 'malkata_cart';
 const ADMIN_PASSWORD = 'admin';
 
-export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [state, dispatch] = useReducer(appReducer, DEFAULT_APP_STATE);
+export const AppProvider: React.FC<{ children: React.ReactNode, initialAppState: AppState }> = ({ children, initialAppState }) => {
+  const [state, dispatch] = useReducer(appReducer, initialAppState);
   const [cart, setCart] = useState<CartItem[]>([]);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   // This effect runs ONLY on the client, after the initial render.
   useEffect(() => {
-    const fetchInitialData = async () => {
-        try {
-            const [
-                siteContentRes,
-                designRes,
-                dishesRes,
-                categoriesRes,
-                galleryRes,
-                testimonialsRes,
-                subscribersRes,
-                submissionsRes
-            ] = await Promise.all([
-                supabase.from('site_content').select('content').limit(1).single(),
-                supabase.from('design').select('settings').limit(1).single(),
-                supabase.from('dishes').select('*'),
-                supabase.from('categories').select('*'),
-                supabase.from('gallery').select('*').order('created_at', { ascending: false }),
-                supabase.from('testimonials').select('*').order('created_at', { ascending: false }),
-                supabase.from('subscribers').select('*').order('date', { ascending: false }),
-                supabase.from('submissions').select('*').order('date', { ascending: false })
-            ]);
-
-            const loadedState: AppState = {
-                siteContent: { ...DEFAULT_APP_STATE.siteContent, ...(siteContentRes.data?.content || {}) },
-                design: { ...DEFAULT_APP_STATE.design, ...(designRes.data?.settings || {}) },
-                dishes: dishesRes.data || [],
-                categories: categoriesRes.data || [],
-                gallery: galleryRes.data || [],
-                testimonials: testimonialsRes.data || [],
-                subscribers: subscribersRes.data || [],
-                submissions: submissionsRes.data || [],
-            };
-
-            dispatch({ type: 'SET_STATE', payload: loadedState });
-
-        } catch (error) {
-            console.error("Failed to fetch from Supabase, using default state.", error);
-            dispatch({ type: 'SET_STATE', payload: DEFAULT_APP_STATE });
-        } finally {
-            const storedCart = localStorage.getItem(LS_CART_KEY);
-            if (storedCart) {
-                setCart(JSON.parse(storedCart));
-            }
-            
-            const storedAuth = sessionStorage.getItem('malkata_auth');
-            if (storedAuth === 'true') {
-                setIsAuthenticated(true);
-            }
-            setIsLoading(false);
-        }
-    };
-
-    fetchInitialData();
+    // We no longer fetch data here. We just load cart and auth status from client storage.
+    const storedCart = localStorage.getItem(LS_CART_KEY);
+    if (storedCart) {
+        setCart(JSON.parse(storedCart));
+    }
+    
+    const storedAuth = sessionStorage.getItem('malkata_auth');
+    if (storedAuth === 'true') {
+        setIsAuthenticated(true);
+    }
+    
+    // Since data is pre-fetched on the server, loading is complete much faster.
+    setIsLoading(false);
   }, []);
 
   // This effect runs ONLY on the client, and saves the cart state whenever it changes.

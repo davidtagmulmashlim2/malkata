@@ -19,9 +19,13 @@ import '../styles/themes/natural.css';
 import '../styles/themes/minimal.css';
 import '../styles/themes/biblical.css';
 import { useEffect } from 'react';
+import { supabase } from '@/lib/supabase';
+import { DEFAULT_APP_STATE } from '@/lib/data';
+import type { AppState } from '@/lib/types';
+
 
 // This component now handles applying themes and fonts AFTER the initial client load.
-function AppBody({ children }: { children: React.ReactNode }) {
+function AppBody({ children, initialAppState }: { children: React.ReactNode, initialAppState: AppState }) {
     const { state, isLoading } = useApp();
 
     useEffect(() => {
@@ -50,20 +54,61 @@ function AppBody({ children }: { children: React.ReactNode }) {
     );
 }
 
-export default function RootLayout({
+// This function now fetches all data on the server
+async function getInitialAppState(): Promise<AppState> {
+  try {
+    const [
+        siteContentRes,
+        designRes,
+        dishesRes,
+        categoriesRes,
+        galleryRes,
+        testimonialsRes,
+        subscribersRes,
+        submissionsRes
+    ] = await Promise.all([
+        supabase.from('site_content').select('content').limit(1).single(),
+        supabase.from('design').select('settings').limit(1).single(),
+        supabase.from('dishes').select('*'),
+        supabase.from('categories').select('*'),
+        supabase.from('gallery').select('*').order('created_at', { ascending: false }),
+        supabase.from('testimonials').select('*').order('created_at', { ascending: false }),
+        supabase.from('subscribers').select('*').order('date', { ascending: false }),
+        supabase.from('submissions').select('*').order('date', { ascending: false })
+    ]);
+
+    const loadedState: AppState = {
+        siteContent: { ...DEFAULT_APP_STATE.siteContent, ...(siteContentRes.data?.content || {}) },
+        design: { ...DEFAULT_APP_STATE.design, ...(designRes.data?.settings || {}) },
+        dishes: dishesRes.data || [],
+        categories: categoriesRes.data || [],
+        gallery: galleryRes.data || [],
+        testimonials: testimonialsRes.data || [],
+        subscribers: subscribersRes.data || [],
+        submissions: submissionsRes.data || [],
+    };
+    return loadedState;
+  } catch (error) {
+      console.error("Failed to fetch initial state from Supabase on server, using default.", error);
+      return DEFAULT_APP_STATE;
+  }
+}
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const initialAppState = await getInitialAppState();
+  
   return (
-    <AppProvider>
-        <html lang="he" dir="rtl">
-            <head />
-            {/* AppBody now correctly wraps the children and relies on the AppContext */}
-            <AppBody>
+    <html lang="he" dir="rtl">
+        <head />
+        <AppProvider initialAppState={initialAppState}>
+            <AppBody initialAppState={initialAppState}>
                 {children}
             </AppBody>
-        </html>
-    </AppProvider>
+        </AppProvider>
+    </html>
   );
 }
