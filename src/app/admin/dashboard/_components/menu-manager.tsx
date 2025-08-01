@@ -411,53 +411,46 @@ export default function MenuManager() {
                             ))}
                         </div>
                     </FormItem>
-                     <FormField
-                        control={dishForm.control}
-                        name="categoryIds"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>קטגוריות</FormLabel>
-                            <ScrollArea className="h-40 w-full rounded-md border p-4">
-                              <div className="space-y-2">
-                                {categories.map((category) => (
-                                  <div key={category.id}>
-                                    <FormField
-                                      control={dishForm.control}
-                                      name="categoryIds"
-                                      render={({ field }) => {
-                                        return (
-                                          <FormItem
-                                            className="flex flex-row items-start space-x-3 space-y-0"
-                                          >
-                                            <FormControl>
-                                              <Checkbox
-                                                checked={field.value?.includes(category.id!)}
-                                                onCheckedChange={(checked) => {
-                                                  return checked
-                                                    ? field.onChange([...(field.value || []), category.id!])
-                                                    : field.onChange(
-                                                        field.value?.filter(
-                                                          (value) => value !== category.id
-                                                        )
-                                                      )
-                                                }}
-                                              />
-                                            </FormControl>
-                                            <FormLabel className="font-normal">
-                                              {category.name}
-                                            </FormLabel>
-                                          </FormItem>
-                                        )
-                                      }}
-                                    />
-                                  </div>
-                                ))}
-                              </div>
-                            </ScrollArea>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                        />
+                     <FormItem>
+                        <FormLabel>קטגוריות</FormLabel>
+                        <ScrollArea className="h-40 w-full rounded-md border p-4">
+                          <div className="space-y-2">
+                            {categories.map((category) => (
+                              <FormField
+                                key={category.id}
+                                control={dishForm.control}
+                                name="categoryIds"
+                                render={({ field }) => {
+                                  return (
+                                    <FormItem
+                                      className="flex flex-row items-start space-x-3 space-y-0"
+                                    >
+                                      <FormControl>
+                                        <Checkbox
+                                          checked={field.value?.includes(category.id!)}
+                                          onCheckedChange={(checked) => {
+                                            return checked
+                                              ? field.onChange([...(field.value || []), category.id!])
+                                              : field.onChange(
+                                                  field.value?.filter(
+                                                    (value) => value !== category.id
+                                                  )
+                                                )
+                                          }}
+                                        />
+                                      </FormControl>
+                                      <FormLabel className="font-normal">
+                                        {category.name}
+                                      </FormLabel>
+                                    </FormItem>
+                                  )
+                                }}
+                              />
+                            ))}
+                          </div>
+                        </ScrollArea>
+                        <FormMessage />
+                      </FormItem>
                     <FormField name="tags" control={dishForm.control} render={() => (
                       <FormItem>
                         <FormLabel>תגים</FormLabel>
@@ -766,5 +759,3 @@ export default function MenuManager() {
     </div>
   )
 }
-
-    
