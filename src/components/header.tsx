@@ -99,10 +99,10 @@ export function Header() {
   const Logo = () => {
     if (isLoading) {
         return (
-            <Link href="/" className="flex items-center gap-2 font-headline text-2xl font-bold text-primary">
+            <div className="flex items-center gap-2 font-headline text-2xl font-bold text-primary">
                 <Skeleton className="h-7 w-7" />
                 <Skeleton className="h-7 w-24" />
-            </Link>
+            </div>
         )
     }
 
@@ -184,7 +184,7 @@ export function Header() {
         {/* Desktop Layout */}
         <div className="hidden md:flex w-full items-center">
             <div className="flex justify-start">
-                <Logo />
+                {!isLoading && <Logo />}
             </div>
             <div className="flex-1 flex justify-center">
                 <NavLinks />
@@ -196,7 +196,7 @@ export function Header() {
         
         {/* Mobile Layout */}
         <div className="md:hidden flex w-full justify-between items-center">
-          <Logo />
+          {!isLoading && <Logo />}
           <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon">
@@ -207,7 +207,7 @@ export function Header() {
             <SheetContent side="left">
               <div className="flex flex-col gap-6 p-6">
                 <div className="mb-4">
-                  <Logo />
+                  {!isLoading && <Logo />}
                 </div>
                 <NavLinks className="flex-col items-start text-lg gap-6" mobile={true} />
               </div>

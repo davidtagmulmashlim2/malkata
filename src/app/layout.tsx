@@ -19,31 +19,18 @@ import '../styles/themes/luxury.css';
 import '../styles/themes/natural.css';
 import '../styles/themes/minimal.css';
 import '../styles/themes/biblical.css';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import type { AppState } from '@/lib/types';
 import { DEFAULT_APP_STATE } from '@/lib/data';
 import Head from 'next/head';
 import { getImage } from '@/lib/image-store';
 
 
-// This component now handles applying themes and fonts AFTER the initial client load.
 function AppBody({ children }: { children: React.ReactNode }) {
     const { state, isLoading } = useApp();
     const [themeLoaded, setThemeLoaded] = useState(false);
     
-    const { seo } = state.siteContent;
-    const { logo_image } = state.design;
-
-    const ogImageSrc = seo?.image ? getImage(seo.image) : (logo_image ? getImage(logo_image) : null);
-    const ogImage = ogImageSrc ? `${ogImageSrc}?t=${new Date().getTime()}` : 'https://placehold.co/1200x630/e0a84c/FFFFFF/png?text=מלכתא';
-
-    const ogTitle = seo?.title || 'מלכתא - אוכל ביתי';
-    const ogDescription = seo?.description || 'אוכל ביתי אותנטי, מוכן באהבה כל יום מחדש.';
-
-
     useEffect(() => {
-        // Only apply theme and font changes on the client side, and after data has loaded.
-        // This prevents hydration mismatches related to dynamic class names or styles.
         if(!isLoading) {
             const themeClasses = ['theme-default', 'theme-retro', 'theme-urban', 'theme-terminal', 'theme-ocean', 'theme-forest', 'theme-sunrise', 'theme-luxury', 'theme-natural', 'theme-minimal', 'theme-biblical'];
             document.documentElement.classList.remove(...themeClasses);
@@ -55,28 +42,8 @@ function AppBody({ children }: { children: React.ReactNode }) {
         }
     }, [isLoading, state.design]);
 
-    // The body structure is now ALWAYS rendered on both server and client.
-    // The `isLoading` state within child components will handle showing skeletons.
     return (
         <body className={cn('min-h-screen flex flex-col', { 'opacity-0': !themeLoaded, 'opacity-100 transition-opacity duration-300': themeLoaded })}>
-             <Head>
-                <title>{ogTitle}</title>
-                <meta name="description" content={ogDescription} />
-                
-                {/* Open Graph / Facebook */}
-                <meta property="og:type" content="website" />
-                <meta property="og:title" content={ogTitle} />
-                <meta property="og:description" content={ogDescription} />
-                <meta property="og:image" content={ogImage || undefined} />
-
-                {/* Twitter */}
-                <meta property="twitter:card" content="summary_large_image" />
-                <meta property="twitter:title" content={ogTitle} />
-                <meta property="twitter:description" content={ogDescription} />
-                <meta property="twitter:image" content={ogImage || undefined} />
-                
-                <meta name="theme-color" content="#e0a84c" />
-            </Head>
             <Header />
             <main className="flex-grow">{children}</main>
             <Footer />
@@ -86,9 +53,59 @@ function AppBody({ children }: { children: React.ReactNode }) {
     );
 }
 
+// This is the component that will handle the Head logic.
+// It will only render on the client side after loading is complete to prevent hydration errors.
+function SEOManager() {
+    const { state, isLoading } = useApp();
+    
+    const [pageMetadata, setPageMetadata] = useState({
+        ogTitle: 'מלכתא - אוכל ביתי',
+        ogDescription: 'אוכל ביתי אותנטי, מוכן באהבה כל יום מחדש.',
+        ogImage: 'https://placehold.co/1200x630/FAEBD7/8B0000/png?text=מלכתא'
+    });
 
-// Layout no longer fetches data. It provides the context with a default state.
-// The context provider will be responsible for fetching data on the client.
+    useEffect(() => {
+        if (!isLoading) {
+            const { seo } = state.siteContent;
+            const { logo_image } = state.design;
+
+            const ogImageSrc = seo?.image ? getImage(seo.image) : (logo_image ? getImage(logo_image) : null);
+            
+            setPageMetadata({
+                ogTitle: seo?.title || 'מלכתא - אוכל ביתי',
+                ogDescription: seo?.description || 'אוכל ביתי אותנטי, מוכן באהבה כל יום מחדש.',
+                ogImage: ogImageSrc || 'https://placehold.co/1200x630/FAEBD7/8B0000/png?text=מלכתא'
+            });
+        }
+    }, [isLoading, state.siteContent, state.design]);
+    
+    // Don't render anything on the server or while loading on the client
+    if (isLoading) {
+        return null;
+    }
+
+    return (
+        <Head>
+            <title>{pageMetadata.ogTitle}</title>
+            <meta name="description" content={pageMetadata.ogDescription} />
+            
+            {/* Open Graph / Facebook */}
+            <meta property="og:type" content="website" />
+            <meta property="og:title" content={pageMetadata.ogTitle} />
+            <meta property="og:description" content={pageMetadata.ogDescription} />
+            <meta property="og:image" content={pageMetadata.ogImage} />
+
+            {/* Twitter */}
+            <meta property="twitter:card" content="summary_large_image" />
+            <meta property="twitter:title" content={pageMetadata.ogTitle} />
+            <meta property="twitter:description" content={pageMetadata.ogDescription} />
+            <meta property="twitter:image" content={pageMetadata.ogImage} />
+            
+            <meta name="theme-color" content="#8B0000" />
+        </Head>
+    );
+}
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -97,11 +114,11 @@ export default function RootLayout({
   return (
     <html lang="he" dir="rtl">
         <head>
-          {/* Fallback tags for server-side render. Client-side Head will override this. */}
+          {/* Minimal head content for SSR */}
           <title>מלכתא - אוכל ביתי</title>
-          <meta name="description" content="מלכתא - טעמים של בית. אוכל ביתי אותנטי, מוכן באהבה כל יום מחדש." />
         </head>
         <AppProvider initialAppState={DEFAULT_APP_STATE}>
+            <SEOManager />
             <AppBody>
                 {children}
             </AppBody>
