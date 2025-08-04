@@ -1,7 +1,0 @@
-{
-  "functions": {
-    "src/ai/**/*.ts": {
-      "memory": 1024
-    }
-  }
-}
