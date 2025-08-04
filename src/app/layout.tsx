@@ -34,7 +34,9 @@ function AppBody({ children }: { children: React.ReactNode }) {
     const { seo } = state.siteContent;
     const { logo_image } = state.design;
 
-    const ogImage = seo?.image ? getImage(seo.image) : (logo_image ? getImage(logo_image) : 'https://placehold.co/1200x630/e0a84c/FFFFFF/png?text=מלכתא');
+    const ogImageSrc = seo?.image ? getImage(seo.image) : (logo_image ? getImage(logo_image) : null);
+    const ogImage = ogImageSrc ? `${ogImageSrc}?t=${new Date().getTime()}` : 'https://placehold.co/1200x630/e0a84c/FFFFFF/png?text=מלכתא';
+
     const ogTitle = seo?.title || 'מלכתא - אוכל ביתי';
     const ogDescription = seo?.description || 'אוכל ביתי אותנטי, מוכן באהבה כל יום מחדש.';
 
