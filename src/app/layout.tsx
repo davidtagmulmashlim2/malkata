@@ -58,50 +58,55 @@ function AppBody({ children }: { children: React.ReactNode }) {
 function SEOManager() {
     const { state, isLoading } = useApp();
     
-    const [pageMetadata, setPageMetadata] = useState({
-        ogTitle: 'מלכתא - אוכל ביתי',
-        ogDescription: 'אוכל ביתי אותנטי, מוכן באהבה כל יום מחדש.',
-        ogImage: 'https://placehold.co/1200x630/FAEBD7/8B0000/png?text=מלכתא'
-    });
-
-    useEffect(() => {
-        if (!isLoading) {
-            const { seo } = state.siteContent;
-            const { logo_image } = state.design;
-
-            const ogImageSrc = seo?.image ? getImage(seo.image) : (logo_image ? getImage(logo_image) : null);
-            
-            setPageMetadata({
-                ogTitle: seo?.title || 'מלכתא - אוכל ביתי',
-                ogDescription: seo?.description || 'אוכל ביתי אותנטי, מוכן באהבה כל יום מחדש.',
-                ogImage: ogImageSrc || 'https://placehold.co/1200x630/FAEBD7/8B0000/png?text=מלכתא'
-            });
+    // Memoize metadata calculation to avoid re-running on every render
+    const pageMetadata = useMemo(() => {
+        if (isLoading) {
+            return {
+                title: 'מלכתא - אוכל ביתי',
+                description: 'טוען...',
+                image: '',
+            };
         }
+
+        const { seo } = state.siteContent;
+        const { logo_image } = state.design;
+
+        const title = seo?.title || DEFAULT_APP_STATE.siteContent.seo?.title || 'מלכתא';
+        const description = seo?.description || DEFAULT_APP_STATE.siteContent.seo?.description || 'אוכל ביתי אותנטי, מוכן באהבה כל יום מחדש.';
+        
+        let image = 'https://placehold.co/1200x630/FAEBD7/8B0000/png?text=מלכתא'; // Final fallback
+        if (seo?.image) {
+            image = getImage(seo.image) || image;
+        } else if (logo_image) {
+            image = getImage(logo_image) || image;
+        }
+
+        return { title, description, image };
     }, [isLoading, state.siteContent, state.design]);
     
-    // Don't render anything on the server or while loading on the client
+    // Only render the Head component on the client after the initial loading is complete.
+    // This is the correct way to avoid hydration errors with dynamic head tags.
     if (isLoading) {
-        return null;
+        return null; // Return null on server and during client-side loading
     }
 
     return (
         <Head>
-            <title>{pageMetadata.ogTitle}</title>
-            <meta name="description" content={pageMetadata.ogDescription} />
+            <title>{pageMetadata.title}</title>
+            <meta name="description" content={pageMetadata.description} />
+            <meta name="theme-color" content="#8B0000" />
             
             {/* Open Graph / Facebook */}
             <meta property="og:type" content="website" />
-            <meta property="og:title" content={pageMetadata.ogTitle} />
-            <meta property="og:description" content={pageMetadata.ogDescription} />
-            <meta property="og:image" content={pageMetadata.ogImage} />
+            <meta property="og:title" content={pageMetadata.title} />
+            <meta property="og:description" content={pageMetadata.description} />
+            <meta property="og:image" content={pageMetadata.image} />
 
             {/* Twitter */}
             <meta property="twitter:card" content="summary_large_image" />
-            <meta property="twitter:title" content={pageMetadata.ogTitle} />
-            <meta property="twitter:description" content={pageMetadata.ogDescription} />
-            <meta property="twitter:image" content={pageMetadata.ogImage} />
-            
-            <meta name="theme-color" content="#8B0000" />
+            <meta property="twitter:title" content={pageMetadata.title} />
+            <meta property="twitter:description" content={pageMetadata.description} />
+            <meta property="twitter:image" content={pageMetadata.image} />
         </Head>
     );
 }
@@ -113,11 +118,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="he" dir="rtl">
-        <head>
-          {/* Minimal head content for SSR */}
-          <title>מלכתא - אוכל ביתי</title>
-        </head>
         <AppProvider initialAppState={DEFAULT_APP_STATE}>
+            {/* The Head component will be empty on initial server render */}
+            <Head>
+                <title>מלכתא - אוכל ביתי</title>
+            </Head>
             <SEOManager />
             <AppBody>
                 {children}
