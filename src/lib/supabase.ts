@@ -1,29 +1,30 @@
 
 import { createClient } from '@supabase/supabase-js'
 
-// =================================================================================
-// !! קריטי: יש להחליף את הערכים הבאים בפרטי הפרויקט האמיתיים שלך מ-Supabase !!
-// 1. היכנס לחשבון שלך ב-Supabase
-// 2. עבור אל הגדרות הפרויקט (אייקון גלגל שיניים)
-// 3. לחץ על לשונית "API"
-// 4. העתק את "Project URL" ואת "anon" "public" key והדבק אותם כאן.
-// =================================================================================
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'YOUR_PROJECT_URL'; // <--- הדבק כאן את כתובת הפרויקט
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'YOUR_SUPABASE_ANON_KEY'; // <--- הדבק כאן את מפתח ה-ANON PUBLIC
-
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
 let supabaseInstance: any;
 
-if (!supabaseUrl || supabaseUrl === 'YOUR_PROJECT_URL' || !supabaseAnonKey || supabaseAnonKey === 'YOUR_SUPABASE_ANON_KEY') {
+if (!supabaseUrl || !supabaseAnonKey) {
     console.error("**********************************************************************************");
-    console.error("!! שגיאת הגדרה חמורה: פרטי ההתחברות ל-Supabase חסרים או שגויים. !!");
-    console.error("!! יש לעדכן את הקובץ src/lib/supabase.ts עם פרטי הפרויקט האמיתיים. !!");
+    console.error("!! Critical Setup Error: Supabase URL or Anon Key is missing. !!");
+    console.error("!! Please ensure NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY !!");
+    console.error("!! are set in your environment variables.                                     !!");
     console.error("**********************************************************************************");
     
-    // Create a dummy client to prevent the app from crashing.
-    // Functions will fail, but the UI will load.
+    // Create a dummy client to prevent the app from crashing on build.
+    // Functions will fail, but the UI might partially load.
     supabaseInstance = {
+      from: () => ({
+        select: () => Promise.resolve({ error: { message: 'Supabase not configured.' }, data: null }),
+        insert: () => Promise.resolve({ error: { message: 'Supabase not configured.' }, data: null }),
+        update: () => Promise.resolve({ error: { message: 'Supabase not configured.' }, data: null }),
+        delete: () => Promise.resolve({ error: { message: 'Supabase not configured.' }, data: null }),
+        limit:  () => ({
+            single: () => Promise.resolve({ error: { message: 'Supabase not configured.' }, data: null })
+        }),
+      }),
       storage: {
         from: () => ({
           upload: () => Promise.resolve({ error: { message: 'Supabase not configured.' } }),

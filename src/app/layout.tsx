@@ -22,7 +22,7 @@ import { DEFAULT_APP_STATE } from '@/lib/data';
 import { getImage } from '@/lib/image-store';
 import { supabase } from '@/lib/supabase';
 import React from 'react';
-
+import type { Metadata, Viewport } from 'next';
 
 async function getInitialState(): Promise<AppState> {
   try {
@@ -45,10 +45,13 @@ async function getInitialState(): Promise<AppState> {
           supabase.from('subscribers').select('*').order('date', { ascending: false }),
           supabase.from('submissions').select('*').order('date', { ascending: false })
       ]);
+      
+      const siteContent = siteContentRes.data?.content ? { ...DEFAULT_APP_STATE.siteContent, ...siteContentRes.data.content } : DEFAULT_APP_STATE.siteContent;
+      const design = designRes.data?.settings ? { ...DEFAULT_APP_STATE.design, ...designRes.data.settings } : DEFAULT_APP_STATE.design;
 
       const loadedState: AppState = {
-          siteContent: { ...DEFAULT_APP_STATE.siteContent, ...(siteContentRes.data?.content || {}) },
-          design: { ...DEFAULT_APP_STATE.design, ...(designRes.data?.settings || {}) },
+          siteContent: siteContent,
+          design: design,
           dishes: dishesRes.data || [],
           categories: categoriesRes.data || [],
           gallery: galleryRes.data || [],
@@ -64,11 +67,58 @@ async function getInitialState(): Promise<AppState> {
   }
 }
 
+export async function generateMetadata(): Promise<Metadata> {
+  const initialState = await getInitialState();
+  const { seo } = initialState.siteContent;
+  const { logo_image } = initialState.design;
+
+  const title = seo?.title || DEFAULT_APP_STATE.siteContent.seo?.title || 'מלכתא';
+  const description = seo?.description || DEFAULT_APP_STATE.siteContent.seo?.description || 'אוכל ביתי אותנטי, מוכן באהבה כל יום מחדש.';
+  
+  let imageUrl: string | undefined = undefined;
+  
+  const seoImageKey = seo?.image;
+  const logoImageKey = logo_image;
+
+  if (seoImageKey) {
+      imageUrl = getImage(seoImageKey) || undefined;
+  }
+  
+  if (!imageUrl && logoImageKey) {
+      imageUrl = getImage(logoImageKey) || undefined;
+  }
+
+  if (!imageUrl) {
+      imageUrl = `https://placehold.co/1200x630/FAEBD7/8B0000/png?text=${encodeURIComponent(title)}`;
+  }
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      images: imageUrl ? [{ url: imageUrl }] : [],
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: imageUrl ? [imageUrl] : [],
+    },
+  };
+}
+
+
+export const viewport: Viewport = {
+  themeColor: '#8B0000',
+}
+
 function AppBody({ children, initialState }: { children: React.ReactNode, initialState: AppState }) {
   return (
     <AppProvider initialAppState={initialState}>
       <body className={cn('min-h-screen flex flex-col', `theme-${initialState.design.theme}`)} style={{
-          fontFamily: `var(--font-${initialState.design.body_font})`,
           '--font-headline-family': `var(--font-${initialState.design.headline_font})`,
           '--font-sans-family': `var(--font-${initialState.design.body_font})`,
       } as React.CSSProperties}>
@@ -89,38 +139,9 @@ export default async function RootLayout({
 }>) {
   const initialState = await getInitialState();
 
-  const { seo } = initialState.siteContent;
-  const { logo_image } = initialState.design;
-  
-  const title = seo?.title || DEFAULT_APP_STATE.siteContent.seo?.title || 'מלכתא';
-  const description = seo?.description || DEFAULT_APP_STATE.siteContent.seo?.description || 'אוכל ביתי אותנטי, מוכן באהבה כל יום מחדש.';
-  
-  let image = 'https://placehold.co/1200x630/FAEBD7/8B0000/png?text=מלכתא'; // Final fallback
-  if (seo?.image) {
-      image = getImage(seo.image) || image;
-  } else if (logo_image) {
-      image = getImage(logo_image) || image;
-  }
-
   return (
     <html lang="he" dir="rtl">
-        <head>
-            <title>{title}</title>
-            <meta name="description" content={description} />
-            <meta name="theme-color" content="#8B0000" />
-            
-            {/* Open Graph / Facebook */}
-            <meta property="og:type" content="website" />
-            <meta property="og:title" content={title} />
-            <meta property="og:description" content={description} />
-            <meta property="og:image" content={image} />
-
-            {/* Twitter */}
-            <meta property="twitter:card" content="summary_large_image" />
-            <meta property="twitter:title" content={title} />
-            <meta property="twitter:description" content={description} />
-            <meta property="twitter:image" content={image} />
-        </head>
+        <head />
         <AppBody initialState={initialState}>
             {children}
         </AppBody>
