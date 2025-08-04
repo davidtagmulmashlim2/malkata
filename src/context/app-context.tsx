@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import React, { createContext, useContext, useReducer, useEffect, useState, useMemo, useCallback } from 'react';
@@ -6,8 +7,10 @@ import type { AppState, AppContextType, Action, CartItem, Dish, Testimonial, Con
 import { DEFAULT_APP_STATE } from '@/lib/data';
 import { supabase } from '@/lib/supabase';
 import { toast } from '@/hooks/use-toast';
+import { deleteImage } from '@/lib/image-store';
 
-const AppContext = createContext<AppContextType | null>(null);
+// Create the context
+const AppContext = createContext<AppContextType | undefined>(undefined);
 
 // Debounce function
 const debounce = <F extends (...args: any[]) => any>(func: F, waitFor: number) => {
@@ -33,7 +36,6 @@ const debouncedUpdate = debounce(async (table: string, idField: string, id: any,
 const appReducer = (state: AppState, action: Action): AppState => {
   switch (action.type) {
     case 'SET_STATE':
-        // This action hydrates the state from Supabase.
         return action.payload;
     case 'UPDATE_CONTENT':
       debouncedUpdate('site_content', 'id', 1, { content: action.payload });
@@ -178,49 +180,89 @@ export const AppProvider: React.FC<{ children: React.ReactNode, initialAppState:
         }
         return { data, error };
     };
+    
+     const findItemToDelete = (collection: any[], id: string) => collection.find(item => item.id === id);
 
     switch(action.type) {
         case 'ADD_DISH':
-            await insertAndRefresh('dishes', action.payload, 'ADD_DISH');
+            const { data: dishData, error: dishError } = await supabase.from('dishes').insert(action.payload).select().single();
+            if (!dishError) dispatch({ type: 'ADD_DISH', payload: dishData });
+            error = dishError;
             break;
-        case 'DELETE_DISH':
-            ({ error } = await supabase.from('dishes').delete().eq('id', action.payload));
-            if (!error) dispatch(action);
+        case 'DELETE_DISH': {
+            const dishToDelete = findItemToDelete(state.dishes, action.payload);
+            const { error: deleteDishError } = await supabase.from('dishes').delete().eq('id', action.payload);
+            if (!deleteDishError) {
+                 if (dishToDelete?.main_image) await deleteImage(dishToDelete.main_image);
+                 if (dishToDelete?.gallery_images) {
+                    for (const img of dishToDelete.gallery_images) {
+                        await deleteImage(img);
+                    }
+                 }
+                 dispatch(action); // Update state only on successful deletion
+            }
+            error = deleteDishError;
             break;
+        }
         case 'ADD_CATEGORY':
-            await insertAndRefresh('categories', action.payload, 'ADD_CATEGORY');
+            const { data: catData, error: catError } = await supabase.from('categories').insert(action.payload).select().single();
+            if (!catError) dispatch({ type: 'ADD_CATEGORY', payload: catData });
+            error = catError;
             break;
-        case 'DELETE_CATEGORY':
-            ({ error } = await supabase.from('categories').delete().eq('id', action.payload));
-            if (!error) dispatch(action);
+        case 'DELETE_CATEGORY': {
+            const categoryToDelete = findItemToDelete(state.categories, action.payload);
+            const { error: deleteCatError } = await supabase.from('categories').delete().eq('id', action.payload);
+             if (!deleteCatError) {
+                if (categoryToDelete?.image) await deleteImage(categoryToDelete.image);
+                dispatch(action);
+            }
+            error = deleteCatError;
             break;
+        }
         case 'ADD_GALLERY_IMAGE':
-            await insertAndRefresh('gallery', action.payload, 'ADD_GALLERY_IMAGE');
+            const { data: galleryData, error: galleryError } = await supabase.from('gallery').insert(action.payload).select().single();
+            if (!galleryError) dispatch({ type: 'ADD_GALLERY_IMAGE', payload: galleryData });
+            error = galleryError;
             break;
-        case 'DELETE_GALLERY_IMAGE':
-            ({ error } = await supabase.from('gallery').delete().eq('id', action.payload));
-            if (!error) dispatch(action);
+        case 'DELETE_GALLERY_IMAGE': {
+            const imageToDelete = findItemToDelete(state.gallery, action.payload);
+            const { error: deleteGalleryError } = await supabase.from('gallery').delete().eq('id', action.payload);
+            if (!deleteGalleryError) {
+                if (imageToDelete?.src) await deleteImage(imageToDelete.src);
+                dispatch(action);
+            }
+            error = deleteGalleryError;
             break;
+        }
         case 'ADD_TESTIMONIAL':
-            await insertAndRefresh('testimonials', action.payload, 'ADD_TESTIMONIAL');
+            const { data: testimonialData, error: testimonialError } = await supabase.from('testimonials').insert(action.payload).select().single();
+            if (!testimonialError) dispatch({ type: 'ADD_TESTIMONIAL', payload: testimonialData });
+            error = testimonialError;
             break;
         case 'DELETE_TESTIMONIAL':
-            ({ error } = await supabase.from('testimonials').delete().eq('id', action.payload));
-             if (!error) dispatch(action);
+            const { error: deleteTestimonialError } = await supabase.from('testimonials').delete().eq('id', action.payload);
+             if (!deleteTestimonialError) dispatch(action);
+             error = deleteTestimonialError;
             break;
         case 'ADD_SUBSCRIBER':
-            await insertAndRefresh('subscribers', action.payload, 'ADD_SUBSCRIBER');
+            const { data: subscriberData, error: subscriberError } = await supabase.from('subscribers').insert(action.payload).select().single();
+            if (!subscriberError) dispatch({ type: 'ADD_SUBSCRIBER', payload: subscriberData });
+            error = subscriberError;
             break;
         case 'DELETE_SUBSCRIBER':
-            ({ error } = await supabase.from('subscribers').delete().eq('id', action.payload));
-             if (!error) dispatch(action);
+            const { error: deleteSubscriberError } = await supabase.from('subscribers').delete().eq('id', action.payload);
+             if (!deleteSubscriberError) dispatch(action);
+             error = deleteSubscriberError;
             break;
         case 'ADD_SUBMISSION':
-            await insertAndRefresh('submissions', action.payload, 'ADD_SUBMISSION');
+            const { data: submissionData, error: submissionError } = await supabase.from('submissions').insert(action.payload).select().single();
+            if (!submissionError) dispatch({ type: 'ADD_SUBMISSION', payload: submissionData });
+            error = submissionError;
             break;
         case 'DELETE_SUBMISSION':
-             ({ error } = await supabase.from('submissions').delete().eq('id', action.payload));
-             if (!error) dispatch(action);
+             const { error: deleteSubmissionError } = await supabase.from('submissions').delete().eq('id', action.payload);
+             if (!deleteSubmissionError) dispatch(action);
+             error = deleteSubmissionError;
             break;
         case 'REMOVE_ITEM_FROM_CART':
              setCart(prevCart => prevCart.filter(item => item.dishId !== action.payload));
@@ -235,7 +277,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode, initialAppState:
     if (error) {
         toast({ title: 'שגיאת מסד נתונים', description: error.message, variant: 'destructive' });
     }
-  }, [dispatch]);
+  }, [dispatch, state.dishes, state.categories, state.gallery]);
 
 
   const addToCart = useCallback((dishId: string, quantity = 1) => {

@@ -162,8 +162,16 @@ export default function DesignManager() {
     const imageKey = form.getValues('logo_image');
     if (imageKey) {
         try {
-            await deleteImage(imageKey);
+            // First, update the form state to remove the image key
             form.setValue('logo_image', '', { shouldValidate: true });
+            
+            // Then, trigger the form submission to save the now-empty image field to the DB
+            // This ensures the DB is updated BEFORE we delete the file from storage.
+            await form.handleSubmit(onSubmit)();
+
+            // Finally, delete the image file from storage
+            await deleteImage(imageKey);
+
             toast({ title: 'תמונת לוגו הוסרה' });
         } catch (error) {
              console.error("Error deleting image:", error);
@@ -243,7 +251,7 @@ export default function DesignManager() {
                     <FormItem>
                       <FormLabel className="text-lg font-headline">צבע הלוגו (ללא תמונה)</FormLabel>
                       <FormControl>
-                        <Input type="color" {...field} className="p-1 h-10 w-full" />
+                        <Input type="color" {...field} className="p-1 h-10 w-full" value={field.value || ''} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -356,5 +364,7 @@ export default function DesignManager() {
     </Card>
   );
 }
+
+    
 
     

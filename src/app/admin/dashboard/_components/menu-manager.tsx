@@ -233,7 +233,8 @@ export default function MenuManager() {
 
         try {
             if (oldImageKey) {
-                await deleteImage(oldImageKey);
+                // We don't delete from storage here. Deletion happens when the form is saved
+                // with the new image key, or when an item is explicitly deleted.
             }
             const dataUrl = await fileToDataUrl(file);
             const imageKey = await storeImage(dataUrl);
@@ -250,23 +251,11 @@ export default function MenuManager() {
 
 
   const deleteDish = (id: string) => {
-    const dishToDelete = dishes.find(d => d.id === id);
-    if(dishToDelete) {
-        if (dishToDelete.main_image) deleteImage(dishToDelete.main_image);
-        if (dishToDelete.gallery_images) {
-            dishToDelete.gallery_images.forEach(imgKey => deleteImage(imgKey));
-        }
-    }
     dispatch({ type: 'DELETE_DISH', payload: id })
-    dispatch({ type: 'REMOVE_ITEM_FROM_CART', payload: id });
     toast({ title: 'מנה נמחקה' })
   }
 
   const deleteCategory = (id: string) => {
-    const categoryToDelete = categories.find(c => c.id === id);
-    if(categoryToDelete && categoryToDelete.image) {
-        deleteImage(categoryToDelete.image);
-    }
     dispatch({ type: 'DELETE_CATEGORY', payload: id })
     toast({ title: 'קטגוריה נמחקה' })
   }
@@ -294,17 +283,23 @@ export default function MenuManager() {
     }
   };
 
+    const removeGalleryImage = async (index: number) => {
+        const currentImages = dishForm.getValues('gallery_images') || [];
+        const imageToRemove = currentImages[index];
 
-  const removeGalleryImage = (index: number) => {
-      const currentImages = dishForm.getValues('gallery_images') || [];
-      const imageToRemove = currentImages[index];
-      if (imageToRemove) {
-          deleteImage(imageToRemove);
-      }
-      const newImages = [...currentImages];
-      newImages.splice(index, 1);
-      dishForm.setValue('gallery_images', newImages, { shouldValidate: true });
-  };
+        const newImages = [...currentImages];
+        newImages.splice(index, 1);
+        dishForm.setValue('gallery_images', newImages, { shouldValidate: true });
+
+        // Save the change to the DB first
+        await dishForm.handleSubmit(handleDishSubmit)();
+
+        // Then delete from storage
+        if (imageToRemove) {
+            await deleteImage(imageToRemove);
+        }
+    };
+
     
   const dishMainImageValue = dishForm.watch('main_image');
   const dishGalleryImagesValue = dishForm.watch('gallery_images');
@@ -420,47 +415,58 @@ export default function MenuManager() {
                             ))}
                         </div>
                     </FormItem>
-                     <FormItem>
-                        <FormLabel>קטגוריות</FormLabel>
-                        <ScrollArea className="h-40 w-full rounded-md border">
-                            <div className="p-4">
-                            {categories.map((category) => (
-                                <FormField
-                                key={category.id}
-                                control={dishForm.control}
-                                name="category_ids"
-                                render={({ field }) => {
-                                    return (
-                                    <FormItem
-                                        key={category.id}
-                                        className="flex flex-row items-start space-x-3 space-y-0"
-                                    >
-                                        <FormControl>
-                                        <Checkbox
-                                            checked={field.value?.includes(category.id!)}
-                                            onCheckedChange={(checked) => {
-                                            return checked
-                                                ? field.onChange([...field.value, category.id!])
-                                                : field.onChange(
-                                                    field.value?.filter(
-                                                    (value) => value !== category.id!
-                                                    )
-                                                )
-                                            }}
-                                        />
-                                        </FormControl>
-                                        <FormLabel className="font-normal">
-                                        {category.name}
-                                        </FormLabel>
-                                    </FormItem>
-                                    )
-                                }}
-                                />
-                            ))}
-                            </div>
-                        </ScrollArea>
-                        <FormMessage />
-                    </FormItem>
+                     <FormField
+                        control={dishForm.control}
+                        name="category_ids"
+                        render={() => (
+                            <FormItem>
+                                <FormLabel>קטגוריות</FormLabel>
+                                 <ScrollArea className="h-40 w-full rounded-md border">
+                                    <div className="p-4 space-y-2">
+                                        {categories.map((category) => (
+                                            <FormField
+                                                key={category.id}
+                                                control={dishForm.control}
+                                                name="category_ids"
+                                                render={({ field }) => {
+                                                    return (
+                                                        <FormItem
+                                                            className="flex flex-row items-start space-x-3 space-y-0"
+                                                        >
+                                                            <FormControl>
+                                                                <Checkbox
+                                                                    checked={field.value?.includes(category.id!)}
+                                                                    onCheckedChange={(checked) => {
+                                                                        const newValue = field.value ? [...field.value] : [];
+                                                                        if (checked) {
+                                                                            if (!newValue.includes(category.id!)) {
+                                                                                newValue.push(category.id!);
+                                                                            }
+                                                                        } else {
+                                                                            const index = newValue.indexOf(category.id!);
+                                                                            if (index > -1) {
+                                                                                newValue.splice(index, 1);
+                                                                            }
+                                                                        }
+                                                                        field.onChange(newValue);
+                                                                    }}
+                                                                />
+                                                            </FormControl>
+                                                            <FormLabel className="font-normal">
+                                                                {category.name}
+                                                            </FormLabel>
+                                                        </FormItem>
+                                                    );
+                                                }}
+                                            />
+                                        ))}
+                                    </div>
+                                </ScrollArea>
+                                <FormMessage className="pt-2" />
+                            </FormItem>
+                        )}
+                     />
+
                     <FormField name="tags" control={dishForm.control} render={() => (
                       <FormItem>
                         <FormLabel>תגים</FormLabel>
@@ -769,5 +775,7 @@ export default function MenuManager() {
     </div>
   )
 }
+
+    
 
     

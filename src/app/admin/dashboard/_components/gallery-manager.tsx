@@ -1,4 +1,5 @@
 
+
 'use client';
 import { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
@@ -13,7 +14,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { toast } from '@/hooks/use-toast';
 import { Trash2 } from 'lucide-react';
 import type { GalleryImage } from '@/lib/types';
-import { storeImage, deleteImage } from '@/lib/image-store';
+import { storeImage } from '@/lib/image-store';
 import { AsyncImage } from '@/components/async-image';
 
 
@@ -76,7 +77,6 @@ export default function GalleryManager() {
 
   const removeImage = (image: GalleryImage) => {
     if (image.id) {
-        deleteImage(image.src); // Delete from storage
         dispatch({ type: 'DELETE_GALLERY_IMAGE', payload: image.id });
         toast({ title: 'התמונה נמחקה מהגלריה.' });
     }
@@ -164,3 +164,5 @@ export default function GalleryManager() {
     </div>
   );
 }
+
+    
