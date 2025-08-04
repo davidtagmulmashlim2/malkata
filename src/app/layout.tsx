@@ -1,10 +1,7 @@
 
-import { AppProvider } from '@/context/app-context';
-import { Header } from '@/components/header';
-import { Footer } from '@/components/footer';
+import { AppProviderClient } from '@/components/app-provider';
 import { Toaster } from '@/components/ui/toaster';
 import { CartSheet } from '@/components/cart-sheet';
-import { cn } from '@/lib/utils';
 import './globals.css';
 import '../styles/themes/default.css';
 import '../styles/themes/retro.css';
@@ -115,23 +112,6 @@ export const viewport: Viewport = {
   themeColor: '#8B0000',
 }
 
-function AppBody({ children, initialState }: { children: React.ReactNode, initialState: AppState }) {
-  return (
-    <AppProvider initialAppState={initialState}>
-      <body className={cn('min-h-screen flex flex-col', `theme-${initialState.design.theme}`)} style={{
-          '--font-headline-family': `var(--font-${initialState.design.headline_font})`,
-          '--font-sans-family': `var(--font-${initialState.design.body_font})`,
-      } as React.CSSProperties}>
-          <Header />
-          <main className="flex-grow">{children}</main>
-          <Footer />
-          <CartSheet />
-          <Toaster />
-      </body>
-    </AppProvider>
-  );
-}
-
 export default async function RootLayout({
   children,
 }: Readonly<{
@@ -142,9 +122,11 @@ export default async function RootLayout({
   return (
     <html lang="he" dir="rtl">
         <head />
-        <AppBody initialState={initialState}>
+        <AppProviderClient initialAppState={initialState}>
             {children}
-        </AppBody>
+            <CartSheet />
+            <Toaster />
+        </AppProviderClient>
     </html>
   );
 }
