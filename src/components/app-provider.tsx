@@ -6,6 +6,8 @@ import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
 import type { AppState } from '@/lib/types';
 import React from 'react';
+import { Toaster } from '@/components/ui/toaster';
+import { CartSheet } from '@/components/cart-sheet';
 
 export function AppProviderClient({ children, initialAppState }: { children: React.ReactNode, initialAppState: AppState }) {
   return (
@@ -13,6 +15,8 @@ export function AppProviderClient({ children, initialAppState }: { children: Rea
         <Header />
         <main className="flex-grow">{children}</main>
         <Footer />
+        <CartSheet />
+        <Toaster />
     </AppProvider>
   );
 }

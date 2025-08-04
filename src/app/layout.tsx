@@ -17,10 +17,9 @@ import '../styles/themes/luxury.css';
 import '../styles/themes/natural.css';
 import '../styles/themes/minimal.css';
 import '../styles/themes/biblical.css';
-import { Toaster } from '@/components/ui/toaster';
-import { CartSheet } from '@/components/cart-sheet';
 import { AppProviderClient } from '@/components/app-provider';
 import { cn } from '@/lib/utils';
+
 
 async function getInitialState(): Promise<AppState> {
   try {
@@ -65,13 +64,21 @@ async function getInitialState(): Promise<AppState> {
   }
 }
 
-export async function generateMetadata(): Promise<Metadata> {
-  const initialState = await getInitialState();
-  const { seo } = initialState.siteContent;
-  const { logo_image } = initialState.design;
+export const viewport: Viewport = {
+  themeColor: '#8B0000',
+}
 
-  const title = seo?.title || DEFAULT_APP_STATE.siteContent.seo?.title || 'מלכתא';
-  const description = seo?.description || DEFAULT_APP_STATE.siteContent.seo?.description || 'אוכל ביתי אותנטי, מוכן באהבה כל יום מחדש.';
+export default async function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  const initialState = await getInitialState();
+  const { seo, hero } = initialState.siteContent;
+  const { logo_image } = initialState.design;
+  
+  const title = seo?.title || hero.title_first_word + ' ' + hero.title_rest || 'מלכתא';
+  const description = seo?.description || hero.subtitle || 'אוכל ביתי אותנטי, מוכן באהבה כל יום מחדש.';
   
   let imageUrl: string | undefined = undefined;
   
@@ -92,46 +99,26 @@ export async function generateMetadata(): Promise<Metadata> {
       imageUrl = `https://placehold.co/1200x630/FAEBD7/8B0000/png?text=${encodeURIComponent(title)}`;
   }
 
-  return {
-    title,
-    description,
-    openGraph: {
-      title,
-      description,
-      images: imageUrl ? [{ url: imageUrl }] : [],
-      type: 'website',
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title,
-      description,
-      images: imageUrl ? [imageUrl] : [],
-    },
-  };
-}
-
-
-export const viewport: Viewport = {
-  themeColor: '#8B0000',
-}
-
-export default async function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
-  const initialState = await getInitialState();
-
   return (
     <html lang="he" dir="rtl">
-        <body className={cn('min-h-screen flex flex-col', `theme-${initialState.design.theme}`)} style={{
+      <head>
+        <title>{title}</title>
+        <meta name="description" content={description} />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        {imageUrl && <meta property="og:image" content={imageUrl} />}
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={title} />
+        <meta name="twitter:description" content={description} />
+        {imageUrl && <meta name="twitter:image" content={imageUrl} />}
+      </head>
+      <body className={cn('min-h-screen flex flex-col', `theme-${initialState.design.theme}`)} style={{
           '--font-headline-family': `var(--font-${initialState.design.headline_font})`,
           '--font-sans-family': `var(--font-${initialState.design.body_font})`,
         } as React.CSSProperties}>
           <AppProviderClient initialAppState={initialState}>
               {children}
-              <CartSheet />
-              <Toaster />
           </AppProviderClient>
       </body>
     </html>
