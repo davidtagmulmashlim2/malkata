@@ -127,7 +127,10 @@ export default function DesignManager() {
 
   useEffect(() => {
     if (design) {
-      form.reset(design);
+      form.reset({
+          ...design,
+          featured_category_id: design.featured_category_id || 'none'
+      });
     }
   }, [design, form]);
 
@@ -353,7 +356,5 @@ export default function DesignManager() {
     </Card>
   );
 }
-
-    
 
     

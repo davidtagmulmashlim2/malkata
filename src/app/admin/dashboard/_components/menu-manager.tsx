@@ -1,4 +1,5 @@
 
+
 'use client'
 import { useState, useEffect, useRef } from 'react'
 import { useForm, Controller, useFieldArray } from 'react-hook-form'
@@ -226,11 +227,14 @@ export default function MenuManager() {
     setIsCategoryDialogOpen(false)
   }
   
-    const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>, onChange: (value: string) => void) => {
+    const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>, onChange: (value: string) => void, oldImageKey?: string) => {
         const file = event.target.files?.[0];
         if (!file) return;
 
         try {
+            if (oldImageKey) {
+                await deleteImage(oldImageKey);
+            }
             const dataUrl = await fileToDataUrl(file);
             const imageKey = await storeImage(dataUrl);
             onChange(imageKey);
@@ -306,6 +310,11 @@ export default function MenuManager() {
   const dishGalleryImagesValue = dishForm.watch('gallery_images');
   const categoryImageValue = categoryForm.watch('image');
 
+  const { fields, append, remove } = useFieldArray({
+      control: dishForm.control,
+      name: "category_ids",
+  });
+
   return (
     <div className="space-y-8">
       <Card>
@@ -374,7 +383,7 @@ export default function MenuManager() {
                                 <Input 
                                     type="file" 
                                     accept="image/*" 
-                                    onChange={(e) => handleFileChange(e, field.onChange)}
+                                    onChange={(e) => handleFileChange(e, field.onChange, field.value)}
                                 />
                              </FormControl>
                              <FormMessage />
@@ -411,35 +420,47 @@ export default function MenuManager() {
                             ))}
                         </div>
                     </FormItem>
-                     <Controller
-                        name="category_ids"
-                        control={dishForm.control}
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>קטגוריות</FormLabel>
-                                <ScrollArea className="h-40 w-full rounded-md border p-4">
-                                <div className="space-y-2">
-                                    {categories.map((category) => (
-                                        <div key={category.id} className="flex flex-row items-start space-x-3 space-y-0">
-                                            <Checkbox
-                                                id={`category-${category.id}`}
-                                                checked={field.value?.includes(category.id!)}
-                                                onCheckedChange={(checked) => {
-                                                    const newCategoryIds = checked
-                                                        ? [...(field.value || []), category.id!]
-                                                        : (field.value || []).filter((value) => value !== category.id!);
-                                                    field.onChange(newCategoryIds);
-                                                }}
-                                            />
-                                            <label htmlFor={`category-${category.id}`} className="font-normal">{category.name}</label>
-                                        </div>
-                                    ))}
-                                </div>
-                                </ScrollArea>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
+                     <FormItem>
+                        <FormLabel>קטגוריות</FormLabel>
+                        <ScrollArea className="h-40 w-full rounded-md border">
+                            <div className="p-4">
+                            {categories.map((category) => (
+                                <FormField
+                                key={category.id}
+                                control={dishForm.control}
+                                name="category_ids"
+                                render={({ field }) => {
+                                    return (
+                                    <FormItem
+                                        key={category.id}
+                                        className="flex flex-row items-start space-x-3 space-y-0"
+                                    >
+                                        <FormControl>
+                                        <Checkbox
+                                            checked={field.value?.includes(category.id!)}
+                                            onCheckedChange={(checked) => {
+                                            return checked
+                                                ? field.onChange([...field.value, category.id!])
+                                                : field.onChange(
+                                                    field.value?.filter(
+                                                    (value) => value !== category.id!
+                                                    )
+                                                )
+                                            }}
+                                        />
+                                        </FormControl>
+                                        <FormLabel className="font-normal">
+                                        {category.name}
+                                        </FormLabel>
+                                    </FormItem>
+                                    )
+                                }}
+                                />
+                            ))}
+                            </div>
+                        </ScrollArea>
+                        <FormMessage />
+                    </FormItem>
                     <FormField name="tags" control={dishForm.control} render={() => (
                       <FormItem>
                         <FormLabel>תגים</FormLabel>
@@ -637,7 +658,7 @@ export default function MenuManager() {
                                 <Input 
                                     type="file" 
                                     accept="image/*" 
-                                    onChange={(e) => handleFileChange(e, field.onChange)}
+                                    onChange={(e) => handleFileChange(e, field.onChange, field.value)}
                                 />
                              </FormControl>
                              <FormMessage />
@@ -748,3 +769,5 @@ export default function MenuManager() {
     </div>
   )
 }
+
+    
