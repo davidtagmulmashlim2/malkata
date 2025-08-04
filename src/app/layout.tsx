@@ -20,6 +20,7 @@ import '../styles/themes/biblical.css';
 import { Toaster } from '@/components/ui/toaster';
 import { CartSheet } from '@/components/cart-sheet';
 import { AppProviderClient } from '@/components/app-provider';
+import { cn } from '@/lib/utils';
 
 async function getInitialState(): Promise<AppState> {
   try {
@@ -123,12 +124,16 @@ export default async function RootLayout({
 
   return (
     <html lang="he" dir="rtl">
-        <head />
-        <AppProviderClient initialAppState={initialState}>
-            {children}
-            <CartSheet />
-            <Toaster />
-        </AppProviderClient>
+        <body className={cn('min-h-screen flex flex-col', `theme-${initialState.design.theme}`)} style={{
+          '--font-headline-family': `var(--font-${initialState.design.headline_font})`,
+          '--font-sans-family': `var(--font-${initialState.design.body_font})`,
+        } as React.CSSProperties}>
+          <AppProviderClient initialAppState={initialState}>
+              {children}
+              <CartSheet />
+              <Toaster />
+          </AppProviderClient>
+      </body>
     </html>
   );
 }
