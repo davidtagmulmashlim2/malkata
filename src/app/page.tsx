@@ -119,14 +119,14 @@ export default function Home() {
   };
 
   useEffect(() => {
-    if (!isLoading && siteContent.hero.animation_interval > 0) {
+    if (!isLoading && hero?.animation_interval > 0) {
       const interval = setInterval(() => {
         setTypewriterKey(prevKey => prevKey + 1);
-      }, siteContent.hero.animation_interval * 1000);
+      }, hero.animation_interval * 1000);
 
       return () => clearInterval(interval);
     }
-  }, [isLoading, siteContent.hero.animation_interval]);
+  }, [isLoading, hero?.animation_interval]);
 
   const nextTestimonial = () => {
     setCurrentTestimonialIndex(prev => (prev + 1) % testimonials.length);
@@ -175,13 +175,26 @@ export default function Home() {
     right: 'text-right',
   };
 
+  if (isLoading) {
+    return (
+        <div className="text-right">
+             <section className="relative w-full text-white overflow-hidden" style={{ height: '80vh' }}>
+                 <Skeleton className="w-full h-full" />
+             </section>
+             <section className="container py-16 md:py-24">
+                <h2 className="text-3xl md:text-4xl font-headline font-bold text-right mb-10">מנות מומלצות</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  {Array(3).fill(null).map((dish, i) => <Skeleton key={i} className="h-96 w-full" />)}
+                </div>
+              </section>
+        </div>
+    )
+  }
+
   return (
     <div className="text-right">
       {/* Hero Section */}
       <section className="relative w-full text-white overflow-hidden" style={{ height: `${hero.hero_height}vh` }}>
-        {isLoading ? (
-            <Skeleton className="w-full h-full" />
-        ) : (
         <>
             <AsyncImage
               imageKey={siteContent.hero.image}
@@ -229,7 +242,6 @@ export default function Home() {
                </Button>
             </div>
         </>
-        )}
       </section>
 
       {/* Recommended Dishes Section */}

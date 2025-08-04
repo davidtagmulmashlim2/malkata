@@ -4,7 +4,6 @@
 
 import React, { createContext, useContext, useReducer, useEffect, useState, useMemo, useCallback } from 'react';
 import type { AppState, AppContextType, Action, CartItem, Dish, Testimonial, ContactSubmission, Category, GalleryImage, Subscriber, SiteContent, DesignSettings } from '@/lib/types';
-import { DEFAULT_APP_STATE } from '@/lib/data';
 import { supabase } from '@/lib/supabase';
 import { toast } from '@/hooks/use-toast';
 import { deleteImage } from '@/lib/image-store';
@@ -100,54 +99,18 @@ export const AppProvider: React.FC<{ children: React.ReactNode, initialAppState:
 
   // This effect runs ONLY on the client, after the initial render.
   useEffect(() => {
-    // We now fetch all data from the client side.
-    const fetchInitialData = async () => {
-        try {
-            const [
-                siteContentRes,
-                designRes,
-                dishesRes,
-                categoriesRes,
-                galleryRes,
-                testimonialsRes,
-                subscribersRes,
-                submissionsRes
-            ] = await Promise.all([
-                supabase.from('site_content').select('content').limit(1).single(),
-                supabase.from('design').select('settings').limit(1).single(),
-                supabase.from('dishes').select('*'),
-                supabase.from('categories').select('*'),
-                supabase.from('gallery').select('*').order('created_at', { ascending: false }),
-                supabase.from('testimonials').select('*').order('created_at', { ascending: false }),
-                supabase.from('subscribers').select('*').order('date', { ascending: false }),
-                supabase.from('submissions').select('*').order('date', { ascending: false })
-            ]);
-
-            const loadedState: AppState = {
-                siteContent: { ...DEFAULT_APP_STATE.siteContent, ...(siteContentRes.data?.content || {}) },
-                design: { ...DEFAULT_APP_STATE.design, ...(designRes.data?.settings || {}) },
-                dishes: dishesRes.data || [],
-                categories: categoriesRes.data || [],
-                gallery: galleryRes.data || [],
-                testimonials: testimonialsRes.data || [],
-                subscribers: subscribersRes.data || [],
-                submissions: submissionsRes.data || [],
-            };
-            dispatch({ type: 'SET_STATE', payload: loadedState });
-
-        } catch (error) {
-            console.error("Failed to fetch initial state from Supabase, using default.", error);
-            // In case of error, the state is already the default state.
-        } finally {
-            setIsLoading(false);
-        }
-    }
-
-    fetchInitialData();
+    // Data is now passed via initialAppState from the server,
+    // so we don't need to fetch it again. We are no longer in a "loading" state.
+    setIsLoading(false);
     
     const storedCart = localStorage.getItem(LS_CART_KEY);
     if (storedCart) {
-        setCart(JSON.parse(storedCart));
+        try {
+            setCart(JSON.parse(storedCart));
+        } catch (e) {
+            console.error("Failed to parse cart from localStorage", e);
+            localStorage.removeItem(LS_CART_KEY);
+        }
     }
     
     const storedAuth = sessionStorage.getItem('malkata_auth');
