@@ -1,5 +1,4 @@
 
-
 'use client';
 import { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
@@ -14,7 +13,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { toast } from '@/hooks/use-toast';
 import { Trash2 } from 'lucide-react';
 import type { GalleryImage } from '@/lib/types';
-import { storeImage } from '@/lib/image-store';
+import { storeImage } from '@/lib/image-store.client';
 import { AsyncImage } from '@/components/async-image';
 
 
@@ -164,5 +163,3 @@ export default function GalleryManager() {
     </div>
   );
 }
-
-    

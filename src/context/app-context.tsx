@@ -1,12 +1,11 @@
 
-
 'use client';
 
 import React, { createContext, useContext, useReducer, useEffect, useState, useMemo, useCallback } from 'react';
 import type { AppState, AppContextType, Action, CartItem, Dish, Testimonial, ContactSubmission, Category, GalleryImage, Subscriber, SiteContent, DesignSettings } from '@/lib/types';
 import { supabase } from '@/lib/supabase';
 import { toast } from '@/hooks/use-toast';
-import { deleteImage } from '@/lib/image-store';
+import { deleteImage } from '@/lib/image-store.client';
 
 // Create the context
 const AppContext = createContext<AppContextType | undefined>(undefined);

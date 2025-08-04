@@ -5,7 +5,6 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 import { useState, useEffect } from 'react';
 import { getImage } from '@/lib/image-store';
-import { useApp } from '@/context/app-context';
 
 interface AsyncImageProps extends Omit<ImageProps, 'src'> {
   imageKey: string | undefined | null;
@@ -15,28 +14,18 @@ interface AsyncImageProps extends Omit<ImageProps, 'src'> {
 export function AsyncImage({ imageKey, alt, skeletonClassName, className, ...props }: AsyncImageProps) {
   const [src, setSrc] = useState<string | null>(null);
   const [error, setError] = useState(false);
-  const { isLoading: isAppLoading } = useApp();
-  const [isImageLoading, setIsImageLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     let isMounted = true;
     
-    if (isAppLoading) {
-        setIsImageLoading(true);
-        return;
-    }
-    
-    setIsImageLoading(true);
-    setError(false);
-
     const fetchImage = () => {
       if (!imageKey) {
         if(isMounted) setSrc("https://placehold.co/600x400.png");
-        setIsImageLoading(false);
+        setIsLoading(false);
         return;
       }
       
-      // The new getImage function from Supabase returns the URL directly.
       const imageUrl = getImage(imageKey);
       
       if (isMounted) {
@@ -46,16 +35,16 @@ export function AsyncImage({ imageKey, alt, skeletonClassName, className, ...pro
             setError(true);
             setSrc("https://placehold.co/600x400.png");
         }
-        setIsImageLoading(false);
+        setIsLoading(false);
       }
     };
 
     fetchImage();
     
     return () => { isMounted = false; };
-  }, [imageKey, isAppLoading]);
+  }, [imageKey]);
 
-  if (isAppLoading || isImageLoading) {
+  if (isLoading) {
     return <Skeleton className={cn("w-full h-full", skeletonClassName)} />;
   }
 

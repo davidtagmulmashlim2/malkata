@@ -1,5 +1,4 @@
 
-
 'use client';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -16,7 +15,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Slider } from '@/components/ui/slider';
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
-import { storeImage, deleteImage } from '@/lib/image-store';
+import { storeImage, deleteImage } from '@/lib/image-store.client';
 import { AsyncImage } from '@/components/async-image';
 import { Leaf, ChefHat, Bike, PartyPopper, Carrot, Rocket, Send, Smartphone } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';

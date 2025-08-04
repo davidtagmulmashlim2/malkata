@@ -1,5 +1,4 @@
 
-
 'use client';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -12,7 +11,7 @@ import { toast } from '@/hooks/use-toast';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useEffect, useState } from 'react';
 import { Input } from '@/components/ui/input';
-import { storeImage, deleteImage } from '@/lib/image-store';
+import { storeImage, deleteImage } from '@/lib/image-store.client';
 import { AsyncImage } from '@/components/async-image';
 import { Trash2 } from 'lucide-react';
 import { cn } from '@/lib/utils';

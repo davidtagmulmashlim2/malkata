@@ -1,5 +1,4 @@
 
-
 'use client'
 import { useState, useEffect, useRef } from 'react'
 import { useForm, Controller, useFieldArray, useWatch } from 'react-hook-form'
@@ -18,7 +17,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { PlusCircle, Edit, Trash2, X, ChevronsUpDown, Check, Eye } from 'lucide-react'
 import { toast } from '@/hooks/use-toast'
 import type { Dish, Category } from '@/lib/types'
-import { storeImage, deleteImage } from '@/lib/image-store';
+import { storeImage, deleteImage } from '@/lib/image-store.client';
 import { AsyncImage } from '@/components/async-image'
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
