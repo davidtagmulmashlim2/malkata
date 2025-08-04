@@ -1,4 +1,5 @@
 
+
 'use client';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -143,9 +144,13 @@ export default function DesignManager() {
           const dataUrl = await fileToDataUrl(file);
           const newImageKey = await storeImage(dataUrl);
           form.setValue('logo_image', newImageKey, { shouldValidate: true, shouldDirty: true });
-          toast({ title: 'תמונת לוגו הועלתה' });
           
-          // After upload and state update, if there was an old image, delete it.
+          // Trigger a save after successful upload to persist the new key
+          const currentValues = form.getValues();
+          const payload = { ...currentValues, logo_image: newImageKey };
+          dispatch({ type: 'UPDATE_DESIGN', payload });
+          toast({ title: 'תמונת לוגו הועלתה ונשמרה' });
+          
           if (oldImageKey) {
             await deleteImage(oldImageKey);
           }
@@ -163,13 +168,16 @@ export default function DesignManager() {
     const imageKey = form.getValues('logo_image');
     if (imageKey) {
         try {
-            // Immediately update the form to remove the image key
             form.setValue('logo_image', '', { shouldValidate: true, shouldDirty: true });
             
-            // Delete the image from storage
+            // Trigger a save to persist the removal
+            const currentValues = form.getValues();
+            const payload = { ...currentValues, logo_image: '' };
+            dispatch({ type: 'UPDATE_DESIGN', payload });
+            
             await deleteImage(imageKey);
 
-            toast({ title: 'תמונת לוגו הוסרה' });
+            toast({ title: 'תמונת לוגו הוסרה ונשמרה' });
         } catch (error) {
              console.error("Error deleting image:", error);
              toast({ title: 'שגיאה במחיקת תמונה', variant: 'destructive' });
