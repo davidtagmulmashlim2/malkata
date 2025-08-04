@@ -66,7 +66,27 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="he" dir="rtl">
-        <head />
+        <head>
+          <title>מלכתא - אוכל ביתי</title>
+          <meta name="description" content="מלכתא - טעמים של בית. אוכל ביתי אותנטי, מוכן באהבה כל יום מחדש." />
+          
+          {/* Open Graph / Facebook */}
+          <meta property="og:type" content="website" />
+          <meta property="og:url" content="https://your-website-url.com/" />
+          <meta property="og:title" content="מלכתא - אוכל ביתי" />
+          <meta property="og:description" content="אוכל ביתי אותנטי, מוכן באהבה כל יום מחדש." />
+          {/* We'll use a placeholder image for now, you can replace this later with your actual logo URL */}
+          <meta property="og:image" content="https://placehold.co/1200x630/e0a84c/FFFFFF/png?text=מלכתא" />
+
+          {/* Twitter */}
+          <meta property="twitter:card" content="summary_large_image" />
+          <meta property="twitter:url" content="https://your-website-url.com/" />
+          <meta property="twitter:title" content="מלכתא - אוכל ביתי" />
+          <meta property="twitter:description" content="אוכל ביתי אותנטי, מוכן באהבה כל יום מחדש." />
+          <meta property="twitter:image" content="https://placehold.co/1200x630/e0a84c/FFFFFF/png?text=מלכתא" />
+          
+          <meta name="theme-color" content="#e0a84c" />
+        </head>
         <AppProvider initialAppState={DEFAULT_APP_STATE}>
             <AppBody>
                 {children}
