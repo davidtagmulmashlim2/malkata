@@ -138,16 +138,18 @@ export default function DesignManager() {
       const file = event.target.files?.[0];
       if (!file) return;
 
+      const oldImageKey = form.getValues('logo_image');
+
       try {
           const dataUrl = await fileToDataUrl(file);
-          // If there's an old image, delete it from the store first
-          const oldImageKey = form.getValues('logo_image');
+          const newImageKey = await storeImage(dataUrl);
+          form.setValue('logo_image', newImageKey, { shouldValidate: true, shouldDirty: true });
+          toast({ title: 'תמונת לוגו הועלתה' });
+          
+          // After upload and state update, if there was an old image, delete it.
           if (oldImageKey) {
             await deleteImage(oldImageKey);
           }
-          const imageKey = await storeImage(dataUrl);
-          form.setValue('logo_image', imageKey, { shouldValidate: true });
-          toast({ title: 'תמונת לוגו הועלתה' });
       } catch (error: any) {
           console.error("Error uploading image:", error);
           toast({ 
@@ -162,14 +164,10 @@ export default function DesignManager() {
     const imageKey = form.getValues('logo_image');
     if (imageKey) {
         try {
-            // First, update the form state to remove the image key
-            form.setValue('logo_image', '', { shouldValidate: true });
+            // Immediately update the form to remove the image key
+            form.setValue('logo_image', '', { shouldValidate: true, shouldDirty: true });
             
-            // Then, trigger the form submission to save the now-empty image field to the DB
-            // This ensures the DB is updated BEFORE we delete the file from storage.
-            await form.handleSubmit(onSubmit)();
-
-            // Finally, delete the image file from storage
+            // Delete the image from storage
             await deleteImage(imageKey);
 
             toast({ title: 'תמונת לוגו הוסרה' });
@@ -187,6 +185,7 @@ export default function DesignManager() {
     }
     dispatch({ type: 'UPDATE_DESIGN', payload });
     toast({ title: 'הגדרות עיצוב עודכנו!' });
+    form.reset(payload, { keepValues: true });
   };
 
   return (
@@ -357,14 +356,10 @@ export default function DesignManager() {
               )}
             />
             
-            <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>שמור שינויי עיצוב</Button>
+            <Button type="submit" className="w-full" disabled={!form.formState.isDirty}>שמור שינויי עיצוב</Button>
           </form>
         </Form>
       </CardContent>
     </Card>
   );
 }
-
-    
-
-    

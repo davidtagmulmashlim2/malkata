@@ -2,7 +2,7 @@
 
 'use client'
 import { useState, useEffect, useRef } from 'react'
-import { useForm, Controller, useFieldArray } from 'react-hook-form'
+import { useForm, Controller, useFieldArray, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useApp } from '@/context/app-context'
@@ -227,27 +227,31 @@ export default function MenuManager() {
     setIsCategoryDialogOpen(false)
   }
   
-    const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>, onChange: (value: string) => void, oldImageKey?: string) => {
-        const file = event.target.files?.[0];
-        if (!file) return;
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>, fieldName: 'main_image' | 'image') => {
+    const file = event.target.files?.[0];
+    if (!file) return;
 
-        try {
-            if (oldImageKey) {
-                // We don't delete from storage here. Deletion happens when the form is saved
-                // with the new image key, or when an item is explicitly deleted.
-            }
-            const dataUrl = await fileToDataUrl(file);
-            const imageKey = await storeImage(dataUrl);
-            onChange(imageKey);
-        } catch (error: any) {
-            console.error("Error uploading image:", error);
-            toast({ 
-                title: 'שגיאה בהעלאת תמונה',
-                description: error.message || 'An unknown error occurred.',
-                variant: 'destructive' 
-            });
+    const form = fieldName === 'main_image' ? dishForm : categoryForm;
+    const oldImageKey = form.getValues(fieldName as any);
+
+    try {
+        const dataUrl = await fileToDataUrl(file);
+        const newImageKey = await storeImage(dataUrl);
+        form.setValue(fieldName as any, newImageKey, { shouldValidate: true });
+
+        // If there was an old image, delete it from storage after the new one is uploaded.
+        if (oldImageKey) {
+            await deleteImage(oldImageKey);
         }
-    };
+    } catch (error: any) {
+        console.error("Error handling file change:", error);
+        toast({
+            title: 'שגיאה בהעלאת תמונה',
+            description: error.message || 'An unknown error occurred.',
+            variant: 'destructive'
+        });
+    }
+  };
 
 
   const deleteDish = (id: string) => {
@@ -290,13 +294,12 @@ export default function MenuManager() {
         const newImages = [...currentImages];
         newImages.splice(index, 1);
         dishForm.setValue('gallery_images', newImages, { shouldValidate: true });
-
-        // Save the change to the DB first
-        await dishForm.handleSubmit(handleDishSubmit)();
-
-        // Then delete from storage
+        
+        // This relies on the parent form being submitted to persist the change.
+        // The image file is deleted optimistically.
         if (imageToRemove) {
             await deleteImage(imageToRemove);
+            toast({ title: 'תמונת גלריה הוסרה' });
         }
     };
 
@@ -378,7 +381,7 @@ export default function MenuManager() {
                                 <Input 
                                     type="file" 
                                     accept="image/*" 
-                                    onChange={(e) => handleFileChange(e, field.onChange, field.value)}
+                                    onChange={(e) => handleFileChange(e, 'main_image')}
                                 />
                              </FormControl>
                              <FormMessage />
@@ -664,7 +667,7 @@ export default function MenuManager() {
                                 <Input 
                                     type="file" 
                                     accept="image/*" 
-                                    onChange={(e) => handleFileChange(e, field.onChange, field.value)}
+                                    onChange={(e) => handleFileChange(e, 'image')}
                                 />
                              </FormControl>
                              <FormMessage />
@@ -775,7 +778,3 @@ export default function MenuManager() {
     </div>
   )
 }
-
-    
-
-    
