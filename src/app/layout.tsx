@@ -77,7 +77,7 @@ export default async function RootLayout({
   const { seo, hero } = initialState.siteContent;
   const { logo_image } = initialState.design;
   
-  const title = seo?.title || hero.title_first_word + ' ' + hero.title_rest || 'מלכתא';
+  const title = seo?.title || (hero.title_first_word ? hero.title_first_word + ' ' + hero.title_rest : 'מלכתא');
   const description = seo?.description || hero.subtitle || 'אוכל ביתי אותנטי, מוכן באהבה כל יום מחדש.';
   
   let imageUrl: string | undefined = undefined;
