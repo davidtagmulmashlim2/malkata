@@ -1,5 +1,4 @@
 
-import { AppProviderClient } from '@/components/app-provider';
 import type { AppState } from '@/lib/types';
 import { DEFAULT_APP_STATE } from '@/lib/data';
 import { getImage } from '@/lib/image-store';
@@ -20,6 +19,7 @@ import '../styles/themes/minimal.css';
 import '../styles/themes/biblical.css';
 import { Toaster } from '@/components/ui/toaster';
 import { CartSheet } from '@/components/cart-sheet';
+import { AppProviderClient } from '@/components/app-provider';
 
 async function getInitialState(): Promise<AppState> {
   try {
