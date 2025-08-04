@@ -105,6 +105,11 @@ export const DEFAULT_APP_STATE: AppState = {
         color: '#52525b', // zinc-600
         font_size: 'base',
         is_bold: false,
+    },
+    seo: {
+        title: 'מלכתא - אוכל ביתי',
+        description: 'לא רק אוכל, חוויה של שבת.',
+        image: '',
     }
   },
   // These arrays are intentionally empty.

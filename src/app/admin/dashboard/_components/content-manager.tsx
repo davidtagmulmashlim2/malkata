@@ -16,7 +16,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Slider } from '@/components/ui/slider';
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
-import { storeImage } from '@/lib/image-store';
+import { storeImage, deleteImage } from '@/lib/image-store';
 import { AsyncImage } from '@/components/async-image';
 import { Leaf, ChefHat, Bike, PartyPopper, Carrot, Rocket, Send, Smartphone } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -137,6 +137,11 @@ const contentSchema = z.object({
       font_size: z.string().optional(),
       is_bold: z.boolean().optional(),
   }).optional(),
+  seo: z.object({
+    title: z.string().optional(),
+    description: z.string().optional(),
+    image: z.string().optional(),
+  }).optional(),
 });
 
 type ContentFormValues = z.infer<typeof contentSchema>;
@@ -170,6 +175,7 @@ export default function ContentManager() {
   const heroImage = form.watch('hero.image');
   const aboutImage = form.watch('about.image');
   const menuImage = form.watch('menu.main_image');
+  const seoImage = form.watch('seo.image');
 
   useEffect(() => {
     if (siteContent) {
@@ -177,17 +183,21 @@ export default function ContentManager() {
     }
   }, [siteContent, form]);
 
-  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>, fieldName: keyof ContentFormValues['hero'] | keyof ContentFormValues['about'] | keyof ContentFormValues['menu']) => {
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>, fieldName: any) => {
       const file = event.target.files?.[0];
       if (!file) return;
 
+      const oldImageKey = form.getValues(fieldName);
+
       try {
           const dataUrl = await fileToDataUrl(file);
-          const imageKey = await storeImage(dataUrl);
+          const newImageKey = await storeImage(dataUrl);
           
-          // This is a bit tricky due to the nested structure
-          const [section, key] = (fieldName as string).split('.');
-          form.setValue(fieldName as any, imageKey, { shouldValidate: true });
+          form.setValue(fieldName, newImageKey, { shouldValidate: true });
+
+          if (oldImageKey) {
+            await deleteImage(oldImageKey);
+          }
           
       } catch (error: any) {
           console.error("Error uploading image:", error);
@@ -215,7 +225,7 @@ export default function ContentManager() {
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            <Accordion type="multiple" defaultValue={['hero', 'about', 'contact', 'menu', 'shabbat-notice', 'newsletter', 'testimonials', 'features', 'cart', 'footer']} className="w-full">
+            <Accordion type="multiple" defaultValue={['hero', 'about', 'contact', 'menu', 'shabbat-notice', 'newsletter', 'testimonials', 'features', 'cart', 'footer', 'seo']} className="w-full">
               <AccordionItem value="hero">
                 <AccordionTrigger className="font-headline text-xl">עמוד הבית (אזור עליון)</AccordionTrigger>
                 <AccordionContent className="space-y-4 pt-4">
@@ -419,6 +429,46 @@ export default function ContentManager() {
                            </FormControl>
                          <FormMessage />
                          <ImagePreview imageKey={field.value} alt="תצוגה מקדימה של תמונת אודות" />
+                       </FormItem>
+                    )}
+                  />
+                </AccordionContent>
+              </AccordionItem>
+              
+               <AccordionItem value="seo">
+                <AccordionTrigger className="font-headline text-xl">SEO ושיתוף ברשתות חברתיות</AccordionTrigger>
+                <AccordionContent className="space-y-4 pt-4">
+                  <p className="text-sm text-muted-foreground">כאן קובעים איך הקישור לאתר ייראה כשמשתפים אותו בוואטסאפ, פייסבוק וכו'.</p>
+                  <FormField name="seo.title" control={form.control} render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>כותרת לשיתוף (Title)</FormLabel>
+                      <FormControl><Input {...field} value={field.value ?? ''} /></FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )} />
+                  <FormField name="seo.description" control={form.control} render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>תיאור לשיתוף (Description)</FormLabel>
+                      <FormControl><Textarea {...field} value={field.value ?? ''} /></FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )} />
+                  <Controller
+                    control={form.control}
+                    name="seo.image"
+                    render={({ field }) => (
+                       <FormItem>
+                         <FormLabel>תמונה לשיתוף (1200x630px)</FormLabel>
+                         <p className="text-xs text-muted-foreground pb-2">אם לא תועלה תמונה, המערכת תשתמש בלוגו שהוגדר בניהול העיצוב.</p>
+                           <FormControl>
+                            <Input 
+                                type="file" 
+                                accept="image/*" 
+                                onChange={(e) => handleFileChange(e, 'seo.image')}
+                            />
+                           </FormControl>
+                         <FormMessage />
+                         <ImagePreview imageKey={field.value} alt="תצוגה מקדימה של תמונת שיתוף" />
                        </FormItem>
                     )}
                   />

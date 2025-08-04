@@ -22,12 +22,22 @@ import '../styles/themes/biblical.css';
 import { useEffect, useState } from 'react';
 import type { AppState } from '@/lib/types';
 import { DEFAULT_APP_STATE } from '@/lib/data';
+import Head from 'next/head';
+import { getImage } from '@/lib/image-store';
 
 
 // This component now handles applying themes and fonts AFTER the initial client load.
 function AppBody({ children }: { children: React.ReactNode }) {
     const { state, isLoading } = useApp();
     const [themeLoaded, setThemeLoaded] = useState(false);
+    
+    const { seo } = state.siteContent;
+    const { logo_image } = state.design;
+
+    const ogImage = seo?.image ? getImage(seo.image) : (logo_image ? getImage(logo_image) : 'https://placehold.co/1200x630/e0a84c/FFFFFF/png?text=מלכתא');
+    const ogTitle = seo?.title || 'מלכתא - אוכל ביתי';
+    const ogDescription = seo?.description || 'אוכל ביתי אותנטי, מוכן באהבה כל יום מחדש.';
+
 
     useEffect(() => {
         // Only apply theme and font changes on the client side, and after data has loaded.
@@ -47,6 +57,24 @@ function AppBody({ children }: { children: React.ReactNode }) {
     // The `isLoading` state within child components will handle showing skeletons.
     return (
         <body className={cn('min-h-screen flex flex-col', { 'opacity-0': !themeLoaded, 'opacity-100 transition-opacity duration-300': themeLoaded })}>
+             <Head>
+                <title>{ogTitle}</title>
+                <meta name="description" content={ogDescription} />
+                
+                {/* Open Graph / Facebook */}
+                <meta property="og:type" content="website" />
+                <meta property="og:title" content={ogTitle} />
+                <meta property="og:description" content={ogDescription} />
+                <meta property="og:image" content={ogImage || undefined} />
+
+                {/* Twitter */}
+                <meta property="twitter:card" content="summary_large_image" />
+                <meta property="twitter:title" content={ogTitle} />
+                <meta property="twitter:description" content={ogDescription} />
+                <meta property="twitter:image" content={ogImage || undefined} />
+                
+                <meta name="theme-color" content="#e0a84c" />
+            </Head>
             <Header />
             <main className="flex-grow">{children}</main>
             <Footer />
@@ -67,25 +95,9 @@ export default function RootLayout({
   return (
     <html lang="he" dir="rtl">
         <head>
+          {/* Fallback tags for server-side render. Client-side Head will override this. */}
           <title>מלכתא - אוכל ביתי</title>
           <meta name="description" content="מלכתא - טעמים של בית. אוכל ביתי אותנטי, מוכן באהבה כל יום מחדש." />
-          
-          {/* Open Graph / Facebook */}
-          <meta property="og:type" content="website" />
-          <meta property="og:url" content="https://your-website-url.com/" />
-          <meta property="og:title" content="מלכתא - אוכל ביתי" />
-          <meta property="og:description" content="אוכל ביתי אותנטי, מוכן באהבה כל יום מחדש." />
-          {/* We'll use a placeholder image for now, you can replace this later with your actual logo URL */}
-          <meta property="og:image" content="https://placehold.co/1200x630/e0a84c/FFFFFF/png?text=מלכתא" />
-
-          {/* Twitter */}
-          <meta property="twitter:card" content="summary_large_image" />
-          <meta property="twitter:url" content="https://your-website-url.com/" />
-          <meta property="twitter:title" content="מלכתא - אוכל ביתי" />
-          <meta property="twitter:description" content="אוכל ביתי אותנטי, מוכן באהבה כל יום מחדש." />
-          <meta property="twitter:image" content="https://placehold.co/1200x630/e0a84c/FFFFFF/png?text=מלכתא" />
-          
-          <meta name="theme-color" content="#e0a84c" />
         </head>
         <AppProvider initialAppState={DEFAULT_APP_STATE}>
             <AppBody>

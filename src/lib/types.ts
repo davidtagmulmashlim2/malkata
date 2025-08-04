@@ -154,6 +154,11 @@ export interface SiteContent {
       font_size?: string;
       is_bold?: boolean;
   };
+  seo?: {
+    title?: string;
+    description?: string;
+    image?: string;
+  }
 }
 
 export interface DesignSettings {
