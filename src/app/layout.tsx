@@ -1,7 +1,11 @@
 
 import { AppProviderClient } from '@/components/app-provider';
-import { Toaster } from '@/components/ui/toaster';
-import { CartSheet } from '@/components/cart-sheet';
+import type { AppState } from '@/lib/types';
+import { DEFAULT_APP_STATE } from '@/lib/data';
+import { getImage } from '@/lib/image-store';
+import { supabase } from '@/lib/supabase';
+import React from 'react';
+import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import '../styles/themes/default.css';
 import '../styles/themes/retro.css';
@@ -14,12 +18,8 @@ import '../styles/themes/luxury.css';
 import '../styles/themes/natural.css';
 import '../styles/themes/minimal.css';
 import '../styles/themes/biblical.css';
-import type { AppState } from '@/lib/types';
-import { DEFAULT_APP_STATE } from '@/lib/data';
-import { getImage } from '@/lib/image-store';
-import { supabase } from '@/lib/supabase';
-import React from 'react';
-import type { Metadata, Viewport } from 'next';
+import { Toaster } from '@/components/ui/toaster';
+import { CartSheet } from '@/components/cart-sheet';
 
 async function getInitialState(): Promise<AppState> {
   try {
@@ -78,11 +78,13 @@ export async function generateMetadata(): Promise<Metadata> {
   const logoImageKey = logo_image;
 
   if (seoImageKey) {
-      imageUrl = getImage(seoImageKey) || undefined;
+      const url = getImage(seoImageKey);
+      if (url) imageUrl = url;
   }
   
   if (!imageUrl && logoImageKey) {
-      imageUrl = getImage(logoImageKey) || undefined;
+      const url = getImage(logoImageKey);
+      if (url) imageUrl = url;
   }
 
   if (!imageUrl) {
