@@ -100,14 +100,18 @@ export default async function RootLayout({
       imageUrl = `https://placehold.co/1200x630/FAEBD7/8B0000/png?text=${encodeURIComponent(title)}`;
   }
 
-  const faviconUrl = favicon ? getImage(favicon) : '/favicon.ico';
+  const faviconUrl = favicon ? getImage(favicon) : undefined;
 
   return (
     <html lang="he" dir="rtl">
       <head>
         <title>{title}</title>
         <meta name="description" content={description} />
-        {faviconUrl && <link rel="icon" href={faviconUrl} sizes="any" />}
+        {faviconUrl ? (
+          <link rel="icon" href={faviconUrl} sizes="any" />
+        ) : (
+          <link rel="icon" href="/favicon.ico" sizes="any" />
+        )}
         <meta property="og:title" content={title} />
         <meta property="og:description" content={description} />
         {imageUrl && <meta property="og:image" content={imageUrl} />}
