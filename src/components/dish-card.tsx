@@ -119,7 +119,7 @@ export function DishCard({ dish }: DishCardProps) {
         <DialogTrigger asChild>
           <div className="cursor-pointer">
             <div className="relative aspect-square w-full overflow-hidden rounded-lg">
-                <AsyncImage imageKey={dish.main_image} alt={dish.name} layout="fill" objectFit="cover" className="transition-transform duration-300 group-hover:scale-105" />
+                <AsyncImage imageKey={dish.main_image} alt={dish.name} layout="fill" objectFit="cover" />
                 <div className="absolute top-2 left-0 right-0 px-2 flex justify-between items-start">
                     {isClient && cartItem ? (
                         <div className="bg-primary text-primary-foreground rounded-full h-7 w-7 flex items-center justify-center text-sm font-bold z-10">
