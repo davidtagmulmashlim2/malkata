@@ -188,12 +188,12 @@ export function DishCard({ dish }: DishCardProps) {
             </div>
           </div>
         </DialogTrigger>
-        <div className="mt-2 flex-grow flex items-start justify-between gap-2">
+        <div className="mt-2 flex-grow flex items-start justify-between gap-4">
             <div className="flex-1 min-w-0">
                 <h3 className={cn("font-headline font-bold", nameFontSizeClass)}>{dish.name}</h3>
                 <p className={cn("text-muted-foreground mt-1", descriptionFontSizeClass)}>{dish.short_description}</p>
             </div>
-            <div className="flex-shrink-0 flex flex-col items-center justify-start gap-2 pl-2">
+            <div className="flex-shrink-0 flex flex-col items-center h-full justify-between">
                  <TooltipProvider>
                     <Tooltip>
                         <TooltipTrigger asChild>
@@ -209,6 +209,7 @@ export function DishCard({ dish }: DishCardProps) {
                         </TooltipTrigger>
                         <TooltipContent
                           side="top"
+                          align="center"
                           className="bg-black text-white rounded-md p-1 px-2 text-xs shadow-lg border-0 relative"
                         >
                           <p>הוספה לסל</p>
@@ -309,5 +310,3 @@ export function DishCard({ dish }: DishCardProps) {
     </Dialog>
   );
 }
-
-    
