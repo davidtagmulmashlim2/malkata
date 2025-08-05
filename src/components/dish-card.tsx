@@ -193,7 +193,7 @@ export function DishCard({ dish }: DishCardProps) {
                 <h3 className={cn("font-headline font-bold", nameFontSizeClass)}>{dish.name}</h3>
                 <p className={cn("text-muted-foreground mt-1", descriptionFontSizeClass)}>{dish.short_description}</p>
             </div>
-            <div className="flex-shrink-0 flex flex-col items-center gap-1">
+            <div className="flex-shrink-0 flex flex-col items-center">
                  <TooltipProvider>
                     <Tooltip>
                         <TooltipTrigger asChild>
@@ -228,7 +228,7 @@ export function DishCard({ dish }: DishCardProps) {
                         </TooltipContent>
                     </Tooltip>
                  </TooltipProvider>
-                <div className="text-center w-full min-h-[2.5rem] flex flex-col justify-center">
+                <div className="text-center w-full mt-1">
                     <span className="text-md md:text-lg font-bold leading-tight">{dish.price} ₪</span>
                     {dish.price_subtitle && <p className="text-xs text-muted-foreground leading-tight w-full">{dish.price_subtitle}</p>}
                 </div>
