@@ -93,6 +93,17 @@
     animation: slow-zoom-in 20s ease-in-out infinite alternate;
   }
 
+  .custom-tooltip::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: -4px;
+    transform: translateX(-50%);
+    border-width: 5px;
+    border-style: solid;
+    border-color: black transparent transparent transparent;
+  }
+
   @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
