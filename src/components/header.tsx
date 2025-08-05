@@ -130,7 +130,6 @@ export function Header() {
   };
 
   const NavLinks = ({ className, mobile = false }: { className?: string, mobile?: boolean }) => {
-     const activeSlug = pathname.split('/').pop();
     return (
         <nav className={cn('flex items-center gap-4 lg:gap-6', className)}>
         {isLoading ? (
@@ -138,8 +137,12 @@ export function Header() {
             ) : (
                 <>
                     {navLinks.map(link => {
-                        const isActive = (pathname.startsWith(link.href) && link.href !== '/') || pathname === link.href;
+                        // For the main menu, only highlight if it's not a submenu of /menu
+                        const isMenuActive = pathname.startsWith('/menu');
+                        const isActive = (link.href === '/menu' && isMenuActive) || (link.href !== '/menu' && pathname === link.href);
                         
+                        if (mobile && link.href === '/menu') return null;
+
                         return (
                             <Link
                                 key={link.href}
@@ -167,30 +170,6 @@ export function Header() {
                             >
                             אזור אישי
                         </Link>
-                    )}
-
-                    {/* Mobile Only Category Links */}
-                    {mobile && !isLoading && pathname.startsWith('/menu') && (
-                        <>
-                            <Separator className="my-4" />
-                            <h4 className="text-sm font-semibold text-muted-foreground px-2">קטגוריות</h4>
-                            {state.categories.map((category) => {
-                                const isActive = activeSlug === category.slug;
-                                return (
-                                    <Link
-                                        key={category.id}
-                                        href={`/menu/${category.slug}`}
-                                        onClick={() => setIsMobileMenuOpen(false)}
-                                        className={cn(
-                                            'transition-colors hover:text-primary no-underline',
-                                            isActive ? 'text-primary font-bold' : 'text-muted-foreground'
-                                        )}
-                                    >
-                                        {category.name}
-                                    </Link>
-                                )
-                            })}
-                        </>
                     )}
                 </>
             )
@@ -227,26 +206,29 @@ export function Header() {
         {/* Mobile Layout */}
         <div className="md:hidden flex w-full justify-between items-center">
           {!isLoading && <Logo />}
-          <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
-            <SheetTrigger asChild>
-              <Button variant="ghost" size="icon">
-                <Menu className="h-6 w-6" />
-                <span className="sr-only">פתח תפריט ניווט</span>
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="left">
-                <SheetHeader className="p-6 pb-0 text-right">
-                    <SheetTitle>
-                        <span onClick={() => setIsMobileMenuOpen(false)}>
-                            <Logo />
-                        </span>
-                    </SheetTitle>
-                </SheetHeader>
-                <div className="flex flex-col gap-6 p-6">
-                    <NavLinks className="flex-col items-start text-lg gap-6" mobile={true} />
-                </div>
-            </SheetContent>
-          </Sheet>
+          {/* On menu pages, the navigation is handled by the MenuLayout, so we don't need the hamburger */}
+          {!pathname.startsWith('/menu') && (
+            <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon">
+                  <Menu className="h-6 w-6" />
+                  <span className="sr-only">פתח תפריט ניווט</span>
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left">
+                  <SheetHeader className="p-6 pb-0 text-right">
+                      <SheetTitle>
+                          <span onClick={() => setIsMobileMenuOpen(false)}>
+                              <Logo />
+                          </span>
+                      </SheetTitle>
+                  </SheetHeader>
+                  <div className="flex flex-col gap-6 p-6">
+                      <NavLinks className="flex-col items-start text-lg gap-6" mobile={true} />
+                  </div>
+              </SheetContent>
+            </Sheet>
+          )}
         </div>
       </div>
     </header>
