@@ -146,10 +146,10 @@ export function DishCard({ dish }: DishCardProps) {
         </div>
         <div className="flex justify-between items-center pt-4">
             <div>
-              <span className="text-xl font-bold text-primary">{dish.price} ₪</span>
+              <span className="text-lg md:text-xl font-bold text-primary">{dish.price} ₪</span>
               {dish.price_subtitle && <p className="text-xs text-muted-foreground">{dish.price_subtitle}</p>}
             </div>
-            <Button onClick={handleDirectAddToCart} disabled={!dish.is_available}>
+            <Button size="sm" onClick={handleDirectAddToCart} disabled={!dish.is_available}>
               <ShoppingBagIcon className="ms-2 h-4 w-4" />
               הוספה לסל
             </Button>

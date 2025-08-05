@@ -5,7 +5,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Menu, UtensilsCrossed, User, Crown as Crown1, Gem, Star, Shield } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useApp } from '@/context/app-context';
@@ -205,12 +205,16 @@ export function Header() {
               </Button>
             </SheetTrigger>
             <SheetContent side="left">
-              <div className="flex flex-col gap-6 p-6">
-                <div className="mb-4">
-                  {!isLoading && <Logo />}
+                <SheetHeader className="p-6 pb-0 text-right">
+                    <SheetTitle>
+                        <span onClick={() => setIsMobileMenuOpen(false)}>
+                            <Logo />
+                        </span>
+                    </SheetTitle>
+                </SheetHeader>
+                <div className="flex flex-col gap-6 p-6">
+                    <NavLinks className="flex-col items-start text-lg gap-6" mobile={true} />
                 </div>
-                <NavLinks className="flex-col items-start text-lg gap-6" mobile={true} />
-              </div>
             </SheetContent>
           </Sheet>
         </div>
