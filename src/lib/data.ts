@@ -117,8 +117,6 @@ export const DEFAULT_APP_STATE: AppState = {
         quick_view_overlay_opacity: 40,
         quick_view_font: 'default',
         quick_view_color: '#FFFFFF',
-        dish_name_font_size: 'lg',
-        dish_description_font_size: 'sm',
     }
   },
   // These arrays are intentionally empty.

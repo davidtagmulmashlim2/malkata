@@ -122,6 +122,9 @@ export function DishCard({ dish }: DishCardProps) {
   };
   
   const buttonText = cartItem ? "עדכן כמות בסל" : "הוספה לסל";
+  
+  const nameFontSizeClass = textSizeClasses[dish.name_font_size || 'lg'] || 'text-lg';
+  const descriptionFontSizeClass = textSizeClasses[dish.description_font_size || 'sm'] || 'text-sm';
 
 
   return (
@@ -176,8 +179,8 @@ export function DishCard({ dish }: DishCardProps) {
         <div className="mt-2 flex flex-col flex-grow">
             <div className="grid grid-cols-3 gap-2 flex-grow">
                 <div className="col-span-2 flex flex-col">
-                     <h3 className={cn("font-headline font-bold", textSizeClasses[dishCardSettings?.dish_name_font_size ?? 'lg'])}>{dish.name}</h3>
-                     <p className={cn("text-muted-foreground", textSizeClasses[dishCardSettings?.dish_description_font_size ?? 'sm'])}>{dish.short_description}</p>
+                     <h3 className={cn("font-headline font-bold", nameFontSizeClass)}>{dish.name}</h3>
+                     <p className={cn("text-muted-foreground", descriptionFontSizeClass)}>{dish.short_description}</p>
                 </div>
                 <div className="flex flex-col justify-between items-end">
                      <TooltipProvider>

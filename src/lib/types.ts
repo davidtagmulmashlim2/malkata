@@ -14,6 +14,8 @@ export interface Dish {
   is_available: boolean;
   tags: ('vegan' | 'spicy' | 'new' | 'piquant' | 'kids-favorite')[];
   is_recommended?: boolean;
+  name_font_size?: string;
+  description_font_size?: string;
 }
 
 export interface Category {
@@ -165,8 +167,6 @@ export interface SiteContent {
     quick_view_overlay_opacity?: number;
     quick_view_font?: string;
     quick_view_color?: string;
-    dish_name_font_size?: string;
-    dish_description_font_size?: string;
   };
 }
 

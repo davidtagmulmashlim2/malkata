@@ -186,8 +186,6 @@ const contentSchema = z.object({
     quick_view_overlay_opacity: z.coerce.number().min(0).max(100).optional(),
     quick_view_font: z.string().optional(),
     quick_view_color: z.string().optional(),
-    dish_name_font_size: z.string().optional(),
-    dish_description_font_size: z.string().optional(),
   }).optional(),
 });
 
@@ -588,29 +586,6 @@ export default function ContentManager() {
                             <FormControl><Input type="color" {...field} className="p-1 h-10 w-full" value={field.value ?? '#FFFFFF'} /></FormControl>
                             <FormMessage />
                           </FormItem>
-                      )} />
-                  </div>
-                  <h4 className="font-medium text-md border-b pb-2 pt-4">תוכן הכרטיס</h4>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                     <FormField name="dish_card.dish_name_font_size" control={form.control} render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>גודל גופן (שם המנה)</FormLabel>
-                          <Select onValueChange={field.onChange} value={field.value}>
-                            <FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl>
-                            <SelectContent>{fontSizes.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )} />
-                      <FormField name="dish_card.dish_description_font_size" control={form.control} render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>גודל גופן (תיאור)</FormLabel>
-                          <Select onValueChange={field.onChange} value={field.value}>
-                            <FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl>
-                            <SelectContent>{fontSizes.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
                       )} />
                   </div>
                 </AccordionContent>

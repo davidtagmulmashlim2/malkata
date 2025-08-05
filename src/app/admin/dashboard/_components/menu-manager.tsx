@@ -49,6 +49,7 @@ const slugify = (text: string): string => {
 }
 
 const fontSizes = ['xs', 'sm', 'base', 'lg', 'xl', '2xl', '3xl', '4xl', '5xl', '6xl', '7xl', '8xl', '9xl'];
+const fontSizesWithDefault = [{ name: 'ברירת מחדל', value: 'default' }, ...fontSizes.map(s => ({ name: s, value: s }))];
 const fonts = [
     { name: 'ברירת מחדל של האתר', value: 'default' },
     { name: 'Playfair Display', value: 'playfair' },
@@ -85,6 +86,8 @@ const dishSchema = z.object({
   is_available: z.boolean(),
   is_recommended: z.boolean().optional(),
   tags: z.array(z.string()),
+  name_font_size: z.string().optional(),
+  description_font_size: z.string().optional(),
 })
 
 const categorySchema = z.object({
@@ -131,7 +134,7 @@ export default function MenuManager() {
     defaultValues: {
         name: '', short_description: '', full_description: '', price: 0, category_ids: [],
         is_available: true, is_recommended: false, tags: [], main_image: '', gallery_images: [],
-        price_subtitle: '',
+        price_subtitle: '', name_font_size: 'default', description_font_size: 'default',
     }
   })
   const categoryForm = useForm<z.infer<typeof categorySchema>>({ 
@@ -149,7 +152,7 @@ export default function MenuManager() {
         dishForm.reset({
             name: '', short_description: '', full_description: '', price: 0, category_ids: [],
             is_available: true, is_recommended: false, tags: [], main_image: '', gallery_images: [],
-            price_subtitle: '',
+            price_subtitle: '', name_font_size: 'default', description_font_size: 'default',
         });
     } else if (editingDish) {
         dishForm.reset({
@@ -159,6 +162,8 @@ export default function MenuManager() {
           price_subtitle: editingDish.price_subtitle || '',
           tags: editingDish.tags || [],
           gallery_images: editingDish.gallery_images || [],
+          name_font_size: editingDish.name_font_size || 'default',
+          description_font_size: editingDish.description_font_size || 'default',
         });
     }
   }, [isDishDialogOpen, editingDish, dishForm]);
@@ -198,11 +203,17 @@ export default function MenuManager() {
   }
 
   const handleDishSubmit = (values: z.infer<typeof dishSchema>) => {
+    const dishData = {
+        ...values,
+        name_font_size: values.name_font_size === 'default' ? undefined : values.name_font_size,
+        description_font_size: values.description_font_size === 'default' ? undefined : values.description_font_size,
+    };
+
     if (editingDish) {
-      dispatch({ type: 'UPDATE_DISH', payload: { ...values, id: editingDish.id } as Dish })
+      dispatch({ type: 'UPDATE_DISH', payload: { ...dishData, id: editingDish.id } as Dish })
       toast({ title: 'מנה עודכנה בהצלחה' })
     } else {
-      dispatch({ type: 'ADD_DISH', payload: values as Dish })
+      dispatch({ type: 'ADD_DISH', payload: dishData as Dish })
       toast({ title: 'מנה נוספה בהצלחה' })
     }
     setIsDishDialogOpen(false)
@@ -552,6 +563,31 @@ export default function MenuManager() {
                         <FormMessage />
                       </FormItem>
                     )} />
+                     <div className="border p-4 rounded-md space-y-4">
+                        <h3 className="text-lg font-medium">הגדרות עיצוב מנה</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                             <FormField name="name_font_size" control={dishForm.control} render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>גודל גופן (שם המנה)</FormLabel>
+                                  <Select onValueChange={field.onChange} value={field.value ?? 'default'}>
+                                    <FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl>
+                                    <SelectContent>{fontSizesWithDefault.map(s => <SelectItem key={s.value} value={s.value}>{s.name}</SelectItem>)}</SelectContent>
+                                  </Select>
+                                  <FormMessage />
+                                </FormItem>
+                              )} />
+                              <FormField name="description_font_size" control={dishForm.control} render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>גודל גופן (תיאור)</FormLabel>
+                                  <Select onValueChange={field.onChange} value={field.value ?? 'default'}>
+                                    <FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl>
+                                    <SelectContent>{fontSizesWithDefault.map(s => <SelectItem key={s.value} value={s.value}>{s.name}</SelectItem>)}</SelectContent>
+                                  </Select>
+                                  <FormMessage />
+                                </FormItem>
+                              )} />
+                          </div>
+                    </div>
                     <div className="flex justify-between">
                       <FormField name="is_available" control={dishForm.control} render={({ field }) => (
                         <FormItem className="flex items-center gap-2 space-y-0">
@@ -777,3 +813,4 @@ export default function MenuManager() {
     </div>
   )
 }
+
