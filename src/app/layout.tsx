@@ -107,8 +107,12 @@ export default async function RootLayout({
       <head>
         <title>{title}</title>
         <meta name="description" content={description} />
-        {faviconUrl && (
+        {faviconUrl ? (
           <link rel="icon" href={faviconUrl} sizes="any" />
+        ) : (
+          // This fallback is only if no favicon is uploaded at all.
+          // It's better than a broken link.
+          <link rel="icon" href="/favicon.ico" sizes="any" />
         )}
         <meta property="og:title" content={title} />
         <meta property="og:description" content={description} />
