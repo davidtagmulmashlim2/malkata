@@ -188,50 +188,54 @@ export function DishCard({ dish }: DishCardProps) {
             </div>
           </div>
         </DialogTrigger>
-        <div className="mt-2 flex-grow flex items-start justify-between gap-4">
-            <div className="flex-1 min-w-0">
-                <h3 className={cn("font-headline font-bold", nameFontSizeClass)}>{dish.name}</h3>
-                <p className={cn("text-muted-foreground mt-1", descriptionFontSizeClass)}>{dish.short_description}</p>
-            </div>
-            <div className="flex-shrink-0 flex flex-col items-center">
-                 <TooltipProvider>
-                    <Tooltip>
-                        <TooltipTrigger asChild>
-                        <Button
-                            size="icon"
-                            className="rounded-full h-8 w-8 md:h-9 md:w-9"
-                            onClick={handleDirectAddToCart}
-                            disabled={!dish.is_available}
-                            variant="outline"
-                        >
-                            <ShoppingBagIcon className="h-4 w-4 md:h-5 md:w-5" />
-                        </Button>
-                        </TooltipTrigger>
-                         <TooltipContent
-                            side="top"
-                            align="center"
-                            className="bg-transparent border-0 shadow-none p-0"
-                         >
-                            <div className="relative">
-                                <div className="bg-black text-white rounded-md py-1 px-2 text-xs">
-                                     <p>הוספה לסל</p>
-                                </div>
-                                <div 
-                                    className="absolute left-1/2 -translate-x-1/2 w-0 h-0"
-                                    style={{
-                                        borderLeft: '5px solid transparent',
-                                        borderRight: '5px solid transparent',
-                                        borderTop: '5px solid black',
-                                    }}
-                                />
-                            </div>
-                        </TooltipContent>
-                    </Tooltip>
-                 </TooltipProvider>
-                <div className="text-center w-full mt-1">
-                    <span className="text-md md:text-lg font-bold leading-tight">{dish.price} ₪</span>
-                    {dish.price_subtitle && <p className="text-xs text-muted-foreground leading-tight w-full">{dish.price_subtitle}</p>}
+        <div className="mt-2 flex-grow flex flex-col">
+            <div className="flex items-start justify-between gap-4">
+                <div className="flex-1 min-w-0">
+                    <h3 className={cn("font-headline font-bold", nameFontSizeClass)}>{dish.name}</h3>
                 </div>
+                <div className="flex-shrink-0">
+                     <TooltipProvider>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                            <Button
+                                size="icon"
+                                className="rounded-full h-8 w-8 md:h-9 md:w-9"
+                                onClick={handleDirectAddToCart}
+                                disabled={!dish.is_available}
+                                variant="outline"
+                            >
+                                <ShoppingBagIcon className="h-4 w-4 md:h-5 md:w-5" />
+                            </Button>
+                            </TooltipTrigger>
+                             <TooltipContent
+                                side="top"
+                                align="center"
+                                className="bg-transparent border-0 shadow-none p-0"
+                             >
+                                <div className="relative">
+                                    <div className="bg-black text-white rounded-md py-1 px-2 text-xs">
+                                         <p>הוספה לסל</p>
+                                    </div>
+                                    <div 
+                                        className="absolute left-1/2 -translate-x-1/2 w-0 h-0"
+                                        style={{
+                                            borderLeft: '5px solid transparent',
+                                            borderRight: '5px solid transparent',
+                                            borderTop: '5px solid black',
+                                        }}
+                                    />
+                                </div>
+                            </TooltipContent>
+                        </Tooltip>
+                     </TooltipProvider>
+                </div>
+            </div>
+            <div className="flex-1 min-w-0 mt-1">
+                 <p className={cn("text-muted-foreground", descriptionFontSizeClass)}>{dish.short_description}</p>
+            </div>
+             <div className="text-right w-full mt-2">
+                <span className="text-md md:text-lg font-bold leading-tight">{dish.price} ₪</span>
+                {dish.price_subtitle && <p className="text-xs text-muted-foreground leading-tight">{dish.price_subtitle}</p>}
             </div>
         </div>
       </div>
