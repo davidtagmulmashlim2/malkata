@@ -193,13 +193,13 @@ export function DishCard({ dish }: DishCardProps) {
                 <h3 className={cn("font-headline font-bold", nameFontSizeClass)}>{dish.name}</h3>
                 <p className={cn("text-muted-foreground mt-1", descriptionFontSizeClass)}>{dish.short_description}</p>
             </div>
-            <div className="flex-shrink-0 flex flex-col items-center h-full justify-between">
+            <div className="flex-shrink-0 flex flex-col items-center justify-start">
                  <TooltipProvider>
                     <Tooltip>
                         <TooltipTrigger asChild>
                         <Button
                             size="icon"
-                            className="rounded-full h-8 w-8 md:h-9 md:w-9"
+                            className="rounded-full h-8 w-8 md:h-9 md:w-9 mb-2"
                             onClick={handleDirectAddToCart}
                             disabled={!dish.is_available}
                             variant="outline"
