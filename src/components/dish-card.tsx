@@ -168,6 +168,10 @@ export function DishCard({ dish }: DishCardProps) {
             <h3 className="font-headline font-bold text-lg md:text-xl">{dish.name}</h3>
             <p className="text-sm text-muted-foreground flex-grow">{dish.short_description}</p>
             <div className="mt-2 flex justify-between items-center">
+                <div className="text-right">
+                    <span className="text-md md:text-lg font-bold">{dish.price} ₪</span>
+                    {dish.price_subtitle && <p className="text-xs">{dish.price_subtitle}</p>}
+                </div>
                 <div className="text-left">
                      <TooltipProvider>
                         <Tooltip>
@@ -187,10 +191,6 @@ export function DishCard({ dish }: DishCardProps) {
                             </TooltipContent>
                         </Tooltip>
                     </TooltipProvider>
-                </div>
-                <div className="text-right">
-                    <span className="text-md md:text-lg font-bold">{dish.price} ₪</span>
-                    {dish.price_subtitle && <p className="text-xs">{dish.price_subtitle}</p>}
                 </div>
             </div>
         </div>
