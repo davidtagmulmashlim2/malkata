@@ -58,9 +58,42 @@ const iconMap: { [key: string]: React.ElementType | null } = {
 function MobileMenuNavigation({onLinkClick}: {onLinkClick: () => void}) {
   const { state, isLoading } = useApp();
   const pathname = usePathname();
-  const { categories } = state;
+  const { categories, design } = state;
 
   const activeSlug = pathname.split('/').pop();
+
+  const navLinks = useMemo(() => {
+    if (isLoading) {
+        return baseNavLinks;
+    }
+
+    const { featured_category_id } = design;
+    const newLinks = [...baseNavLinks];
+
+    if (featured_category_id && featured_category_id !== 'none') {
+        const featuredCategory = categories.find(c => c.id === featured_category_id);
+        if (featuredCategory) {
+            const featuredLink = {
+                href: `/menu/${featuredCategory.slug}`,
+                label: featuredCategory.name,
+                isFeatured: true,
+            };
+            const galleryIndex = newLinks.findIndex(link => link.href === '/gallery');
+            if (galleryIndex !== -1) {
+                newLinks.splice(galleryIndex + 1, 0, featuredLink);
+            } else { 
+                const contactIndex = newLinks.findIndex(link => link.href === '/contact');
+                 if (contactIndex !== -1) {
+                    newLinks.splice(contactIndex, 0, featuredLink);
+                 } else {
+                    newLinks.push(featuredLink);
+                 }
+            }
+        }
+    }
+    
+    return newLinks;
+  }, [isLoading, design, categories]);
 
   return (
     <Tabs defaultValue="categories" className="w-full">
@@ -92,14 +125,15 @@ function MobileMenuNavigation({onLinkClick}: {onLinkClick: () => void}) {
       <TabsContent value="main-menu">
         <ScrollArea className="h-[calc(100vh-200px)]">
              <div className="flex flex-col items-start gap-4 p-4 text-lg">
-                {baseNavLinks.map((link) => (
+                {navLinks.map((link) => (
                      <Link
                         key={link.href}
                         href={link.href}
                         onClick={onLinkClick}
                         className={cn(
                             'transition-colors hover:text-primary no-underline',
-                            pathname === link.href ? 'text-primary font-bold' : 'text-muted-foreground'
+                            pathname === link.href ? 'text-primary font-bold' : 'text-muted-foreground',
+                            link.isFeatured && 'text-primary'
                         )}
                     >
                         {link.label}
