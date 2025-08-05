@@ -14,6 +14,8 @@ import { cn } from '@/lib/utils';
 import { useIsClient } from '@/hooks/use-is-client';
 import { Skeleton } from '@/components/ui/skeleton';
 import { AsyncImage } from './async-image';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+
 
 interface DishCardProps {
   dish: Dish;
@@ -65,7 +67,8 @@ export function DishCard({ dish }: DishCardProps) {
     setIsDialogOpen(false);
   };
   
-  const handleDirectAddToCart = () => {
+  const handleDirectAddToCart = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent the dialog from opening
     if (cartItem) {
       updateCartQuantity(dish.id!, cartItem.quantity + 1);
       toast({
@@ -112,48 +115,56 @@ export function DishCard({ dish }: DishCardProps) {
             setCurrentImageIndex(0);
         }
     }}>
-      <div className="flex flex-col h-full text-right">
-        <div className="relative aspect-square w-full overflow-hidden group rounded-lg">
-            <AsyncImage imageKey={dish.main_image} alt={dish.name} layout="fill" objectFit="cover" />
-            <div className="absolute top-2 left-0 right-0 px-2 flex justify-between items-start">
-                {isClient && cartItem ? (
-                    <div className="bg-primary text-primary-foreground rounded-full h-7 w-7 flex items-center justify-center text-sm font-bold z-10">
-                        {cartItem.quantity}
+      <div className="flex flex-col h-full text-right group">
+        <DialogTrigger asChild>
+            <div className="relative aspect-square w-full overflow-hidden rounded-lg cursor-pointer">
+                <AsyncImage imageKey={dish.main_image} alt={dish.name} layout="fill" objectFit="cover" className="transition-transform duration-300 group-hover:scale-105" />
+                <div className="absolute top-2 left-0 right-0 px-2 flex justify-between items-start">
+                    {isClient && cartItem ? (
+                        <div className="bg-primary text-primary-foreground rounded-full h-7 w-7 flex items-center justify-center text-sm font-bold z-10">
+                            {cartItem.quantity}
+                        </div>
+                    ) : <div />}
+                    <div className="flex gap-2 flex-wrap justify-end max-w-[80%]">
+                        {renderTags(dish.tags)}
                     </div>
-                ) : <div />}
-                <div className="flex gap-2 flex-wrap justify-end max-w-[80%]">
-                    {renderTags(dish.tags)}
+                </div>
+                {!dish.is_available && (
+                    <div className="absolute inset-0 bg-black/50 flex items-center justify-center rounded-lg">
+                        <p className="text-white text-lg font-bold">אזל מהמלאי</p>
+                    </div>
+                )}
+                 {/* Hover content */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent p-4 flex flex-col justify-end text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <h3 className="text-lg font-headline font-bold">{dish.name}</h3>
+                    <p className="text-sm text-white/90">{dish.short_description}</p>
+                    <div className="mt-2">
+                        <span className="text-lg font-bold">{dish.price} ₪</span>
+                        {dish.price_subtitle && <p className="text-xs">{dish.price_subtitle}</p>}
+                    </div>
+                </div>
+                 {/* Add to cart button */}
+                 <div className="absolute bottom-4 left-4 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <TooltipProvider>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                 <Button 
+                                    size="icon" 
+                                    className="rounded-full h-10 w-10 bg-primary/80 hover:bg-primary"
+                                    onClick={handleDirectAddToCart} 
+                                    disabled={!dish.is_available}
+                                 >
+                                  <ShoppingBagIcon className="h-5 w-5" />
+                                </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <p>הוספה לסל</p>
+                            </TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
                 </div>
             </div>
-            {!dish.is_available && (
-                <div className="absolute inset-0 bg-black/50 flex items-center justify-center rounded-lg">
-                    <p className="text-white text-lg font-bold">אזל מהמלאי</p>
-                </div>
-            )}
-             <DialogTrigger asChild>
-                <div className="absolute bottom-0 left-0 right-0 p-2 bg-black/50 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 cursor-pointer rounded-b-lg">
-                    <Eye className="w-5 h-5 ml-2" />
-                    הצגה מהירה
-                </div>
-            </DialogTrigger>
-        </div>
-        
-        <div className="pt-4">
-          <h3 className="text-lg font-headline font-bold">{dish.name}</h3>
-        </div>
-        <div className="flex-grow pt-1">
-          <p className="text-muted-foreground text-sm">{dish.short_description}</p>
-        </div>
-        <div className="flex justify-between items-center pt-4">
-            <div>
-              <span className="text-lg md:text-xl font-bold text-primary">{dish.price} ₪</span>
-              {dish.price_subtitle && <p className="text-xs text-muted-foreground">{dish.price_subtitle}</p>}
-            </div>
-            <Button size="sm" onClick={handleDirectAddToCart} disabled={!dish.is_available}>
-              <ShoppingBagIcon className="ms-2 h-4 w-4" />
-              הוספה לסל
-            </Button>
-        </div>
+        </DialogTrigger>
       </div>
 
       <DialogContent className="sm:max-w-4xl text-right">
