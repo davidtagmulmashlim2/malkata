@@ -62,7 +62,7 @@ function MobileMenuNavigation({onLinkClick}: {onLinkClick: () => void}) {
 
   const activeSlug = pathname.split('/').pop();
 
-  const navLinks = useMemo(() => {
+  const mainNavLinks = useMemo(() => {
     if (isLoading) {
         return baseNavLinks;
     }
@@ -125,7 +125,7 @@ function MobileMenuNavigation({onLinkClick}: {onLinkClick: () => void}) {
       <TabsContent value="main-menu">
         <ScrollArea className="h-[calc(100vh-200px)]">
              <div className="flex flex-col items-start gap-4 p-4 text-lg">
-                {navLinks.map((link) => (
+                {mainNavLinks.map((link) => (
                      <Link
                         key={link.href}
                         href={link.href}
