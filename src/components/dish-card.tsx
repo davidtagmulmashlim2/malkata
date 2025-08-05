@@ -78,7 +78,7 @@ export function DishCard({ dish }: DishCardProps) {
   };
   
   const handleDirectAddToCart = (e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent the dialog from opening
+    e.stopPropagation(); 
     if (cartItem) {
       updateCartQuantity(dish.id!, cartItem.quantity + 1);
       toast({
@@ -167,13 +167,13 @@ export function DishCard({ dish }: DishCardProps) {
             </div>
           </div>
         </DialogTrigger>
-        <div className="pt-4 flex flex-col flex-grow">
-             <div className="flex justify-between items-start flex-grow">
-                 <div className="flex-grow text-right pr-2">
-                    <h3 className="font-headline font-bold text-lg md:text-xl">{dish.name}</h3>
-                    <p className="text-sm text-muted-foreground">{dish.short_description}</p>
-                 </div>
-                 <div className="flex-shrink-0">
+        <div className="mt-2 flex-grow flex flex-col">
+            <div className="flex-grow grid grid-cols-3 gap-2">
+                <div className="col-span-2 flex flex-col">
+                     <h3 className="font-headline font-bold text-lg md:text-xl">{dish.name}</h3>
+                     <p className="text-sm text-muted-foreground flex-grow">{dish.short_description}</p>
+                </div>
+                <div className="flex flex-col justify-between items-end">
                      <TooltipProvider>
                         <Tooltip>
                             <TooltipTrigger asChild>
@@ -192,11 +192,11 @@ export function DishCard({ dish }: DishCardProps) {
                             </TooltipContent>
                         </Tooltip>
                     </TooltipProvider>
+                    <div className="text-left mt-1">
+                        <span className="text-md md:text-lg font-bold">{dish.price} ₪</span>
+                        {dish.price_subtitle && <p className="text-xs text-muted-foreground">{dish.price_subtitle}</p>}
+                    </div>
                 </div>
-            </div>
-            <div className="mt-1 text-left">
-                <span className="text-md md:text-lg font-bold">{dish.price} ₪</span>
-                {dish.price_subtitle && <p className="text-xs text-muted-foreground">{dish.price_subtitle}</p>}
             </div>
         </div>
       </div>
