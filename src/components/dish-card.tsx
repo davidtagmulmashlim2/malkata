@@ -1,4 +1,3 @@
-
 'use client';
 
 import { Button } from '@/components/ui/button';
@@ -135,7 +134,7 @@ export function DishCard({ dish }: DishCardProps) {
                         <p className="text-white text-lg font-bold">אזל מהמלאי</p>
                     </div>
                 )}
-                 <div className="absolute inset-x-0 bottom-0 bg-black/60 p-3 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-2">
+                 <div className="absolute inset-x-0 bottom-0 bg-black/50 p-2 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-2">
                     <Eye className="w-5 h-5" />
                     <h3 className="text-md font-bold">הצגה מהירה</h3>
                 </div>
