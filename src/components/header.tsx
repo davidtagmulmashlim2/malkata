@@ -16,19 +16,19 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
 const Crown2 = (props: React.SVGProps<SVGSVGElement>) => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" {...props}>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="currentColor" {...props}>
         <path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5z" />
     </svg>
 );
 
 const Crown3 = (props: React.SVGProps<SVGSVGElement>) => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" {...props}>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="currentColor" {...props}>
         <path d="M12 2C9.2 2 7 4.2 7 7c0 1.5.6 2.8 1.5 3.7L3 14h18l-5.5-3.3c.9-.9 1.5-2.2 1.5-3.7C17 4.2 14.8 2 12 2zm0 2c1.7 0 3 1.3 3 3s-1.3 3-3 3-3-1.3-3-3 1.3-3 3-3z" />
     </svg>
 );
 
 const Crown4 = (props: React.SVGProps<SVGSVGElement>) => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="1" {...props}>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="currentColor" stroke="currentColor" strokeWidth="1" {...props}>
         <path d="M12 2L9.5 7h-6L6 11.5 3.5 17h6l2.5-5 2.5 5h6l-2.5-5.5L18 7h-6z"/>
     </svg>
 );
@@ -225,39 +225,6 @@ export function Header() {
     );
   }
   
-   const MobileNavLinks = ({onLinkClick}: {onLinkClick: () => void}) => {
-     return (
-       <nav className="flex flex-col items-start gap-6 p-6 pt-0 text-lg">
-            {navLinks.map(link => {
-                const isActive = pathname === link.href;
-                return (
-                    <Link
-                        key={link.href}
-                        href={link.href}
-                        onClick={onLinkClick}
-                        className={cn(
-                            'transition-colors hover:text-primary no-underline',
-                             isActive ? 'text-primary font-bold' : 'text-muted-foreground'
-                        )}
-                    >
-                        {link.label}
-                    </Link>
-                )
-            })}
-             <Link
-                href="/admin"
-                onClick={onLinkClick}
-                className={cn(
-                    'transition-colors hover:text-primary no-underline',
-                    pathname.startsWith('/admin') ? 'text-primary font-bold' : 'text-muted-foreground'
-                )}
-                >
-                אזור אישי
-            </Link>
-       </nav>
-    );
-   }
-
   const AdminButton = () => (
      <Link href="/admin">
         <Button variant="ghost" size="icon">
@@ -267,8 +234,6 @@ export function Header() {
     </Link>
   );
   
-  const isMenuPage = pathname.startsWith('/menu');
-
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background/80 backdrop-blur-sm">
       <div className="container flex h-16 items-center">
@@ -304,11 +269,7 @@ export function Header() {
                       </SheetTitle>
                   </SheetHeader>
                   <div className="pt-6">
-                      {isMenuPage ? (
-                          <MobileMenuNavigation onLinkClick={() => setIsMobileMenuOpen(false)} />
-                      ) : (
-                         <MobileNavLinks onLinkClick={() => setIsMobileMenuOpen(false)} />
-                      )}
+                      <MobileMenuNavigation onLinkClick={() => setIsMobileMenuOpen(false)} />
                   </div>
               </SheetContent>
             </Sheet>
@@ -317,5 +278,3 @@ export function Header() {
     </header>
   );
 }
-
-    
