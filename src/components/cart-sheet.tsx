@@ -148,7 +148,7 @@ export function CartSheet() {
             <ScrollArea className="flex-grow pr-4" viewportRef={viewportRef}>
               <div className="flex flex-col gap-4 py-4">
                 {cartDetails.map(item => (
-                  <div key={item!.id} className="flex justify-between items-center gap-4">
+                  <div key={item!.id} className="flex flex-row-reverse justify-between items-center gap-4">
                       <div className="flex items-center gap-4 flex-1 min-w-0">
                          <AsyncImage 
                             imageKey={item!.main_image} 
