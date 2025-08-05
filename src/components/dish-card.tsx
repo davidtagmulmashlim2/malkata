@@ -21,8 +21,8 @@ interface DishCardProps {
   dish: Dish;
 }
 
-const quickViewIconMap: { [key: string]: React.ElementType } = {
-  Eye, Search, Heart, Star, Info, ZoomIn
+const quickViewIconMap: { [key: string]: React.ElementType | null } = {
+  Eye, Search, Heart, Star, Info, ZoomIn, none: null,
 };
 
 export function DishCard({ dish }: DishCardProps) {
@@ -34,7 +34,7 @@ export function DishCard({ dish }: DishCardProps) {
   const { siteContent } = state;
   const { dish_card: dishCardSettings } = siteContent;
 
-  const QuickViewIcon = quickViewIconMap[dishCardSettings?.quick_view_icon ?? 'Eye'] || Eye;
+  const QuickViewIcon = dishCardSettings?.quick_view_icon ? quickViewIconMap[dishCardSettings.quick_view_icon] : Eye;
   
   const allImages = useMemo(() => {
     const imageSet = new Set<string>();
@@ -145,11 +145,21 @@ export function DishCard({ dish }: DishCardProps) {
                     </div>
                 )}
                  <div 
-                    className="absolute inset-x-0 bottom-0 p-1 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-2"
+                    className="absolute inset-x-0 bottom-0 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-2 p-1"
                     style={{ backgroundColor: `rgba(0, 0, 0, ${(dishCardSettings?.quick_view_overlay_opacity ?? 40) / 100})` }}
                  >
-                    <QuickViewIcon className="w-5 h-5" />
-                    <h3 className="text-md font-bold">{dishCardSettings?.quick_view_text ?? 'הצגה מהירה'}</h3>
+                    {QuickViewIcon && <QuickViewIcon className="w-5 h-5" />}
+                    <h3
+                      className="text-md font-bold"
+                      style={{
+                        color: dishCardSettings?.quick_view_color || '#FFFFFF',
+                        fontFamily: dishCardSettings?.quick_view_font && dishCardSettings.quick_view_font !== 'default'
+                          ? `var(--font-${dishCardSettings.quick_view_font})`
+                          : undefined
+                      }}
+                    >
+                      {dishCardSettings?.quick_view_text ?? 'הצגה מהירה'}
+                    </h3>
                 </div>
             </div>
           </div>

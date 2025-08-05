@@ -163,6 +163,8 @@ export interface SiteContent {
     quick_view_text?: string;
     quick_view_icon?: string;
     quick_view_overlay_opacity?: number;
+    quick_view_font?: string;
+    quick_view_color?: string;
   };
 }
 

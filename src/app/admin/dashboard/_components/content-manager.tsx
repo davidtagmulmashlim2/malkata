@@ -34,12 +34,42 @@ const featureIcons = [
 ];
 
 const quickViewIcons = [
+    { name: 'ללא', value: 'none', icon: () => null },
     { name: 'עין', value: 'Eye', icon: Eye },
     { name: 'זכוכית מגדלת', value: 'Search', icon: Search },
     { name: 'לב', value: 'Heart', icon: Heart },
     { name: 'כוכב', value: 'Star', icon: Star },
     { name: 'מידע', value: 'Info', icon: Info },
     { name: 'זום', value: 'ZoomIn', icon: ZoomIn },
+];
+
+const fonts = [
+    { name: 'ברירת מחדל של האתר', value: 'default' },
+    { name: 'Playfair Display', value: 'playfair' },
+    { name: 'Open Sans', value: 'open-sans' },
+    { name: 'Alef', value: 'alef' },
+    { name: 'Amatic SC', value: 'amatic-sc' },
+    { name: 'Arimo', value: 'arimo' },
+    { name: 'Assistant', value: 'assistant' },
+    { name: 'Bellefair', value: 'bellefair' },
+    { name: 'David Libre', value: 'david-libre' },
+    { name: 'Frank Ruhl Libre', value: 'frank-ruhl-libre' },
+    { name: 'Heebo', value: 'heebo' },
+    { name: 'M PLUS Rounded 1c', value: 'm-plus-rounded-1c' },
+    { name: 'Miriam Libre', value: 'miriam-libre' },
+    { name: 'Noto Sans Hebrew', value: 'noto-sans-hebrew' },
+    { name: 'Noto Serif Hebrew', value: 'noto-serif-hebrew' },
+    { name: 'Rubik', value: 'rubik' },
+    { name: 'Secular One', value: 'secular-one' },
+    { name: 'Suez One', value: 'suez-one' },
+    { name: 'Varela Round', value: 'varela-round' },
+    { name: 'Dana', value: 'dana' },
+    { name: 'PT Sans (ישן)', value: 'pt-sans' },
+    { name: 'Roboto Mono', value: 'roboto-mono' },
+    { name: 'Chakra Petch', value: 'chakra-petch' },
+    { name: 'Cormorant Garamond', value: 'cormorant-garamond' },
+    { name: 'Lato', value: 'lato' },
+    { name: 'Montserrat', value: 'montserrat' },
 ];
 
 const IconSelect = ({ onValueChange, value, icons, placeholder }: { onValueChange: (value: string) => void; value: string; icons: {name: string, value: string, icon: React.ElementType}[], placeholder: string }) => (
@@ -53,7 +83,7 @@ const IconSelect = ({ onValueChange, value, icons, placeholder }: { onValueChang
             {icons.map(icon => (
                 <SelectItem key={icon.value} value={icon.value}>
                     <div className="flex items-center gap-2">
-                        <icon.icon className="h-4 w-4" />
+                        {icon.value !== 'none' && <icon.icon className="h-4 w-4" />}
                         <span>{icon.name}</span>
                     </div>
                 </SelectItem>
@@ -154,6 +184,8 @@ const contentSchema = z.object({
     quick_view_text: z.string().optional(),
     quick_view_icon: z.string().optional(),
     quick_view_overlay_opacity: z.coerce.number().min(0).max(100).optional(),
+    quick_view_font: z.string().optional(),
+    quick_view_color: z.string().optional(),
   }).optional(),
 });
 
@@ -522,13 +554,6 @@ export default function ContentManager() {
                       <FormMessage />
                     </FormItem>
                   )} />
-                  <FormField name="dish_card.quick_view_icon" control={form.control} render={({ field }) => ( 
-                    <FormItem>
-                        <FormLabel>אייקון לצפייה מהירה</FormLabel>
-                        <IconSelect onValueChange={field.onChange} value={field.value ?? 'Eye'} icons={quickViewIcons} placeholder="בחר אייקון" />
-                        <FormMessage />
-                    </FormItem> 
-                  )} />
                    <FormField name="dish_card.quick_view_overlay_opacity" control={form.control} render={({ field }) => (
                     <FormItem>
                       <FormLabel>שקיפות שכבת הצפייה המהירה ({field.value ?? 40}%)</FormLabel>
@@ -536,6 +561,32 @@ export default function ContentManager() {
                       <FormMessage />
                     </FormItem>
                   )} />
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <FormField name="dish_card.quick_view_icon" control={form.control} render={({ field }) => ( 
+                        <FormItem>
+                            <FormLabel>אייקון</FormLabel>
+                            <IconSelect onValueChange={field.onChange} value={field.value ?? 'Eye'} icons={quickViewIcons} placeholder="בחר אייקון" />
+                            <FormMessage />
+                        </FormItem> 
+                      )} />
+                      <FormField name="dish_card.quick_view_font" control={form.control} render={({ field }) => (
+                          <FormItem>
+                              <FormLabel>פונט</FormLabel>
+                              <Select onValueChange={field.onChange} value={field.value ?? 'default'}>
+                                  <FormControl><SelectTrigger><SelectValue placeholder="ברירת מחדל של האתר" /></SelectTrigger></FormControl>
+                                  <SelectContent>{fonts.map(font => <SelectItem key={font.value} value={font.value}>{font.name}</SelectItem>)}</SelectContent>
+                              </Select>
+                              <FormMessage />
+                          </FormItem>
+                      )} />
+                      <FormField name="dish_card.quick_view_color" control={form.control} render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>צבע</FormLabel>
+                            <FormControl><Input type="color" {...field} className="p-1 h-10 w-full" value={field.value ?? '#FFFFFF'} /></FormControl>
+                            <FormMessage />
+                          </FormItem>
+                      )} />
+                  </div>
                 </AccordionContent>
               </AccordionItem>
 

@@ -115,6 +115,8 @@ export const DEFAULT_APP_STATE: AppState = {
         quick_view_text: 'הצגה מהירה',
         quick_view_icon: 'Eye',
         quick_view_overlay_opacity: 40,
+        quick_view_font: 'default',
+        quick_view_color: '#FFFFFF',
     }
   },
   // These arrays are intentionally empty.
