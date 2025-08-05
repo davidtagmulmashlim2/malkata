@@ -137,7 +137,9 @@ export const DEFAULT_APP_STATE: AppState = {
     logo_image: '',
     logo_width: 120,
     featured_category_id: '',
+    favicon: '',
   },
 };
 
     
+

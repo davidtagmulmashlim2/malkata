@@ -177,6 +177,7 @@ export interface DesignSettings {
   logo_image?: string;
   logo_width?: number;
   featured_category_id?: string | null;
+  favicon?: string;
 }
 
 export interface CartItem {

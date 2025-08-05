@@ -27,6 +27,7 @@ const designSchema = z.object({
   logo_image: z.string().optional(),
   logo_width: z.coerce.number().min(50).max(300).optional(),
   featured_category_id: z.string().optional().nullable(),
+  favicon: z.string().optional(),
 });
 
 const fileToDataUrl = (file: File): Promise<string> => {
@@ -38,11 +39,18 @@ const fileToDataUrl = (file: File): Promise<string> => {
     });
 };
 
-const ImagePreview = ({ imageKey, alt, onRemove, width }: { imageKey: string | undefined, alt: string, onRemove?: () => void, width?: number }) => {
+const ImagePreview = ({ imageKey, alt, onRemove, width, height, className }: { imageKey: string | undefined, alt: string, onRemove?: () => void, width?: number, height?: number, className?: string }) => {
     if (!imageKey) return null;
     return (
         <div className="mt-2 relative w-fit">
-            <AsyncImage imageKey={imageKey} alt={alt} height={40} width={width || 112} className="h-10 object-contain border p-1 rounded-md" style={{width: `${width || 112}px`}} />
+            <AsyncImage 
+                imageKey={imageKey} 
+                alt={alt} 
+                height={height || 40} 
+                width={width || 112} 
+                className={cn("object-contain border p-1 rounded-md", className)} 
+                style={{width: `${width || 112}px`, height: `${height || 40}px`}} 
+            />
             {onRemove && (
                 <Button 
                     type="button" 
@@ -124,6 +132,8 @@ export default function DesignManager() {
   
   const logoImagePreview = form.watch('logo_image');
   const logoWidthPreview = form.watch('logo_width');
+  const faviconPreview = form.watch('favicon');
+
 
   useEffect(() => {
     if (design) {
@@ -134,22 +144,21 @@ export default function DesignManager() {
     }
   }, [design, form]);
 
-  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>, fieldName: 'logo_image' | 'favicon') => {
       const file = event.target.files?.[0];
       if (!file) return;
 
-      const oldImageKey = form.getValues('logo_image');
+      const oldImageKey = form.getValues(fieldName);
 
       try {
           const dataUrl = await fileToDataUrl(file);
           const newImageKey = await storeImage(dataUrl);
-          form.setValue('logo_image', newImageKey, { shouldValidate: true, shouldDirty: true });
+          form.setValue(fieldName, newImageKey, { shouldValidate: true, shouldDirty: true });
           
-          // Trigger a save after successful upload to persist the new key
           const currentValues = form.getValues();
-          const payload = { ...currentValues, logo_image: newImageKey };
+          const payload = { ...currentValues, [fieldName]: newImageKey };
           dispatch({ type: 'UPDATE_DESIGN', payload });
-          toast({ title: 'תמונת לוגו הועלתה ונשמרה' });
+          toast({ title: `התמונה ב-${fieldName === 'logo_image' ? 'לוגו' : 'פביקון'} הועלתה ונשמרה` });
           
           if (oldImageKey) {
             await deleteImage(oldImageKey);
@@ -164,20 +173,19 @@ export default function DesignManager() {
       }
   };
 
-  const handleRemoveImage = async () => {
-    const imageKey = form.getValues('logo_image');
+  const handleRemoveImage = async (fieldName: 'logo_image' | 'favicon') => {
+    const imageKey = form.getValues(fieldName);
     if (imageKey) {
         try {
-            form.setValue('logo_image', '', { shouldValidate: true, shouldDirty: true });
+            form.setValue(fieldName, '', { shouldValidate: true, shouldDirty: true });
             
-            // Trigger a save to persist the removal
             const currentValues = form.getValues();
-            const payload = { ...currentValues, logo_image: '' };
+            const payload = { ...currentValues, [fieldName]: '' };
             dispatch({ type: 'UPDATE_DESIGN', payload });
             
             await deleteImage(imageKey);
 
-            toast({ title: 'תמונת לוגו הוסרה ונשמרה' });
+            toast({ title: `התמונה ב-${fieldName === 'logo_image' ? 'לוגו' : 'פביקון'} הוסרה ונשמרה` });
         } catch (error) {
              console.error("Error deleting image:", error);
              toast({ title: 'שגיאה במחיקת תמונה', variant: 'destructive' });
@@ -276,11 +284,11 @@ export default function DesignManager() {
                         <Input 
                             type="file" 
                             accept="image/*" 
-                            onChange={handleFileChange}
+                            onChange={(e) => handleFileChange(e, 'logo_image')}
                         />
                       </FormControl>
                      <FormMessage />
-                     <ImagePreview imageKey={logoImagePreview} alt="תצוגה מקדימה של לוגו" onRemove={handleRemoveImage} width={logoWidthPreview} />
+                     <ImagePreview imageKey={logoImagePreview} alt="תצוגה מקדימה של לוגו" onRemove={() => handleRemoveImage('logo_image')} width={logoWidthPreview} />
                    </FormItem>
                 )}
               />
@@ -293,6 +301,32 @@ export default function DesignManager() {
                   </FormItem>
                 )} />
               )}
+               <Controller
+                control={form.control}
+                name="favicon"
+                render={({ field }) => (
+                   <FormItem>
+                     <FormLabel className="text-lg font-headline">פביקון (Favicon)</FormLabel>
+                      <p className="text-sm text-muted-foreground">הסמל שמופיע בלשונית הדפדפן. מומלץ להעלות תמונת ריבועית (למשל 32x32px).</p>
+                      <FormControl>
+                        <Input 
+                            type="file" 
+                            accept="image/png, image/x-icon, image/svg+xml" 
+                            onChange={(e) => handleFileChange(e, 'favicon')}
+                        />
+                      </FormControl>
+                     <FormMessage />
+                     <ImagePreview 
+                        imageKey={faviconPreview} 
+                        alt="תצוגה מקדימה של פביקון" 
+                        onRemove={() => handleRemoveImage('favicon')} 
+                        width={32} 
+                        height={32} 
+                        className="h-8 w-8"
+                     />
+                   </FormItem>
+                )}
+              />
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                  <FormField
                   control={form.control}

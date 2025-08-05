@@ -1,4 +1,5 @@
 
+
 import type { AppState } from '@/lib/types';
 import { DEFAULT_APP_STATE } from '@/lib/data';
 import { getImage } from '@/lib/image-store';
@@ -75,7 +76,7 @@ export default async function RootLayout({
 }>) {
   const initialState = await getInitialState();
   const { seo, hero } = initialState.siteContent;
-  const { logo_image } = initialState.design;
+  const { logo_image, favicon } = initialState.design;
   
   const title = seo?.title || (hero.title_first_word ? hero.title_first_word + ' ' + hero.title_rest : 'מלכתא');
   const description = seo?.description || hero.subtitle || 'אוכל ביתי אותנטי, מוכן באהבה כל יום מחדש.';
@@ -99,11 +100,14 @@ export default async function RootLayout({
       imageUrl = `https://placehold.co/1200x630/FAEBD7/8B0000/png?text=${encodeURIComponent(title)}`;
   }
 
+  const faviconUrl = favicon ? getImage(favicon) : '/favicon.ico';
+
   return (
     <html lang="he" dir="rtl">
       <head>
         <title>{title}</title>
         <meta name="description" content={description} />
+        {faviconUrl && <link rel="icon" href={faviconUrl} sizes="any" />}
         <meta property="og:title" content={title} />
         <meta property="og:description" content={description} />
         {imageUrl && <meta property="og:image" content={imageUrl} />}
