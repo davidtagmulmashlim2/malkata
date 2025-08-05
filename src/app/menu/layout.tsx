@@ -41,7 +41,8 @@ function MobileMenuNavigation() {
         <ScrollArea className="h-[calc(100vh-200px)]">
             <div className="flex flex-col items-start gap-4 p-4 text-lg">
                  <Link href="/menu" className={cn('transition-colors hover:text-primary no-underline', pathname === '/menu' ? 'text-primary font-bold' : 'text-muted-foreground')}>כל המנות</Link>
-                 {categories.map((category) => (
+                 {(isLoading ? Array(5).fill(null) : categories).map((category, index) => (
+                    isLoading ? <Skeleton key={index} className="h-6 w-32" /> :
                     <Link
                         key={category.id}
                         href={`/menu/${category.slug}`}
