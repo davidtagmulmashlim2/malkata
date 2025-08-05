@@ -62,10 +62,6 @@ function MobileMenuNavigation({onLinkClick}: {onLinkClick: () => void}) {
 
   const activeSlug = pathname.split('/').pop();
 
-  const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    onLinkClick();
-  }
-
   return (
     <Tabs defaultValue="categories" className="w-full">
       <TabsList className="grid w-full grid-cols-2">
@@ -75,13 +71,13 @@ function MobileMenuNavigation({onLinkClick}: {onLinkClick: () => void}) {
       <TabsContent value="categories">
         <ScrollArea className="h-[calc(100vh-200px)]">
             <div className="flex flex-col items-start gap-4 p-4 text-lg">
-                 <Link href="/menu" onClick={handleLinkClick} className={cn('transition-colors hover:text-primary no-underline', pathname === '/menu' ? 'text-primary font-bold' : 'text-muted-foreground')}>כל המנות</Link>
+                 <Link href="/menu" onClick={onLinkClick} className={cn('transition-colors hover:text-primary no-underline', pathname === '/menu' ? 'text-primary font-bold' : 'text-muted-foreground')}>כל המנות</Link>
                  {(isLoading ? Array(5).fill(null) : categories).map((category, index) => (
                     isLoading ? <Skeleton key={index} className="h-6 w-32" /> :
                     <Link
                         key={category.id}
                         href={`/menu/${category.slug}`}
-                        onClick={handleLinkClick}
+                        onClick={onLinkClick}
                         className={cn(
                             'transition-colors hover:text-primary no-underline',
                             activeSlug === category.slug ? 'text-primary font-bold' : 'text-muted-foreground'
@@ -100,7 +96,7 @@ function MobileMenuNavigation({onLinkClick}: {onLinkClick: () => void}) {
                      <Link
                         key={link.href}
                         href={link.href}
-                        onClick={handleLinkClick}
+                        onClick={onLinkClick}
                         className={cn(
                             'transition-colors hover:text-primary no-underline',
                             pathname === link.href ? 'text-primary font-bold' : 'text-muted-foreground'
