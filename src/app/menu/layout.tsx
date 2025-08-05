@@ -12,7 +12,6 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 
 const baseNavLinks = [
   { href: '/', label: 'בית' },
-  { href: '/menu', label: 'תפריט' },
   { href: '/about', label: 'עלינו' },
   { href: '/gallery', label: 'גלריה' },
   { href: '/contact', label: 'יצירת קשר' },
@@ -140,14 +139,7 @@ export default function MenuLayout({
         </div>
       </nav>
 
-      {/* Mobile navigation - only shows on menu pages */}
-      {pathname.startsWith('/menu') && (
-        <div className="md:hidden sticky top-16 z-30 border-b bg-card">
-          <div className="container px-0">
-             <MobileMenuNavigation />
-          </div>
-        </div>
-      )}
+      {/* Mobile navigation - handled in Header now */}
       
       <main>{children}</main>
     </div>

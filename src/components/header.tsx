@@ -13,6 +13,8 @@ import React, { useMemo, useState } from 'react';
 import { Skeleton } from './ui/skeleton';
 import { AsyncImage } from './async-image';
 import { Separator } from './ui/separator';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 const Crown2 = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" {...props}>
@@ -52,6 +54,63 @@ const iconMap: { [key: string]: React.ElementType | null } = {
   shield: Shield,
   none: null,
 };
+
+
+function MobileMenuNavigation() {
+  const { state, isLoading } = useApp();
+  const pathname = usePathname();
+  const { categories } = state;
+
+  const activeSlug = pathname.split('/').pop();
+
+  return (
+    <Tabs defaultValue="categories" className="w-full">
+      <TabsList className="grid w-full grid-cols-2">
+        <TabsTrigger value="categories">קטגוריות</TabsTrigger>
+        <TabsTrigger value="main-menu">תפריט ראשי</TabsTrigger>
+      </TabsList>
+      <TabsContent value="categories">
+        <ScrollArea className="h-[calc(100vh-200px)]">
+            <div className="flex flex-col items-start gap-4 p-4 text-lg">
+                 <Link href="/menu" className={cn('transition-colors hover:text-primary no-underline', pathname === '/menu' ? 'text-primary font-bold' : 'text-muted-foreground')}>כל המנות</Link>
+                 {(isLoading ? Array(5).fill(null) : categories).map((category, index) => (
+                    isLoading ? <Skeleton key={index} className="h-6 w-32" /> :
+                    <Link
+                        key={category.id}
+                        href={`/menu/${category.slug}`}
+                        className={cn(
+                            'transition-colors hover:text-primary no-underline',
+                            activeSlug === category.slug ? 'text-primary font-bold' : 'text-muted-foreground'
+                        )}
+                    >
+                        {category.name}
+                    </Link>
+                 ))}
+            </div>
+        </ScrollArea>
+      </TabsContent>
+      <TabsContent value="main-menu">
+        <ScrollArea className="h-[calc(100vh-200px)]">
+             <div className="flex flex-col items-start gap-4 p-4 text-lg">
+                {baseNavLinks.map((link) => (
+                     <Link
+                        key={link.href}
+                        href={link.href}
+                        className={cn(
+                            'transition-colors hover:text-primary no-underline',
+                            pathname === link.href ? 'text-primary font-bold' : 'text-muted-foreground'
+                        )}
+                    >
+                        {link.label}
+                    </Link>
+                ))}
+            </div>
+        </ScrollArea>
+      </TabsContent>
+    </Tabs>
+  );
+}
+
 
 
 export function Header() {
@@ -206,9 +265,7 @@ export function Header() {
         {/* Mobile Layout */}
         <div className="md:hidden flex w-full justify-between items-center">
           {!isLoading && <Logo />}
-          {/* On menu pages, the navigation is handled by the MenuLayout, so we don't need the hamburger */}
-          {!pathname.startsWith('/menu') && (
-            <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+          <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon">
                   <Menu className="h-6 w-6" />
@@ -223,12 +280,17 @@ export function Header() {
                           </span>
                       </SheetTitle>
                   </SheetHeader>
-                  <div className="flex flex-col gap-6 p-6">
-                      <NavLinks className="flex-col items-start text-lg gap-6" mobile={true} />
+                  <div className="flex flex-col gap-6 p-0 pt-6">
+                      {pathname.startsWith('/menu') ? (
+                          <MobileMenuNavigation />
+                      ) : (
+                         <div className="flex flex-col gap-6 p-6 pt-0">
+                           <NavLinks className="flex-col items-start text-lg gap-6" mobile={true} />
+                         </div>
+                      )}
                   </div>
               </SheetContent>
             </Sheet>
-          )}
         </div>
       </div>
     </header>
