@@ -149,32 +149,31 @@ export function CartSheet() {
               <div className="flex flex-col gap-4 py-4 pr-6 -mr-6">
                 {cartDetails.map(item => (
                   <div key={item!.id} className="flex items-center gap-4">
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-4">
-                         <AsyncImage 
-                            imageKey={item!.main_image} 
-                            alt={item!.name} 
-                            width={64}
-                            height={64}
-                            className="rounded-md object-cover h-16 w-16"
-                            data-ai-hint="food dish"
-                        />
-                        <div className="flex-1 min-w-0 text-right">
-                          <h4 className="font-semibold truncate" style={{direction: 'rtl', textAlign: 'right'}}>{item!.name}</h4>
-                          <p className="text-sm text-muted-foreground">{item!.price} ₪</p>
-                        </div>
-                      </div>
+                    {/* Image */}
+                    <AsyncImage 
+                        imageKey={item!.main_image} 
+                        alt={item!.name} 
+                        width={64}
+                        height={64}
+                        className="rounded-md object-cover h-16 w-16"
+                        data-ai-hint="food dish"
+                    />
+                    {/* Name and Price */}
+                    <div className="flex-1 min-w-0 text-right">
+                        <h4 className="font-semibold truncate" style={{direction: 'rtl', textAlign: 'right'}}>{item!.name}</h4>
+                        <p className="text-sm text-muted-foreground">{item!.price} ₪</p>
                     </div>
+                    {/* Quantity and Delete */}
                     <div className="flex items-center gap-1">
-                       <Input
-                          type="number"
-                          min="1"
-                          value={item!.quantity || ''}
-                          onChange={e => updateCartQuantity(item!.id, parseInt(e.target.value) || 0)}
-                          className="w-16 h-8 text-center"
+                        <Input
+                            type="number"
+                            min="1"
+                            value={item!.quantity || ''}
+                            onChange={e => updateCartQuantity(item!.id, parseInt(e.target.value, 10) || 0)}
+                            className="w-16 h-8 text-center"
                         />
                         <Button variant="ghost" size="icon" onClick={() => removeFromCart(item!.id)}>
-                          <Trash2 className="h-4 w-4 text-destructive" />
+                            <Trash2 className="h-4 w-4 text-destructive" />
                         </Button>
                     </div>
                   </div>
