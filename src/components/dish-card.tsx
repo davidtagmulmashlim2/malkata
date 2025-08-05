@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Button } from '@/components/ui/button';
@@ -153,9 +154,9 @@ export function DishCard({ dish }: DishCardProps) {
                 <div className="absolute top-2 left-0 right-0 px-2 flex justify-between items-start">
                     {isClient && cartItem ? (
                         <div className="bg-primary text-primary-foreground rounded-full h-7 w-7 flex items-center justify-center text-sm font-bold z-10">
-                            {cartItem.quantity}
+                            {cartItem.quantity || 0}
                         </div>
-                    ) : <div />}
+                    ) : null}
                     <div className="flex gap-2 flex-wrap justify-end max-w-[80%]">
                         {renderTags(dish.tags)}
                     </div>
