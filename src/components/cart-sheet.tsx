@@ -145,41 +145,42 @@ export function CartSheet() {
             </div>
         ) : cartDetails.length > 0 ? (
           <>
-            <ScrollArea className="flex-grow pr-4" viewportRef={viewportRef}>
-              <div className="flex flex-col gap-4 py-4 pr-6 -mr-6">
+            <ScrollArea className="flex-grow pr-4 -mr-6" viewportRef={viewportRef}>
+              <div className="flex flex-col gap-4 py-4">
                 {cartDetails.map(item => (
-                  <div key={item!.id} className="flex items-center gap-4">
-                    {/* Image */}
-                    <AsyncImage 
-                        imageKey={item!.main_image} 
-                        alt={item!.name} 
-                        width={64}
-                        height={64}
-                        className="rounded-md object-cover h-16 w-16"
-                        data-ai-hint="food dish"
-                    />
-                    {/* Name and Price */}
-                    <div className="flex-1 min-w-0 text-right">
-                        <h4 className="font-semibold truncate" style={{direction: 'rtl', textAlign: 'right'}}>{item!.name}</h4>
-                        <p className="text-sm text-muted-foreground">{item!.price} ₪</p>
+                  <div key={item!.id} className="flex flex-row-reverse items-center gap-4">
+                    <div className="shrink-0">
+                       <AsyncImage 
+                          imageKey={item!.main_image} 
+                          alt={item!.name} 
+                          width={64}
+                          height={64}
+                          className="rounded-md object-cover h-16 w-16"
+                          data-ai-hint="food dish"
+                      />
                     </div>
-                    {/* Quantity and Delete */}
-                    <div className="flex items-center gap-1">
-                        <Input
-                            type="number"
-                            min="1"
-                            value={item!.quantity || ''}
-                            onChange={e => updateCartQuantity(item!.id, parseInt(e.target.value, 10) || 0)}
-                            className="w-16 h-8 text-center"
+                    <div className="flex-1 min-w-0 text-right">
+                      <h4 className="font-semibold truncate" style={{direction: 'rtl', textAlign: 'right'}}>{item!.name}</h4>
+                      <p className="text-sm text-muted-foreground">{item!.price} ₪</p>
+                    </div>
+                    <div className="shrink-0">
+                       <Input
+                          type="number"
+                          min="1"
+                          value={item!.quantity || ''}
+                          onChange={e => updateCartQuantity(item!.id, parseInt(e.target.value, 10) || 0)}
+                          className="w-16 h-8 text-center"
                         />
+                    </div>
+                    <div className="shrink-0">
                         <Button variant="ghost" size="icon" onClick={() => removeFromCart(item!.id)}>
-                            <Trash2 className="h-4 w-4 text-destructive" />
+                          <Trash2 className="h-4 w-4 text-destructive" />
                         </Button>
                     </div>
                   </div>
                 ))}
               </div>
-              <div className="w-full space-y-4 text-right pt-4 pr-6 -mr-6">
+              <div className="w-full space-y-4 text-right pt-4">
                     <Separator />
                     <div className='space-y-4 text-right'>
                         <h4 className='font-medium text-center'>פרטי הזמנה</h4>
@@ -259,3 +260,5 @@ export function CartSheet() {
     </Sheet>
   );
 }
+
+    
