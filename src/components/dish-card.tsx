@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Button } from '@/components/ui/button';
@@ -192,7 +193,7 @@ export function DishCard({ dish }: DishCardProps) {
                 <h3 className={cn("font-headline font-bold", nameFontSizeClass)}>{dish.name}</h3>
                 <p className={cn("text-muted-foreground mt-1", descriptionFontSizeClass)}>{dish.short_description}</p>
             </div>
-            <div className="flex-shrink-0 flex flex-col items-center justify-start gap-2">
+            <div className="flex-shrink-0 flex flex-col items-center justify-start gap-2 pl-2">
                  <TooltipProvider>
                     <Tooltip>
                         <TooltipTrigger asChild>
@@ -206,9 +207,9 @@ export function DishCard({ dish }: DishCardProps) {
                             <ShoppingBagIcon className="h-4 w-4 md:h-5 md:w-5" />
                         </Button>
                         </TooltipTrigger>
-                        <TooltipContent side="top" className="bg-black text-white rounded-md p-2 px-3 text-sm shadow-lg border-0 relative">
+                        <TooltipContent side="bottom" className="bg-black text-white rounded-md p-1 px-2 text-xs shadow-lg border-0 relative">
                             <p>הוספה לסל</p>
-                            <div className="absolute left-1/2 -bottom-1 w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[6px] border-t-black transform -translate-x-1/2"></div>
+                            <div className="absolute left-1/2 -top-1 w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-b-[6px] border-b-black transform -translate-x-1/2"></div>
                         </TooltipContent>
                     </Tooltip>
                  </TooltipProvider>
