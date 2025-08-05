@@ -135,20 +135,26 @@ export function DishCard({ dish }: DishCardProps) {
                         <p className="text-white text-lg font-bold">אזל מהמלאי</p>
                     </div>
                 )}
-                 {/* Hover content */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent p-4 flex flex-col justify-end text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                 <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
                     <h3 className="text-lg font-headline font-bold">צפייה מהירה</h3>
                 </div>
-                 {/* Add to cart button */}
-                 <div className="absolute bottom-4 left-4 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <TooltipProvider>
+            </div>
+          </div>
+        </DialogTrigger>
+        <div className="pt-4 flex flex-col flex-grow">
+            <h3 className="font-headline font-bold text-lg">{dish.name}</h3>
+            <p className="text-sm text-muted-foreground flex-grow">{dish.short_description}</p>
+            <div className="mt-2 flex justify-between items-center">
+                <div className="text-left">
+                     <TooltipProvider>
                         <Tooltip>
                             <TooltipTrigger asChild>
                                  <Button 
                                     size="icon" 
-                                    className="rounded-full h-10 w-10 bg-primary/80 hover:bg-primary"
+                                    className="rounded-full h-9 w-9"
                                     onClick={handleDirectAddToCart} 
                                     disabled={!dish.is_available}
+                                    variant="outline"
                                  >
                                   <ShoppingBagIcon className="h-5 w-5" />
                                 </Button>
@@ -159,15 +165,10 @@ export function DishCard({ dish }: DishCardProps) {
                         </Tooltip>
                     </TooltipProvider>
                 </div>
-            </div>
-          </div>
-        </DialogTrigger>
-         <div className="pt-4 flex flex-col flex-grow">
-            <h3 className="font-headline font-bold text-lg">{dish.name}</h3>
-            <p className="text-sm text-muted-foreground flex-grow">{dish.short_description}</p>
-            <div className="mt-2">
-                <span className="text-lg font-bold">{dish.price} ₪</span>
-                {dish.price_subtitle && <p className="text-xs">{dish.price_subtitle}</p>}
+                <div className="text-right">
+                    <span className="text-lg font-bold">{dish.price} ₪</span>
+                    {dish.price_subtitle && <p className="text-xs">{dish.price_subtitle}</p>}
+                </div>
             </div>
         </div>
       </div>
@@ -257,4 +258,3 @@ export function DishCard({ dish }: DishCardProps) {
     </Dialog>
   );
 }
-
