@@ -149,7 +149,11 @@ export function CartSheet() {
               <div className="flex flex-col gap-4 py-4">
                 {cartDetails.map(item => (
                    <div key={item!.id} className="flex justify-between items-center gap-4">
-                        <div className="flex items-center gap-4 flex-1 min-w-0">
+                       <div className="flex items-center gap-4 flex-1 min-w-0">
+                           <div className="flex-1 min-w-0 text-right">
+                               <h4 className="font-semibold truncate">{item!.name}</h4>
+                               <p className="text-sm text-muted-foreground">{item!.price} ₪</p>
+                           </div>
                            <div className="shrink-0">
                                <AsyncImage 
                                  imageKey={item!.main_image} 
@@ -159,10 +163,6 @@ export function CartSheet() {
                                  className="rounded-md object-cover h-16 w-16"
                                  data-ai-hint="food dish"
                                />
-                           </div>
-                           <div className="flex-1 min-w-0 text-right">
-                               <h4 className="font-semibold truncate">{item!.name}</h4>
-                               <p className="text-sm text-muted-foreground">{item!.price} ₪</p>
                            </div>
                        </div>
                        <div className="flex items-center gap-2">
