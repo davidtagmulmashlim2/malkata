@@ -194,29 +194,29 @@ export function DishCard({ dish }: DishCardProps) {
                 <p className={cn("text-muted-foreground mt-1", descriptionFontSizeClass)}>{dish.short_description}</p>
             </div>
             <div className="flex justify-between items-end pt-2">
-                <div>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        size="icon"
+                        className="rounded-full h-8 w-8 md:h-9 md:w-9"
+                        onClick={handleDirectAddToCart}
+                        disabled={!dish.is_available}
+                        variant="outline"
+                      >
+                        <ShoppingBagIcon className="h-4 w-4 md:h-5 md:w-5" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent side="top" className="bg-black text-white rounded-md p-2 px-3 text-sm shadow-lg border-0 relative">
+                        <p>הוספה לסל</p>
+                        <div className="absolute left-1/2 -bottom-1 w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[6px] border-t-black transform -translate-x-1/2"></div>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+                <div className="text-left">
                     <span className="text-md md:text-lg font-bold">{dish.price} ₪</span>
                     {dish.price_subtitle && <p className="text-xs text-muted-foreground">{dish.price_subtitle}</p>}
                 </div>
-                 <TooltipProvider>
-                    <Tooltip>
-                        <TooltipTrigger asChild>
-                            <Button
-                                size="icon"
-                                className="rounded-full h-8 w-8 md:h-9 md:w-9"
-                                onClick={handleDirectAddToCart}
-                                disabled={!dish.is_available}
-                                variant="outline"
-                            >
-                                <ShoppingBagIcon className="h-4 w-4 md:h-5 md:w-5" />
-                            </Button>
-                        </TooltipTrigger>
-                        <TooltipContent side="top" className="bg-black text-white rounded-md p-2 px-3 text-sm shadow-lg border-0 relative">
-                            <p>הוספה לסל</p>
-                            <div className="absolute left-1/2 -bottom-1 w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[6px] border-t-black transform -translate-x-1/2"></div>
-                        </TooltipContent>
-                    </Tooltip>
-                </TooltipProvider>
             </div>
         </div>
       </div>
