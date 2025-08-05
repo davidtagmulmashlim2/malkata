@@ -228,9 +228,9 @@ export function DishCard({ dish }: DishCardProps) {
                         </TooltipContent>
                     </Tooltip>
                  </TooltipProvider>
-                 <div className="text-center">
+                 <div className="text-center w-full">
                     <span className="text-md md:text-lg font-bold leading-tight">{dish.price} ₪</span>
-                    {dish.price_subtitle && <p className="text-xs text-muted-foreground leading-tight">{dish.price_subtitle}</p>}
+                    {dish.price_subtitle && <p className="text-xs text-muted-foreground leading-tight truncate w-full">{dish.price_subtitle}</p>}
                 </div>
             </div>
         </div>
@@ -321,5 +321,3 @@ export function DishCard({ dish }: DishCardProps) {
     </Dialog>
   );
 }
-
-    
