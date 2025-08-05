@@ -229,7 +229,7 @@ export function DishCard({ dish }: DishCardProps) {
                  </TooltipProvider>
                 <div className="text-center w-full min-h-[2.5rem] flex flex-col justify-center">
                     <span className="text-md md:text-lg font-bold leading-tight">{dish.price} ₪</span>
-                    {dish.price_subtitle && <p className="text-xs text-muted-foreground leading-tight w-full whitespace-nowrap">{dish.price_subtitle}</p>}
+                    {dish.price_subtitle && <p className="text-xs text-muted-foreground leading-tight w-full">{dish.price_subtitle}</p>}
                 </div>
             </div>
         </div>
