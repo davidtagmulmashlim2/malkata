@@ -187,12 +187,12 @@ export function DishCard({ dish }: DishCardProps) {
           </div>
         </DialogTrigger>
         <div className="mt-2 flex flex-col flex-grow">
-            <div className="grid grid-cols-3 gap-2 flex-grow">
-                <div className="col-span-2 flex flex-col">
-                     <h3 className={cn("font-headline font-bold", nameFontSizeClass)}>{dish.name}</h3>
-                     <p className={cn("text-muted-foreground", descriptionFontSizeClass)}>{dish.short_description}</p>
+            <div className="grid grid-cols-2 flex-grow">
+                 <div className="flex flex-col text-right">
+                    <h3 className={cn("font-headline font-bold", nameFontSizeClass)}>{dish.name}</h3>
+                    <p className={cn("text-muted-foreground flex-grow", descriptionFontSizeClass)}>{dish.short_description}</p>
                 </div>
-                <div className="flex flex-col justify-between items-end">
+                <div className="flex flex-col justify-between items-center">
                      <TooltipProvider>
                         <Tooltip>
                             <TooltipTrigger asChild>
@@ -206,12 +206,13 @@ export function DishCard({ dish }: DishCardProps) {
                                   <ShoppingBagIcon className="h-4 w-4 md:h-5 md:w-5" />
                                 </Button>
                             </TooltipTrigger>
-                            <TooltipContent>
-                                <p>הוספה לסל</p>
+                            <TooltipContent side="bottom" className="bg-black text-white rounded-md p-2 px-3 text-sm shadow-lg border-0">
+                              <p>הוסף לסל</p>
+                              <div className="absolute left-1/2 -top-1 w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-b-[6px] border-b-black transform -translate-x-1/2"></div>
                             </TooltipContent>
                         </Tooltip>
                     </TooltipProvider>
-                    <div className="text-left mt-1">
+                    <div className="text-left mt-1 self-end">
                         <span className="text-md md:text-lg font-bold">{dish.price} ₪</span>
                         {dish.price_subtitle && <p className="text-xs text-muted-foreground">{dish.price_subtitle}</p>}
                     </div>
@@ -305,5 +306,3 @@ export function DishCard({ dish }: DishCardProps) {
     </Dialog>
   );
 }
-
-    
