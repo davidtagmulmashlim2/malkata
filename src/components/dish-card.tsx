@@ -145,8 +145,11 @@ export function DishCard({ dish }: DishCardProps) {
                         <p className="text-white text-lg font-bold">אזל מהמלאי</p>
                     </div>
                 )}
-                 <div 
-                    className="absolute inset-x-0 bottom-0 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-2 p-1 bg-black/40"
+                 <div
+                    className={cn(
+                        "absolute inset-x-0 bottom-0 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-2 p-1",
+                    )}
+                    style={{ backgroundColor: `rgba(0, 0, 0, ${(dishCardSettings?.quick_view_overlay_opacity ?? 40) / 100})` }}
                  >
                     {QuickViewIcon && <QuickViewIcon className="w-5 h-5" />}
                     <h3
@@ -165,16 +168,16 @@ export function DishCard({ dish }: DishCardProps) {
           </div>
         </DialogTrigger>
         <div className="pt-4 flex flex-col flex-grow">
-            <div className="flex-grow">
-                <h3 className="font-headline font-bold text-lg md:text-xl">{dish.name}</h3>
-                <p className="text-sm text-muted-foreground">{dish.short_description}</p>
-            </div>
-             <div className="mt-2 flex justify-between items-center">
-                <div className="text-right">
-                    <span className="text-md md:text-lg font-bold">{dish.price} ₪</span>
-                    {dish.price_subtitle && <p className="text-xs">{dish.price_subtitle}</p>}
+             <div className="flex justify-between items-start">
+                 <div className="flex-grow text-right pr-2">
+                    <h3 className="font-headline font-bold text-lg md:text-xl">{dish.name}</h3>
+                    <p className="text-sm text-muted-foreground">{dish.short_description}</p>
+                    <div className="mt-1">
+                        <span className="text-md md:text-lg font-bold">{dish.price} ₪</span>
+                        {dish.price_subtitle && <p className="text-xs">{dish.price_subtitle}</p>}
+                    </div>
                 </div>
-                <div className="text-left">
+                 <div className="flex-shrink-0">
                      <TooltipProvider>
                         <Tooltip>
                             <TooltipTrigger asChild>

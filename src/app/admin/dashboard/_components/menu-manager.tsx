@@ -156,9 +156,9 @@ export default function MenuManager() {
           ...editingDish,
           category_ids: editingDish.category_ids || [],
           price: editingDish.price || 0,
+          price_subtitle: editingDish.price_subtitle || '',
           tags: editingDish.tags || [],
           gallery_images: editingDish.gallery_images || [],
-          price_subtitle: editingDish.price_subtitle || '',
         });
     }
   }, [isDishDialogOpen, editingDish, dishForm]);
