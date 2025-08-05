@@ -12,6 +12,7 @@ import { useApp } from '@/context/app-context';
 import React, { useMemo, useState } from 'react';
 import { Skeleton } from './ui/skeleton';
 import { AsyncImage } from './async-image';
+import { Separator } from './ui/separator';
 
 const Crown2 = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" {...props}>
@@ -128,46 +129,75 @@ export function Header() {
     );
   };
 
-  const NavLinks = ({ className, mobile = false }: { className?: string, mobile?: boolean }) => (
-    <nav className={cn('flex items-center gap-4 lg:gap-6', className)}>
-      {isLoading ? (
-            Array(5).fill(0).map((_, i) => <Skeleton key={i} className="h-6 w-16" />)
-        ) : (
-            navLinks.map(link => {
-                const isActive = (pathname.startsWith(link.href) && link.href !== '/') || pathname === link.href;
-                
-                return (
-                    <Link
-                        key={link.href}
-                        href={link.href}
-                        onClick={() => mobile && setIsMobileMenuOpen(false)}
-                        className={cn(
-                            'transition-colors hover:text-primary no-underline',
-                             link.isFeatured 
-                                ? 'bg-primary text-primary-foreground hover:bg-primary/90 rounded-full text-xs font-medium px-4 h-8 flex items-center' 
-                                : (isActive ? 'text-primary font-bold' : 'text-muted-foreground')
-                        )}
-                    >
-                         {link.label}
-                    </Link>
-                );
-            })
-        )
-      }
-      {mobile && !isLoading && (
-        <Link
-            href="/admin"
-            onClick={() => setIsMobileMenuOpen(false)}
-            className={cn(
-                'transition-colors hover:text-primary no-underline',
-                pathname.startsWith('/admin') ? 'text-primary font-bold' : 'text-muted-foreground'
-            )}
-            >
-            אזור אישי
-        </Link>
-      )}
-    </nav>
-  );
+  const NavLinks = ({ className, mobile = false }: { className?: string, mobile?: boolean }) => {
+     const activeSlug = pathname.split('/').pop();
+    return (
+        <nav className={cn('flex items-center gap-4 lg:gap-6', className)}>
+        {isLoading ? (
+                Array(5).fill(0).map((_, i) => <Skeleton key={i} className="h-6 w-16" />)
+            ) : (
+                <>
+                    {navLinks.map(link => {
+                        const isActive = (pathname.startsWith(link.href) && link.href !== '/') || pathname === link.href;
+                        
+                        return (
+                            <Link
+                                key={link.href}
+                                href={link.href}
+                                onClick={() => mobile && setIsMobileMenuOpen(false)}
+                                className={cn(
+                                    'transition-colors hover:text-primary no-underline',
+                                    link.isFeatured 
+                                        ? 'bg-primary text-primary-foreground hover:bg-primary/90 rounded-full text-xs font-medium px-4 h-8 flex items-center' 
+                                        : (isActive ? 'text-primary font-bold' : 'text-muted-foreground')
+                                )}
+                            >
+                                {link.label}
+                            </Link>
+                        );
+                    })}
+                     {mobile && !isLoading && (
+                        <Link
+                            href="/admin"
+                            onClick={() => setIsMobileMenuOpen(false)}
+                            className={cn(
+                                'transition-colors hover:text-primary no-underline',
+                                pathname.startsWith('/admin') ? 'text-primary font-bold' : 'text-muted-foreground'
+                            )}
+                            >
+                            אזור אישי
+                        </Link>
+                    )}
+
+                    {/* Mobile Only Category Links */}
+                    {mobile && !isLoading && pathname.startsWith('/menu') && (
+                        <>
+                            <Separator className="my-4" />
+                            <h4 className="text-sm font-semibold text-muted-foreground px-2">קטגוריות</h4>
+                            {state.categories.map((category) => {
+                                const isActive = activeSlug === category.slug;
+                                return (
+                                    <Link
+                                        key={category.id}
+                                        href={`/menu/${category.slug}`}
+                                        onClick={() => setIsMobileMenuOpen(false)}
+                                        className={cn(
+                                            'transition-colors hover:text-primary no-underline',
+                                            isActive ? 'text-primary font-bold' : 'text-muted-foreground'
+                                        )}
+                                    >
+                                        {category.name}
+                                    </Link>
+                                )
+                            })}
+                        </>
+                    )}
+                </>
+            )
+        }
+        </nav>
+    );
+  }
 
   const AdminButton = () => (
      <Link href="/admin">

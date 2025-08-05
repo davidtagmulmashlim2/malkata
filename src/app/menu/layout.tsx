@@ -21,7 +21,8 @@ export default function MenuLayout({
 
   return (
     <div>
-      <nav className="border-b bg-card sticky top-16 z-30">
+      {/* This nav is hidden on mobile and shown on desktop */}
+      <nav className="hidden md:block border-b bg-card sticky top-16 z-30">
         <div className="container flex justify-center p-2 overflow-x-auto">
           <div className="flex items-center gap-2 whitespace-nowrap">
             {isLoading ? (
