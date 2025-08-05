@@ -117,7 +117,8 @@ export function DishCard({ dish }: DishCardProps) {
     }}>
       <div className="flex flex-col h-full text-right group">
         <DialogTrigger asChild>
-            <div className="relative aspect-square w-full overflow-hidden rounded-lg cursor-pointer">
+          <div className="cursor-pointer">
+            <div className="relative aspect-square w-full overflow-hidden rounded-lg">
                 <AsyncImage imageKey={dish.main_image} alt={dish.name} layout="fill" objectFit="cover" className="transition-transform duration-300 group-hover:scale-105" />
                 <div className="absolute top-2 left-0 right-0 px-2 flex justify-between items-start">
                     {isClient && cartItem ? (
@@ -136,12 +137,7 @@ export function DishCard({ dish }: DishCardProps) {
                 )}
                  {/* Hover content */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent p-4 flex flex-col justify-end text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <h3 className="text-lg font-headline font-bold">{dish.name}</h3>
-                    <p className="text-sm text-white/90">{dish.short_description}</p>
-                    <div className="mt-2">
-                        <span className="text-lg font-bold">{dish.price} ₪</span>
-                        {dish.price_subtitle && <p className="text-xs">{dish.price_subtitle}</p>}
-                    </div>
+                    <h3 className="text-lg font-headline font-bold">צפייה מהירה</h3>
                 </div>
                  {/* Add to cart button */}
                  <div className="absolute bottom-4 left-4 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -164,7 +160,16 @@ export function DishCard({ dish }: DishCardProps) {
                     </TooltipProvider>
                 </div>
             </div>
+          </div>
         </DialogTrigger>
+         <div className="pt-4 flex flex-col flex-grow">
+            <h3 className="font-headline font-bold text-lg">{dish.name}</h3>
+            <p className="text-sm text-muted-foreground flex-grow">{dish.short_description}</p>
+            <div className="mt-2">
+                <span className="text-lg font-bold">{dish.price} ₪</span>
+                {dish.price_subtitle && <p className="text-xs">{dish.price_subtitle}</p>}
+            </div>
+        </div>
       </div>
 
       <DialogContent className="sm:max-w-4xl text-right">
@@ -252,3 +257,4 @@ export function DishCard({ dish }: DishCardProps) {
     </Dialog>
   );
 }
+
