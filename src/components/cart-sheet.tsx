@@ -148,35 +148,33 @@ export function CartSheet() {
             <ScrollArea className="flex-grow pr-4" viewportRef={viewportRef}>
               <div className="flex flex-col gap-4 py-4">
                 {cartDetails.map(item => (
-                  <div key={item!.id} className="flex flex-row-reverse items-center gap-4">
-                    <div className="shrink-0">
-                       <AsyncImage 
-                          imageKey={item!.main_image} 
-                          alt={item!.name} 
-                          width={64}
-                          height={64}
-                          className="rounded-md object-cover h-16 w-16"
-                          data-ai-hint="food dish"
-                      />
-                    </div>
-                    <div className="flex-1 min-w-0 text-right">
-                      <h4 className="font-semibold truncate" style={{ direction: 'rtl', textAlign: 'right' }}>{item!.name}</h4>
-                      <p className="text-sm text-muted-foreground">{item!.price} ₪</p>
-                    </div>
-                    <div className="shrink-0">
-                       <Input
-                          type="number"
-                          min="1"
-                          value={item!.quantity || ''}
-                          onChange={e => updateCartQuantity(item!.id, parseInt(e.target.value) || 0)}
-                          className="w-16 h-8 text-center"
+                  <div key={item!.id} className="flex justify-between items-center gap-4">
+                      <div className="flex items-center gap-4 flex-1 min-w-0">
+                         <AsyncImage 
+                            imageKey={item!.main_image} 
+                            alt={item!.name} 
+                            width={64}
+                            height={64}
+                            className="rounded-md object-cover h-16 w-16 shrink-0"
+                            data-ai-hint="food dish"
                         />
-                    </div>
-                    <div className="shrink-0">
-                        <Button variant="ghost" size="icon" onClick={() => removeFromCart(item!.id)}>
-                          <Trash2 className="h-4 w-4 text-destructive" />
-                        </Button>
-                    </div>
+                        <div className="flex-1 min-w-0 text-right">
+                          <h4 className="font-semibold truncate" style={{direction: 'rtl', textAlign: 'right'}}>{item!.name}</h4>
+                          <p className="text-sm text-muted-foreground">{item!.price} ₪</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-1">
+                         <Input
+                            type="number"
+                            min="1"
+                            value={item!.quantity || ''}
+                            onChange={e => updateCartQuantity(item!.id, parseInt(e.target.value) || 0)}
+                            className="w-16 h-8 text-center"
+                          />
+                          <Button variant="ghost" size="icon" onClick={() => removeFromCart(item!.id)}>
+                            <Trash2 className="h-4 w-4 text-destructive" />
+                          </Button>
+                      </div>
                   </div>
                 ))}
               </div>
