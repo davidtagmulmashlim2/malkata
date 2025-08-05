@@ -1,4 +1,3 @@
-
 'use client';
 
 import { Trash2 } from 'lucide-react';
@@ -161,7 +160,7 @@ export function CartSheet() {
                       />
                     </div>
                     <div className="flex-1 min-w-0 text-right">
-                      <h4 className="font-semibold truncate">{item!.name}</h4>
+                      <h4 className="font-semibold truncate" style={{direction: 'rtl', textAlign: 'right'}}>{item!.name}</h4>
                       <p className="text-sm text-muted-foreground">{item!.price} ₪</p>
                     </div>
                     <div className="shrink-0">
@@ -261,5 +260,3 @@ export function CartSheet() {
     </Sheet>
   );
 }
-
-    
