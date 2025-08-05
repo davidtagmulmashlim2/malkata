@@ -1,4 +1,3 @@
-
 'use client';
 
 import { Button } from '@/components/ui/button';
@@ -207,12 +206,24 @@ export function DishCard({ dish }: DishCardProps) {
                             <ShoppingBagIcon className="h-4 w-4 md:h-5 md:w-5" />
                         </Button>
                         </TooltipTrigger>
-                        <TooltipContent
-                          side="top"
-                          align="center"
-                          className="custom-tooltip bg-black text-white rounded-md py-1 px-2 text-xs shadow-lg border-0"
-                        >
-                          <p>הוספה לסל</p>
+                         <TooltipContent
+                            side="top"
+                            align="center"
+                            className="bg-transparent border-0 shadow-none p-0"
+                         >
+                            <div className="relative">
+                                <div className="bg-black text-white rounded-md py-1 px-2 text-xs">
+                                     <p>הוספה לסל</p>
+                                </div>
+                                <div 
+                                    className="absolute left-1/2 -translate-x-1/2 w-0 h-0"
+                                    style={{
+                                        borderLeft: '5px solid transparent',
+                                        borderRight: '5px solid transparent',
+                                        borderTop: '5px solid black',
+                                    }}
+                                />
+                            </div>
                         </TooltipContent>
                     </Tooltip>
                  </TooltipProvider>
