@@ -210,7 +210,7 @@ export function DishCard({ dish }: DishCardProps) {
                         <TooltipContent
                           side="top"
                           align="center"
-                          className="bg-black text-white rounded-md p-1 px-2 text-xs shadow-lg border-0 relative"
+                          className="bg-black text-white rounded-md py-1 px-2 text-xs shadow-lg border-0 relative"
                         >
                           <p>הוספה לסל</p>
                           <div className="absolute left-1/2 -bottom-1 w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[6px] border-t-black transform -translate-x-1/2"></div>
@@ -310,3 +310,5 @@ export function DishCard({ dish }: DishCardProps) {
     </Dialog>
   );
 }
+
+    
