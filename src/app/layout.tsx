@@ -113,10 +113,7 @@ export default async function RootLayout({
         <meta name="twitter:description" content={description} />
         {imageUrl && <meta name="twitter:image" content={imageUrl} />}
       </head>
-      <body className={cn('min-h-screen flex flex-col', `theme-${initialState.design.theme}`)} style={{
-          '--font-headline-family': `var(--font-${initialState.design.headline_font})`,
-          '--font-sans-family': `var(--font-${initialState.design.body_font})`,
-        } as React.CSSProperties}>
+      <body>
           <AppProviderClient initialAppState={initialState}>
               {children}
           </AppProviderClient>
