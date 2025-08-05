@@ -207,9 +207,12 @@ export function DishCard({ dish }: DishCardProps) {
                             <ShoppingBagIcon className="h-4 w-4 md:h-5 md:w-5" />
                         </Button>
                         </TooltipTrigger>
-                        <TooltipContent side="bottom" className="bg-black text-white rounded-md p-1 px-2 text-xs shadow-lg border-0 relative">
-                            <p>הוספה לסל</p>
-                            <div className="absolute left-1/2 -top-1 w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-b-[6px] border-b-black transform -translate-x-1/2"></div>
+                        <TooltipContent
+                          side="top"
+                          className="bg-black text-white rounded-md p-1 px-2 text-xs shadow-lg border-0 relative"
+                        >
+                          <p>הוספה לסל</p>
+                          <div className="absolute left-1/2 -bottom-1 w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[6px] border-t-black transform -translate-x-1/2"></div>
                         </TooltipContent>
                     </Tooltip>
                  </TooltipProvider>
@@ -306,3 +309,5 @@ export function DishCard({ dish }: DishCardProps) {
     </Dialog>
   );
 }
+
+    
