@@ -17,7 +17,7 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { storeImage, deleteImage } from '@/lib/image-store.client';
 import { AsyncImage } from '@/components/async-image';
-import { Leaf, ChefHat, Bike, PartyPopper, Carrot, Rocket, Send, Smartphone } from 'lucide-react';
+import { Leaf, ChefHat, Bike, PartyPopper, Carrot, Rocket, Send, Smartphone, Eye, Search, Heart, Star, Info, ZoomIn } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Separator } from '@/components/ui/separator';
 
@@ -33,15 +33,24 @@ const featureIcons = [
     { name: 'סמארטפון', value: 'Smartphone', icon: Smartphone },
 ];
 
-const FeatureIconSelect = ({ onValueChange, value }: { onValueChange: (value: string) => void; value: string; }) => (
+const quickViewIcons = [
+    { name: 'עין', value: 'Eye', icon: Eye },
+    { name: 'זכוכית מגדלת', value: 'Search', icon: Search },
+    { name: 'לב', value: 'Heart', icon: Heart },
+    { name: 'כוכב', value: 'Star', icon: Star },
+    { name: 'מידע', value: 'Info', icon: Info },
+    { name: 'זום', value: 'ZoomIn', icon: ZoomIn },
+];
+
+const IconSelect = ({ onValueChange, value, icons, placeholder }: { onValueChange: (value: string) => void; value: string; icons: {name: string, value: string, icon: React.ElementType}[], placeholder: string }) => (
     <Select onValueChange={onValueChange} value={value}>
         <FormControl>
             <SelectTrigger>
-                <SelectValue placeholder="בחר אייקון" />
+                <SelectValue placeholder={placeholder} />
             </SelectTrigger>
         </FormControl>
         <SelectContent>
-            {featureIcons.map(icon => (
+            {icons.map(icon => (
                 <SelectItem key={icon.value} value={icon.value}>
                     <div className="flex items-center gap-2">
                         <icon.icon className="h-4 w-4" />
@@ -141,6 +150,11 @@ const contentSchema = z.object({
     description: z.string().optional(),
     image: z.string().optional(),
   }).optional(),
+  dish_card: z.object({
+    quick_view_text: z.string().optional(),
+    quick_view_icon: z.string().optional(),
+    quick_view_overlay_opacity: z.coerce.number().min(0).max(100).optional(),
+  }).optional(),
 });
 
 type ContentFormValues = z.infer<typeof contentSchema>;
@@ -224,7 +238,7 @@ export default function ContentManager() {
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            <Accordion type="multiple" defaultValue={['hero', 'about', 'contact', 'menu', 'shabbat-notice', 'newsletter', 'testimonials', 'features', 'cart', 'footer', 'seo']} className="w-full">
+            <Accordion type="multiple" defaultValue={['hero', 'about', 'contact', 'menu', 'shabbat-notice', 'newsletter', 'testimonials', 'features', 'cart', 'footer', 'seo', 'dish_card']} className="w-full">
               <AccordionItem value="hero">
                 <AccordionTrigger className="font-headline text-xl">עמוד הבית (אזור עליון)</AccordionTrigger>
                 <AccordionContent className="space-y-4 pt-4">
@@ -497,6 +511,33 @@ export default function ContentManager() {
                   />
                 </AccordionContent>
               </AccordionItem>
+              
+              <AccordionItem value="dish_card">
+                <AccordionTrigger className="font-headline text-xl">כרטיס מנה (בתפריט)</AccordionTrigger>
+                <AccordionContent className="space-y-4 pt-4">
+                  <FormField name="dish_card.quick_view_text" control={form.control} render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>טקסט לצפייה מהירה</FormLabel>
+                      <FormControl><Input {...field} value={field.value ?? ''} /></FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )} />
+                  <FormField name="dish_card.quick_view_icon" control={form.control} render={({ field }) => ( 
+                    <FormItem>
+                        <FormLabel>אייקון לצפייה מהירה</FormLabel>
+                        <IconSelect onValueChange={field.onChange} value={field.value ?? 'Eye'} icons={quickViewIcons} placeholder="בחר אייקון" />
+                        <FormMessage />
+                    </FormItem> 
+                  )} />
+                   <FormField name="dish_card.quick_view_overlay_opacity" control={form.control} render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>שקיפות שכבת הצפייה המהירה ({field.value ?? 40}%)</FormLabel>
+                      <FormControl><Slider value={[field.value ?? 40]} min={0} max={100} step={5} onValueChange={(v) => field.onChange(v[0])} /></FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )} />
+                </AccordionContent>
+              </AccordionItem>
 
               <AccordionItem value="shabbat-notice">
                 <AccordionTrigger className="font-headline text-xl">הודעת שבת</AccordionTrigger>
@@ -553,19 +594,19 @@ export default function ContentManager() {
                 <AccordionContent className="space-y-6 pt-4">
                     <div className="p-4 border rounded-md space-y-4">
                         <h4 className='font-medium text-md'>יתרון 1</h4>
-                        <FormField name="features.feature1.icon" control={form.control} render={({ field }) => ( <FormItem><FormLabel>אייקון</FormLabel><FeatureIconSelect onValueChange={field.onChange} value={field.value} /><FormMessage /></FormItem> )} />
+                        <FormField name="features.feature1.icon" control={form.control} render={({ field }) => ( <FormItem><FormLabel>אייקון</FormLabel><IconSelect onValueChange={field.onChange} value={field.value} icons={featureIcons} placeholder="בחר אייקון" /><FormMessage /></FormItem> )} />
                         <FormField name="features.feature1.title" control={form.control} render={({ field }) => ( <FormItem><FormLabel>כותרת</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem> )} />
                         <FormField name="features.feature1.description" control={form.control} render={({ field }) => ( <FormItem><FormLabel>תיאור</FormLabel><FormControl><Textarea {...field} /></FormControl><FormMessage /></FormItem> )} />
                     </div>
                      <div className="p-4 border rounded-md space-y-4">
                         <h4 className='font-medium text-md'>יתרון 2</h4>
-                        <FormField name="features.feature2.icon" control={form.control} render={({ field }) => ( <FormItem><FormLabel>אייקון</FormLabel><FeatureIconSelect onValueChange={field.onChange} value={field.value} /><FormMessage /></FormItem> )} />
+                        <FormField name="features.feature2.icon" control={form.control} render={({ field }) => ( <FormItem><FormLabel>אייקון</FormLabel><IconSelect onValueChange={field.onChange} value={field.value} icons={featureIcons} placeholder="בחר אייקון" /><FormMessage /></FormItem> )} />
                         <FormField name="features.feature2.title" control={form.control} render={({ field }) => ( <FormItem><FormLabel>כותרת</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem> )} />
                         <FormField name="features.feature2.description" control={form.control} render={({ field }) => ( <FormItem><FormLabel>תיאור</FormLabel><FormControl><Textarea {...field} /></FormControl><FormMessage /></FormItem> )} />
                     </div>
                      <div className="p-4 border rounded-md space-y-4">
                         <h4 className='font-medium text-md'>יתרון 3</h4>
-                        <FormField name="features.feature3.icon" control={form.control} render={({ field }) => ( <FormItem><FormLabel>אייקון</FormLabel><FeatureIconSelect onValueChange={field.onChange} value={field.value} /><FormMessage /></FormItem> )} />
+                        <FormField name="features.feature3.icon" control={form.control} render={({ field }) => ( <FormItem><FormLabel>אייקון</FormLabel><IconSelect onValueChange={field.onChange} value={field.value} icons={featureIcons} placeholder="בחר אייקון" /><FormMessage /></FormItem> )} />
                         <FormField name="features.feature3.title" control={form.control} render={({ field }) => ( <FormItem><FormLabel>כותרת</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem> )} />
                         <FormField name="features.feature3.description" control={form.control} render={({ field }) => ( <FormItem><FormLabel>תיאור</FormLabel><FormControl><Textarea {...field} /></FormControl><FormMessage /></FormItem> )} />
                     </div>
@@ -583,7 +624,7 @@ export default function ContentManager() {
                                 </FormItem>
                             )}
                         />
-                        <FormField name="features.feature4.icon" control={form.control} render={({ field }) => ( <FormItem><FormLabel>אייקון</FormLabel><FeatureIconSelect onValueChange={field.onChange} value={field.value} /><FormMessage /></FormItem> )} />
+                        <FormField name="features.feature4.icon" control={form.control} render={({ field }) => ( <FormItem><FormLabel>אייקון</FormLabel><IconSelect onValueChange={field.onChange} value={field.value} icons={featureIcons} placeholder="בחר אייקון" /><FormMessage /></FormItem> )} />
                         <FormField name="features.feature4.title" control={form.control} render={({ field }) => ( <FormItem><FormLabel>כותרת</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem> )} />
                         <FormField name="features.feature4.description" control={form.control} render={({ field }) => ( <FormItem><FormLabel>תיאור</FormLabel><FormControl><Textarea {...field} /></FormControl><FormMessage /></FormItem> )} />
                     </div>

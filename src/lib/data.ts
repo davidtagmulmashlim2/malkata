@@ -110,6 +110,11 @@ export const DEFAULT_APP_STATE: AppState = {
         title: 'מלכתא - אוכל ביתי',
         description: 'לא רק אוכל, חוויה של שבת.',
         image: '',
+    },
+    dish_card: {
+        quick_view_text: 'הצגה מהירה',
+        quick_view_icon: 'Eye',
+        quick_view_overlay_opacity: 40,
     }
   },
   // These arrays are intentionally empty.

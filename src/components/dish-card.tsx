@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import type { Dish } from '@/lib/types';
-import { Flame, Leaf, ChevronLeft, ChevronRight, Sparkles, Smile, Plus, Minus, Eye } from 'lucide-react';
+import { Flame, Leaf, ChevronLeft, ChevronRight, Sparkles, Smile, Plus, Minus, Eye, Search, Heart, Star, Info, ZoomIn } from 'lucide-react';
 import { ShoppingBagIcon } from '@/components/icons/shopping-bag-icon';
 import { Badge } from './ui/badge';
 import { useApp } from '@/context/app-context';
@@ -14,17 +14,27 @@ import { useIsClient } from '@/hooks/use-is-client';
 import { Skeleton } from '@/components/ui/skeleton';
 import { AsyncImage } from './async-image';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import React from 'react';
 
 
 interface DishCardProps {
   dish: Dish;
 }
 
+const quickViewIconMap: { [key: string]: React.ElementType } = {
+  Eye, Search, Heart, Star, Info, ZoomIn
+};
+
 export function DishCard({ dish }: DishCardProps) {
-  const { cart, addToCart, updateCartQuantity } = useApp();
+  const { cart, addToCart, updateCartQuantity, state } = useApp();
   const isClient = useIsClient();
   const [quantity, setQuantity] = useState(1);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  
+  const { siteContent } = state;
+  const { dish_card: dishCardSettings } = siteContent;
+
+  const QuickViewIcon = quickViewIconMap[dishCardSettings?.quick_view_icon ?? 'Eye'] || Eye;
   
   const allImages = useMemo(() => {
     const imageSet = new Set<string>();
@@ -134,15 +144,18 @@ export function DishCard({ dish }: DishCardProps) {
                         <p className="text-white text-lg font-bold">אזל מהמלאי</p>
                     </div>
                 )}
-                 <div className="absolute inset-x-0 bottom-0 bg-black/40 p-1 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-2">
-                    <Eye className="w-5 h-5" />
-                    <h3 className="text-md font-bold">הצגה מהירה</h3>
+                 <div 
+                    className="absolute inset-x-0 bottom-0 p-1 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-2"
+                    style={{ backgroundColor: `rgba(0, 0, 0, ${(dishCardSettings?.quick_view_overlay_opacity ?? 40) / 100})` }}
+                 >
+                    <QuickViewIcon className="w-5 h-5" />
+                    <h3 className="text-md font-bold">{dishCardSettings?.quick_view_text ?? 'הצגה מהירה'}</h3>
                 </div>
             </div>
           </div>
         </DialogTrigger>
         <div className="pt-4 flex flex-col flex-grow">
-            <h3 className="font-headline font-bold text-lg">{dish.name}</h3>
+            <h3 className="font-headline font-bold text-lg md:text-xl">{dish.name}</h3>
             <p className="text-sm text-muted-foreground flex-grow">{dish.short_description}</p>
             <div className="mt-2 flex justify-between items-center">
                 <div className="text-left">
@@ -151,12 +164,12 @@ export function DishCard({ dish }: DishCardProps) {
                             <TooltipTrigger asChild>
                                  <Button 
                                     size="icon" 
-                                    className="rounded-full h-9 w-9"
+                                    className="rounded-full h-8 w-8 md:h-9 md:w-9"
                                     onClick={handleDirectAddToCart} 
                                     disabled={!dish.is_available}
                                     variant="outline"
                                  >
-                                  <ShoppingBagIcon className="h-5 w-5" />
+                                  <ShoppingBagIcon className="h-4 w-4 md:h-5 md:w-5" />
                                 </Button>
                             </TooltipTrigger>
                             <TooltipContent>
@@ -166,7 +179,7 @@ export function DishCard({ dish }: DishCardProps) {
                     </TooltipProvider>
                 </div>
                 <div className="text-right">
-                    <span className="text-lg font-bold">{dish.price} ₪</span>
+                    <span className="text-md md:text-lg font-bold">{dish.price} ₪</span>
                     {dish.price_subtitle && <p className="text-xs">{dish.price_subtitle}</p>}
                 </div>
             </div>

@@ -158,7 +158,12 @@ export interface SiteContent {
     title?: string;
     description?: string;
     image?: string;
-  }
+  };
+  dish_card?: {
+    quick_view_text?: string;
+    quick_view_icon?: string;
+    quick_view_overlay_opacity?: number;
+  };
 }
 
 export interface DesignSettings {
