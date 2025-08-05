@@ -167,8 +167,8 @@ export function CartSheet() {
                        <Input
                           type="number"
                           min="1"
-                          value={item!.quantity}
-                          onChange={e => updateCartQuantity(item!.id, parseInt(e.target.value, 10))}
+                          value={item!.quantity || ''}
+                          onChange={e => updateCartQuantity(item!.id, parseInt(e.target.value) || 0)}
                           className="w-16 h-8 text-center"
                         />
                     </div>
