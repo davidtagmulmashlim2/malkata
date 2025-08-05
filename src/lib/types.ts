@@ -12,10 +12,8 @@ export interface Dish {
   gallery_images?: string[];
   category_ids: string[];
   is_available: boolean;
-  tags: ('vegan' | 'spicy' | 'new' | 'piquant' | 'kids-favorite')[];
+  tags: string[]; // Storing font sizes as tags, e.g., "n-fs-xl", "d-fs-sm"
   is_recommended?: boolean;
-  name_font_size?: string;
-  description_font_size?: string;
 }
 
 export interface Category {
@@ -233,5 +231,7 @@ export type Action =
   | { type: 'DELETE_SUBMISSION', payload: string }
   | { type: 'UPDATE_DESIGN'; payload: DesignSettings }
   | { type: 'REMOVE_ITEM_FROM_CART', payload: string };
+
+    
 
     

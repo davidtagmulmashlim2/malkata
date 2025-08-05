@@ -110,21 +110,31 @@ export function DishCard({ dish }: DishCardProps) {
 
   const renderTags = (tags: Dish['tags']) => {
     if (!tags || tags.length === 0) return null;
+    const standardTags = tags.filter(t => !t.startsWith('n-fs-') && !t.startsWith('d-fs-'));
     return (
         <>
-            {tags.includes('new') && <Badge variant="default" className="bg-blue-500 text-white"><Sparkles className="w-3 h-3 me-1" /> חדש</Badge>}
-            {tags.includes('vegan') && <Badge variant="default" className="bg-green-600 text-white"><Leaf className="w-3 h-3 me-1" /> טבעוני</Badge>}
-            {tags.includes('spicy') && <Badge variant="destructive"><Flame className="w-3 h-3 me-1" /> חריף</Badge>}
-            {tags.includes('piquant') && <Badge variant="secondary" className="bg-orange-500 text-black"><Flame className="w-3 h-3 me-1" /> פיקנטי</Badge>}
-            {tags.includes('kids-favorite') && <Badge variant="default" className="bg-yellow-500 text-black"><Smile className="w-3 h-3 me-1" /> ילדים אוהבים</Badge>}
+            {standardTags.includes('new') && <Badge variant="default" className="bg-blue-500 text-white"><Sparkles className="w-3 h-3 me-1" /> חדש</Badge>}
+            {standardTags.includes('vegan') && <Badge variant="default" className="bg-green-600 text-white"><Leaf className="w-3 h-3 me-1" /> טבעוני</Badge>}
+            {standardTags.includes('spicy') && <Badge variant="destructive"><Flame className="w-3 h-3 me-1" /> חריף</Badge>}
+            {standardTags.includes('piquant') && <Badge variant="secondary" className="bg-orange-500 text-black"><Flame className="w-3 h-3 me-1" /> פיקנטי</Badge>}
+            {standardTags.includes('kids-favorite') && <Badge variant="default" className="bg-yellow-500 text-black"><Smile className="w-3 h-3 me-1" /> ילדים אוהבים</Badge>}
         </>
     );
   };
   
   const buttonText = cartItem ? "עדכן כמות בסל" : "הוספה לסל";
   
-  const nameFontSizeClass = textSizeClasses[dish.name_font_size || 'lg'] || 'text-lg';
-  const descriptionFontSizeClass = textSizeClasses[dish.description_font_size || 'sm'] || 'text-sm';
+  const nameFontSizeClass = useMemo(() => {
+    const tag = dish.tags?.find(t => t.startsWith('n-fs-'));
+    const size = tag ? tag.replace('n-fs-', '') : 'lg';
+    return textSizeClasses[size] || 'text-lg';
+  }, [dish.tags]);
+
+  const descriptionFontSizeClass = useMemo(() => {
+    const tag = dish.tags?.find(t => t.startsWith('d-fs-'));
+    const size = tag ? tag.replace('d-fs-', '') : 'sm';
+    return textSizeClasses[size] || 'text-sm';
+  }, [dish.tags]);
 
 
   return (

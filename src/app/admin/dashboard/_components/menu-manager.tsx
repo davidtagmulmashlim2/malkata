@@ -86,6 +86,7 @@ const dishSchema = z.object({
   is_available: z.boolean(),
   is_recommended: z.boolean().optional(),
   tags: z.array(z.string()),
+  // These are not real DB columns anymore, just for form state
   name_font_size: z.string().optional(),
   description_font_size: z.string().optional(),
 })
@@ -155,15 +156,19 @@ export default function MenuManager() {
             price_subtitle: '', name_font_size: 'default', description_font_size: 'default',
         });
     } else if (editingDish) {
+        const tags = editingDish.tags || [];
+        const nameSizeTag = tags.find(t => t.startsWith('n-fs-'))
+        const descSizeTag = tags.find(t => t.startsWith('d-fs-'))
+
         dishForm.reset({
           ...editingDish,
           category_ids: editingDish.category_ids || [],
           price: editingDish.price || 0,
           price_subtitle: editingDish.price_subtitle || '',
-          tags: editingDish.tags || [],
+          tags: tags,
           gallery_images: editingDish.gallery_images || [],
-          name_font_size: editingDish.name_font_size || 'default',
-          description_font_size: editingDish.description_font_size || 'default',
+          name_font_size: nameSizeTag ? nameSizeTag.replace('n-fs-', '') : 'default',
+          description_font_size: descSizeTag ? descSizeTag.replace('d-fs-', '') : 'default',
         });
     }
   }, [isDishDialogOpen, editingDish, dishForm]);
@@ -203,17 +208,26 @@ export default function MenuManager() {
   }
 
   const handleDishSubmit = (values: z.infer<typeof dishSchema>) => {
-    const dishData = {
-        ...values,
-        name_font_size: values.name_font_size === 'default' ? undefined : values.name_font_size,
-        description_font_size: values.description_font_size === 'default' ? undefined : values.description_font_size,
-    };
+    const { name_font_size, description_font_size, ...dishData } = values;
+
+    // Filter out old font size tags
+    let newTags = (dishData.tags || []).filter(tag => !tag.startsWith('n-fs-') && !tag.startsWith('d-fs-'));
+
+    // Add new font size tags if not default
+    if (name_font_size && name_font_size !== 'default') {
+        newTags.push(`n-fs-${name_font_size}`);
+    }
+    if (description_font_size && description_font_size !== 'default') {
+        newTags.push(`d-fs-${description_font_size}`);
+    }
+    
+    const finalDishData = { ...dishData, tags: newTags };
 
     if (editingDish) {
-      dispatch({ type: 'UPDATE_DISH', payload: { ...dishData, id: editingDish.id } as Dish })
+      dispatch({ type: 'UPDATE_DISH', payload: { ...finalDishData, id: editingDish.id } as Dish })
       toast({ title: 'מנה עודכנה בהצלחה' })
     } else {
-      dispatch({ type: 'ADD_DISH', payload: dishData as Dish })
+      dispatch({ type: 'ADD_DISH', payload: finalDishData as Dish })
       toast({ title: 'מנה נוספה בהצלחה' })
     }
     setIsDishDialogOpen(false)
@@ -490,9 +504,10 @@ export default function MenuManager() {
                                       <Checkbox 
                                           checked={field.value?.includes('new')}
                                           onCheckedChange={(checked) => {
+                                              const currentTags = field.value?.filter(t => t !== 'new') || [];
                                               return checked
-                                                  ? field.onChange([...(field.value || []), 'new'])
-                                                  : field.onChange(field.value?.filter(v => v !== 'new'))
+                                                  ? field.onChange([...currentTags, 'new'])
+                                                  : field.onChange(currentTags)
                                           }}
                                       />
                                   </FormControl>
@@ -505,9 +520,10 @@ export default function MenuManager() {
                                       <Checkbox 
                                           checked={field.value?.includes('vegan')}
                                           onCheckedChange={(checked) => {
+                                              const currentTags = field.value?.filter(t => t !== 'vegan') || [];
                                               return checked
-                                                  ? field.onChange([...(field.value || []), 'vegan'])
-                                                  : field.onChange(field.value?.filter(v => v !== 'vegan'))
+                                                  ? field.onChange([...currentTags, 'vegan'])
+                                                  : field.onChange(currentTags)
                                           }}
                                       />
                                   </FormControl>
@@ -520,9 +536,10 @@ export default function MenuManager() {
                                       <Checkbox
                                           checked={field.value?.includes('spicy')}
                                           onCheckedChange={(checked) => {
+                                             const currentTags = field.value?.filter(t => t !== 'spicy') || [];
                                               return checked
-                                                  ? field.onChange([...(field.value || []), 'spicy'])
-                                                  : field.onChange(field.value?.filter(v => v !== 'spicy'))
+                                                  ? field.onChange([...currentTags, 'spicy'])
+                                                  : field.onChange(currentTags)
                                           }}
                                       />
                                   </FormControl>
@@ -535,9 +552,10 @@ export default function MenuManager() {
                                       <Checkbox
                                           checked={field.value?.includes('piquant')}
                                           onCheckedChange={(checked) => {
+                                              const currentTags = field.value?.filter(t => t !== 'piquant') || [];
                                               return checked
-                                                  ? field.onChange([...(field.value || []), 'piquant'])
-                                                  : field.onChange(field.value?.filter(v => v !== 'piquant'))
+                                                  ? field.onChange([...currentTags, 'piquant'])
+                                                  : field.onChange(currentTags)
                                           }}
                                       />
                                   </FormControl>
@@ -550,9 +568,10 @@ export default function MenuManager() {
                                       <Checkbox
                                           checked={field.value?.includes('kids-favorite')}
                                           onCheckedChange={(checked) => {
+                                             const currentTags = field.value?.filter(t => t !== 'kids-favorite') || [];
                                               return checked
-                                                  ? field.onChange([...(field.value || []), 'kids-favorite'])
-                                                  : field.onChange(field.value?.filter(v => v !== 'kids-favorite'))
+                                                  ? field.onChange([...currentTags, 'kids-favorite'])
+                                                  : field.onChange(currentTags)
                                           }}
                                       />
                                   </FormControl>
@@ -814,3 +833,4 @@ export default function MenuManager() {
   )
 }
 
+    
