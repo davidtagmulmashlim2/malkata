@@ -165,6 +165,8 @@ export interface SiteContent {
     quick_view_overlay_opacity?: number;
     quick_view_font?: string;
     quick_view_color?: string;
+    dish_name_font_size?: string;
+    dish_description_font_size?: string;
   };
 }
 
@@ -231,3 +233,5 @@ export type Action =
   | { type: 'DELETE_SUBMISSION', payload: string }
   | { type: 'UPDATE_DESIGN'; payload: DesignSettings }
   | { type: 'REMOVE_ITEM_FROM_CART', payload: string };
+
+    

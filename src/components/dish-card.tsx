@@ -26,6 +26,12 @@ const quickViewIconMap: { [key: string]: React.ElementType | null } = {
   Eye, Search, Heart, Star, Info, ZoomIn, none: null,
 };
 
+const textSizeClasses: { [key: string]: string } = {
+  'xs': 'text-xs', 'sm': 'text-sm', 'base': 'text-base', 'lg': 'text-lg', 'xl': 'text-xl', 
+  '2xl': 'text-2xl', '3xl': 'text-3xl', '4xl': 'text-4xl', '5xl': 'text-5xl', 
+  '6xl': 'text-6xl', '7xl': 'text-7xl', '8xl': 'text-8xl', '9xl': 'text-9xl',
+};
+
 export function DishCard({ dish }: DishCardProps) {
   const { cart, addToCart, updateCartQuantity, state } = useApp();
   const isClient = useIsClient();
@@ -167,11 +173,11 @@ export function DishCard({ dish }: DishCardProps) {
             </div>
           </div>
         </DialogTrigger>
-        <div className="mt-2 flex-grow flex flex-col">
-            <div className="flex-grow grid grid-cols-3 gap-2">
+        <div className="mt-2 flex flex-col flex-grow">
+            <div className="grid grid-cols-3 gap-2 flex-grow">
                 <div className="col-span-2 flex flex-col">
-                     <h3 className="font-headline font-bold text-lg md:text-xl">{dish.name}</h3>
-                     <p className="text-sm text-muted-foreground flex-grow">{dish.short_description}</p>
+                     <h3 className={cn("font-headline font-bold", textSizeClasses[dishCardSettings?.dish_name_font_size ?? 'lg'])}>{dish.name}</h3>
+                     <p className={cn("text-muted-foreground", textSizeClasses[dishCardSettings?.dish_description_font_size ?? 'sm'])}>{dish.short_description}</p>
                 </div>
                 <div className="flex flex-col justify-between items-end">
                      <TooltipProvider>
@@ -286,3 +292,5 @@ export function DishCard({ dish }: DishCardProps) {
     </Dialog>
   );
 }
+
+    
