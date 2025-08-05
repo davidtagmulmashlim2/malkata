@@ -126,14 +126,16 @@ export function DishCard({ dish }: DishCardProps) {
   
   const nameFontSizeClass = useMemo(() => {
     const tag = dish.tags?.find(t => t.startsWith('n-fs-'));
-    const size = tag ? tag.replace('n-fs-', '') : 'lg';
-    return textSizeClasses[size] || 'text-lg';
+    const sizeKey = tag ? tag.replace('n-fs-', '') : 'default';
+    if(sizeKey === 'default') return 'text-lg';
+    return textSizeClasses[sizeKey] || 'text-lg';
   }, [dish.tags]);
 
   const descriptionFontSizeClass = useMemo(() => {
     const tag = dish.tags?.find(t => t.startsWith('d-fs-'));
-    const size = tag ? tag.replace('d-fs-', '') : 'sm';
-    return textSizeClasses[size] || 'text-sm';
+    const sizeKey = tag ? tag.replace('d-fs-', '') : 'default';
+    if(sizeKey === 'default') return 'text-sm';
+    return textSizeClasses[sizeKey] || 'text-sm';
   }, [dish.tags]);
 
 
@@ -186,7 +188,7 @@ export function DishCard({ dish }: DishCardProps) {
             </div>
           </div>
         </DialogTrigger>
-         <div className="mt-2 flex-grow flex flex-col">
+        <div className="mt-2 flex-grow flex flex-col">
             <div className="grid grid-cols-3 flex-grow gap-2">
                 <div className="col-span-2 flex flex-col">
                     <h3 className={cn("font-headline font-bold", nameFontSizeClass)}>{dish.name}</h3>
