@@ -1,4 +1,3 @@
-
 'use client';
 
 import { Trash2 } from 'lucide-react';
@@ -149,7 +148,21 @@ export function CartSheet() {
             <ScrollArea className="flex-grow pr-4 -mr-6" viewportRef={viewportRef}>
               <div className="flex flex-col gap-4 py-4">
                 {cartDetails.map(item => (
-                  <div key={item!.id} className="flex flex-row-reverse items-center gap-4">
+                  <div key={item!.id} className="flex flex-row items-center gap-4">
+                     <Button variant="ghost" size="icon" onClick={() => removeFromCart(item!.id)}>
+                      <Trash2 className="h-4 w-4 text-destructive" />
+                    </Button>
+                    <Input
+                      type="number"
+                      min="1"
+                      value={item!.quantity}
+                      onChange={e => updateCartQuantity(item!.id, parseInt(e.target.value, 10))}
+                      className="w-16 h-8 text-center"
+                    />
+                    <div className="flex-1 min-w-0 text-right">
+                      <h4 className="font-semibold truncate">{item!.name}</h4>
+                      <p className="text-sm text-muted-foreground">{item!.price} ₪</p>
+                    </div>
                     <div className="shrink-0">
                        <AsyncImage 
                           imageKey={item!.main_image} 
@@ -159,24 +172,6 @@ export function CartSheet() {
                           className="rounded-md object-cover h-16 w-16"
                           data-ai-hint="food dish"
                       />
-                    </div>
-                    <div className="flex-1 min-w-0 text-right">
-                      <h4 className="font-semibold truncate">{item!.name}</h4>
-                      <p className="text-sm text-muted-foreground">{item!.price} ₪</p>
-                    </div>
-                    <div className="shrink-0">
-                       <Input
-                          type="number"
-                          min="1"
-                          value={item!.quantity}
-                          onChange={e => updateCartQuantity(item!.id, parseInt(e.target.value, 10))}
-                          className="w-16 h-8 text-center"
-                        />
-                    </div>
-                    <div className="shrink-0">
-                        <Button variant="ghost" size="icon" onClick={() => removeFromCart(item!.id)}>
-                          <Trash2 className="h-4 w-4 text-destructive" />
-                        </Button>
                     </div>
                   </div>
                 ))}
