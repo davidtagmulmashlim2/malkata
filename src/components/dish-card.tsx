@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Button } from '@/components/ui/button';
@@ -166,7 +167,7 @@ export function DishCard({ dish }: DishCardProps) {
         </DialogTrigger>
         <div className="pt-4 flex flex-col flex-grow">
             <h3 className="font-headline font-bold text-lg md:text-xl">{dish.name}</h3>
-            <p className="text-sm text-muted-foreground flex-grow">{dish.short_description}</p>
+            <p className="text-sm text-muted-foreground">{dish.short_description}</p>
             <div className="mt-2 flex justify-between items-center">
                 <div className="text-right">
                     <span className="text-md md:text-lg font-bold">{dish.price} ₪</span>
