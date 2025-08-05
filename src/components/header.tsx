@@ -1,5 +1,4 @@
 
-
 'use client';
 
 import Link from 'next/link';
@@ -56,12 +55,16 @@ const iconMap: { [key: string]: React.ElementType | null } = {
 };
 
 
-function MobileMenuNavigation() {
+function MobileMenuNavigation({onLinkClick}: {onLinkClick: () => void}) {
   const { state, isLoading } = useApp();
   const pathname = usePathname();
   const { categories } = state;
 
   const activeSlug = pathname.split('/').pop();
+
+  const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    onLinkClick();
+  }
 
   return (
     <Tabs defaultValue="categories" className="w-full">
@@ -72,12 +75,13 @@ function MobileMenuNavigation() {
       <TabsContent value="categories">
         <ScrollArea className="h-[calc(100vh-200px)]">
             <div className="flex flex-col items-start gap-4 p-4 text-lg">
-                 <Link href="/menu" className={cn('transition-colors hover:text-primary no-underline', pathname === '/menu' ? 'text-primary font-bold' : 'text-muted-foreground')}>כל המנות</Link>
+                 <Link href="/menu" onClick={handleLinkClick} className={cn('transition-colors hover:text-primary no-underline', pathname === '/menu' ? 'text-primary font-bold' : 'text-muted-foreground')}>כל המנות</Link>
                  {(isLoading ? Array(5).fill(null) : categories).map((category, index) => (
                     isLoading ? <Skeleton key={index} className="h-6 w-32" /> :
                     <Link
                         key={category.id}
                         href={`/menu/${category.slug}`}
+                        onClick={handleLinkClick}
                         className={cn(
                             'transition-colors hover:text-primary no-underline',
                             activeSlug === category.slug ? 'text-primary font-bold' : 'text-muted-foreground'
@@ -96,6 +100,7 @@ function MobileMenuNavigation() {
                      <Link
                         key={link.href}
                         href={link.href}
+                        onClick={handleLinkClick}
                         className={cn(
                             'transition-colors hover:text-primary no-underline',
                             pathname === link.href ? 'text-primary font-bold' : 'text-muted-foreground'
@@ -137,7 +142,6 @@ export function Header() {
                 label: featuredCategory.name,
                 isFeatured: true,
             };
-            // Insert featured link after 'גלריה'
             const galleryIndex = newLinks.findIndex(link => link.href === '/gallery');
             if (galleryIndex !== -1) {
                 newLinks.splice(galleryIndex + 1, 0, featuredLink);
@@ -188,7 +192,7 @@ export function Header() {
     );
   };
 
-  const NavLinks = ({ className, mobile = false }: { className?: string, mobile?: boolean }) => {
+  const NavLinks = ({ className }: { className?: string }) => {
     return (
         <nav className={cn('flex items-center gap-4 lg:gap-6', className)}>
         {isLoading ? (
@@ -196,17 +200,13 @@ export function Header() {
             ) : (
                 <>
                     {navLinks.map(link => {
-                        // For the main menu, only highlight if it's not a submenu of /menu
                         const isMenuActive = pathname.startsWith('/menu');
                         const isActive = (link.href === '/menu' && isMenuActive) || (link.href !== '/menu' && pathname === link.href);
                         
-                        if (mobile && link.href === '/menu') return null;
-
                         return (
                             <Link
                                 key={link.href}
                                 href={link.href}
-                                onClick={() => mobile && setIsMobileMenuOpen(false)}
                                 className={cn(
                                     'transition-colors hover:text-primary no-underline',
                                     link.isFeatured 
@@ -218,24 +218,45 @@ export function Header() {
                             </Link>
                         );
                     })}
-                     {mobile && !isLoading && (
-                        <Link
-                            href="/admin"
-                            onClick={() => setIsMobileMenuOpen(false)}
-                            className={cn(
-                                'transition-colors hover:text-primary no-underline',
-                                pathname.startsWith('/admin') ? 'text-primary font-bold' : 'text-muted-foreground'
-                            )}
-                            >
-                            אזור אישי
-                        </Link>
-                    )}
                 </>
             )
         }
         </nav>
     );
   }
+  
+   const MobileNavLinks = ({onLinkClick}: {onLinkClick: () => void}) => {
+     return (
+       <nav className="flex flex-col items-start gap-6 p-6 pt-0 text-lg">
+            {navLinks.map(link => {
+                const isActive = pathname === link.href;
+                return (
+                    <Link
+                        key={link.href}
+                        href={link.href}
+                        onClick={onLinkClick}
+                        className={cn(
+                            'transition-colors hover:text-primary no-underline',
+                             isActive ? 'text-primary font-bold' : 'text-muted-foreground'
+                        )}
+                    >
+                        {link.label}
+                    </Link>
+                )
+            })}
+             <Link
+                href="/admin"
+                onClick={onLinkClick}
+                className={cn(
+                    'transition-colors hover:text-primary no-underline',
+                    pathname.startsWith('/admin') ? 'text-primary font-bold' : 'text-muted-foreground'
+                )}
+                >
+                אזור אישי
+            </Link>
+       </nav>
+    );
+   }
 
   const AdminButton = () => (
      <Link href="/admin">
@@ -245,6 +266,8 @@ export function Header() {
         </Button>
     </Link>
   );
+  
+  const isMenuPage = pathname.startsWith('/menu');
 
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background/80 backdrop-blur-sm">
@@ -272,7 +295,7 @@ export function Header() {
                   <span className="sr-only">פתח תפריט ניווט</span>
                 </Button>
               </SheetTrigger>
-              <SheetContent side="left">
+              <SheetContent side="left" className="p-0">
                   <SheetHeader className="p-6 pb-0 text-right">
                       <SheetTitle>
                           <span onClick={() => setIsMobileMenuOpen(false)}>
@@ -280,13 +303,11 @@ export function Header() {
                           </span>
                       </SheetTitle>
                   </SheetHeader>
-                  <div className="flex flex-col gap-6 p-0 pt-6">
-                      {pathname.startsWith('/menu') ? (
-                          <MobileMenuNavigation />
+                  <div className="pt-6">
+                      {isMenuPage ? (
+                          <MobileMenuNavigation onLinkClick={() => setIsMobileMenuOpen(false)} />
                       ) : (
-                         <div className="flex flex-col gap-6 p-6 pt-0">
-                           <NavLinks className="flex-col items-start text-lg gap-6" mobile={true} />
-                         </div>
+                         <MobileNavLinks onLinkClick={() => setIsMobileMenuOpen(false)} />
                       )}
                   </div>
               </SheetContent>
@@ -296,3 +317,5 @@ export function Header() {
     </header>
   );
 }
+
+    
