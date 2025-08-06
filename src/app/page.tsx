@@ -182,7 +182,7 @@ export default function Home() {
                  <Skeleton className="w-full h-full" />
              </section>
              <section className="container py-16 md:py-24">
-                <h2 className="text-3xl md:text-4xl font-headline font-bold text-right mb-10">מנות מומלצות</h2>
+                <h2 className="text-3xl md:text-4xl font-headline font-bold text-right mb-10">המומלצים שלנו</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                   {Array(3).fill(null).map((dish, i) => <Skeleton key={i} className="h-96 w-full" />)}
                 </div>
@@ -246,7 +246,7 @@ export default function Home() {
 
       {/* Recommended Dishes Section */}
       <section className="container py-16 md:py-24">
-        <h2 className="text-3xl md:text-4xl font-headline font-bold text-right mb-10">מנות מומלצות</h2>
+        <h2 className="text-3xl md:text-4xl font-headline font-bold text-right mb-10">המומלצים שלנו</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {recommendedDishes.map((dish, i) => dish ? <DishCard key={dish.id} dish={dish} /> : <Skeleton key={i} className="h-96 w-full" />)}
         </div>
