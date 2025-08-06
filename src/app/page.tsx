@@ -203,7 +203,7 @@ export default function Home() {
               layout="fill"
               objectFit="cover"
               className="z-0 animation-slow-zoom-in"
-              style={{ filter: `brightness(${siteContent.hero.hero_image_brightness}%)` }}
+              style={{ filter: `brightness(${siteContent.hero.image_brightness}%)` }}
               priority
               data-ai-hint="warm food"
               skeletonClassName="w-full h-full"
@@ -265,11 +265,11 @@ export default function Home() {
               </CarouselItem>
             ))}
           </CarouselContent>
-           <CarouselPrevious className="absolute top-[35%] -translate-y-1/2 left-2 bg-black/30 hover:bg-black/50 text-white z-10 h-12 w-12 rounded-md">
-            <ChevronLeft className="h-8 w-8" />
+           <CarouselPrevious variant="ghost" className="absolute top-[35%] -translate-y-1/2 left-2 text-white hover:bg-transparent hover:text-white/80 z-10 h-16 w-16 drop-shadow-md">
+            <ChevronLeft className="h-12 w-12" />
           </CarouselPrevious>
-          <CarouselNext className="absolute top-[35%] -translate-y-1/2 right-2 bg-black/30 hover:bg-black/50 text-white z-10 h-12 w-12 rounded-md">
-            <ChevronRight className="h-8 w-8" />
+          <CarouselNext variant="ghost" className="absolute top-[35%] -translate-y-1/2 right-2 text-white hover:bg-transparent hover:text-white/80 z-10 h-16 w-16 drop-shadow-md">
+            <ChevronRight className="h-12 w-12" />
           </CarouselNext>
         </Carousel>
       </section>
