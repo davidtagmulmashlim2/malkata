@@ -154,9 +154,9 @@ export function DishCard({ dish }: DishCardProps) {
                     <AsyncImage imageKey={dish.main_image} alt={dish.name} layout="fill" objectFit="cover" />
                     <div
                         className={cn(
-                            "absolute inset-0 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center gap-2 p-2",
+                            "absolute bottom-0 left-0 right-0 h-12 flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300",
                         )}
-                        style={{ background: `linear-gradient(to top, rgba(0,0,0,${(dishCardSettings?.quick_view_overlay_opacity ?? 40)/50}) 0%, transparent 100%)` }}
+                        style={{ backgroundColor: `rgba(0,0,0,${(dishCardSettings?.quick_view_overlay_opacity ?? 40)/100})` }}
                      >
                         <div className="flex items-center gap-2">
                             {QuickViewIcon && <QuickViewIcon className="w-5 h-5" />}
@@ -333,5 +333,7 @@ export function DishCard({ dish }: DishCardProps) {
     </Dialog>
   );
 }
+
+    
 
     
