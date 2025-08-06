@@ -154,22 +154,24 @@ export function DishCard({ dish }: DishCardProps) {
                     <AsyncImage imageKey={dish.main_image} alt={dish.name} layout="fill" objectFit="cover" />
                     <div
                         className={cn(
-                            "absolute inset-0 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-2 p-1",
+                            "absolute inset-0 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center gap-2 p-2",
                         )}
-                        style={{ backgroundColor: `rgba(0, 0, 0, ${(dishCardSettings?.quick_view_overlay_opacity ?? 40) / 100})` }}
+                        style={{ background: `linear-gradient(to top, rgba(0,0,0,${(dishCardSettings?.quick_view_overlay_opacity ?? 40)/50}) 0%, transparent 100%)` }}
                      >
-                        {QuickViewIcon && <QuickViewIcon className="w-5 h-5" />}
-                        <h3
-                          className="text-md font-bold"
-                          style={{
-                            color: dishCardSettings?.quick_view_color || '#FFFFFF',
-                            fontFamily: dishCardSettings?.quick_view_font && dishCardSettings.quick_view_font !== 'default'
-                              ? `var(--font-${dishCardSettings.quick_view_font})`
-                              : undefined
-                          }}
-                        >
-                          {dishCardSettings?.quick_view_text ?? 'הצגה מהירה'}
-                        </h3>
+                        <div className="flex items-center gap-2">
+                            {QuickViewIcon && <QuickViewIcon className="w-5 h-5" />}
+                            <h3
+                              className="text-md font-bold"
+                              style={{
+                                color: dishCardSettings?.quick_view_color || '#FFFFFF',
+                                fontFamily: dishCardSettings?.quick_view_font && dishCardSettings.quick_view_font !== 'default'
+                                  ? `var(--font-${dishCardSettings.quick_view_font})`
+                                  : undefined
+                              }}
+                            >
+                              {dishCardSettings?.quick_view_text ?? 'הצגה מהירה'}
+                            </h3>
+                        </div>
                     </div>
                     <div className="absolute top-2 left-0 right-0 px-2 flex justify-between items-start pointer-events-none">
                         {isClient && cartItem ? (
@@ -331,3 +333,5 @@ export function DishCard({ dish }: DishCardProps) {
     </Dialog>
   );
 }
+
+    
