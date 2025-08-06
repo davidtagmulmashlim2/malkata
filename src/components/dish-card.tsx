@@ -84,6 +84,7 @@ export function DishCard({ dish }: DishCardProps) {
   };
   
   const handleDirectAddToCart = (e: React.MouseEvent) => {
+    e.preventDefault(); 
     e.stopPropagation(); 
     if (cartItem) {
       updateCartQuantity(dish.id!, cartItem.quantity + 1);
@@ -146,53 +147,55 @@ export function DishCard({ dish }: DishCardProps) {
             setCurrentImageIndex(0);
         }
     }}>
-      <div className="flex flex-col h-full text-right group">
-        <DialogTrigger asChild>
-          <div className="cursor-pointer">
-            <div className="relative aspect-square w-full overflow-hidden rounded-lg">
-                <AsyncImage imageKey={dish.main_image} alt={dish.name} layout="fill" objectFit="cover" />
-                <div className="absolute top-2 left-0 right-0 px-2 flex justify-between items-start">
-                    {isClient && cartItem ? (
-                        <div className="bg-primary text-primary-foreground rounded-full h-7 w-7 flex items-center justify-center text-sm font-bold z-10">
-                            {cartItem.quantity || 0}
-                        </div>
-                    ) : null}
-                    <div className="flex gap-2 flex-wrap justify-end max-w-[80%]">
-                        {renderTags(dish.tags)}
+      <div className="flex flex-col h-full text-right group cursor-pointer">
+        <div className="relative aspect-square w-full overflow-hidden rounded-lg">
+            <DialogTrigger asChild>
+                <div>
+                    <AsyncImage imageKey={dish.main_image} alt={dish.name} layout="fill" objectFit="cover" />
+                    <div
+                        className={cn(
+                            "absolute inset-0 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-2 p-1",
+                        )}
+                        style={{ backgroundColor: `rgba(0, 0, 0, ${(dishCardSettings?.quick_view_overlay_opacity ?? 40) / 100})` }}
+                     >
+                        {QuickViewIcon && <QuickViewIcon className="w-5 h-5" />}
+                        <h3
+                          className="text-md font-bold"
+                          style={{
+                            color: dishCardSettings?.quick_view_color || '#FFFFFF',
+                            fontFamily: dishCardSettings?.quick_view_font && dishCardSettings.quick_view_font !== 'default'
+                              ? `var(--font-${dishCardSettings.quick_view_font})`
+                              : undefined
+                          }}
+                        >
+                          {dishCardSettings?.quick_view_text ?? 'הצגה מהירה'}
+                        </h3>
                     </div>
                 </div>
-                {!dish.is_available && (
-                    <div className="absolute inset-0 bg-black/50 flex items-center justify-center rounded-lg">
-                        <p className="text-white text-lg font-bold">אזל מהמלאי</p>
+            </DialogTrigger>
+            <div className="absolute top-2 left-0 right-0 px-2 flex justify-between items-start pointer-events-none">
+                {isClient && cartItem ? (
+                    <div className="bg-primary text-primary-foreground rounded-full h-7 w-7 flex items-center justify-center text-sm font-bold z-10">
+                        {cartItem.quantity || 0}
                     </div>
-                )}
-                 <div
-                    className={cn(
-                        "absolute inset-x-0 bottom-0 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-2 p-1",
-                    )}
-                    style={{ backgroundColor: `rgba(0, 0, 0, ${(dishCardSettings?.quick_view_overlay_opacity ?? 40) / 100})` }}
-                 >
-                    {QuickViewIcon && <QuickViewIcon className="w-5 h-5" />}
-                    <h3
-                      className="text-md font-bold"
-                      style={{
-                        color: dishCardSettings?.quick_view_color || '#FFFFFF',
-                        fontFamily: dishCardSettings?.quick_view_font && dishCardSettings.quick_view_font !== 'default'
-                          ? `var(--font-${dishCardSettings.quick_view_font})`
-                          : undefined
-                      }}
-                    >
-                      {dishCardSettings?.quick_view_text ?? 'הצגה מהירה'}
-                    </h3>
+                ) : <div />}
+                <div className="flex gap-2 flex-wrap justify-end max-w-[80%]">
+                    {renderTags(dish.tags)}
                 </div>
             </div>
-          </div>
-        </DialogTrigger>
+            {!dish.is_available && (
+                <div className="absolute inset-0 bg-black/50 flex items-center justify-center rounded-lg pointer-events-none">
+                    <p className="text-white text-lg font-bold">אזל מהמלאי</p>
+                </div>
+            )}
+        </div>
         <div className="mt-2 flex-grow flex flex-col">
             <div className="flex items-start justify-between gap-4">
-                <div className="flex-1 min-w-0">
-                    <h3 className={cn("font-headline font-bold", nameFontSizeClass)}>{dish.name}</h3>
-                </div>
+                <DialogTrigger asChild>
+                    <div className="flex-1 min-w-0">
+                        <h3 className={cn("font-headline font-bold", nameFontSizeClass)}>{dish.name}</h3>
+                    </div>
+                </DialogTrigger>
                 <div className="flex-shrink-0">
                      <TooltipProvider>
                         <Tooltip>
@@ -230,9 +233,11 @@ export function DishCard({ dish }: DishCardProps) {
                      </TooltipProvider>
                 </div>
             </div>
-            <div className="flex-1 min-w-0 mt-1">
-                 <p className={cn("text-muted-foreground", descriptionFontSizeClass)}>{dish.short_description}</p>
-            </div>
+            <DialogTrigger asChild>
+                <div className="flex-1 min-w-0 mt-1">
+                     <p className={cn("text-muted-foreground", descriptionFontSizeClass)}>{dish.short_description}</p>
+                </div>
+            </DialogTrigger>
              <div className="text-right w-full mt-2">
                 <span className="text-md md:text-lg font-bold leading-tight">{dish.price} ₪</span>
                 {dish.price_subtitle && <p className="text-xs text-muted-foreground leading-tight">{dish.price_subtitle}</p>}
