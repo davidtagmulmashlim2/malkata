@@ -21,6 +21,7 @@ import { z } from 'zod';
 import { toast } from '@/hooks/use-toast';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import React from 'react';
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 
 
 const subscriberSchema = z.object({
@@ -247,9 +248,26 @@ export default function Home() {
       {/* Recommended Dishes Section */}
       <section className="container py-16 md:py-24">
         <h2 className="text-3xl md:text-4xl font-headline font-bold text-right mb-10">המומלצים שלנו</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {recommendedDishes.map((dish, i) => dish ? <DishCard key={dish.id} dish={dish} /> : <Skeleton key={i} className="h-96 w-full" />)}
-        </div>
+        <Carousel
+          opts={{
+            align: "start",
+            loop: true,
+            direction: 'rtl',
+          }}
+          className="w-full"
+        >
+          <CarouselContent>
+            {recommendedDishes.map((dish, i) => (
+              <CarouselItem key={dish ? dish.id : i} className="md:basis-1/2 lg:basis-1/3">
+                <div className="p-1">
+                  {dish ? <DishCard dish={dish} /> : <Skeleton className="h-96 w-full" />}
+                </div>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <CarouselPrevious className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 md:-translate-x-1/2" />
+          <CarouselNext className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 md:translate-x-1/2" />
+        </Carousel>
       </section>
 
       {/* About Us Section */}
