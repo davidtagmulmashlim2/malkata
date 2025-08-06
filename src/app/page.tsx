@@ -265,11 +265,11 @@ export default function Home() {
               </CarouselItem>
             ))}
           </CarouselContent>
-          <CarouselPrevious className="absolute top-[35%] -translate-y-1/2 left-2 bg-black/30 hover:bg-black/50 text-white z-10 h-12 w-12">
-            <ChevronLeft className="h-8 w-8" />
+          <CarouselPrevious className="absolute top-[35%] -translate-y-1/2 left-2 bg-black/30 hover:bg-black/50 text-white z-10 h-14 w-14">
+            <ChevronLeft className="h-10 w-10" />
           </CarouselPrevious>
-          <CarouselNext className="absolute top-[35%] -translate-y-1/2 right-2 bg-black/30 hover:bg-black/50 text-white z-10 h-12 w-12">
-            <ChevronRight className="h-8 w-8" />
+          <CarouselNext className="absolute top-[35%] -translate-y-1/2 right-2 bg-black/30 hover:bg-black/50 text-white z-10 h-14 w-14">
+            <ChevronRight className="h-10 w-10" />
           </CarouselNext>
         </Carousel>
       </section>
