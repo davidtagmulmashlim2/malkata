@@ -154,7 +154,7 @@ export function DishCard({ dish }: DishCardProps) {
                     <AsyncImage imageKey={dish.main_image} alt={dish.name} layout="fill" objectFit="cover" />
                     <div
                         className={cn(
-                            "absolute bottom-0 left-0 right-0 h-12 flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300",
+                            "absolute bottom-0 left-0 right-0 h-10 flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300",
                         )}
                         style={{ backgroundColor: `rgba(0,0,0,${(dishCardSettings?.quick_view_overlay_opacity ?? 40)/100})` }}
                      >
@@ -333,6 +333,8 @@ export function DishCard({ dish }: DishCardProps) {
     </Dialog>
   );
 }
+
+    
 
     
 
