@@ -93,6 +93,18 @@ const FeaturesSection = () => {
     </section>
 )};
 
+const ThickChevronLeft = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
+    <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12l4.58-4.59z" fill="currentColor"/>
+  </svg>
+);
+
+const ThickChevronRight = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
+    <path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12l-4.58 4.59z" fill="currentColor"/>
+  </svg>
+);
+
 
 export default function Home() {
   const { state, dispatch, isLoading } = useApp();
@@ -265,11 +277,11 @@ export default function Home() {
               </CarouselItem>
             ))}
           </CarouselContent>
-           <CarouselPrevious variant="ghost" className="absolute top-[35%] -translate-y-1/2 left-2 text-white hover:bg-transparent hover:text-white/80 z-10 h-16 w-16 drop-shadow-md">
-            <ChevronLeft className="h-12 w-12" />
+           <CarouselPrevious variant="outline" size="icon" className="absolute top-[35%] -translate-y-1/2 left-2 z-10 h-12 w-12 bg-black/30 hover:bg-black/50 text-white border-white/50 hover:border-white">
+            <ThickChevronLeft className="h-8 w-8" />
           </CarouselPrevious>
-          <CarouselNext variant="ghost" className="absolute top-[35%] -translate-y-1/2 right-2 text-white hover:bg-transparent hover:text-white/80 z-10 h-16 w-16 drop-shadow-md">
-            <ChevronRight className="h-12 w-12" />
+          <CarouselNext variant="outline" size="icon" className="absolute top-[35%] -translate-y-1/2 right-2 z-10 h-12 w-12 bg-black/30 hover:bg-black/50 text-white border-white/50 hover:border-white">
+            <ThickChevronRight className="h-8 w-8" />
           </CarouselNext>
         </Carousel>
       </section>
@@ -396,3 +408,4 @@ export default function Home() {
     </div>
   );
 }
+
