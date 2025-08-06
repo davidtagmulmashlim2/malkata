@@ -265,8 +265,12 @@ export default function Home() {
               </CarouselItem>
             ))}
           </CarouselContent>
-          <CarouselPrevious className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 md:-translate-x-1/2" />
-          <CarouselNext className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 md:translate-x-1/2" />
+          <CarouselPrevious className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 md:-translate-x-1/2">
+            <ChevronLeft className="h-4 w-4" />
+          </CarouselPrevious>
+          <CarouselNext className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 md:translate-x-1/2">
+            <ChevronRight className="h-4 w-4" />
+          </CarouselNext>
         </Carousel>
       </section>
 
