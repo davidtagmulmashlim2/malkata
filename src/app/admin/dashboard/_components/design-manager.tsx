@@ -30,6 +30,8 @@ const designSchema = z.object({
   favicon: z.string().optional(),
 });
 
+type DesignFormValues = z.infer<typeof designSchema>;
+
 const fileToDataUrl = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -41,16 +43,29 @@ const fileToDataUrl = (file: File): Promise<string> => {
 
 const ImagePreview = ({ imageKey, alt, onRemove, width, height, className }: { imageKey: string | undefined, alt: string, onRemove?: () => void, width?: number, height?: number, className?: string }) => {
     if (!imageKey) return null;
+    // Show a preview if it's a data URL, otherwise use AsyncImage for stored keys
+    const isDataUrl = imageKey?.startsWith('data:');
     return (
         <div className="mt-2 relative w-fit">
-            <AsyncImage 
-                imageKey={imageKey} 
-                alt={alt} 
-                height={height || 40} 
-                width={width || 112} 
-                className={cn("object-contain border p-1 rounded-md", className)} 
-                style={{width: `${width || 112}px`, height: `${height || 40}px`}} 
-            />
+            {isDataUrl ? (
+                 <img 
+                    src={imageKey} 
+                    alt={alt} 
+                    height={height || 40} 
+                    width={width || 112} 
+                    className={cn("object-contain border p-1 rounded-md", className)} 
+                    style={{width: `${width || 112}px`, height: `${height || 40}px`}} 
+                />
+            ) : (
+                <AsyncImage 
+                    imageKey={imageKey} 
+                    alt={alt} 
+                    height={height || 40} 
+                    width={width || 112} 
+                    className={cn("object-contain border p-1 rounded-md", className)} 
+                    style={{width: `${width || 112}px`, height: `${height || 40}px`}} 
+                />
+            )}
             {onRemove && (
                 <Button 
                     type="button" 
@@ -124,8 +139,10 @@ const logoIcons = [
 export default function DesignManager() {
   const { state, dispatch } = useApp();
   const { design, categories } = state;
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [originalValues, setOriginalValues] = useState<DesignFormValues>();
 
-  const form = useForm<z.infer<typeof designSchema>>({
+  const form = useForm<DesignFormValues>({
     resolver: zodResolver(designSchema),
     defaultValues: design,
   });
@@ -137,70 +154,78 @@ export default function DesignManager() {
 
   useEffect(() => {
     if (design) {
-      form.reset({
+      const currentDesign = {
           ...design,
           featured_category_id: design.featured_category_id || 'none'
-      });
+      };
+      form.reset(currentDesign);
+      setOriginalValues(currentDesign);
     }
   }, [design, form]);
 
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>, fieldName: 'logo_image' | 'favicon') => {
       const file = event.target.files?.[0];
       if (!file) return;
-
-      const oldImageKey = form.getValues(fieldName);
-
       try {
           const dataUrl = await fileToDataUrl(file);
-          const newImageKey = await storeImage(dataUrl);
-          form.setValue(fieldName, newImageKey, { shouldValidate: true, shouldDirty: true });
-          
-          const currentValues = form.getValues();
-          const payload = { ...currentValues, [fieldName]: newImageKey };
-          dispatch({ type: 'UPDATE_DESIGN', payload });
-          toast({ title: `התמונה ב-${fieldName === 'logo_image' ? 'לוגו' : 'פביקון'} הועלתה ונשמרה` });
-          
-          if (oldImageKey) {
-            await deleteImage(oldImageKey);
-          }
+          // Set value to the data URL to show a preview and mark the form as dirty
+          form.setValue(fieldName, dataUrl, { shouldValidate: true, shouldDirty: true });
       } catch (error: any) {
-          console.error("Error uploading image:", error);
           toast({ 
-              title: 'שגיאה בהעלאת תמונה', 
+              title: 'שגיאה בקריאת הקובץ', 
               description: error.message || 'An unknown error occurred.',
               variant: 'destructive' 
           });
       }
   };
 
-  const handleRemoveImage = async (fieldName: 'logo_image' | 'favicon') => {
-    const imageKey = form.getValues(fieldName);
-    if (imageKey) {
-        try {
-            form.setValue(fieldName, '', { shouldValidate: true, shouldDirty: true });
-            
-            const currentValues = form.getValues();
-            const payload = { ...currentValues, [fieldName]: '' };
-            dispatch({ type: 'UPDATE_DESIGN', payload });
-            
-            await deleteImage(imageKey);
-
-            toast({ title: `התמונה ב-${fieldName === 'logo_image' ? 'לוגו' : 'פביקון'} הוסרה ונשמרה` });
-        } catch (error) {
-             console.error("Error deleting image:", error);
-             toast({ title: 'שגיאה במחיקת תמונה', variant: 'destructive' });
-        }
-    }
+  const handleRemoveImage = (fieldName: 'logo_image' | 'favicon') => {
+    form.setValue(fieldName, '', { shouldValidate: true, shouldDirty: true });
   }
 
-  const onSubmit = (values: z.infer<typeof designSchema>) => {
-    const payload = {
-        ...values,
-        featured_category_id: values.featured_category_id === 'none' ? null : values.featured_category_id
+  const onSubmit = async (values: DesignFormValues) => {
+    setIsSubmitting(true);
+    try {
+        const finalValues = { ...values };
+        const oldValues = originalValues;
+
+        // Handle logo image upload
+        if (values.logo_image && values.logo_image.startsWith('data:')) {
+            const newKey = await storeImage(values.logo_image);
+            finalValues.logo_image = newKey;
+            if (oldValues?.logo_image) {
+                await deleteImage(oldValues.logo_image);
+            }
+        } else if (!values.logo_image && oldValues?.logo_image) {
+             await deleteImage(oldValues.logo_image);
+        }
+
+        // Handle favicon upload
+        if (values.favicon && values.favicon.startsWith('data:')) {
+            const newKey = await storeImage(values.favicon);
+            finalValues.favicon = newKey;
+            if (oldValues?.favicon) {
+                await deleteImage(oldValues.favicon);
+            }
+        } else if (!values.favicon && oldValues?.favicon) {
+            await deleteImage(oldValues.favicon);
+        }
+
+        const payload = {
+            ...finalValues,
+            featured_category_id: finalValues.featured_category_id === 'none' ? null : finalValues.featured_category_id
+        }
+
+        dispatch({ type: 'UPDATE_DESIGN', payload });
+        toast({ title: 'הגדרות עיצוב עודכנו!' });
+        form.reset(payload, { keepValues: true, keepDirty: false });
+        setOriginalValues(payload);
+
+    } catch (error: any) {
+        toast({ title: 'שגיאה בשמירת שינויים', description: error.message, variant: 'destructive' });
+    } finally {
+        setIsSubmitting(false);
     }
-    dispatch({ type: 'UPDATE_DESIGN', payload });
-    toast({ title: 'הגדרות עיצוב עודכנו!' });
-    form.reset(payload, { keepValues: true });
   };
 
   return (
@@ -311,7 +336,7 @@ export default function DesignManager() {
                       <FormControl>
                         <Input 
                             type="file" 
-                            accept="image/png, image/x-icon, image/svg+xml" 
+                            accept="image/png, image/x-icon, image/svg+xml, image/vnd.microsoft.icon" 
                             onChange={(e) => handleFileChange(e, 'favicon')}
                         />
                       </FormControl>
@@ -397,10 +422,14 @@ export default function DesignManager() {
               )}
             />
             
-            <Button type="submit" className="w-full" disabled={!form.formState.isDirty}>שמור שינויי עיצוב</Button>
+            <Button type="submit" className="w-full" disabled={!form.formState.isDirty || isSubmitting}>
+                {isSubmitting ? 'שומר...' : 'שמור שינויי עיצוב'}
+            </Button>
           </form>
         </Form>
       </CardContent>
     </Card>
   );
 }
+
+    

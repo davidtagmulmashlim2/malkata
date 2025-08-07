@@ -100,20 +100,14 @@ export default async function RootLayout({
       imageUrl = `https://placehold.co/1200x630/FAEBD7/8B0000/png?text=${encodeURIComponent(title)}`;
   }
 
-  const faviconUrl = favicon ? getImage(favicon) : undefined;
+  const faviconUrl = favicon ? getImage(favicon) : '/favicon.ico';
 
   return (
     <html lang="he" dir="rtl">
       <head>
         <title>{title}</title>
         <meta name="description" content={description} />
-        {faviconUrl ? (
-          <link rel="icon" href={faviconUrl} sizes="any" />
-        ) : (
-          // This fallback is only if no favicon is uploaded at all.
-          // It's better than a broken link.
-          <link rel="icon" href="/favicon.ico" sizes="any" />
-        )}
+        {faviconUrl && <link rel="icon" href={faviconUrl} sizes="any" />}
         <meta property="og:title" content={title} />
         <meta property="og:description" content={description} />
         {imageUrl && <meta property="og:image" content={imageUrl} />}
@@ -131,3 +125,5 @@ export default async function RootLayout({
     </html>
   );
 }
+
+    
