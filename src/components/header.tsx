@@ -106,25 +106,30 @@ export function Header() {
         )
     }
 
-    const desktopContainerStyle: React.CSSProperties = { height: '40px' };
-    const mobileContainerStyle: React.CSSProperties = { width: '100%', height: '100%' };
-
     return (
       <Link href="/" className="flex items-center gap-2 font-headline text-2xl font-bold text-primary" style={logoStyle}>
         {state.design.logo_image ? (
-             <div className="relative flex items-center" style={isMobile ? mobileContainerStyle : desktopContainerStyle}>
-                 <AsyncImage 
-                    imageKey={state.design.logo_image} 
-                    alt="לוגו" 
-                    height={isMobile ? 60 : 40} 
-                    width={isMobile ? 200 : (state.design.logo_width || 120)} 
-                    style={{
-                        width: isMobile ? '100%' : `${state.design.logo_width || 120}px`, 
-                        height: 'auto'
-                    }}
-                    className="object-contain" 
-                 />
-             </div>
+            isMobile ? (
+                 <div className="relative w-full" style={{ aspectRatio: '3 / 1' }}>
+                    <AsyncImage 
+                        imageKey={state.design.logo_image} 
+                        alt="לוגו" 
+                        fill
+                        className="object-contain" 
+                    />
+                 </div>
+            ) : (
+                <div className="relative flex items-center" style={{height: '40px'}}>
+                     <AsyncImage 
+                        imageKey={state.design.logo_image} 
+                        alt="לוגו" 
+                        height={40} 
+                        width={state.design.logo_width || 120} 
+                        style={{width: `${state.design.logo_width || 120}px`, height: 'auto'}}
+                        className="object-contain" 
+                     />
+                 </div>
+            )
         ) : (
             <>
                 {IconComponent && <IconComponent className="h-7 w-7" />}
