@@ -107,10 +107,8 @@ export default async function RootLayout({
       <head>
         <title>{title}</title>
         <meta name="description" content={description} />
-        {faviconUrl ? (
+        {faviconUrl && (
           <link rel="icon" href={faviconUrl} sizes="any" />
-        ) : (
-          <link rel="icon" href="/favicon.ico" sizes="any" />
         )}
         <meta property="og:title" content={title} />
         <meta property="og:description" content={description} />
