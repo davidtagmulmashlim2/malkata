@@ -96,7 +96,7 @@ export function Header() {
   }, [isLoading, state.design, state.categories]);
 
 
-  const Logo = () => {
+  const Logo = ({ isMobile = false }: { isMobile?: boolean }) => {
     if (isLoading) {
         return (
             <div className="flex items-center gap-2 font-headline text-2xl font-bold text-primary">
@@ -106,15 +106,22 @@ export function Header() {
         )
     }
 
+    const desktopContainerStyle: React.CSSProperties = { height: '40px' };
+    const mobileContainerStyle: React.CSSProperties = { width: '100%', height: '100%' };
+
     return (
       <Link href="/" className="flex items-center gap-2 font-headline text-2xl font-bold text-primary" style={logoStyle}>
         {state.design.logo_image ? (
-             <div className="relative flex items-center" style={{height: '40px'}}>
+             <div className="relative flex items-center" style={isMobile ? mobileContainerStyle : desktopContainerStyle}>
                  <AsyncImage 
                     imageKey={state.design.logo_image} 
-                    alt="לוגו" height={40} 
-                    width={state.design.logo_width || 120} 
-                    style={{width: `${state.design.logo_width || 120}px`, height: 'auto'}}
+                    alt="לוגו" 
+                    height={isMobile ? 60 : 40} 
+                    width={isMobile ? 200 : (state.design.logo_width || 120)} 
+                    style={{
+                        width: isMobile ? '100%' : `${state.design.logo_width || 120}px`, 
+                        height: 'auto'
+                    }}
                     className="object-contain" 
                  />
              </div>
@@ -200,7 +207,7 @@ export function Header() {
                   <SheetHeader className="p-6 pb-0 text-right">
                       <SheetTitle>
                           <span onClick={() => setIsMobileMenuOpen(false)}>
-                              <Logo />
+                              <Logo isMobile={true} />
                           </span>
                       </SheetTitle>
                   </SheetHeader>
