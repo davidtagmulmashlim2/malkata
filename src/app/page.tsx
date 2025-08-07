@@ -314,7 +314,7 @@ export default function Home() {
       <FeaturesSection />
 
       {/* Testimonials Section */}
-       <section className="py-8">
+       <section className="py-8 overflow-hidden">
         <div className="max-w-xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-headline font-bold text-right mb-10">{isLoading ? <Skeleton className="h-9 w-48" /> : siteContent.testimonials.headline}</h2>
             {isLoading ? (
