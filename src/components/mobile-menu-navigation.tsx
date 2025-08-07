@@ -79,7 +79,7 @@ export function MobileMenuNavigation({onLinkClick}: {onLinkClick: () => void}) {
 
       <ScrollArea className="flex-grow mt-2">
         {activeTab === 'categories' && (
-           <div className="flex flex-col items-start gap-4 p-4 text-lg">
+           <div className="flex flex-col items-end gap-4 p-4 text-lg text-right">
              <Link href="/menu" onClick={onLinkClick} className={cn('transition-colors hover:text-primary no-underline', pathname === '/menu' ? 'text-primary font-bold' : 'text-muted-foreground')}>כל המנות</Link>
              {(isLoading ? Array(5).fill(null) : categories).map((category, index) => (
                 isLoading ? <Skeleton key={index} className="h-6 w-32" /> :
@@ -98,7 +98,7 @@ export function MobileMenuNavigation({onLinkClick}: {onLinkClick: () => void}) {
            </div>
         )}
         {activeTab === 'main-menu' && (
-           <div className="flex flex-col items-start gap-4 p-4 text-lg">
+           <div className="flex flex-col items-end gap-4 p-4 text-lg text-right">
             {mainNavLinks.map((link) => (
                  <Link
                     key={link.href}
