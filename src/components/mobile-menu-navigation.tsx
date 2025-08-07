@@ -5,9 +5,9 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
+import { Button } from '@/components/ui/button';
 
 const baseNavLinks = [
   { href: '/', label: 'בית', isFeatured: false },
@@ -21,6 +21,7 @@ export function MobileMenuNavigation({onLinkClick}: {onLinkClick: () => void}) {
   const { state, isLoading } = useApp();
   const pathname = usePathname();
   const { categories, design } = state;
+  const [activeTab, setActiveTab] = useState<'categories' | 'main-menu'>('categories');
 
   const activeSlug = pathname.split('/').pop();
 
@@ -58,52 +59,63 @@ export function MobileMenuNavigation({onLinkClick}: {onLinkClick: () => void}) {
   }, [isLoading, design, categories]);
 
   return (
-    <Tabs defaultValue="categories" className="w-full">
-      <TabsList className="grid w-full grid-cols-2">
-        <TabsTrigger value="categories">קטגוריות</TabsTrigger>
-        <TabsTrigger value="main-menu">תפריט ראשי</TabsTrigger>
-      </TabsList>
-      <TabsContent value="categories">
-        <ScrollArea className="h-[calc(100vh-200px)]">
-            <div className="flex flex-col items-start gap-4 p-4 text-lg">
-                 <Link href="/menu" onClick={onLinkClick} className={cn('transition-colors hover:text-primary no-underline', pathname === '/menu' ? 'text-primary font-bold' : 'text-muted-foreground')}>כל המנות</Link>
-                 {(isLoading ? Array(5).fill(null) : categories).map((category, index) => (
-                    isLoading ? <Skeleton key={index} className="h-6 w-32" /> :
-                    <Link
-                        key={category.id}
-                        href={`/menu/${category.slug}`}
-                        onClick={onLinkClick}
-                        className={cn(
-                            'transition-colors hover:text-primary no-underline',
-                            activeSlug === category.slug ? 'text-primary font-bold' : 'text-muted-foreground'
-                        )}
-                    >
-                        {category.name}
-                    </Link>
-                 ))}
-            </div>
-        </ScrollArea>
-      </TabsContent>
-      <TabsContent value="main-menu">
-        <ScrollArea className="h-[calc(100vh-200px)]">
-             <div className="flex flex-col items-start gap-4 p-4 text-lg">
-                {mainNavLinks.map((link) => (
-                     <Link
-                        key={link.href}
-                        href={link.href}
-                        onClick={onLinkClick}
-                        className={cn(
-                            'transition-colors hover:text-primary no-underline',
-                            pathname === link.href ? 'text-primary font-bold' : 'text-muted-foreground',
-                            link.isFeatured && 'text-primary'
-                        )}
-                    >
-                        {link.label}
-                    </Link>
-                ))}
-            </div>
-        </ScrollArea>
-      </TabsContent>
-    </Tabs>
+    <div className="flex flex-col h-full">
+      <div className="grid grid-cols-2 p-1 bg-muted rounded-md mx-2">
+        <Button
+          variant={activeTab === 'categories' ? 'default' : 'ghost'}
+          onClick={() => setActiveTab('categories')}
+          className="data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+        >
+          קטגוריות
+        </Button>
+        <Button
+          variant={activeTab === 'main-menu' ? 'default' : 'ghost'}
+          onClick={() => setActiveTab('main-menu')}
+          className="data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+        >
+          תפריט ראשי
+        </Button>
+      </div>
+
+      <ScrollArea className="flex-grow mt-2">
+        {activeTab === 'categories' && (
+           <div className="flex flex-col items-start gap-4 p-4 text-lg">
+             <Link href="/menu" onClick={onLinkClick} className={cn('transition-colors hover:text-primary no-underline', pathname === '/menu' ? 'text-primary font-bold' : 'text-muted-foreground')}>כל המנות</Link>
+             {(isLoading ? Array(5).fill(null) : categories).map((category, index) => (
+                isLoading ? <Skeleton key={index} className="h-6 w-32" /> :
+                <Link
+                    key={category.id}
+                    href={`/menu/${category.slug}`}
+                    onClick={onLinkClick}
+                    className={cn(
+                        'transition-colors hover:text-primary no-underline',
+                        activeSlug === category.slug ? 'text-primary font-bold' : 'text-muted-foreground'
+                    )}
+                >
+                    {category.name}
+                </Link>
+             ))}
+           </div>
+        )}
+        {activeTab === 'main-menu' && (
+           <div className="flex flex-col items-start gap-4 p-4 text-lg">
+            {mainNavLinks.map((link) => (
+                 <Link
+                    key={link.href}
+                    href={link.href}
+                    onClick={onLinkClick}
+                    className={cn(
+                        'transition-colors hover:text-primary no-underline',
+                        pathname === link.href ? 'text-primary font-bold' : 'text-muted-foreground',
+                        link.isFeatured && 'text-primary'
+                    )}
+                >
+                    {link.label}
+                </Link>
+            ))}
+           </div>
+        )}
+      </ScrollArea>
+    </div>
   );
 }
