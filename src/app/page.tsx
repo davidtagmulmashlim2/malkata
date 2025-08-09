@@ -1,5 +1,4 @@
 
-
 'use client';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -315,7 +314,7 @@ export default function Home() {
 
       {/* Testimonials Section */}
       <section className="container py-8 overflow-hidden">
-        <div className="max-w-xl mx-auto">
+        <div className="max-w-xl mx-auto px-4">
             <h2 className="text-3xl md:text-4xl font-headline font-bold text-right mb-10">{isLoading ? <Skeleton className="h-9 w-48" /> : siteContent.testimonials.headline}</h2>
             {isLoading ? (
                 <div className="p-1">
@@ -347,10 +346,10 @@ export default function Home() {
                 </Card>
                 {testimonials.length > 1 && (
                     <>
-                    <Button variant="outline" size="icon" className="absolute top-1/2 -translate-y-1/2 right-0 md:right-[-4rem]" onClick={prevTestimonial}>
+                    <Button variant="outline" size="icon" className="absolute top-1/2 -translate-y-1/2 right-[-1rem] md:right-[-4rem]" onClick={prevTestimonial}>
                         <ChevronRight className="h-4 w-4" />
                     </Button>
-                    <Button variant="outline" size="icon" className="absolute top-1/2 -translate-y-1/2 left-0 md:left-[-4rem]" onClick={nextTestimonial}>
+                    <Button variant="outline" size="icon" className="absolute top-1/2 -translate-y-1/2 left-[-1rem] md:left-[-4rem]" onClick={nextTestimonial}>
                         <ChevronLeft className="h-4 w-4" />
                     </Button>
                     </>
