@@ -55,7 +55,7 @@ export function MobileMenuNavigation({onLinkClick}: {onLinkClick: () => void}) {
         }
     }
     
-    return mainNavLinks;
+    return newLinks;
   }, [isLoading, design, categories]);
 
   return (
