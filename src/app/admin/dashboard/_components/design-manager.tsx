@@ -1,5 +1,3 @@
-
-
 'use client';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -189,7 +187,7 @@ export default function DesignManager() {
   const onSubmit = async (values: DesignFormValues) => {
     setIsSubmitting(true);
     try {
-        const finalValues = { ...values };
+        let finalValues = { ...values };
         const oldValues = originalValues;
 
         // Handle main logo image upload
@@ -232,7 +230,7 @@ export default function DesignManager() {
 
         dispatch({ type: 'UPDATE_DESIGN', payload });
         toast({ title: 'הגדרות עיצוב עודכנו!' });
-        form.reset(payload, { keepValues: true, keepDirty: false });
+        form.reset(payload); // Reset form with the new values from state
         setOriginalValues(payload);
 
     } catch (error: any) {
@@ -470,5 +468,7 @@ export default function DesignManager() {
     </Card>
   );
 }
+
+    
 
     
