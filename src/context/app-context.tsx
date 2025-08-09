@@ -1,14 +1,14 @@
 
 'use client';
 
-import React, { createContext, useContext, useReducer, useEffect, useState, useMemo, useCallback } from 'react';
+import React from 'react';
 import type { AppState, AppContextType, Action, CartItem, Dish, Testimonial, ContactSubmission, Category, GalleryImage, Subscriber, SiteContent, DesignSettings } from '@/lib/types';
 import { supabase } from '@/lib/supabase';
 import { toast } from '@/hooks/use-toast';
 import { deleteImage } from '@/lib/image-store.client';
 
 // Create the context
-const AppContext = createContext<AppContextType | undefined>(undefined);
+const AppContext = React.createContext<AppContextType | undefined>(undefined);
 
 // Debounce function
 const debounce = <F extends (...args: any[]) => any>(func: F, waitFor: number) => {
@@ -91,13 +91,13 @@ const LS_CART_KEY = 'malkata_cart';
 const ADMIN_PASSWORD = 'admin';
 
 export const AppProvider: React.FC<{ children: React.ReactNode, initialAppState: AppState }> = ({ children, initialAppState }) => {
-  const [state, dispatch] = useReducer(appReducer, initialAppState);
-  const [cart, setCart] = useState<CartItem[]>([]);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [state, dispatch] = React.useReducer(appReducer, initialAppState);
+  const [cart, setCart] = React.useState<CartItem[]>([]);
+  const [isAuthenticated, setIsAuthenticated] = React.useState(false);
+  const [isLoading, setIsLoading] = React.useState(true);
 
   // This effect runs ONLY on the client, after the initial render.
-  useEffect(() => {
+  React.useEffect(() => {
     // Data is now passed via initialAppState from the server,
     // so we don't need to fetch it again. We are no longer in a "loading" state.
     setIsLoading(false);
@@ -120,7 +120,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode, initialAppState:
   }, []);
 
   // This effect runs ONLY on the client, and saves the cart state whenever it changes.
-  useEffect(() => {
+  React.useEffect(() => {
     if (!isLoading) {
         try {
             localStorage.setItem(LS_CART_KEY, JSON.stringify(cart));
@@ -130,7 +130,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode, initialAppState:
     }
   }, [cart, isLoading]);
   
-  const enhancedDispatch = useCallback(async (action: Action) => {
+  const enhancedDispatch = React.useCallback(async (action: Action) => {
     let error;
 
     const insertAndRefresh = async (tableName: string, payload: any, actionType: Action['type']) => {
@@ -242,7 +242,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode, initialAppState:
   }, [dispatch, state.dishes, state.categories, state.gallery]);
 
 
-  const addToCart = useCallback((dishId: string, quantity = 1) => {
+  const addToCart = React.useCallback((dishId: string, quantity = 1) => {
     setCart(prevCart => {
       const existingItem = prevCart.find(item => item.dishId === dishId);
       if (existingItem) {
@@ -254,7 +254,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode, initialAppState:
     });
   }, []);
 
-  const updateCartQuantity = useCallback((dishId: string, quantity: number) => {
+  const updateCartQuantity = React.useCallback((dishId: string, quantity: number) => {
     setCart(prevCart => {
       if (quantity <= 0) {
         return prevCart.filter(item => item.dishId !== dishId);
@@ -264,17 +264,17 @@ export const AppProvider: React.FC<{ children: React.ReactNode, initialAppState:
     });
   }, []);
 
-  const removeFromCart = useCallback((dishId: string) => {
+  const removeFromCart = React.useCallback((dishId: string) => {
     setCart(prevCart => prevCart.filter(item => item.dishId !== dishId));
   }, []);
   
-  const clearCart = useCallback(() => setCart([]), []);
+  const clearCart = React.useCallback(() => setCart([]), []);
 
-  const getDishById = useCallback((dishId: string): Dish | undefined => {
+  const getDishById = React.useCallback((dishId: string): Dish | undefined => {
     return state.dishes.find(d => d.id === dishId);
   }, [state.dishes]);
 
-  const login = useCallback((password: string): boolean => {
+  const login = React.useCallback((password: string): boolean => {
     if (password === ADMIN_PASSWORD) {
         setIsAuthenticated(true);
         sessionStorage.setItem('malkata_auth', 'true');
@@ -283,12 +283,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode, initialAppState:
     return false;
   }, []);
 
-  const logout = useCallback(() => {
+  const logout = React.useCallback(() => {
     setIsAuthenticated(false);
     sessionStorage.removeItem('malkata_auth');
   }, []);
 
-  const value = useMemo(() => ({
+  const value = React.useMemo(() => ({
     state,
     dispatch: enhancedDispatch,
     cart,
@@ -307,7 +307,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode, initialAppState:
 };
 
 export const useApp = (): AppContextType => {
-  const context = useContext(AppContext);
+  const context = React.useContext(AppContext);
   if (!context) {
     throw new Error('useApp must be used within an AppProvider');
   }
