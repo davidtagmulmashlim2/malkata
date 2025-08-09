@@ -92,7 +92,9 @@ export function MobileMenuNavigation({onLinkClick}: {onLinkClick: () => void}) {
              {(isLoading ? Array(5).fill(null) : categories).map((category, index) => {
                 if (isLoading) return <Skeleton key={index} className="h-6 w-32" />
                 
-                const IconComponent = category.mobile_icon ? iconMap[category.mobile_icon] : null;
+                const iconValue = category.title_font || 'icon-none';
+                const iconName = iconValue.startsWith('icon-') ? iconValue.replace('icon-', '') : null;
+                const IconComponent = iconName ? iconMap[iconName] : null;
 
                 return (
                     <Link

@@ -29,7 +29,6 @@ export interface Category {
   image_brightness?: number;
   show_description?: boolean;
   show_description_below_banner?: boolean;
-  mobile_icon?: string;
 }
 
 export interface GalleryImage {
@@ -234,8 +233,3 @@ export type Action =
   | { type: 'DELETE_SUBMISSION', payload: string }
   | { type: 'UPDATE_DESIGN'; payload: DesignSettings }
   | { type: 'REMOVE_ITEM_FROM_CART', payload: string };
-
-    
-
-    
-

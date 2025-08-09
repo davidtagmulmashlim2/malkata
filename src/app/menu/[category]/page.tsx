@@ -44,6 +44,8 @@ export default function CategoryPage() {
         );
     }
     
+    const titleFont = category.title_font && !category.title_font.startsWith('icon-') ? `var(--font-${category.title_font})` : 'var(--font-headline-family)';
+
     // This is the final state, rendered only on the client after isLoading is false
     return (
         <div>
@@ -66,7 +68,7 @@ export default function CategoryPage() {
                         style={{
                             color: category.title_color ?? '#FFFFFF',
                             opacity: category.title_opacity ?? 1,
-                            fontFamily: category.title_font ? `var(--font-${category.title_font})` : 'var(--font-headline-family)',
+                            fontFamily: titleFont,
                         } as React.CSSProperties}
                     >
                         {category.name}
@@ -96,5 +98,3 @@ export default function CategoryPage() {
         </div>
     );
 }
-
-    
