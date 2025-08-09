@@ -32,6 +32,15 @@ const textSizeClasses: { [key: string]: string } = {
   '6xl': 'text-6xl', '7xl': 'text-7xl', '8xl': 'text-8xl', '9xl': 'text-9xl',
 };
 
+const tagIconMap: { [key: string]: { icon: React.ElementType, className: string } } = {
+  new: { icon: Sparkles, className: 'text-white bg-blue-500' },
+  vegan: { icon: Leaf, className: 'text-white bg-green-600' },
+  spicy: { icon: Flame, className: 'text-white bg-destructive' },
+  piquant: { icon: Flame, className: 'text-black bg-orange-500' },
+  'kids-favorite': { icon: Smile, className: 'text-black bg-yellow-500' },
+};
+
+
 export function DishCard({ dish }: DishCardProps) {
   const { cart, addToCart, updateCartQuantity, state } = useApp();
   const isClient = useIsClient();
@@ -114,11 +123,11 @@ export function DishCard({ dish }: DishCardProps) {
     const standardTags = tags.filter(t => !t.startsWith('n-fs-') && !t.startsWith('d-fs-'));
     return (
         <>
-            {standardTags.includes('new') && <Badge variant="default" className="bg-blue-500 text-white text-[10px] md:text-xs px-1.5 md:px-2.5 py-0.5"><Sparkles className="w-2 h-2 md:w-3 md:h-3 me-1" /> חדש</Badge>}
-            {standardTags.includes('vegan') && <Badge variant="default" className="bg-green-600 text-white text-[10px] md:text-xs px-1.5 md:px-2.5 py-0.5"><Leaf className="w-2 h-2 md:w-3 md:h-3 me-1" /> טבעוני</Badge>}
+            {standardTags.includes('new') && <Badge variant="default" className="text-[10px] md:text-xs px-1.5 md:px-2.5 py-0.5 bg-blue-500 text-white"><Sparkles className="w-2 h-2 md:w-3 md:h-3 me-1" /> חדש</Badge>}
+            {standardTags.includes('vegan') && <Badge variant="default" className="text-[10px] md:text-xs px-1.5 md:px-2.5 py-0.5 bg-green-600 text-white"><Leaf className="w-2 h-2 md:w-3 md:h-3 me-1" /> טבעוני</Badge>}
             {standardTags.includes('spicy') && <Badge variant="destructive" className="text-[10px] md:text-xs px-1.5 md:px-2.5 py-0.5"><Flame className="w-2 h-2 md:w-3 md:h-3 me-1" /> חריף</Badge>}
-            {standardTags.includes('piquant') && <Badge variant="secondary" className="bg-orange-500 text-black text-[10px] md:text-xs px-1.5 md:px-2.5 py-0.5"><Flame className="w-2 h-2 md:w-3 md:h-3 me-1" /> פיקנטי</Badge>}
-            {standardTags.includes('kids-favorite') && <Badge variant="default" className="bg-yellow-500 text-black text-[10px] md:text-xs px-1.5 md:px-2.5 py-0.5"><Smile className="w-2 h-2 md:w-3 md:h-3 me-1" /> ילדים אוהבים</Badge>}
+            {standardTags.includes('piquant') && <Badge variant="secondary" className="text-[10px] md:text-xs px-1.5 md:px-2.5 py-0.5 bg-orange-500 text-black"><Flame className="w-2 h-2 md:w-3 md:h-3 me-1" /> פיקנטי</Badge>}
+            {standardTags.includes('kids-favorite') && <Badge variant="default" className="text-[10px] md:text-xs px-1.5 md:px-2.5 py-0.5 bg-yellow-500 text-black"><Smile className="w-2 h-2 md:w-3 md:h-3 me-1" /> ילדים אוהבים</Badge>}
         </>
     );
   };
@@ -181,8 +190,26 @@ export function DishCard({ dish }: DishCardProps) {
                                 </div>
                             )}
                         </div>
-                        <div className="flex gap-1 flex-nowrap justify-end max-w-[calc(100%-2.5rem)] overflow-hidden">
-                            {renderTags(dish.tags)}
+                        <div className="flex justify-end max-w-[calc(100%-2.5rem)]">
+                            {/* Mobile: Icons only */}
+                            <div className="flex md:hidden gap-1.5">
+                                {(dish.tags || []).map(tag => {
+                                    if (tagIconMap[tag]) {
+                                        const { icon: Icon, className } = tagIconMap[tag];
+                                        return (
+                                            <div key={tag} className={cn('h-6 w-6 rounded-full flex items-center justify-center shadow', className)}>
+                                                <Icon className="h-3.5 w-3.5" />
+                                            </div>
+                                        )
+                                    }
+                                    return null;
+                                })}
+                            </div>
+
+                            {/* Desktop: Full badges */}
+                            <div className="hidden md:flex gap-1 flex-nowrap justify-end overflow-hidden">
+                                {renderTags(dish.tags)}
+                            </div>
                         </div>
                     </div>
                     {!dish.is_available && (
