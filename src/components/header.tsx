@@ -208,7 +208,7 @@ export function Header() {
                   <span className="sr-only">פתח תפריט ניווט</span>
                 </Button>
               </SheetTrigger>
-              <SheetContent side="left" className="p-0">
+              <SheetContent side="left" className="p-0 w-3/4">
                   <SheetHeader className="p-6 pb-0 text-right">
                       <SheetTitle>
                           <span onClick={() => setIsMobileMenuOpen(false)}>
