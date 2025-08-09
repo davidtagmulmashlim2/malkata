@@ -17,6 +17,7 @@ import { AsyncImage } from '@/components/async-image';
 import { Trash2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Slider } from '@/components/ui/slider';
+import { Separator } from '@/components/ui/separator';
 
 const designSchema = z.object({
   theme: z.string(),
@@ -25,6 +26,7 @@ const designSchema = z.object({
   logo_icon: z.string(),
   logo_color: z.string().optional(),
   logo_image: z.string().optional(),
+  logo_image_mobile: z.string().optional(),
   logo_width: z.coerce.number().min(50).max(300).optional(),
   featured_category_id: z.string().optional().nullable(),
   favicon: z.string().optional(),
@@ -148,6 +150,7 @@ export default function DesignManager() {
   });
   
   const logoImagePreview = form.watch('logo_image');
+  const logoImageMobilePreview = form.watch('logo_image_mobile');
   const logoWidthPreview = form.watch('logo_width');
   const faviconPreview = form.watch('favicon');
 
@@ -163,7 +166,7 @@ export default function DesignManager() {
     }
   }, [design, form]);
 
-  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>, fieldName: 'logo_image' | 'favicon') => {
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>, fieldName: 'logo_image' | 'logo_image_mobile' | 'favicon') => {
       const file = event.target.files?.[0];
       if (!file) return;
       try {
@@ -179,7 +182,7 @@ export default function DesignManager() {
       }
   };
 
-  const handleRemoveImage = (fieldName: 'logo_image' | 'favicon') => {
+  const handleRemoveImage = (fieldName: 'logo_image' | 'logo_image_mobile' | 'favicon') => {
     form.setValue(fieldName, '', { shouldValidate: true, shouldDirty: true });
   }
 
@@ -189,7 +192,7 @@ export default function DesignManager() {
         const finalValues = { ...values };
         const oldValues = originalValues;
 
-        // Handle logo image upload
+        // Handle main logo image upload
         if (values.logo_image && values.logo_image.startsWith('data:')) {
             const newKey = await storeImage(values.logo_image);
             finalValues.logo_image = newKey;
@@ -198,6 +201,17 @@ export default function DesignManager() {
             }
         } else if (!values.logo_image && oldValues?.logo_image) {
              await deleteImage(oldValues.logo_image);
+        }
+
+        // Handle mobile logo image upload
+        if (values.logo_image_mobile && values.logo_image_mobile.startsWith('data:')) {
+            const newKey = await storeImage(values.logo_image_mobile);
+            finalValues.logo_image_mobile = newKey;
+            if (oldValues?.logo_image_mobile) {
+                await deleteImage(oldValues.logo_image_mobile);
+            }
+        } else if (!values.logo_image_mobile && oldValues?.logo_image_mobile) {
+             await deleteImage(oldValues.logo_image_mobile);
         }
 
         // Handle favicon upload
@@ -298,12 +312,14 @@ export default function DesignManager() {
                 />
             </div>
             
-            <Controller
+            <Separator />
+            
+             <Controller
                 control={form.control}
                 name="logo_image"
                 render={({ field }) => (
                    <FormItem>
-                     <FormLabel className="text-lg font-headline">תמונת לוגו (אופציונלי)</FormLabel>
+                     <FormLabel className="text-lg font-headline">לוגו ראשי (דסקטופ)</FormLabel>
                       <p className="text-sm text-muted-foreground">העלאת תמונה תחליף את האייקון שבחרת ואת שם האתר.</p>
                       <FormControl>
                         <Input 
@@ -326,6 +342,29 @@ export default function DesignManager() {
                   </FormItem>
                 )} />
               )}
+
+             <Controller
+                control={form.control}
+                name="logo_image_mobile"
+                render={({ field }) => (
+                   <FormItem>
+                     <FormLabel className="text-lg font-headline">לוגו לתפריט מובייל (אופציונלי)</FormLabel>
+                      <p className="text-sm text-muted-foreground">אם לא תועלה תמונה, יוצג הלוגו הראשי.</p>
+                      <FormControl>
+                        <Input 
+                            type="file" 
+                            accept="image/*" 
+                            onChange={(e) => handleFileChange(e, 'logo_image_mobile')}
+                        />
+                      </FormControl>
+                     <FormMessage />
+                     <ImagePreview imageKey={logoImageMobilePreview} alt="תצוגה מקדימה של לוגו מובייל" onRemove={() => handleRemoveImage('logo_image_mobile')} width={150} height={50} />
+                   </FormItem>
+                )}
+              />
+
+              <Separator />
+
                <Controller
                 control={form.control}
                 name="favicon"

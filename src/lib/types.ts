@@ -175,6 +175,7 @@ export interface DesignSettings {
   logo_icon: string;
   logo_color?: string;
   logo_image?: string;
+  logo_image_mobile?: string;
   logo_width?: number;
   featured_category_id?: string | null;
   favicon?: string;

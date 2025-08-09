@@ -105,14 +105,20 @@ export function Header() {
             </div>
         )
     }
+    
+    const desktopLogoImage = state.design.logo_image;
+    const mobileLogoImage = state.design.logo_image_mobile;
+
+    // Use mobile logo if available and in mobile context, otherwise use desktop logo.
+    const imageKey = isMobile && mobileLogoImage ? mobileLogoImage : desktopLogoImage;
 
     return (
       <Link href="/" className="flex items-center gap-2 font-headline text-2xl font-bold text-primary" style={logoStyle}>
-        {state.design.logo_image ? (
+        {imageKey ? (
             isMobile ? (
-                 <div className="relative w-full" style={{ aspectRatio: '3 / 1' }}>
+                 <div className="relative w-full h-12">
                     <AsyncImage 
-                        imageKey={state.design.logo_image} 
+                        imageKey={imageKey}
                         alt="לוגו" 
                         fill
                         className="object-contain" 
@@ -121,7 +127,7 @@ export function Header() {
             ) : (
                 <div className="relative flex items-center" style={{height: '40px'}}>
                      <AsyncImage 
-                        imageKey={state.design.logo_image} 
+                        imageKey={imageKey} 
                         alt="לוגו" 
                         height={40} 
                         width={state.design.logo_width || 120} 

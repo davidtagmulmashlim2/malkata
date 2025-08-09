@@ -1,4 +1,5 @@
 
+
 import type { AppState } from './types';
 
 // This file now only contains the INITIAL/DEFAULT state for a new user.
@@ -135,6 +136,7 @@ export const DEFAULT_APP_STATE: AppState = {
     logo_icon: 'crown4',
     logo_color: '#e0a84c',
     logo_image: '',
+    logo_image_mobile: '',
     logo_width: 120,
     featured_category_id: '',
     favicon: '',
@@ -142,4 +144,3 @@ export const DEFAULT_APP_STATE: AppState = {
 };
 
     
-
