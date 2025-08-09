@@ -114,11 +114,11 @@ export function DishCard({ dish }: DishCardProps) {
     const standardTags = tags.filter(t => !t.startsWith('n-fs-') && !t.startsWith('d-fs-'));
     return (
         <>
-            {standardTags.includes('new') && <Badge variant="default" className="bg-blue-500 text-white text-[11px] md:text-xs px-2 md:px-2.5 py-0.5"><Sparkles className="w-2.5 h-2.5 md:w-3 md:h-3 me-1" /> חדש</Badge>}
-            {standardTags.includes('vegan') && <Badge variant="default" className="bg-green-600 text-white text-[11px] md:text-xs px-2 md:px-2.5 py-0.5"><Leaf className="w-2.5 h-2.5 md:w-3 md:h-3 me-1" /> טבעוני</Badge>}
-            {standardTags.includes('spicy') && <Badge variant="destructive" className="text-[11px] md:text-xs px-2 md:px-2.5 py-0.5"><Flame className="w-2.5 h-2.5 md:w-3 md:h-3 me-1" /> חריף</Badge>}
-            {standardTags.includes('piquant') && <Badge variant="secondary" className="bg-orange-500 text-black text-[11px] md:text-xs px-2 md:px-2.5 py-0.5"><Flame className="w-2.5 h-2.5 md:w-3 md:h-3 me-1" /> פיקנטי</Badge>}
-            {standardTags.includes('kids-favorite') && <Badge variant="default" className="bg-yellow-500 text-black text-[11px] md:text-xs px-2 md:px-2.5 py-0.5"><Smile className="w-2.5 h-2.5 md:w-3 md:h-3 me-1" /> ילדים אוהבים</Badge>}
+            {standardTags.includes('new') && <Badge variant="default" className="bg-blue-500 text-white text-[10px] md:text-xs px-1.5 md:px-2.5 py-0.5"><Sparkles className="w-2 h-2 md:w-3 md:h-3 me-1" /> חדש</Badge>}
+            {standardTags.includes('vegan') && <Badge variant="default" className="bg-green-600 text-white text-[10px] md:text-xs px-1.5 md:px-2.5 py-0.5"><Leaf className="w-2 h-2 md:w-3 md:h-3 me-1" /> טבעוני</Badge>}
+            {standardTags.includes('spicy') && <Badge variant="destructive" className="text-[10px] md:text-xs px-1.5 md:px-2.5 py-0.5"><Flame className="w-2 h-2 md:w-3 md:h-3 me-1" /> חריף</Badge>}
+            {standardTags.includes('piquant') && <Badge variant="secondary" className="bg-orange-500 text-black text-[10px] md:text-xs px-1.5 md:px-2.5 py-0.5"><Flame className="w-2 h-2 md:w-3 md:h-3 me-1" /> פיקנטי</Badge>}
+            {standardTags.includes('kids-favorite') && <Badge variant="default" className="bg-yellow-500 text-black text-[10px] md:text-xs px-1.5 md:px-2.5 py-0.5"><Smile className="w-2 h-2 md:w-3 md:h-3 me-1" /> ילדים אוהבים</Badge>}
         </>
     );
   };
@@ -179,7 +179,7 @@ export function DishCard({ dish }: DishCardProps) {
                                 {cartItem.quantity || 0}
                             </div>
                         ) : <div />}
-                        <div className="flex gap-2 flex-wrap justify-end max-w-[80%]">
+                        <div className="flex gap-1 flex-nowrap justify-end max-w-[calc(100%-2.5rem)] overflow-hidden">
                             {renderTags(dish.tags)}
                         </div>
                     </div>
