@@ -23,7 +23,7 @@ import { AsyncImage } from '@/components/async-image'
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Slider } from '@/components/ui/slider'
 
 const slugify = (text: string): string => {
@@ -75,19 +75,18 @@ const fonts = [
 ];
 
 const mobileCategoryIcons = [
-    { name: 'ללא', value: 'none', icon: () => null },
-    { name: 'כתר', value: 'Crown', icon: Crown },
-    { name: 'סכו״ם מוצלב', value: 'UtensilsCrossed', icon: UtensilsCrossed },
-    { name: 'סכו״ם', value: 'Utensils', icon: Utensils },
-    { name: 'פיצה', value: 'Pizza', icon: Pizza },
-    { name: 'עוגה', value: 'CakeSlice', icon: CakeSlice },
-    { name: 'סלט', value: 'Salad', icon: Salad },
-    { name: 'דג', value: 'Fish', icon: Fish },
-    { name: 'מרק', value: 'Soup', icon: Soup },
-    { name: 'בשר', value: 'Beef', icon: Beef },
-    { name: 'שתיה', value: 'GlassWater', icon: GlassWater },
-    { name: 'חיטה', value: 'Wheat', icon: Wheat },
-    { name: 'גזר', value: 'Carrot', icon: Carrot },
+    { name: 'כתר', value: 'icon-Crown', icon: Crown },
+    { name: 'סכו״ם מוצלב', value: 'icon-UtensilsCrossed', icon: UtensilsCrossed },
+    { name: 'סכו״ם', value: 'icon-Utensils', icon: Utensils },
+    { name: 'פיצה', value: 'icon-Pizza', icon: Pizza },
+    { name: 'עוגה', value: 'icon-CakeSlice', icon: CakeSlice },
+    { name: 'סלט', value: 'icon-Salad', icon: Salad },
+    { name: 'דג', value: 'icon-Fish', icon: Fish },
+    { name: 'מרק', value: 'icon-Soup', icon: Soup },
+    { name: 'בשר', value: 'icon-Beef', icon: Beef },
+    { name: 'שתיה', value: 'icon-GlassWater', icon: GlassWater },
+    { name: 'חיטה', value: 'icon-Wheat', icon: Wheat },
+    { name: 'גזר', value: 'icon-Carrot', icon: Carrot },
 ];
 
 
@@ -118,7 +117,6 @@ const categorySchema = z.object({
   title_color: z.string().optional(),
   title_font_size: z.string().optional(),
   title_font: z.string().optional(),
-  mobile_icon: z.string().optional(),
   title_opacity: z.number().min(0).max(1).optional(),
   image_brightness: z.coerce.number().min(0).max(100).optional(),
   show_description: z.boolean().optional(),
@@ -143,11 +141,11 @@ const ImagePreview = ({ imageKey, alt }: { imageKey: string, alt: string }) => {
 export default function MenuManager() {
   const { state, dispatch } = useApp()
   const { dishes, categories } = state
-  const [isDishDialogOpen, setIsDishDialogOpen] = useState(false)
-  const [isCategoryDialogOpen, setIsCategoryDialogOpen] = useState(false)
-  const [editingDish, setEditingDish] = useState<Dish | null>(null)
-  const [editingCategory, setEditingCategory] = useState<Category | null>(null)
-  const galleryImageInputRef = useRef<HTMLInputElement>(null);
+  const [isDishDialogOpen, setIsDishDialogOpen] = React.useState(false)
+  const [isCategoryDialogOpen, setIsCategoryDialogOpen] = React.useState(false)
+  const [editingDish, setEditingDish] = React.useState<Dish | null>(null)
+  const [editingCategory, setEditingCategory] = React.useState<Category | null>(null)
+  const galleryImageInputRef = React.useRef<HTMLInputElement>(null);
 
   const dishForm = useForm<z.infer<typeof dishSchema>>({ 
     resolver: zodResolver(dishSchema),
@@ -162,13 +160,12 @@ export default function MenuManager() {
       defaultValues: { 
           name: '', description: '', image: '',
           title_color: '#FFFFFF', title_font_size: '5xl', title_font: 'default', 
-          mobile_icon: 'none',
           title_opacity: 1, 
           image_brightness: 50, show_description: true, show_description_below_banner: false,
       } 
     })
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (!isDishDialogOpen) {
         setEditingDish(null);
         dishForm.reset({
@@ -194,13 +191,12 @@ export default function MenuManager() {
     }
   }, [isDishDialogOpen, editingDish, dishForm]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (!isCategoryDialogOpen) {
         setEditingCategory(null);
         categoryForm.reset({ 
             name: '', description: '', image: '',
             title_color: '#FFFFFF', title_font_size: '5xl', title_font: 'default',
-            mobile_icon: 'none',
             title_opacity: 1,
             image_brightness: 50, show_description: true,
             show_description_below_banner: false,
@@ -211,7 +207,6 @@ export default function MenuManager() {
             title_color: editingCategory.title_color ?? '#FFFFFF',
             title_font_size: editingCategory.title_font_size ?? '5xl',
             title_font: editingCategory.title_font || 'default',
-            mobile_icon: editingCategory.mobile_icon || 'none',
             title_opacity: editingCategory.title_opacity ?? 1,
             image_brightness: editingCategory.image_brightness ?? 50,
             show_description: editingCategory.show_description ?? true,
@@ -774,30 +769,25 @@ export default function MenuManager() {
                         </div>
                         <FormField name="title_font" control={categoryForm.control} render={({ field }) => (
                             <FormItem>
-                                <FormLabel>פונט כותרת (בדסקטופ)</FormLabel>
+                                <FormLabel>פונט (דסקטופ) / אייקון (מובייל)</FormLabel>
                                 <Select onValueChange={field.onChange} value={field.value ?? 'default'}>
-                                    <FormControl><SelectTrigger><SelectValue placeholder="בחר פונט" /></SelectTrigger></FormControl>
+                                    <FormControl><SelectTrigger><SelectValue placeholder="בחר פונט או אייקון" /></SelectTrigger></FormControl>
                                     <SelectContent>
-                                        {fonts.map(font => <SelectItem key={font.value} value={font.value}>{font.name}</SelectItem>)}
-                                    </SelectContent>
-                                </Select>
-                                <FormMessage />
-                            </FormItem>
-                        )} />
-                        <FormField name="mobile_icon" control={categoryForm.control} render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>אייקון לתפריט מובייל</FormLabel>
-                                <Select onValueChange={field.onChange} value={field.value ?? 'none'}>
-                                    <FormControl><SelectTrigger><SelectValue placeholder="בחר אייקון" /></SelectTrigger></FormControl>
-                                    <SelectContent>
-                                        {mobileCategoryIcons.map(icon => (
-                                            <SelectItem key={icon.value} value={icon.value}>
-                                                <div className="flex items-center gap-2">
-                                                    {icon.value !== 'none' && <icon.icon className="h-4 w-4" />}
-                                                    <span>{icon.name}</span>
-                                                </div>
-                                            </SelectItem>
-                                        ))}
+                                        <SelectGroup>
+                                            <SelectLabel>פונטים</SelectLabel>
+                                            {fonts.map(font => <SelectItem key={font.value} value={font.value}>{font.name}</SelectItem>)}
+                                        </SelectGroup>
+                                        <SelectGroup>
+                                            <SelectLabel>אייקונים (למובייל)</SelectLabel>
+                                            {mobileCategoryIcons.map(icon => (
+                                                <SelectItem key={icon.value} value={icon.value}>
+                                                    <div className="flex items-center gap-2">
+                                                        <icon.icon className="h-4 w-4" />
+                                                        <span>{icon.name}</span>
+                                                    </div>
+                                                </SelectItem>
+                                            ))}
+                                        </SelectGroup>
                                     </SelectContent>
                                 </Select>
                                 <FormMessage />
@@ -875,3 +865,5 @@ export default function MenuManager() {
     </div>
   )
 }
+
+    

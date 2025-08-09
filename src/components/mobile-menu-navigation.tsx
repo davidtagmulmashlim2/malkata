@@ -29,7 +29,7 @@ export function MobileMenuNavigation({onLinkClick}: {onLinkClick: () => void}) {
   const { state, isLoading } = useApp();
   const pathname = usePathname();
   const { categories, design } = state;
-  const [activeTab, setActiveTab] = useState<'categories' | 'main-menu'>('categories');
+  const [activeTab, setActiveTab] = React.useState<'categories' | 'main-menu'>('categories');
 
   const activeSlug = pathname.split('/').pop();
 
@@ -92,8 +92,10 @@ export function MobileMenuNavigation({onLinkClick}: {onLinkClick: () => void}) {
              {(isLoading ? Array(5).fill(null) : categories).map((category, index) => {
                 if (isLoading) return <Skeleton key={index} className="h-6 w-32" />
                 
-                const iconName = category.mobile_icon;
-                const IconComponent = iconName && iconName !== 'none' ? iconMap[iconName] : null;
+                const fontValue = category.title_font || '';
+                const isIcon = fontValue.startsWith('icon-');
+                const iconName = isIcon ? fontValue.replace('icon-', '') : null;
+                const IconComponent = iconName ? iconMap[iconName] : null;
 
                 return (
                     <Link
@@ -134,3 +136,5 @@ export function MobileMenuNavigation({onLinkClick}: {onLinkClick: () => void}) {
     </div>
   );
 }
+
+    
