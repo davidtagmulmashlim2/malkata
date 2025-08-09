@@ -174,11 +174,13 @@ export function DishCard({ dish }: DishCardProps) {
                         </div>
                     </div>
                     <div className="absolute top-2 left-0 right-0 px-2 flex justify-between items-start pointer-events-none">
-                        {isClient && cartItem ? (
-                            <div className="bg-primary text-primary-foreground rounded-full h-7 w-7 flex items-center justify-center text-sm font-bold z-10">
-                                {cartItem.quantity || 0}
-                            </div>
-                        ) : <div />}
+                        <div>
+                            {isClient && cartItem && (
+                                <div className="bg-primary text-primary-foreground rounded-full h-7 w-7 flex items-center justify-center text-sm font-bold z-10">
+                                    {cartItem.quantity || 0}
+                                </div>
+                            )}
+                        </div>
                         <div className="flex gap-1 flex-nowrap justify-end max-w-[calc(100%-2.5rem)] overflow-hidden">
                             {renderTags(dish.tags)}
                         </div>
