@@ -15,7 +15,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, Dialog
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
-import { PlusCircle, Edit, Trash2, X, ChevronsUpDown, Check, Eye, CakeSlice, Salad, Fish, Soup, Beef, GlassWater, Wheat, Carrot } from 'lucide-react'
+import { PlusCircle, Edit, Trash2, X, ChevronsUpDown, Check, Eye, CakeSlice, Salad, Fish, Soup, Beef, GlassWater, Wheat, Carrot, Utensils, Crown, UtensilsCrossed, Pizza } from 'lucide-react'
 import { toast } from '@/hooks/use-toast'
 import type { Dish, Category } from '@/lib/types'
 import { storeImage, deleteImage } from '@/lib/image-store.client';
@@ -75,15 +75,19 @@ const fonts = [
 ];
 
 const mobileCategoryIcons = [
-    { name: 'ללא', value: 'icon-none', icon: () => null },
-    { name: 'עוגה', value: 'icon-CakeSlice', icon: CakeSlice },
-    { name: 'סלט', value: 'icon-Salad', icon: Salad },
-    { name: 'דג', value: 'icon-Fish', icon: Fish },
-    { name: 'מרק', value: 'icon-Soup', icon: Soup },
-    { name: 'בשר', value: 'icon-Beef', icon: Beef },
-    { name: 'שתיה', value: 'icon-GlassWater', icon: GlassWater },
-    { name: 'חיטה', value: 'icon-Wheat', icon: Wheat },
-    { name: 'גזר', value: 'icon-Carrot', icon: Carrot },
+    { name: 'ללא', value: 'none', icon: () => null },
+    { name: 'כתר', value: 'Crown', icon: Crown },
+    { name: 'סכו״ם מוצלב', value: 'UtensilsCrossed', icon: UtensilsCrossed },
+    { name: 'סכו״ם', value: 'Utensils', icon: Utensils },
+    { name: 'פיצה', value: 'Pizza', icon: Pizza },
+    { name: 'עוגה', value: 'CakeSlice', icon: CakeSlice },
+    { name: 'סלט', value: 'Salad', icon: Salad },
+    { name: 'דג', value: 'Fish', icon: Fish },
+    { name: 'מרק', value: 'Soup', icon: Soup },
+    { name: 'בשר', value: 'Beef', icon: Beef },
+    { name: 'שתיה', value: 'GlassWater', icon: GlassWater },
+    { name: 'חיטה', value: 'Wheat', icon: Wheat },
+    { name: 'גזר', value: 'Carrot', icon: Carrot },
 ];
 
 
@@ -114,6 +118,7 @@ const categorySchema = z.object({
   title_color: z.string().optional(),
   title_font_size: z.string().optional(),
   title_font: z.string().optional(),
+  mobile_icon: z.string().optional(),
   title_opacity: z.number().min(0).max(1).optional(),
   image_brightness: z.coerce.number().min(0).max(100).optional(),
   show_description: z.boolean().optional(),
@@ -156,7 +161,8 @@ export default function MenuManager() {
       resolver: zodResolver(categorySchema),
       defaultValues: { 
           name: '', description: '', image: '',
-          title_color: '#FFFFFF', title_font_size: '5xl', title_font: 'icon-none', 
+          title_color: '#FFFFFF', title_font_size: '5xl', title_font: 'default', 
+          mobile_icon: 'none',
           title_opacity: 1, 
           image_brightness: 50, show_description: true, show_description_below_banner: false,
       } 
@@ -193,7 +199,8 @@ export default function MenuManager() {
         setEditingCategory(null);
         categoryForm.reset({ 
             name: '', description: '', image: '',
-            title_color: '#FFFFFF', title_font_size: '5xl', title_font: 'icon-none',
+            title_color: '#FFFFFF', title_font_size: '5xl', title_font: 'default',
+            mobile_icon: 'none',
             title_opacity: 1,
             image_brightness: 50, show_description: true,
             show_description_below_banner: false,
@@ -203,7 +210,8 @@ export default function MenuManager() {
             ...editingCategory,
             title_color: editingCategory.title_color ?? '#FFFFFF',
             title_font_size: editingCategory.title_font_size ?? '5xl',
-            title_font: editingCategory.title_font || 'icon-none',
+            title_font: editingCategory.title_font || 'default',
+            mobile_icon: editingCategory.mobile_icon || 'none',
             title_opacity: editingCategory.title_opacity ?? 1,
             image_brightness: editingCategory.image_brightness ?? 50,
             show_description: editingCategory.show_description ?? true,
@@ -764,19 +772,28 @@ export default function MenuManager() {
                               </FormItem>
                             )} />
                         </div>
-                         <FormField name="title_font" control={categoryForm.control} render={({ field }) => (
+                        <FormField name="title_font" control={categoryForm.control} render={({ field }) => (
                             <FormItem>
-                                <FormLabel>פונט/אייקון (פונט לכותרת בדסקטופ, אייקון למובייל)</FormLabel>
-                                <Select onValueChange={field.onChange} value={field.value ?? 'icon-none'}>
-                                    <FormControl><SelectTrigger><SelectValue placeholder="בחר אפשרות" /></SelectTrigger></FormControl>
+                                <FormLabel>פונט כותרת (בדסקטופ)</FormLabel>
+                                <Select onValueChange={field.onChange} value={field.value ?? 'default'}>
+                                    <FormControl><SelectTrigger><SelectValue placeholder="בחר פונט" /></SelectTrigger></FormControl>
                                     <SelectContent>
-                                        <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">פונטים</div>
                                         {fonts.map(font => <SelectItem key={font.value} value={font.value}>{font.name}</SelectItem>)}
-                                        <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">אייקונים למובייל</div>
+                                    </SelectContent>
+                                </Select>
+                                <FormMessage />
+                            </FormItem>
+                        )} />
+                        <FormField name="mobile_icon" control={categoryForm.control} render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>אייקון לתפריט מובייל</FormLabel>
+                                <Select onValueChange={field.onChange} value={field.value ?? 'none'}>
+                                    <FormControl><SelectTrigger><SelectValue placeholder="בחר אייקון" /></SelectTrigger></FormControl>
+                                    <SelectContent>
                                         {mobileCategoryIcons.map(icon => (
                                             <SelectItem key={icon.value} value={icon.value}>
                                                 <div className="flex items-center gap-2">
-                                                    {icon.value !== 'icon-none' && <icon.icon className="h-4 w-4" />}
+                                                    {icon.value !== 'none' && <icon.icon className="h-4 w-4" />}
                                                     <span>{icon.name}</span>
                                                 </div>
                                             </SelectItem>

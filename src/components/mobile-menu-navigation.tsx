@@ -10,7 +10,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { useMemo, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import React from 'react';
-import { CakeSlice, Salad, Fish, Soup, Beef, GlassWater, Wheat, Carrot } from 'lucide-react';
+import { CakeSlice, Salad, Fish, Soup, Beef, GlassWater, Wheat, Carrot, Utensils, Crown, UtensilsCrossed, Pizza } from 'lucide-react';
 
 const baseNavLinks = [
   { href: '/', label: 'בית', isFeatured: false },
@@ -21,7 +21,7 @@ const baseNavLinks = [
 ];
 
 const iconMap: { [key: string]: React.ElementType } = {
-  CakeSlice, Salad, Fish, Soup, Beef, GlassWater, Wheat, Carrot
+  CakeSlice, Salad, Fish, Soup, Beef, GlassWater, Wheat, Carrot, Utensils, Crown, UtensilsCrossed, Pizza
 };
 
 
@@ -92,9 +92,8 @@ export function MobileMenuNavigation({onLinkClick}: {onLinkClick: () => void}) {
              {(isLoading ? Array(5).fill(null) : categories).map((category, index) => {
                 if (isLoading) return <Skeleton key={index} className="h-6 w-32" />
                 
-                const iconValue = category.title_font || 'icon-none';
-                const iconName = iconValue.startsWith('icon-') ? iconValue.replace('icon-', '') : null;
-                const IconComponent = iconName ? iconMap[iconName] : null;
+                const iconName = category.mobile_icon;
+                const IconComponent = iconName && iconName !== 'none' ? iconMap[iconName] : null;
 
                 return (
                     <Link

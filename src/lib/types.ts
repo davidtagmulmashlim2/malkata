@@ -25,6 +25,7 @@ export interface Category {
   title_color?: string;
   title_font_size?: string;
   title_font?: string;
+  mobile_icon?: string;
   title_opacity?: number;
   image_brightness?: number;
   show_description?: boolean;
