@@ -116,7 +116,7 @@ export function Header() {
       <Link href="/" className="flex items-center gap-2 font-headline text-2xl font-bold text-primary" style={logoStyle}>
         {imageKey ? (
             isMobile ? (
-                 <div className="relative w-full h-12">
+                 <div className="relative w-full h-16">
                     <AsyncImage 
                         imageKey={imageKey}
                         alt="לוגו" 
