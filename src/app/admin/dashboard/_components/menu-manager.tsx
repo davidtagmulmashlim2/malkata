@@ -1,7 +1,7 @@
 
 
 'use client'
-import { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useForm, Controller, useFieldArray, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -141,11 +141,11 @@ const ImagePreview = ({ imageKey, alt }: { imageKey: string, alt: string }) => {
 export default function MenuManager() {
   const { state, dispatch } = useApp()
   const { dishes, categories } = state
-  const [isDishDialogOpen, setIsDishDialogOpen] = React.useState(false)
-  const [isCategoryDialogOpen, setIsCategoryDialogOpen] = React.useState(false)
-  const [editingDish, setEditingDish] = React.useState<Dish | null>(null)
-  const [editingCategory, setEditingCategory] = React.useState<Category | null>(null)
-  const galleryImageInputRef = React.useRef<HTMLInputElement>(null);
+  const [isDishDialogOpen, setIsDishDialogOpen] = useState(false)
+  const [isCategoryDialogOpen, setIsCategoryDialogOpen] = useState(false)
+  const [editingDish, setEditingDish] = useState<Dish | null>(null)
+  const [editingCategory, setEditingCategory] = useState<Category | null>(null)
+  const galleryImageInputRef = useRef<HTMLInputElement>(null);
 
   const dishForm = useForm<z.infer<typeof dishSchema>>({ 
     resolver: zodResolver(dishSchema),
@@ -165,7 +165,7 @@ export default function MenuManager() {
       } 
     })
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!isDishDialogOpen) {
         setEditingDish(null);
         dishForm.reset({
@@ -191,7 +191,7 @@ export default function MenuManager() {
     }
   }, [isDishDialogOpen, editingDish, dishForm]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!isCategoryDialogOpen) {
         setEditingCategory(null);
         categoryForm.reset({ 
