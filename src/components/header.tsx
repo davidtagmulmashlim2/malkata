@@ -116,7 +116,7 @@ export function Header() {
       <Link href="/" className="flex items-center gap-2 font-headline text-2xl font-bold text-primary" style={logoStyle}>
         {imageKey ? (
             isMobile ? (
-                 <div className="relative w-full h-16">
+                 <div className="relative w-full h-24">
                     <AsyncImage 
                         imageKey={imageKey}
                         alt="לוגו" 
@@ -214,7 +214,7 @@ export function Header() {
                   <span className="sr-only">פתח תפריט ניווט</span>
                 </Button>
               </SheetTrigger>
-              <SheetContent side="left" className="p-0 w-3/4">
+              <SheetContent side="left" className="p-0 w-3/4 bg-background/95 backdrop-blur-sm">
                   <SheetHeader className="p-6 pb-0 text-right">
                       <SheetTitle>
                           <span onClick={() => setIsMobileMenuOpen(false)}>
