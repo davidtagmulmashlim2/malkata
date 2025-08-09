@@ -114,11 +114,11 @@ export function DishCard({ dish }: DishCardProps) {
     const standardTags = tags.filter(t => !t.startsWith('n-fs-') && !t.startsWith('d-fs-'));
     return (
         <>
-            {standardTags.includes('new') && <Badge variant="default" className="bg-blue-500 text-white"><Sparkles className="w-3 h-3 me-1" /> חדש</Badge>}
-            {standardTags.includes('vegan') && <Badge variant="default" className="bg-green-600 text-white"><Leaf className="w-3 h-3 me-1" /> טבעוני</Badge>}
-            {standardTags.includes('spicy') && <Badge variant="destructive"><Flame className="w-3 h-3 me-1" /> חריף</Badge>}
-            {standardTags.includes('piquant') && <Badge variant="secondary" className="bg-orange-500 text-black"><Flame className="w-3 h-3 me-1" /> פיקנטי</Badge>}
-            {standardTags.includes('kids-favorite') && <Badge variant="default" className="bg-yellow-500 text-black"><Smile className="w-3 h-3 me-1" /> ילדים אוהבים</Badge>}
+            {standardTags.includes('new') && <Badge variant="default" className="bg-blue-500 text-white text-[11px] md:text-xs px-2 md:px-2.5 py-0.5"><Sparkles className="w-2.5 h-2.5 md:w-3 md:h-3 me-1" /> חדש</Badge>}
+            {standardTags.includes('vegan') && <Badge variant="default" className="bg-green-600 text-white text-[11px] md:text-xs px-2 md:px-2.5 py-0.5"><Leaf className="w-2.5 h-2.5 md:w-3 md:h-3 me-1" /> טבעוני</Badge>}
+            {standardTags.includes('spicy') && <Badge variant="destructive" className="text-[11px] md:text-xs px-2 md:px-2.5 py-0.5"><Flame className="w-2.5 h-2.5 md:w-3 md:h-3 me-1" /> חריף</Badge>}
+            {standardTags.includes('piquant') && <Badge variant="secondary" className="bg-orange-500 text-black text-[11px] md:text-xs px-2 md:px-2.5 py-0.5"><Flame className="w-2.5 h-2.5 md:w-3 md:h-3 me-1" /> פיקנטי</Badge>}
+            {standardTags.includes('kids-favorite') && <Badge variant="default" className="bg-yellow-500 text-black text-[11px] md:text-xs px-2 md:px-2.5 py-0.5"><Smile className="w-2.5 h-2.5 md:w-3 md:h-3 me-1" /> ילדים אוהבים</Badge>}
         </>
     );
   };
@@ -333,9 +333,3 @@ export function DishCard({ dish }: DishCardProps) {
     </Dialog>
   );
 }
-
-    
-
-    
-
-    
