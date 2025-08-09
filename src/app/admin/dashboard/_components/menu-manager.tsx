@@ -1,4 +1,5 @@
 
+
 'use client'
 import { useState, useEffect, useRef } from 'react'
 import { useForm, Controller, useFieldArray, useWatch } from 'react-hook-form'
@@ -14,7 +15,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, Dialog
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
-import { PlusCircle, Edit, Trash2, X, ChevronsUpDown, Check, Eye } from 'lucide-react'
+import { PlusCircle, Edit, Trash2, X, ChevronsUpDown, Check, Eye, CakeSlice, Salad, Fish, Soup, Beef, GlassWater, Wheat, Carrot } from 'lucide-react'
 import { toast } from '@/hooks/use-toast'
 import type { Dish, Category } from '@/lib/types'
 import { storeImage, deleteImage } from '@/lib/image-store.client';
@@ -73,6 +74,19 @@ const fonts = [
     { name: 'Dana', value: 'dana' },
 ];
 
+const mobileCategoryIcons = [
+    { name: 'ללא', value: 'none', icon: () => null },
+    { name: 'עוגה', value: 'CakeSlice', icon: CakeSlice },
+    { name: 'סלט', value: 'Salad', icon: Salad },
+    { name: 'דג', value: 'Fish', icon: Fish },
+    { name: 'מרק', value: 'Soup', icon: Soup },
+    { name: 'בשר', value: 'Beef', icon: Beef },
+    { name: 'שתיה', value: 'GlassWater', icon: GlassWater },
+    { name: 'חיטה', value: 'Wheat', icon: Wheat },
+    { name: 'גזר', value: 'Carrot', icon: Carrot },
+];
+
+
 const dishSchema = z.object({
   id: z.string().uuid().optional(),
   name: z.string().min(1, 'שם המנה הוא שדה חובה'),
@@ -104,6 +118,7 @@ const categorySchema = z.object({
   image_brightness: z.coerce.number().min(0).max(100).optional(),
   show_description: z.boolean().optional(),
   show_description_below_banner: z.boolean().optional(),
+  mobile_icon: z.string().optional(),
 })
 
 const fileToDataUrl = (file: File): Promise<string> => {
@@ -143,7 +158,7 @@ export default function MenuManager() {
       defaultValues: { 
           name: '', description: '', image: '',
           title_color: '#FFFFFF', title_font_size: '5xl', title_font: 'default', title_opacity: 1, 
-          image_brightness: 50, show_description: true, show_description_below_banner: false,
+          image_brightness: 50, show_description: true, show_description_below_banner: false, mobile_icon: 'none'
       } 
     })
 
@@ -181,7 +196,8 @@ export default function MenuManager() {
             title_color: '#FFFFFF', title_font_size: '5xl', title_font: 'default',
             title_opacity: 1,
             image_brightness: 50, show_description: true,
-            show_description_below_banner: false
+            show_description_below_banner: false,
+            mobile_icon: 'none'
         });
     } else if (editingCategory) {
         categoryForm.reset({
@@ -193,6 +209,7 @@ export default function MenuManager() {
             image_brightness: editingCategory.image_brightness ?? 50,
             show_description: editingCategory.show_description ?? true,
             show_description_below_banner: editingCategory.show_description_below_banner ?? false,
+            mobile_icon: editingCategory.mobile_icon ?? 'none',
         });
     }
   }, [isCategoryDialogOpen, editingCategory, categoryForm]);
@@ -237,7 +254,8 @@ export default function MenuManager() {
     const categoryData = {
       ...values,
       slug: slugify(values.name),
-      title_font: values.title_font === 'default' ? undefined : values.title_font
+      title_font: values.title_font === 'default' ? undefined : values.title_font,
+      mobile_icon: values.mobile_icon === 'none' ? undefined : values.mobile_icon
     };
     
     if (editingCategory) {
@@ -729,6 +747,27 @@ export default function MenuManager() {
                            </FormItem>
                         )}
                      />
+                     <FormField name="mobile_icon" control={categoryForm.control} render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>אייקון לתפריט מובייל</FormLabel>
+                          <Select onValueChange={field.onChange} value={field.value}>
+                            <FormControl>
+                                <SelectTrigger><SelectValue placeholder="בחר אייקון" /></SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                                {mobileCategoryIcons.map(icon => (
+                                    <SelectItem key={icon.value} value={icon.value}>
+                                        <div className="flex items-center gap-2">
+                                            {icon.value !== 'none' && <icon.icon className="h-4 w-4" />}
+                                            <span>{icon.name}</span>
+                                        </div>
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )} />
                     <div className="border p-4 rounded-md space-y-4">
                         <h3 className="text-lg font-medium">הגדרות עיצוב באנר</h3>
                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

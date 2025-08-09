@@ -1,4 +1,5 @@
 
+
 'use client';
 import { useApp } from '@/context/app-context';
 import Link from 'next/link';
@@ -8,6 +9,8 @@ import { cn } from '@/lib/utils';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useMemo, useState } from 'react';
 import { Button } from '@/components/ui/button';
+import React from 'react';
+import { CakeSlice, Salad, Fish, Soup, Beef, GlassWater, Wheat, Carrot } from 'lucide-react';
 
 const baseNavLinks = [
   { href: '/', label: 'בית', isFeatured: false },
@@ -16,6 +19,11 @@ const baseNavLinks = [
   { href: '/gallery', label: 'גלריה', isFeatured: false },
   { href: '/contact', label: 'יצירת קשר', isFeatured: false },
 ];
+
+const iconMap: { [key: string]: React.ElementType } = {
+  CakeSlice, Salad, Fish, Soup, Beef, GlassWater, Wheat, Carrot
+};
+
 
 export function MobileMenuNavigation({onLinkClick}: {onLinkClick: () => void}) {
   const { state, isLoading } = useApp();
@@ -81,20 +89,26 @@ export function MobileMenuNavigation({onLinkClick}: {onLinkClick: () => void}) {
         {activeTab === 'categories' && (
            <div className="flex flex-col items-end gap-6 p-4 text-lg text-right">
              <Link href="/menu" onClick={onLinkClick} className={cn('transition-colors hover:text-primary no-underline', pathname === '/menu' ? 'text-primary font-bold' : 'text-muted-foreground')}>כל המנות</Link>
-             {(isLoading ? Array(5).fill(null) : categories).map((category, index) => (
-                isLoading ? <Skeleton key={index} className="h-6 w-32" /> :
-                <Link
-                    key={category.id}
-                    href={`/menu/${category.slug}`}
-                    onClick={onLinkClick}
-                    className={cn(
-                        'transition-colors hover:text-primary no-underline',
-                        activeSlug === category.slug ? 'text-primary font-bold' : 'text-muted-foreground'
-                    )}
-                >
-                    {category.name}
-                </Link>
-             ))}
+             {(isLoading ? Array(5).fill(null) : categories).map((category, index) => {
+                if (isLoading) return <Skeleton key={index} className="h-6 w-32" />
+                
+                const IconComponent = category.mobile_icon ? iconMap[category.mobile_icon] : null;
+
+                return (
+                    <Link
+                        key={category.id}
+                        href={`/menu/${category.slug}`}
+                        onClick={onLinkClick}
+                        className={cn(
+                            'transition-colors hover:text-primary no-underline flex items-center justify-end gap-3',
+                            activeSlug === category.slug ? 'text-primary font-bold' : 'text-muted-foreground'
+                        )}
+                    >
+                        <span>{category.name}</span>
+                        {IconComponent && <IconComponent className="h-5 w-5" />}
+                    </Link>
+                )
+             })}
            </div>
         )}
         {activeTab === 'main-menu' && (
