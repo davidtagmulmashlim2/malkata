@@ -93,6 +93,7 @@
   }
   .animation-slow-zoom-in {
     animation: slow-zoom-in 20s ease-in-out infinite alternate;
+    will-change: transform;
     transform: translateZ(0);
   }
 
