@@ -186,27 +186,41 @@ export function DishCard({ dish }: DishCardProps) {
                             </h3>
                         </div>
                     </div>
-                     <div className="absolute top-2 left-2 w-full pointer-events-none px-2 md:hidden">
-                        <div className="flex flex-row-reverse justify-between">
-                             <div className="flex gap-1.5 flex-nowrap overflow-hidden">
-                                {(dish.tags || []).filter(tag => tagIconMap[tag]).map(tag => {
+
+                    {/* Mobile-only top-of-card overlay */}
+                    <div className="absolute top-2 left-2 right-2 flex items-start justify-between md:hidden">
+                        {/* Cart Quantity Badge (Now on the left) */}
+                        {isClient && cartItem && (
+                          <div className="z-10 flex h-7 w-7 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground">
+                            {cartItem.quantity || 0}
+                          </div>
+                        )}
+                        
+                        {/* Decorative Tags Container (Now on the right) */}
+                        <div className="flex flex-1 justify-end">
+                            <div className="flex flex-row-reverse gap-1.5 overflow-hidden">
+                                {(dish.tags || [])
+                                .filter((tag) => tagIconMap[tag])
+                                .map((tag) => {
                                     const { icon: Icon, className } = tagIconMap[tag];
                                     return (
-                                        <div key={tag} className={cn('h-6 w-6 rounded-full flex items-center justify-center shadow', className)}>
-                                            <Icon className="h-3.5 w-3.5" />
-                                        </div>
-                                    )
+                                    <div
+                                        key={tag}
+                                        className={cn(
+                                        'flex h-6 w-6 items-center justify-center rounded-full shadow',
+                                        className
+                                        )}
+                                    >
+                                        <Icon className="h-3.5 w-3.5" />
+                                    </div>
+                                    );
                                 })}
                             </div>
-                            
-                            {isClient && cartItem && (
-                                <div className="bg-primary text-primary-foreground rounded-full h-7 w-7 flex items-center justify-center text-sm font-bold z-10">
-                                    {cartItem.quantity || 0}
-                                </div>
-                            )}
                         </div>
                     </div>
 
+
+                    {/* Desktop-only top-of-card overlay */}
                     <div className="absolute top-2 left-2 right-4 hidden md:flex justify-between items-start pointer-events-none">
                          <div className="flex gap-1 flex-nowrap justify-start overflow-hidden">
                             {renderTags(dish.tags)}
