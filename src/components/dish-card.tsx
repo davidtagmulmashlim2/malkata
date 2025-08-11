@@ -192,7 +192,7 @@ export function DishCard({ dish }: DishCardProps) {
                         </div>
                         <div className="flex justify-end max-w-[calc(100%-2.5rem)]">
                             {/* Mobile: Icons only */}
-                            <div className="flex md:hidden gap-1.5">
+                            <div className="flex md:hidden gap-1.5 flex-nowrap overflow-hidden justify-end">
                                 {(dish.tags || []).map(tag => {
                                     if (tagIconMap[tag]) {
                                         const { icon: Icon, className } = tagIconMap[tag];
@@ -277,7 +277,7 @@ export function DishCard({ dish }: DishCardProps) {
         </div>
       </div>
 
-      <DialogContent className="sm:max-w-4xl text-right">
+      <DialogContent className="sm:max-w-4xl text-right max-h-[90vh] overflow-y-auto">
         <div className="grid md:grid-cols-2 gap-8">
             <div className="w-full">
                 <div className="w-full aspect-square relative">
