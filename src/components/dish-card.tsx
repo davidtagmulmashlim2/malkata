@@ -186,10 +186,10 @@ export function DishCard({ dish }: DishCardProps) {
                             </h3>
                         </div>
                     </div>
-                    <div className="absolute top-2 left-0 right-0 px-2 flex justify-end items-start pointer-events-none">
-                       <div className="flex justify-end max-w-[calc(100%-2.5rem)] flex-nowrap overflow-hidden">
+                    <div className="absolute top-2 left-2 right-0 px-2 flex justify-between items-start pointer-events-none">
+                       <div className="flex justify-start max-w-[calc(100%-2.5rem)] flex-nowrap overflow-hidden">
                             {/* Mobile: Icons only */}
-                            <div className="flex md:hidden gap-1.5 flex-nowrap overflow-hidden justify-end">
+                            <div className="flex md:hidden gap-1.5 flex-nowrap overflow-hidden justify-start">
                                 {(dish.tags || []).filter(tag => tagIconMap[tag]).map(tag => {
                                     const { icon: Icon, className } = tagIconMap[tag];
                                     return (
@@ -201,12 +201,12 @@ export function DishCard({ dish }: DishCardProps) {
                             </div>
 
                             {/* Desktop: Full badges */}
-                            <div className="hidden md:flex gap-1 flex-nowrap justify-end overflow-hidden">
+                            <div className="hidden md:flex gap-1 flex-nowrap justify-start overflow-hidden">
                                 {renderTags(dish.tags)}
                             </div>
                         </div>
                          {isClient && cartItem && (
-                            <div className="absolute top-2 left-2 bg-primary text-primary-foreground rounded-full h-7 w-7 flex items-center justify-center text-sm font-bold z-10">
+                            <div className="absolute top-0 right-0 bg-primary text-primary-foreground rounded-full h-7 w-7 flex items-center justify-center text-sm font-bold z-10">
                                 {cartItem.quantity || 0}
                             </div>
                         )}
@@ -409,10 +409,10 @@ export function DishCard({ dish }: DishCardProps) {
                         <DialogHeader>
                             <DialogTitle className="font-headline text-3xl mb-2 text-right">{dish.name}</DialogTitle>
                         </DialogHeader>
+                        <p className="text-muted-foreground text-right">{dish.full_description}</p>
                         <div className="flex gap-2 my-4 justify-start flex-wrap">
                             {renderTags(dish.tags)}
                         </div>
-                        <p className="text-muted-foreground text-right">{dish.full_description}</p>
                     </div>
                     <DialogFooter className="mt-6">
                         <div className="flex justify-between items-center w-full gap-4">
