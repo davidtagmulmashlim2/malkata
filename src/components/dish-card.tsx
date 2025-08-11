@@ -186,8 +186,8 @@ export function DishCard({ dish }: DishCardProps) {
                             </h3>
                         </div>
                     </div>
-                    <div className="absolute top-2 left-2 right-0 px-2 flex justify-between items-start pointer-events-none">
-                       <div className="flex justify-start max-w-[calc(100%-2.5rem)] flex-nowrap overflow-hidden">
+                    <div className="absolute top-2 left-2 pointer-events-none">
+                        <div className="flex justify-start max-w-[calc(100%-2.5rem)] flex-nowrap overflow-hidden">
                             {/* Mobile: Icons only */}
                             <div className="flex md:hidden gap-1.5 flex-nowrap overflow-hidden justify-start">
                                 {(dish.tags || []).filter(tag => tagIconMap[tag]).map(tag => {
@@ -205,12 +205,12 @@ export function DishCard({ dish }: DishCardProps) {
                                 {renderTags(dish.tags)}
                             </div>
                         </div>
-                         {isClient && cartItem && (
-                            <div className="absolute top-0 right-0 bg-primary text-primary-foreground rounded-full h-7 w-7 flex items-center justify-center text-sm font-bold z-10">
-                                {cartItem.quantity || 0}
-                            </div>
-                        )}
                     </div>
+                     {isClient && cartItem && (
+                        <div className="absolute top-2 right-2 bg-primary text-primary-foreground rounded-full h-7 w-7 flex items-center justify-center text-sm font-bold z-10 pointer-events-none">
+                            {cartItem.quantity || 0}
+                        </div>
+                    )}
                     {!dish.is_available && (
                         <div className="absolute inset-0 bg-black/50 flex items-center justify-center rounded-lg pointer-events-none">
                             <p className="text-white text-lg font-bold">אזל מהמלאי</p>
