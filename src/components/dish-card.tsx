@@ -187,7 +187,7 @@ export function DishCard({ dish }: DishCardProps) {
                         </div>
                     </div>
                     <div className="absolute top-2 left-0 right-0 px-2 flex justify-end items-start pointer-events-none">
-                       <div className="flex justify-end max-w-[calc(100%-2.5rem)]">
+                       <div className="flex justify-end max-w-[calc(100%-2.5rem)] flex-nowrap overflow-hidden">
                             {/* Mobile: Icons only */}
                             <div className="flex md:hidden gap-1.5 flex-nowrap overflow-hidden justify-end">
                                 {(dish.tags || []).filter(tag => tagIconMap[tag]).map(tag => {
@@ -276,9 +276,87 @@ export function DishCard({ dish }: DishCardProps) {
         </div>
       </div>
 
-      <DialogContent className="sm:max-w-4xl text-right">
-            {/* New structure for mobile, old structure for desktop */}
+      <DialogContent className="sm:max-w-4xl text-right max-h-[90vh] overflow-y-auto">
+            {/* 
+            This is the old structure that caused issues on mobile. 
+            It's kept here as a comment in case we need to revert.
+            It is now replaced by the new mobile-first and desktop-specific structure below.
             <div className="md:grid md:grid-cols-2 md:gap-8">
+                ...
+            </div>
+            */}
+            
+            {/* New structure for mobile */}
+            <div className="md:hidden">
+                <div className="w-full">
+                    {/* Image Gallery */}
+                    <div className="w-full aspect-square relative">
+                        {isClient && allImages.length > 0 ? (
+                            <>
+                                <AsyncImage 
+                                    key={allImages[currentImageIndex]}
+                                    imageKey={allImages[currentImageIndex]} 
+                                    alt={`${dish.name} - תמונה ${currentImageIndex + 1}`} 
+                                    layout="fill"
+                                    objectFit="cover"
+                                    className="rounded-md"
+                                    data-ai-hint="food dish"
+                                />
+                                {allImages.length > 1 && (
+                                    <>
+                                        <Button size="icon" variant="ghost" className="absolute top-1/2 -translate-y-1/2 left-2 bg-black/30 hover:bg-black/50 text-white" onClick={prevImage}>
+                                            <ChevronLeft className="h-6 w-6" />
+                                        </Button>
+                                        <Button size="icon" variant="ghost" className="absolute top-1/2 -translate-y-1/2 right-2 bg-black/30 hover:bg-black/50 text-white" onClick={nextImage}>
+                                            <ChevronRight className="h-6 w-6" />
+                                        </Button>
+                                    </>
+                                )}
+                            </>
+                        ) : (
+                            <Skeleton className="w-full h-full" />
+                        )}
+                    </div>
+                </div>
+
+                {/* Dish Details */}
+                <div className="flex flex-col mt-4">
+                    <DialogHeader>
+                        <DialogTitle className="font-headline text-2xl mb-1 text-right">{dish.name}</DialogTitle>
+                    </DialogHeader>
+                    <p className="text-muted-foreground text-sm text-right">{dish.full_description}</p>
+                    <div className="flex gap-2 my-4 justify-start flex-wrap">
+                        {renderTags(dish.tags)}
+                    </div>
+
+                    <DialogFooter className="mt-4">
+                        <div className="flex justify-between items-center w-full gap-2">
+                            <div>
+                              <p className="text-xl font-bold text-primary whitespace-nowrap">{dish.price * quantity} ₪</p>
+                              {dish.price_subtitle && <p className="text-xs text-muted-foreground">{dish.price_subtitle}</p>}
+                            </div>
+                            <div className="flex items-center gap-2">
+                                 <div className="flex items-center gap-0.5 rounded-md border">
+                                    <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setQuantity(q => Math.max(1, q - 1))}>
+                                        <Minus className="h-3 w-3" />
+                                    </Button>
+                                    <span className="w-6 text-center text-sm font-bold">{quantity}</span>
+                                    <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setQuantity(q => q + 1)}>
+                                        <Plus className="h-3 w-3" />
+                                    </Button>
+                                </div>
+                                <Button onClick={handleUpdateCart} disabled={!dish.is_available} size="sm" className="h-8 text-xs">
+                                    <ShoppingBagIcon className="ms-1.5 h-4 w-4" />
+                                    {buttonText}
+                                </Button>
+                            </div>
+                        </div>
+                    </DialogFooter>
+                </div>
+            </div>
+
+            {/* New structure for desktop */}
+            <div className="hidden md:grid md:grid-cols-2 md:gap-8">
                 {/* Image Gallery */}
                 <div className="w-full">
                     <div className="w-full aspect-square relative">
