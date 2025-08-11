@@ -186,35 +186,36 @@ export function DishCard({ dish }: DishCardProps) {
                             </h3>
                         </div>
                     </div>
-                    <div className="absolute top-2 left-2 w-full pointer-events-none px-2">
+                     <div className="absolute top-2 left-2 w-full pointer-events-none px-2 md:hidden">
                         <div className="flex flex-row-reverse justify-between">
-                            {/* Decorative Tags (Vegan, Spicy etc) */}
-                            <div className="flex gap-1.5">
-                                {/* Mobile: Icons only */}
-                                <div className="flex md:hidden gap-1.5 flex-nowrap overflow-hidden">
-                                    {(dish.tags || []).filter(tag => tagIconMap[tag]).map(tag => {
-                                        const { icon: Icon, className, label } = tagIconMap[tag];
-                                        return (
-                                            <div key={tag} className={cn('h-6 w-6 rounded-full flex items-center justify-center shadow', className)}>
-                                                <Icon className="h-3.5 w-3.5" />
-                                            </div>
-                                        )
-                                    })}
-                                </div>
-
-                                {/* Desktop: Full badges */}
-                                <div className="hidden md:flex gap-1 flex-nowrap justify-start overflow-hidden">
-                                    {renderTags(dish.tags)}
-                                </div>
+                             <div className="flex gap-1.5 flex-nowrap overflow-hidden">
+                                {(dish.tags || []).filter(tag => tagIconMap[tag]).map(tag => {
+                                    const { icon: Icon, className } = tagIconMap[tag];
+                                    return (
+                                        <div key={tag} className={cn('h-6 w-6 rounded-full flex items-center justify-center shadow', className)}>
+                                            <Icon className="h-3.5 w-3.5" />
+                                        </div>
+                                    )
+                                })}
                             </div>
-
-                            {/* Cart quantity indicator */}
+                            
                             {isClient && cartItem && (
                                 <div className="bg-primary text-primary-foreground rounded-full h-7 w-7 flex items-center justify-center text-sm font-bold z-10">
                                     {cartItem.quantity || 0}
                                 </div>
                             )}
                         </div>
+                    </div>
+
+                    <div className="absolute top-2 left-2 right-4 hidden md:flex justify-between items-start pointer-events-none">
+                         <div className="flex gap-1 flex-nowrap justify-start overflow-hidden">
+                            {renderTags(dish.tags)}
+                        </div>
+                         {isClient && cartItem && (
+                            <div className="bg-primary text-primary-foreground rounded-full h-7 w-7 flex items-center justify-center text-sm font-bold z-10">
+                                {cartItem.quantity || 0}
+                            </div>
+                        )}
                     </div>
                     
                     {!dish.is_available && (
@@ -330,7 +331,7 @@ export function DishCard({ dish }: DishCardProps) {
                         <DialogTitle className="font-headline text-2xl mb-1 text-right">{dish.name}</DialogTitle>
                     </DialogHeader>
                     <p className="text-muted-foreground text-sm text-right mb-2">{dish.full_description}</p>
-                    <div className="flex gap-2 my-2 justify-end flex-wrap-reverse">
+                    <div className="flex gap-2 my-2 justify-start flex-wrap-reverse">
                         {renderTags(dish.tags)}
                     </div>
 
