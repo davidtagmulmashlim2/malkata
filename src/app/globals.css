@@ -85,12 +85,15 @@
 @layer utilities {
   .animation-fade-in {
     animation: fadeIn 0.7s ease-in-out;
+    transform: translateZ(0);
   }
   .animation-slide-up {
     animation: slideUp 0.7s ease-in-out;
+    transform: translateZ(0);
   }
   .animation-slow-zoom-in {
     animation: slow-zoom-in 20s ease-in-out infinite alternate;
+    transform: translateZ(0);
   }
 
   .custom-tooltip::after {
@@ -116,10 +119,10 @@
 
   @keyframes slow-zoom-in {
     from {
-      transform: scale(1);
+      transform: scale(1) translateZ(0);
     }
     to {
-      transform: scale(1.1);
+      transform: scale(1.1) translateZ(0);
     }
   }
 }
