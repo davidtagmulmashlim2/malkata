@@ -24,7 +24,7 @@ export default function ShabbatMalkataPage() {
     const textSizeClasses: { [key: string]: string } = {
         'text-xs': 'text-xs', 'text-sm': 'text-sm', 'text-base': 'text-base', 'text-lg': 'text-lg', 'text-xl': 'text-xl', 
         'text-2xl': 'text-2xl', 'text-3xl': 'text-3xl', 'text-4xl': 'text-4xl', '5xl': 'text-5xl', 
-        'text-6xl': 'text-6xl', 'text-7xl': 'text-7xl', 'text-8xl': 'text-8xl', 'text-9xl': 'text-9xl',
+        '6xl': 'text-6xl', '7xl': 'text-7xl', 'text-8xl': 'text-8xl', 'text-9xl': 'text-9xl',
     };
 
     if (isLoading || !category) {
@@ -60,7 +60,7 @@ export default function ShabbatMalkataPage() {
                     <p className="text-lg text-white mt-2 max-w-2xl">{category.description}</p>
                 </div>
             </div>
-            <div className="container py-12 md:py-20">
+            <div className="px-2 md:container py-12 md:py-20">
                 {shabbat_notice?.enabled && shabbat_notice.text && (
                     <div className="text-center mb-12">
                          <h2 className="text-2xl font-headline font-semibold">הזמנות לשבת:</h2>
@@ -76,7 +76,7 @@ export default function ShabbatMalkataPage() {
                         </p>
                     </div>
                 )}
-                 <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">
+                 <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 md:gap-8">
                     {categoryDishes.length > 0 ? (
                         categoryDishes.map(dish => (
                             <DishCard key={dish.id} dish={dish} />

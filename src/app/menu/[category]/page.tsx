@@ -78,14 +78,14 @@ export default function CategoryPage() {
                     )}
                 </div>
             </div>
-            <div className="container py-12 md:py-20">
+            <div className="px-2 md:container py-12 md:py-20">
                 {category.show_description_below_banner && (
                     <div className="mb-12 text-right">
                         <h2 className="text-2xl font-headline font-semibold border-r-4 border-primary pr-4">{category.name}</h2>
                         <p className="text-muted-foreground mt-2 pr-4">{category.description}</p>
                     </div>
                  )}
-                <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">
+                <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 md:gap-8">
                     {categoryDishes.length > 0 ? (
                         categoryDishes.map(dish => (
                             <DishCard key={dish.id} dish={dish} />
