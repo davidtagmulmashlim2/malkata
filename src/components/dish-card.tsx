@@ -186,31 +186,37 @@ export function DishCard({ dish }: DishCardProps) {
                             </h3>
                         </div>
                     </div>
-                    <div className="absolute top-2 left-2 pointer-events-none">
-                        <div className="flex justify-start max-w-[calc(100%-2.5rem)] flex-nowrap overflow-hidden">
-                            {/* Mobile: Icons only */}
-                            <div className="flex md:hidden gap-1.5 flex-nowrap overflow-hidden justify-start">
-                                {(dish.tags || []).filter(tag => tagIconMap[tag]).map(tag => {
-                                    const { icon: Icon, className } = tagIconMap[tag];
-                                    return (
-                                        <div key={tag} className={cn('h-6 w-6 rounded-full flex items-center justify-center shadow', className)}>
-                                            <Icon className="h-3.5 w-3.5" />
-                                        </div>
-                                    )
-                                })}
+                    <div className="absolute top-2 left-2 w-full pointer-events-none px-2">
+                        <div className="flex flex-row-reverse justify-between">
+                            {/* Decorative Tags (Vegan, Spicy etc) */}
+                            <div className="flex gap-1.5">
+                                {/* Mobile: Icons only */}
+                                <div className="flex md:hidden gap-1.5 flex-nowrap overflow-hidden">
+                                    {(dish.tags || []).filter(tag => tagIconMap[tag]).map(tag => {
+                                        const { icon: Icon, className, label } = tagIconMap[tag];
+                                        return (
+                                            <div key={tag} className={cn('h-6 w-6 rounded-full flex items-center justify-center shadow', className)}>
+                                                <Icon className="h-3.5 w-3.5" />
+                                            </div>
+                                        )
+                                    })}
+                                </div>
+
+                                {/* Desktop: Full badges */}
+                                <div className="hidden md:flex gap-1 flex-nowrap justify-start overflow-hidden">
+                                    {renderTags(dish.tags)}
+                                </div>
                             </div>
 
-                            {/* Desktop: Full badges */}
-                            <div className="hidden md:flex gap-1 flex-nowrap justify-start overflow-hidden">
-                                {renderTags(dish.tags)}
-                            </div>
+                            {/* Cart quantity indicator */}
+                            {isClient && cartItem && (
+                                <div className="bg-primary text-primary-foreground rounded-full h-7 w-7 flex items-center justify-center text-sm font-bold z-10">
+                                    {cartItem.quantity || 0}
+                                </div>
+                            )}
                         </div>
                     </div>
-                     {isClient && cartItem && (
-                        <div className="absolute top-2 right-2 bg-primary text-primary-foreground rounded-full h-7 w-7 flex items-center justify-center text-sm font-bold z-10 pointer-events-none">
-                            {cartItem.quantity || 0}
-                        </div>
-                    )}
+                    
                     {!dish.is_available && (
                         <div className="absolute inset-0 bg-black/50 flex items-center justify-center rounded-lg pointer-events-none">
                             <p className="text-white text-lg font-bold">אזל מהמלאי</p>
@@ -276,10 +282,9 @@ export function DishCard({ dish }: DishCardProps) {
         </div>
       </div>
 
-      <DialogContent className="sm:max-w-4xl text-right max-h-[90vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-4xl max-h-[90vh] overflow-y-auto">
             {/* 
             This is the old structure that caused issues on mobile. 
-            It's kept here as a comment in case we need to revert.
             It is now replaced by the new mobile-first and desktop-specific structure below.
             <div className="md:grid md:grid-cols-2 md:gap-8">
                 ...
@@ -321,11 +326,11 @@ export function DishCard({ dish }: DishCardProps) {
 
                 {/* Dish Details */}
                 <div className="flex flex-col mt-4">
-                    <DialogHeader>
+                     <DialogHeader>
                         <DialogTitle className="font-headline text-2xl mb-1 text-right">{dish.name}</DialogTitle>
                     </DialogHeader>
-                    <p className="text-muted-foreground text-sm text-right">{dish.full_description}</p>
-                    <div className="flex gap-2 my-4 justify-start flex-wrap">
+                    <p className="text-muted-foreground text-sm text-right mb-2">{dish.full_description}</p>
+                    <div className="flex gap-2 my-2 justify-end flex-wrap-reverse">
                         {renderTags(dish.tags)}
                     </div>
 
