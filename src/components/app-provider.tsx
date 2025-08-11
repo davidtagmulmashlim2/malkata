@@ -12,12 +12,14 @@ import { DynamicThemeLoader } from './dynamic-theme-loader';
 import { useApp } from '@/context/app-context';
 import { WhatsappIcon } from '@/components/icons/whatsapp-icon';
 import Link from 'next/link';
+import { useIsClient } from '@/hooks/use-is-client';
 
 const FloatingWhatsAppButton = () => {
     const { state } = useApp();
     const { contact } = state.siteContent;
+    const isClient = useIsClient();
 
-    if (!contact?.show_whatsapp || !contact?.whatsapp) {
+    if (!isClient || !contact?.show_whatsapp || !contact?.whatsapp) {
         return null;
     }
 
