@@ -29,7 +29,7 @@ const FloatingWhatsAppButton = () => {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Chat on WhatsApp"
-            className="md:hidden fixed bottom-[16.66%] left-4 z-50 h-14 w-14 rounded-full bg-green-500 text-white shadow-lg flex items-center justify-center transition-transform hover:scale-110"
+            className="md:hidden fixed bottom-[16.66%] left-2 z-50 h-14 w-14 rounded-full bg-green-500 text-white shadow-lg flex items-center justify-center transition-transform hover:scale-110"
         >
             <WhatsappIcon className="h-8 w-8" />
         </Link>
