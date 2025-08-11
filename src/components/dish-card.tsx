@@ -32,12 +32,12 @@ const textSizeClasses: { [key: string]: string } = {
   '6xl': 'text-6xl', '7xl': 'text-7xl', '8xl': 'text-8xl', '9xl': 'text-9xl',
 };
 
-const tagIconMap: { [key: string]: { icon: React.ElementType, className: string } } = {
-  new: { icon: Sparkles, className: 'text-white bg-blue-500' },
-  vegan: { icon: Leaf, className: 'text-white bg-green-600' },
-  spicy: { icon: Flame, className: 'text-white bg-destructive' },
-  piquant: { icon: Flame, className: 'text-black bg-orange-500' },
-  'kids-favorite': { icon: Smile, className: 'text-black bg-yellow-500' },
+const tagIconMap: { [key: string]: { icon: React.ElementType, className: string, label: string } } = {
+  new: { icon: Sparkles, className: 'text-white bg-blue-500', label: 'חדש' },
+  vegan: { icon: Leaf, className: 'text-white bg-green-600', label: 'טבעוני' },
+  spicy: { icon: Flame, className: 'text-white bg-destructive', label: 'חריף' },
+  piquant: { icon: Flame, className: 'text-black bg-orange-500', label: 'פיקנטי' },
+  'kids-favorite': { icon: Smile, className: 'text-black bg-yellow-500', label: 'ילדים אוהבים' },
 };
 
 
@@ -123,11 +123,15 @@ export function DishCard({ dish }: DishCardProps) {
     const standardTags = tags.filter(t => !t.startsWith('n-fs-') && !t.startsWith('d-fs-'));
     return (
         <>
-            {standardTags.includes('new') && <Badge variant="default" className="text-[10px] md:text-xs px-1.5 md:px-2.5 py-0.5 bg-blue-500 text-white"><Sparkles className="w-2 h-2 md:w-3 md:h-3 me-1" /> חדש</Badge>}
-            {standardTags.includes('vegan') && <Badge variant="default" className="text-[10px] md:text-xs px-1.5 md:px-2.5 py-0.5 bg-green-600 text-white"><Leaf className="w-2 h-2 md:w-3 md:h-3 me-1" /> טבעוני</Badge>}
-            {standardTags.includes('spicy') && <Badge variant="destructive" className="text-[10px] md:text-xs px-1.5 md:px-2.5 py-0.5"><Flame className="w-2 h-2 md:w-3 md:h-3 me-1" /> חריף</Badge>}
-            {standardTags.includes('piquant') && <Badge variant="secondary" className="text-[10px] md:text-xs px-1.5 md:px-2.5 py-0.5 bg-orange-500 text-black"><Flame className="w-2 h-2 md:w-3 md:h-3 me-1" /> פיקנטי</Badge>}
-            {standardTags.includes('kids-favorite') && <Badge variant="default" className="text-[10px] md:text-xs px-1.5 md:px-2.5 py-0.5 bg-yellow-500 text-black"><Smile className="w-2 h-2 md:w-3 md:h-3 me-1" /> ילדים אוהבים</Badge>}
+            {standardTags.map(tag => {
+                const tagInfo = tagIconMap[tag];
+                if (!tagInfo) return null;
+                return (
+                    <Badge key={tag} variant="default" className={cn("text-[10px] md:text-xs px-1.5 md:px-2.5 py-0.5", tagInfo.className)}>
+                        <tagInfo.icon className="w-2 h-2 md:w-3 md:h-3 me-1" /> {tagInfo.label}
+                    </Badge>
+                );
+            })}
         </>
     );
   };
@@ -182,27 +186,17 @@ export function DishCard({ dish }: DishCardProps) {
                             </h3>
                         </div>
                     </div>
-                    <div className="absolute top-2 left-0 right-0 px-2 flex justify-between items-start pointer-events-none">
-                        <div>
-                            {isClient && cartItem && (
-                                <div className="bg-primary text-primary-foreground rounded-full h-7 w-7 flex items-center justify-center text-sm font-bold z-10">
-                                    {cartItem.quantity || 0}
-                                </div>
-                            )}
-                        </div>
-                        <div className="flex justify-end max-w-[calc(100%-2.5rem)]">
+                    <div className="absolute top-2 left-0 right-0 px-2 flex justify-end items-start pointer-events-none">
+                       <div className="flex justify-end max-w-[calc(100%-2.5rem)]">
                             {/* Mobile: Icons only */}
                             <div className="flex md:hidden gap-1.5 flex-nowrap overflow-hidden justify-end">
-                                {(dish.tags || []).map(tag => {
-                                    if (tagIconMap[tag]) {
-                                        const { icon: Icon, className } = tagIconMap[tag];
-                                        return (
-                                            <div key={tag} className={cn('h-6 w-6 rounded-full flex items-center justify-center shadow', className)}>
-                                                <Icon className="h-3.5 w-3.5" />
-                                            </div>
-                                        )
-                                    }
-                                    return null;
+                                {(dish.tags || []).filter(tag => tagIconMap[tag]).map(tag => {
+                                    const { icon: Icon, className } = tagIconMap[tag];
+                                    return (
+                                        <div key={tag} className={cn('h-6 w-6 rounded-full flex items-center justify-center shadow', className)}>
+                                            <Icon className="h-3.5 w-3.5" />
+                                        </div>
+                                    )
                                 })}
                             </div>
 
@@ -211,6 +205,11 @@ export function DishCard({ dish }: DishCardProps) {
                                 {renderTags(dish.tags)}
                             </div>
                         </div>
+                         {isClient && cartItem && (
+                            <div className="absolute top-2 left-2 bg-primary text-primary-foreground rounded-full h-7 w-7 flex items-center justify-center text-sm font-bold z-10">
+                                {cartItem.quantity || 0}
+                            </div>
+                        )}
                     </div>
                     {!dish.is_available && (
                         <div className="absolute inset-0 bg-black/50 flex items-center justify-center rounded-lg pointer-events-none">
@@ -277,87 +276,91 @@ export function DishCard({ dish }: DishCardProps) {
         </div>
       </div>
 
-      <DialogContent className="sm:max-w-4xl text-right max-h-[90vh] overflow-y-auto">
-        <div className="grid md:grid-cols-2 gap-8">
-            <div className="w-full">
-                <div className="w-full aspect-square relative">
-                    {isClient && allImages.length > 0 ? (
-                        <>
-                            <AsyncImage 
-                                key={allImages[currentImageIndex]}
-                                imageKey={allImages[currentImageIndex]} 
-                                alt={`${dish.name} - תמונה ${currentImageIndex + 1}`} 
-                                layout="fill"
-                                objectFit="cover"
-                                className="rounded-md"
-                                data-ai-hint="food dish"
-                            />
-                            {allImages.length > 1 && (
-                                <>
-                                    <Button size="icon" variant="ghost" className="absolute top-1/2 -translate-y-1/2 left-2 bg-black/30 hover:bg-black/50 text-white" onClick={prevImage}>
-                                        <ChevronLeft className="h-6 w-6" />
-                                    </Button>
-                                    <Button size="icon" variant="ghost" className="absolute top-1/2 -translate-y-1/2 right-2 bg-black/30 hover:bg-black/50 text-white" onClick={nextImage}>
-                                        <ChevronRight className="h-6 w-6" />
-                                    </Button>
-                                </>
-                            )}
-                        </>
-                    ) : (
-                        <Skeleton className="w-full h-full" />
+      <DialogContent className="sm:max-w-4xl text-right">
+            {/* New structure for mobile, old structure for desktop */}
+            <div className="md:grid md:grid-cols-2 md:gap-8">
+                {/* Image Gallery */}
+                <div className="w-full">
+                    <div className="w-full aspect-square relative">
+                        {isClient && allImages.length > 0 ? (
+                            <>
+                                <AsyncImage 
+                                    key={allImages[currentImageIndex]}
+                                    imageKey={allImages[currentImageIndex]} 
+                                    alt={`${dish.name} - תמונה ${currentImageIndex + 1}`} 
+                                    layout="fill"
+                                    objectFit="cover"
+                                    className="rounded-md"
+                                    data-ai-hint="food dish"
+                                />
+                                {allImages.length > 1 && (
+                                    <>
+                                        <Button size="icon" variant="ghost" className="absolute top-1/2 -translate-y-1/2 left-2 bg-black/30 hover:bg-black/50 text-white" onClick={prevImage}>
+                                            <ChevronLeft className="h-6 w-6" />
+                                        </Button>
+                                        <Button size="icon" variant="ghost" className="absolute top-1/2 -translate-y-1/2 right-2 bg-black/30 hover:bg-black/50 text-white" onClick={nextImage}>
+                                            <ChevronRight className="h-6 w-6" />
+                                        </Button>
+                                    </>
+                                )}
+                            </>
+                        ) : (
+                            <Skeleton className="w-full h-full" />
+                        )}
+                    </div>
+                     {allImages.length > 1 && (
+                        <div className="flex justify-center gap-2 mt-4">
+                            {allImages.map((_, i) => (
+                                <button 
+                                    key={i} 
+                                    onClick={() => setCurrentImageIndex(i)} 
+                                    className={cn(
+                                        "h-2 w-2 rounded-full transition-colors", 
+                                        currentImageIndex === i ? "bg-primary" : "bg-muted hover:bg-muted-foreground"
+                                    )}
+                                    aria-label={`עבור לתמונה ${i+1}`}
+                                ></button>
+                            ))}
+                        </div>
                     )}
                 </div>
-                 {allImages.length > 1 && (
-                    <div className="flex justify-center gap-2 mt-4">
-                        {allImages.map((_, i) => (
-                            <button 
-                                key={i} 
-                                onClick={() => setCurrentImageIndex(i)} 
-                                className={cn(
-                                    "h-2 w-2 rounded-full transition-colors", 
-                                    currentImageIndex === i ? "bg-primary" : "bg-muted hover:bg-muted-foreground"
-                                )}
-                                aria-label={`עבור לתמונה ${i+1}`}
-                            ></button>
-                        ))}
-                    </div>
-                )}
-            </div>
-            <div className="flex flex-col justify-between">
-                <div>
-                    <DialogHeader>
-                        <DialogTitle className="font-headline text-3xl mb-2 text-right">{dish.name}</DialogTitle>
-                    </DialogHeader>
-                    <div className="flex gap-2 my-4 justify-start flex-wrap">
-                        {renderTags(dish.tags)}
-                    </div>
-                    <p className="text-muted-foreground text-right">{dish.full_description}</p>
-                </div>
-                <DialogFooter className="mt-6">
-                    <div className="flex justify-between items-center w-full gap-4">
-                        <div>
-                          <p className="text-2xl font-bold text-primary whitespace-nowrap">{dish.price * quantity} ₪</p>
-                          {dish.price_subtitle && <p className="text-xs text-muted-foreground">{dish.price_subtitle}</p>}
+
+                {/* Dish Details */}
+                <div className="flex flex-col justify-between mt-4 md:mt-0">
+                    <div>
+                        <DialogHeader>
+                            <DialogTitle className="font-headline text-3xl mb-2 text-right">{dish.name}</DialogTitle>
+                        </DialogHeader>
+                        <div className="flex gap-2 my-4 justify-start flex-wrap">
+                            {renderTags(dish.tags)}
                         </div>
-                        <div className="flex items-center gap-2">
-                             <div className="flex items-center gap-1 rounded-md border">
-                                <Button variant="ghost" size="icon" className="h-9 w-9" onClick={() => setQuantity(q => Math.max(1, q - 1))}>
-                                    <Minus className="h-4 w-4" />
-                                </Button>
-                                <span className="w-8 text-center text-md font-bold">{quantity}</span>
-                                <Button variant="ghost" size="icon" className="h-9 w-9" onClick={() => setQuantity(q => q + 1)}>
-                                    <Plus className="h-4 w-4" />
+                        <p className="text-muted-foreground text-right">{dish.full_description}</p>
+                    </div>
+                    <DialogFooter className="mt-6">
+                        <div className="flex justify-between items-center w-full gap-4">
+                            <div>
+                              <p className="text-2xl font-bold text-primary whitespace-nowrap">{dish.price * quantity} ₪</p>
+                              {dish.price_subtitle && <p className="text-xs text-muted-foreground">{dish.price_subtitle}</p>}
+                            </div>
+                            <div className="flex items-center gap-2">
+                                 <div className="flex items-center gap-1 rounded-md border">
+                                    <Button variant="ghost" size="icon" className="h-9 w-9" onClick={() => setQuantity(q => Math.max(1, q - 1))}>
+                                        <Minus className="h-4 w-4" />
+                                    </Button>
+                                    <span className="w-8 text-center text-md font-bold">{quantity}</span>
+                                    <Button variant="ghost" size="icon" className="h-9 w-9" onClick={() => setQuantity(q => q + 1)}>
+                                        <Plus className="h-4 w-4" />
+                                    </Button>
+                                </div>
+                                <Button onClick={handleUpdateCart} disabled={!dish.is_available} size="lg">
+                                    <ShoppingBagIcon className="ms-2 h-5 w-5" />
+                                    {buttonText}
                                 </Button>
                             </div>
-                            <Button onClick={handleUpdateCart} disabled={!dish.is_available} size="lg">
-                                <ShoppingBagIcon className="ms-2 h-5 w-5" />
-                                {buttonText}
-                            </Button>
                         </div>
-                    </div>
-                </DialogFooter>
+                    </DialogFooter>
+                </div>
             </div>
-        </div>
       </DialogContent>
     </Dialog>
   );
