@@ -119,6 +119,7 @@ export interface SiteContent {
   newsletter: {
     headline: string;
     subheadline: string;
+    image?: string;
   };
   testimonials: {
     headline: string;

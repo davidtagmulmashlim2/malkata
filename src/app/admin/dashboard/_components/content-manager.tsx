@@ -140,6 +140,7 @@ const contentSchema = z.object({
   newsletter: z.object({
       headline: z.string().min(1, 'חובה'),
       subheadline: z.string().min(1, 'חובה'),
+      image: z.string().optional(),
   }),
   testimonials: z.object({
     headline: z.string().min(1, 'חובה'),
@@ -221,6 +222,7 @@ export default function ContentManager() {
   const aboutImage = form.watch('about.image');
   const menuImage = form.watch('menu.main_image');
   const seoImage = form.watch('seo.image');
+  const newsletterImage = form.watch('newsletter.image');
 
   useEffect(() => {
     if (siteContent) {
@@ -822,6 +824,25 @@ export default function ContentManager() {
                       <FormMessage />
                     </FormItem>
                   )} />
+                  <Controller
+                    control={form.control}
+                    name="newsletter.image"
+                    render={({ field }) => (
+                       <FormItem>
+                         <FormLabel>תמונת רקע (אופציונלי)</FormLabel>
+                         <p className="text-xs text-muted-foreground pb-2">אם לא תועלה תמונה, יוצג צבע הרקע הראשי של האתר.</p>
+                           <FormControl>
+                            <Input 
+                                type="file" 
+                                accept="image/*" 
+                                onChange={(e) => handleFileChange(e, 'newsletter.image')}
+                            />
+                           </FormControl>
+                         <FormMessage />
+                         <ImagePreview imageKey={field.value} alt="תצוגה מקדימה של רקע הניוזלטר" />
+                       </FormItem>
+                    )}
+                  />
                 </AccordionContent>
               </AccordionItem>
 

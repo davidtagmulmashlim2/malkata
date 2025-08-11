@@ -368,10 +368,23 @@ export default function Home() {
       </section>
 
       {/* Newsletter Signup */}
-      <section className="bg-primary text-primary-foreground py-16 md:py-24">
-        <div className="container text-right max-w-2xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-headline font-bold mb-4">{isLoading ? <Skeleton className="h-10 w-3/4 mx-auto" /> : newsletter.headline}</h2>
-            <div className="mb-6 opacity-90">{isLoading ? <div className="space-y-2"><Skeleton className="h-4 w-full max-w-lg mx-auto" /><Skeleton className="h-4 w-2/3 max-w-md mx-auto" /></div> : newsletter.subheadline}</div>
+      <section className={cn("relative py-16 md:py-24 text-primary-foreground", !newsletter.image && "bg-primary")}>
+        {newsletter.image && (
+          <>
+            <AsyncImage
+              imageKey={newsletter.image}
+              alt="רקע מועדון לקוחות"
+              layout="fill"
+              objectFit="cover"
+              className="z-0 brightness-50"
+              data-ai-hint="community people"
+            />
+            <div className="absolute inset-0 bg-black/50 z-0"></div>
+          </>
+        )}
+        <div className="container relative z-10 text-right max-w-2xl mx-auto">
+            <h2 className="text-3xl md:text-4xl font-headline font-bold mb-4">{isLoading ? <Skeleton className="h-10 w-3/4 mx-auto bg-white/20" /> : newsletter.headline}</h2>
+            <div className="mb-6 opacity-90">{isLoading ? <div className="space-y-2"><Skeleton className="h-4 w-full max-w-lg mx-auto bg-white/20" /><Skeleton className="h-4 w-2/3 max-w-md mx-auto bg-white/20" /></div> : newsletter.subheadline}</div>
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubscriberSubmit)} className="flex flex-col sm:flex-row gap-2 max-w-md mx-auto">
                     <FormField
