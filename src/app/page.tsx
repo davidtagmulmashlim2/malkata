@@ -130,17 +130,16 @@ export default function Home() {
           backPressCount.current = 1;
           toast({ description: "לחץ שוב כדי לצאת" });
 
-          // Prevent the default back navigation
+          // Prevent the default back navigation by pushing the current state again
           history.pushState(null, '', location.href);
 
           setTimeout(() => {
             backPressCount.current = 0;
           }, 2000); // Reset after 2 seconds
         } else {
-          // Allow the second back press to go through
+          // Allow the second back press to go through by actually going back.
           backPressCount.current = 0;
-          // We don't call router.back() here; we just let the default behavior happen.
-          // In some cases, a `history.back()` might be needed if the pushState creates issues.
+          history.back();
         }
       }
     };
