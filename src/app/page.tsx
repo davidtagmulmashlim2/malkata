@@ -21,7 +21,7 @@ import { toast } from '@/hooks/use-toast';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import React from 'react';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 
 const subscriberSchema = z.object({
@@ -114,6 +114,7 @@ export default function Home() {
   const [currentTestimonialIndex, setCurrentTestimonialIndex] = useState(0);
   const backPressCount = useRef(0);
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const router = useRouter();
 
 
@@ -124,20 +125,18 @@ export default function Home() {
 
   useEffect(() => {
     const handlePopState = (event: PopStateEvent) => {
-      // This is specifically for handling the double-press-to-exit logic on mobile home page
-      if (window.innerWidth < 768 && pathname === '/') {
+      const isDishModalOpen = searchParams.has('dish');
+
+      if (window.innerWidth < 768 && pathname === '/' && !isDishModalOpen) {
         if (backPressCount.current === 0) {
           backPressCount.current = 1;
           toast({ description: "לחץ שוב כדי לצאת" });
-
-          // Prevent the default back navigation by pushing the current state again
           history.pushState(null, '', location.href);
 
           setTimeout(() => {
             backPressCount.current = 0;
-          }, 2000); // Reset after 2 seconds
+          }, 2000);
         } else {
-          // Allow the second back press to go through by actually going back.
           backPressCount.current = 0;
           history.back();
         }
@@ -149,7 +148,7 @@ export default function Home() {
     return () => {
       window.removeEventListener('popstate', handlePopState);
     };
-  }, [pathname]);
+  }, [pathname, searchParams]);
 
   const onSubscriberSubmit = (values: z.infer<typeof subscriberSchema>) => {
     dispatch({
