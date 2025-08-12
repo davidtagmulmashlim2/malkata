@@ -17,9 +17,10 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { storeImage, deleteImage } from '@/lib/image-store.client';
 import { AsyncImage } from '@/components/async-image';
-import { Leaf, ChefHat, Bike, PartyPopper, Carrot, Rocket, Send, Smartphone, Eye, Search, Heart, Star, Info, ZoomIn } from 'lucide-react';
+import { Leaf, ChefHat, Bike, PartyPopper, Carrot, Rocket, Send, Smartphone, Eye, Search, Heart, Star, Info, ZoomIn, Trash2 } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Separator } from '@/components/ui/separator';
+import { cn } from '@/lib/utils';
 
 
 const featureIcons = [
@@ -195,10 +196,25 @@ type ContentFormValues = z.infer<typeof contentSchema>;
 
 const fontSizes = ['xs', 'sm', 'base', 'lg', 'xl', '2xl', '3xl', '4xl', '5xl', '6xl', '7xl', '8xl', '9xl'];
 
-const ImagePreview = ({ imageKey, alt }: { imageKey: string | undefined, alt: string }) => {
+const ImagePreview = ({ imageKey, alt, onRemove }: { imageKey: string | undefined, alt: string, onRemove?: () => void }) => {
     if (!imageKey) return null;
-    return <AsyncImage imageKey={imageKey} alt={alt} width={80} height={80} className="mt-2 h-20 w-20 rounded-md object-cover" />;
-}
+    return (
+        <div className="mt-2 relative w-fit">
+            <AsyncImage imageKey={imageKey} alt={alt} width={80} height={80} className="h-20 w-20 rounded-md object-cover" />
+            {onRemove && (
+                <Button 
+                    type="button" 
+                    variant="destructive" 
+                    size="icon" 
+                    className="absolute -top-2 -right-2 h-6 w-6"
+                    onClick={onRemove}
+                >
+                    <Trash2 className="h-3 w-3" />
+                </Button>
+            )}
+        </div>
+    );
+};
 
 const fileToDataUrl = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
@@ -241,7 +257,7 @@ export default function ContentManager() {
           const dataUrl = await fileToDataUrl(file);
           const newImageKey = await storeImage(dataUrl);
           
-          form.setValue(fieldName, newImageKey, { shouldValidate: true });
+          form.setValue(fieldName, newImageKey, { shouldValidate: true, shouldDirty: true });
 
           if (oldImageKey) {
             await deleteImage(oldImageKey);
@@ -255,6 +271,24 @@ export default function ContentManager() {
               variant: 'destructive' 
           });
       }
+  };
+
+   const handleRemoveImage = async (fieldName: any) => {
+    const oldImageKey = form.getValues(fieldName);
+    if (oldImageKey) {
+        try {
+            await deleteImage(oldImageKey);
+            form.setValue(fieldName, '', { shouldValidate: true, shouldDirty: true });
+            toast({ title: 'התמונה הוסרה בהצלחה' });
+        } catch (error: any) {
+            console.error("Error deleting image:", error);
+            toast({ 
+                title: 'שגיאה במחיקת תמונה', 
+                description: error.message || 'An unknown error occurred.',
+                variant: 'destructive' 
+            });
+        }
+    }
   };
 
 
@@ -516,7 +550,11 @@ export default function ContentManager() {
                             />
                            </FormControl>
                          <FormMessage />
-                         <ImagePreview imageKey={field.value} alt="תצוגה מקדימה של תמונת שיתוף" />
+                         <ImagePreview 
+                            imageKey={field.value} 
+                            alt="תצוגה מקדימה של תמונת שיתוף" 
+                            onRemove={() => handleRemoveImage('seo.image')} 
+                         />
                        </FormItem>
                     )}
                   />
@@ -840,7 +878,11 @@ export default function ContentManager() {
                             />
                            </FormControl>
                          <FormMessage />
-                         <ImagePreview imageKey={field.value} alt="תצוגה מקדימה של רקע הניוזלטר" />
+                          <ImagePreview 
+                            imageKey={field.value} 
+                            alt="תצוגה מקדימה של רקע הניוזלטר" 
+                            onRemove={() => handleRemoveImage('newsletter.image')} 
+                          />
                        </FormItem>
                     )}
                   />
@@ -934,7 +976,7 @@ export default function ContentManager() {
               </AccordionItem>
             </Accordion>
             
-            <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>שמור שינויים</Button>
+            <Button type="submit" className="w-full" disabled={!form.formState.isDirty}>שמור שינויים</Button>
           </form>
         </Form>
       </CardContent>
@@ -945,3 +987,4 @@ export default function ContentManager() {
     
 
     
+
