@@ -64,7 +64,7 @@ function CartSheetLogic() {
     if (isCartOpen) {
       if (params.get('cart') !== 'open') {
         params.set('cart', 'open');
-        router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+        router.push(`${pathname}?${params.toString()}`, { scroll: false });
       }
     }
   }, [isCartOpen, searchParams, pathname, router]);
@@ -73,10 +73,12 @@ function CartSheetLogic() {
     const params = new URLSearchParams(searchParams.toString());
     if (open) {
       params.set('cart', 'open');
+      router.push(`${pathname}?${params.toString()}`, { scroll: false });
     } else {
-      params.delete('cart');
+        if (isCartOpen) {
+            router.back();
+        }
     }
-    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
   const cartDetails = useMemo(() => {
