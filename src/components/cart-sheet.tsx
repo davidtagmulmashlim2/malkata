@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Trash2, Plus, Minus } from 'lucide-react';
@@ -57,7 +58,7 @@ export function CartSheet() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const isCartOpen = searchParams.get('cart') === 'open';
+  const isCartOpen = isClient ? searchParams.get('cart') === 'open' : false;
 
   const handleOpenChange = (open: boolean) => {
     const params = new URLSearchParams(searchParams.toString());
