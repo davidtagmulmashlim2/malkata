@@ -43,10 +43,8 @@ const CartItemSkeleton = () => (
     </div>
 );
 
-
-export function CartSheet() {
+function CartSheetLogic() {
   const { cart, getDishById, updateCartQuantity, removeFromCart, state } = useApp();
-  const isClient = useIsClient();
   const [customerName, setCustomerName] = useState('');
   const [customerPhone, setCustomerPhone] = useState('');
   const [customerAddress, setCustomerAddress] = useState('');
@@ -58,7 +56,7 @@ export function CartSheet() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const isCartOpen = isClient ? searchParams.get('cart') === 'open' : false;
+  const isCartOpen = searchParams.get('cart') === 'open';
 
   const handleOpenChange = (open: boolean) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -67,12 +65,11 @@ export function CartSheet() {
     } else {
       params.delete('cart');
     }
-    router.push(`${pathname}?${params.toString()}`, { scroll: false });
+    // Using `replace` to avoid adding to history stack
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
-
   const cartDetails = useMemo(() => {
-    if (!isClient) return [];
     const validCartItems = cart.filter(item => getDishById(item.dishId));
     return validCartItems
       .map(item => {
@@ -80,7 +77,7 @@ export function CartSheet() {
         return dish ? { ...item, ...dish } : null; 
       })
       .filter(item => item !== null);
-  }, [isClient, cart, getDishById]);
+  }, [cart, getDishById]);
   
   const handleDeliveryMethodChange = (method: string) => {
     setDeliveryMethod(method);
@@ -138,142 +135,158 @@ export function CartSheet() {
 
 
   return (
-    <Sheet open={isCartOpen} onOpenChange={handleOpenChange}>
-        <button
-            onClick={() => handleOpenChange(true)}
-            className="fixed bottom-4 right-4 z-50 h-14 w-14 rounded-full shadow-lg lg:bottom-8 lg:right-8 bg-background border border-border flex items-center justify-center"
-        >
-          <ShoppingBagIcon className="h-6 w-6" />
-          {isClient && totalItems > 0 && (
-            <span className="absolute -top-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs font-bold">
-              {totalItems}
-            </span>
-          )}
-          <span className="sr-only">פתח עגלת קניות</span>
-        </button>
-      <SheetContent className="flex flex-col text-right">
-        <SheetHeader>
-          <SheetTitle className="text-right">סל הקניות שלך</SheetTitle>
-        </SheetHeader>
-        {!isClient ? (
-           <div className="space-y-4 py-4">
-                <CartItemSkeleton />
-                <CartItemSkeleton />
-            </div>
-        ) : cartDetails.length > 0 ? (
-          <>
-            <ScrollArea className="flex-grow pr-4 -mr-6" viewportRef={viewportRef}>
-              <div className="flex flex-col gap-4 py-4">
-                {cartDetails.map(item => (
-                  <div key={item!.id} className="flex flex-row-reverse items-center gap-4">
-                    <div className="shrink-0">
-                       <AsyncImage 
-                          imageKey={item!.main_image} 
-                          alt={item!.name} 
-                          width={64}
-                          height={64}
-                          className="rounded-md object-cover h-16 w-16"
-                          data-ai-hint="food dish"
-                      />
-                    </div>
-                    <div className="flex-1 min-w-0 text-right">
-                      <h4 className="font-semibold truncate" style={{direction: 'rtl', textAlign: 'right'}}>{item!.name}</h4>
-                      <p className="text-sm text-muted-foreground">{item!.price} ₪</p>
-                    </div>
-                    <div className="flex shrink-0 items-center gap-0.5 rounded-md border">
-                        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => updateCartQuantity(item!.id, Math.max(1, item!.quantity - 1))}>
-                            <Minus className="h-3 w-3" />
-                        </Button>
-                        <span className="w-6 text-center text-sm font-bold">{item!.quantity}</span>
-                        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => updateCartQuantity(item!.id, item!.quantity + 1)}>
-                            <Plus className="h-3 w-3" />
-                        </Button>
-                    </div>
-                    <div className="shrink-0">
-                        <Button variant="ghost" size="icon" onClick={() => removeFromCart(item!.id)}>
-                          <Trash2 className="h-4 w-4 text-destructive" />
-                        </Button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <div className="w-full space-y-4 text-right pt-4">
-                    <Separator />
-                    <div className='space-y-4 text-right'>
-                        <h4 className='font-medium text-center'>פרטי הזמנה</h4>
-                        <div className='space-y-2'>
-                            <Label htmlFor="customerName">שם מלא</Label>
-                            <Input id="customerName" value={customerName} onChange={(e) => setCustomerName(e.target.value)} placeholder='ישראל ישראלי' />
-                        </div>
-                         <div className='space-y-2'>
-                            <Label htmlFor="customerPhone">טלפון</Label>
-                            <Input id="customerPhone" type="tel" value={customerPhone} onChange={(e) => setCustomerPhone(e.target.value)} placeholder='050-1234567' />
-                        </div>
-                        <div className='space-y-2'>
-                           <Label htmlFor="orderNotes">הערות להזמנה</Label>
-                           <Textarea id="orderNotes" value={orderNotes} onChange={(e) => setOrderNotes(e.target.value)} placeholder={cartContent.order_notes_placeholder} />
-                        </div>
-                         <div className='space-y-2'>
-                            <Label>{cartContent.delivery_method_title}</Label>
-                            <div className="grid grid-cols-2 gap-2 pt-1">
-                                <Button
-                                    type="button"
-                                    variant={deliveryMethod === 'pickup' ? 'default' : 'outline'}
-                                    onClick={() => handleDeliveryMethodChange('pickup')}
-                                >
-                                    {cartContent.pickup_label}
-                                </Button>
-                                <Button
-                                    type="button"
-                                    variant={deliveryMethod === 'delivery' ? 'default' : 'outline'}
-                                    onClick={() => handleDeliveryMethodChange('delivery')}
-                                >
-                                    {cartContent.delivery_label}
-                                </Button>
-                            </div>
-                           {deliveryMethod === 'delivery' && total < cartContent.free_delivery_threshold && (
-                                <p className='text-xs text-muted-foreground text-center pt-1'>
-                                    {freeDeliveryTextParts[0]}
-                                    {cartContent.free_delivery_threshold}
-                                    {freeDeliveryTextParts[1]}
-                                </p>
-                            )}
-                        </div>
-                        {deliveryMethod === 'delivery' && (
-                            <div className='space-y-2'>
-                                <Label htmlFor="customerAddress">כתובת למשלוח</Label>
-                                <Input id="customerAddress" value={customerAddress} onChange={(e) => setCustomerAddress(e.target.value)} placeholder='רחוב, מספר בית, עיר' />
-                            </div>
-                        )}
-                    </div>
-              </div>
-            </ScrollArea>
-            <SheetFooter className="mt-auto pt-4">
-                <div className="w-full space-y-4">
-                    <Separator />
-                    <div className="flex justify-between text-lg font-bold">
-                        <span>סה"כ:</span>
-                        <span>{total.toLocaleString()} ₪</span>
-                    </div>
-                    <Button type="submit" className="w-full" onClick={handleWhatsAppOrder} disabled={!canSubmit}>
-                      שליחת הזמנה ב-WhatsApp
-                    </Button>
-                </div>
-            </SheetFooter>
-          </>
-        ) : (
-          <div className="flex flex-grow flex-col items-center justify-center gap-4 text-center">
-            <ShoppingBagIcon className="h-24 w-24 text-muted" />
-            <h3 className="text-xl font-semibold">הסל שלך ריק</h3>
-            <p className="text-muted-foreground">מוזמנים להוסיף מנות מהתפריט שלנו.</p>
-            <SheetClose asChild>
-                <Link href="/menu">
-                    <Button>לתפריט</Button>
-                </Link>
-            </SheetClose>
-          </div>
+    <>
+      <button
+          onClick={() => handleOpenChange(true)}
+          className="fixed bottom-4 right-4 z-50 h-14 w-14 rounded-full shadow-lg lg:bottom-8 lg:right-8 bg-background border border-border flex items-center justify-center"
+      >
+        <ShoppingBagIcon className="h-6 w-6" />
+        {totalItems > 0 && (
+          <span className="absolute -top-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs font-bold">
+            {totalItems}
+          </span>
         )}
-      </SheetContent>
-    </Sheet>
+        <span className="sr-only">פתח עגלת קניות</span>
+      </button>
+      <Sheet open={isCartOpen} onOpenChange={handleOpenChange}>
+        <SheetContent className="flex flex-col text-right">
+          <SheetHeader>
+            <SheetTitle className="text-right">סל הקניות שלך</SheetTitle>
+          </SheetHeader>
+          {cartDetails.length > 0 ? (
+            <>
+              <ScrollArea className="flex-grow pr-4 -mr-6" viewportRef={viewportRef}>
+                <div className="flex flex-col gap-4 py-4">
+                  {cartDetails.map(item => (
+                    <div key={item!.id} className="flex flex-row-reverse items-center gap-4">
+                      <div className="shrink-0">
+                         <AsyncImage 
+                            imageKey={item!.main_image} 
+                            alt={item!.name} 
+                            width={64}
+                            height={64}
+                            className="rounded-md object-cover h-16 w-16"
+                            data-ai-hint="food dish"
+                        />
+                      </div>
+                      <div className="flex-1 min-w-0 text-right">
+                        <h4 className="font-semibold truncate" style={{direction: 'rtl', textAlign: 'right'}}>{item!.name}</h4>
+                        <p className="text-sm text-muted-foreground">{item!.price} ₪</p>
+                      </div>
+                      <div className="flex shrink-0 items-center gap-0.5 rounded-md border">
+                          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => updateCartQuantity(item!.id, Math.max(1, item!.quantity - 1))}>
+                              <Minus className="h-3 w-3" />
+                          </Button>
+                          <span className="w-6 text-center text-sm font-bold">{item!.quantity}</span>
+                          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => updateCartQuantity(item!.id, item!.quantity + 1)}>
+                              <Plus className="h-3 w-3" />
+                          </Button>
+                      </div>
+                      <div className="shrink-0">
+                          <Button variant="ghost" size="icon" onClick={() => removeFromCart(item!.id)}>
+                            <Trash2 className="h-4 w-4 text-destructive" />
+                          </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div className="w-full space-y-4 text-right pt-4">
+                      <Separator />
+                      <div className='space-y-4 text-right'>
+                          <h4 className='font-medium text-center'>פרטי הזמנה</h4>
+                          <div className='space-y-2'>
+                              <Label htmlFor="customerName">שם מלא</Label>
+                              <Input id="customerName" value={customerName} onChange={(e) => setCustomerName(e.target.value)} placeholder='ישראל ישראלי' />
+                          </div>
+                           <div className='space-y-2'>
+                              <Label htmlFor="customerPhone">טלפון</Label>
+                              <Input id="customerPhone" type="tel" value={customerPhone} onChange={(e) => setCustomerPhone(e.target.value)} placeholder='050-1234567' />
+                          </div>
+                          <div className='space-y-2'>
+                             <Label htmlFor="orderNotes">הערות להזמנה</Label>
+                             <Textarea id="orderNotes" value={orderNotes} onChange={(e) => setOrderNotes(e.target.value)} placeholder={cartContent.order_notes_placeholder} />
+                          </div>
+                           <div className='space-y-2'>
+                              <Label>{cartContent.delivery_method_title}</Label>
+                              <div className="grid grid-cols-2 gap-2 pt-1">
+                                  <Button
+                                      type="button"
+                                      variant={deliveryMethod === 'pickup' ? 'default' : 'outline'}
+                                      onClick={() => handleDeliveryMethodChange('pickup')}
+                                  >
+                                      {cartContent.pickup_label}
+                                  </Button>
+                                  <Button
+                                      type="button"
+                                      variant={deliveryMethod === 'delivery' ? 'default' : 'outline'}
+                                      onClick={() => handleDeliveryMethodChange('delivery')}
+                                  >
+                                      {cartContent.delivery_label}
+                                  </Button>
+                              </div>
+                             {deliveryMethod === 'delivery' && total < cartContent.free_delivery_threshold && (
+                                  <p className='text-xs text-muted-foreground text-center pt-1'>
+                                      {freeDeliveryTextParts[0]}
+                                      {cartContent.free_delivery_threshold}
+                                      {freeDeliveryTextParts[1]}
+                                  </p>
+                              )}
+                          </div>
+                          {deliveryMethod === 'delivery' && (
+                              <div className='space-y-2'>
+                                  <Label htmlFor="customerAddress">כתובת למשלוח</Label>
+                                  <Input id="customerAddress" value={customerAddress} onChange={(e) => setCustomerAddress(e.target.value)} placeholder='רחוב, מספר בית, עיר' />
+                              </div>
+                          )}
+                      </div>
+                </div>
+              </ScrollArea>
+              <SheetFooter className="mt-auto pt-4">
+                  <div className="w-full space-y-4">
+                      <Separator />
+                      <div className="flex justify-between text-lg font-bold">
+                          <span>סה"כ:</span>
+                          <span>{total.toLocaleString()} ₪</span>
+                      </div>
+                      <Button type="submit" className="w-full" onClick={handleWhatsAppOrder} disabled={!canSubmit}>
+                        שליחת הזמנה ב-WhatsApp
+                      </Button>
+                  </div>
+              </SheetFooter>
+            </>
+          ) : (
+            <div className="flex flex-grow flex-col items-center justify-center gap-4 text-center">
+              <ShoppingBagIcon className="h-24 w-24 text-muted" />
+              <h3 className="text-xl font-semibold">הסל שלך ריק</h3>
+              <p className="text-muted-foreground">מוזמנים להוסיף מנות מהתפריט שלנו.</p>
+              <SheetClose asChild>
+                  <Link href="/menu">
+                      <Button>לתפריט</Button>
+                  </Link>
+              </SheetClose>
+            </div>
+          )}
+        </SheetContent>
+      </Sheet>
+    </>
   );
+}
+
+export function CartSheet() {
+  const isClient = useIsClient();
+
+  if (!isClient) {
+    // Render a static button on the server to avoid calling hooks
+    return (
+      <button
+        className="fixed bottom-4 right-4 z-50 h-14 w-14 rounded-full shadow-lg lg:bottom-8 lg:right-8 bg-background border border-border flex items-center justify-center"
+      >
+        <ShoppingBagIcon className="h-6 w-6" />
+        <span className="sr-only">פתח עגלת קניות</span>
+      </button>
+    );
+  }
+
+  // On the client, render the component that uses the hooks
+  return <CartSheetLogic />;
 }
