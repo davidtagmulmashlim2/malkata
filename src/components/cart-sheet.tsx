@@ -1,6 +1,6 @@
 'use client';
 
-import { Trash2 } from 'lucide-react';
+import { Trash2, Plus, Minus } from 'lucide-react';
 import { ShoppingBagIcon } from '@/components/icons/shopping-bag-icon';
 import { Button } from '@/components/ui/button';
 import {
@@ -10,7 +10,6 @@ import {
   SheetTitle,
   SheetFooter,
   SheetClose,
-  SheetTrigger,
 } from '@/components/ui/sheet';
 import { useApp } from '@/context/app-context';
 import { Input } from './ui/input';
@@ -20,6 +19,7 @@ import { Separator } from './ui/separator';
 import { useIsClient } from '@/hooks/use-is-client';
 import { useEffect, useMemo, useState, useRef } from 'react';
 import Link from 'next/link';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { Skeleton } from './ui/skeleton';
 import { AsyncImage } from './async-image';
 import { RadioGroup, RadioGroupItem } from './ui/radio-group';
@@ -45,7 +45,6 @@ const CartItemSkeleton = () => (
 
 export function CartSheet() {
   const { cart, getDishById, updateCartQuantity, removeFromCart, state } = useApp();
-  const [open, setOpen] = useState(false);
   const isClient = useIsClient();
   const [customerName, setCustomerName] = useState('');
   const [customerPhone, setCustomerPhone] = useState('');
@@ -53,6 +52,23 @@ export function CartSheet() {
   const [deliveryMethod, setDeliveryMethod] = useState('pickup');
   const [orderNotes, setOrderNotes] = useState('');
   const viewportRef = useRef<HTMLDivElement>(null);
+  
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const isCartOpen = searchParams.get('cart') === 'open';
+
+  const handleOpenChange = (open: boolean) => {
+    const params = new URLSearchParams(searchParams.toString());
+    if (open) {
+      params.set('cart', 'open');
+    } else {
+      params.delete('cart');
+    }
+    router.push(`${pathname}?${params.toString()}`, { scroll: false });
+  };
+
 
   const cartDetails = useMemo(() => {
     if (!isClient) return [];
@@ -70,7 +86,6 @@ export function CartSheet() {
   };
 
   useEffect(() => {
-      // Scroll to bottom when delivery method changes to 'delivery'
       if (deliveryMethod === 'delivery' && viewportRef.current) {
           setTimeout(() => {
               if(viewportRef.current) {
@@ -79,7 +94,7 @@ export function CartSheet() {
                       behavior: 'smooth'
                   });
               }
-          }, 100); // Timeout to allow the DOM to update
+          }, 100);
       }
   }, [deliveryMethod]);
 
@@ -113,7 +128,7 @@ export function CartSheet() {
     
     const whatsappUrl = `https://wa.me/${contact.whatsapp}?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
-    setOpen(false); // Close the sheet after sending
+    handleOpenChange(false);
   };
   
   const { cart: cartContent } = state.siteContent;
@@ -122,9 +137,11 @@ export function CartSheet() {
 
 
   return (
-    <Sheet open={open} onOpenChange={setOpen}>
-      <SheetTrigger asChild>
-        <Button variant="outline" size="icon" className="fixed bottom-4 right-4 z-50 h-14 w-14 rounded-full shadow-lg lg:bottom-8 lg:right-8">
+    <Sheet open={isCartOpen} onOpenChange={handleOpenChange}>
+        <button
+            onClick={() => handleOpenChange(true)}
+            className="fixed bottom-4 right-4 z-50 h-14 w-14 rounded-full shadow-lg lg:bottom-8 lg:right-8 bg-background border border-border flex items-center justify-center"
+        >
           <ShoppingBagIcon className="h-6 w-6" />
           {isClient && totalItems > 0 && (
             <span className="absolute -top-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs font-bold">
@@ -132,8 +149,7 @@ export function CartSheet() {
             </span>
           )}
           <span className="sr-only">פתח עגלת קניות</span>
-        </Button>
-      </SheetTrigger>
+        </button>
       <SheetContent className="flex flex-col text-right">
         <SheetHeader>
           <SheetTitle className="text-right">סל הקניות שלך</SheetTitle>
@@ -163,14 +179,14 @@ export function CartSheet() {
                       <h4 className="font-semibold truncate" style={{direction: 'rtl', textAlign: 'right'}}>{item!.name}</h4>
                       <p className="text-sm text-muted-foreground">{item!.price} ₪</p>
                     </div>
-                    <div className="shrink-0">
-                       <Input
-                          type="number"
-                          min="1"
-                          value={item!.quantity || ''}
-                          onChange={e => updateCartQuantity(item!.id, parseInt(e.target.value, 10) || 0)}
-                          className="w-16 h-8 text-center"
-                        />
+                    <div className="flex shrink-0 items-center gap-0.5 rounded-md border">
+                        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => updateCartQuantity(item!.id, Math.max(1, item!.quantity - 1))}>
+                            <Minus className="h-3 w-3" />
+                        </Button>
+                        <span className="w-6 text-center text-sm font-bold">{item!.quantity}</span>
+                        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => updateCartQuantity(item!.id, item!.quantity + 1)}>
+                            <Plus className="h-3 w-3" />
+                        </Button>
                     </div>
                     <div className="shrink-0">
                         <Button variant="ghost" size="icon" onClick={() => removeFromCart(item!.id)}>
@@ -260,5 +276,3 @@ export function CartSheet() {
     </Sheet>
   );
 }
-
-    
