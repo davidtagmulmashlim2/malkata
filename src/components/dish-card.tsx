@@ -204,7 +204,7 @@ export function DishCard({ dish }: DishCardProps) {
                 </div>
 
                 {/* Mobile-only top-of-card overlay */}
-                 <div className="md:hidden absolute top-2 left-2 right-2 flex w-full justify-between items-start">
+                 <div className="md:hidden absolute top-2 left-2 flex w-full justify-between items-start">
                     {/* Cart Quantity Badge (Now on the left) */}
                     {isClient && cartItem && (
                       <div className="z-10 flex h-7 w-7 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground">
@@ -213,7 +213,7 @@ export function DishCard({ dish }: DishCardProps) {
                     )}
                     
                     {/* Decorative Tags Container (Now on the right) */}
-                    <div className="flex flex-1 justify-end">
+                    <div className="flex flex-1 justify-end mr-2">
                         <div className="flex flex-row-reverse gap-1.5 overflow-hidden">
                             {(dish.tags || [])
                             .filter((tag) => tagIconMap[tag])
