@@ -16,6 +16,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { AsyncImage } from './async-image';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import React from 'react';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 
 
 interface DishCardProps {
@@ -45,8 +46,12 @@ export function DishCard({ dish }: DishCardProps) {
   const { cart, addToCart, updateCartQuantity, state } = useApp();
   const isClient = useIsClient();
   const [quantity, setQuantity] = useState(1);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const isDialogOpen = searchParams.get('dish') === dish.id;
+
   const { siteContent } = state;
   const { dish_card: dishCardSettings } = siteContent;
 
@@ -75,6 +80,19 @@ export function DishCard({ dish }: DishCardProps) {
     }
   }, [isDialogOpen, cartItem]);
 
+  const handleOpenDialog = () => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('dish', dish.id!);
+    router.push(`${pathname}?${params.toString()}`, { scroll: false });
+  };
+
+  const handleCloseDialog = () => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete('dish');
+    router.push(`${pathname}?${params.toString()}`, { scroll: false });
+    setCurrentImageIndex(0);
+  };
+
   const handleUpdateCart = () => {
     if (cartItem) {
       updateCartQuantity(dish.id!, quantity);
@@ -89,7 +107,7 @@ export function DishCard({ dish }: DishCardProps) {
           description: `${quantity}x ${dish.name} נוספו לסל הקניות שלך.`,
       });
     }
-    setIsDialogOpen(false);
+    handleCloseDialog();
   };
   
   const handleDirectAddToCart = (e: React.MouseEvent) => {
@@ -155,99 +173,93 @@ export function DishCard({ dish }: DishCardProps) {
 
   return (
     <Dialog open={isDialogOpen} onOpenChange={(open) => { 
-        setIsDialogOpen(open);
-        if(!open) {
-            setCurrentImageIndex(0);
+        if (!open) {
+            handleCloseDialog();
         }
     }}>
       <div className="flex flex-col h-full text-right group">
-        <DialogTrigger asChild>
-            <div className="cursor-pointer">
-                <div className="relative aspect-square w-full overflow-hidden rounded-lg">
-                    <AsyncImage imageKey={dish.main_image} alt={dish.name} layout="fill" objectFit="cover" />
-                    <div
-                        className={cn(
-                            "absolute bottom-0 left-0 right-0 h-10 flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300",
-                        )}
-                        style={{ backgroundColor: `rgba(0,0,0,${(dishCardSettings?.quick_view_overlay_opacity ?? 40)/100})` }}
-                     >
-                        <div className="flex items-center gap-2">
-                            {QuickViewIcon && <QuickViewIcon className="w-5 h-5" />}
-                            <h3
-                              className="text-md font-bold"
-                              style={{
-                                color: dishCardSettings?.quick_view_color || '#FFFFFF',
-                                fontFamily: dishCardSettings?.quick_view_font && dishCardSettings.quick_view_font !== 'default'
-                                  ? `var(--font-${dishCardSettings.quick_view_font})`
-                                  : undefined
-                              }}
-                            >
-                              {dishCardSettings?.quick_view_text ?? 'הצגה מהירה'}
-                            </h3>
-                        </div>
+        <div onClick={handleOpenDialog} className="cursor-pointer">
+            <div className="relative aspect-square w-full overflow-hidden rounded-lg">
+                <AsyncImage imageKey={dish.main_image} alt={dish.name} layout="fill" objectFit="cover" />
+                <div
+                    className={cn(
+                        "absolute bottom-0 left-0 right-0 h-10 flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300",
+                    )}
+                    style={{ backgroundColor: `rgba(0,0,0,${(dishCardSettings?.quick_view_overlay_opacity ?? 40)/100})` }}
+                 >
+                    <div className="flex items-center gap-2">
+                        {QuickViewIcon && <QuickViewIcon className="w-5 h-5" />}
+                        <h3
+                          className="text-md font-bold"
+                          style={{
+                            color: dishCardSettings?.quick_view_color || '#FFFFFF',
+                            fontFamily: dishCardSettings?.quick_view_font && dishCardSettings.quick_view_font !== 'default'
+                              ? `var(--font-${dishCardSettings.quick_view_font})`
+                              : undefined
+                          }}
+                        >
+                          {dishCardSettings?.quick_view_text ?? 'הצגה מהירה'}
+                        </h3>
                     </div>
+                </div>
 
-                    {/* Mobile-only top-of-card overlay */}
-                    <div className="absolute top-2 left-2 right-2 flex items-start justify-between md:hidden">
-                        {/* Cart Quantity Badge (Now on the left) */}
-                        {isClient && cartItem && (
-                          <div className="z-10 flex h-7 w-7 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground">
-                            {cartItem.quantity || 0}
-                          </div>
-                        )}
-                        
-                        {/* Decorative Tags Container (Now on the right) */}
-                        <div className="flex flex-1 justify-end">
-                            <div className="flex flex-row-reverse gap-1.5 overflow-hidden">
-                                {(dish.tags || [])
-                                .filter((tag) => tagIconMap[tag])
-                                .map((tag) => {
-                                    const { icon: Icon, className } = tagIconMap[tag];
-                                    return (
-                                    <div
-                                        key={tag}
-                                        className={cn(
-                                        'flex h-6 w-6 items-center justify-center rounded-full shadow',
-                                        className
-                                        )}
-                                    >
-                                        <Icon className="h-3.5 w-3.5" />
-                                    </div>
-                                    );
-                                })}
-                            </div>
-                        </div>
-                    </div>
-
-
-                    {/* Desktop-only top-of-card overlay */}
-                    <div className="absolute top-2 left-2 right-4 hidden md:flex justify-between items-start pointer-events-none">
-                         <div className="flex gap-1 flex-nowrap justify-start overflow-hidden">
-                            {renderTags(dish.tags)}
-                        </div>
-                         {isClient && cartItem && (
-                            <div className="bg-primary text-primary-foreground rounded-full h-7 w-7 flex items-center justify-center text-sm font-bold z-10">
-                                {cartItem.quantity || 0}
-                            </div>
-                        )}
-                    </div>
+                {/* Mobile-only top-of-card overlay */}
+                 <div className="md:hidden absolute top-2 left-2 right-2 flex w-full justify-between items-start">
+                    {/* Cart Quantity Badge (Now on the left) */}
+                    {isClient && cartItem && (
+                      <div className="z-10 flex h-7 w-7 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground">
+                        {cartItem.quantity || 0}
+                      </div>
+                    )}
                     
-                    {!dish.is_available && (
-                        <div className="absolute inset-0 bg-black/50 flex items-center justify-center rounded-lg pointer-events-none">
-                            <p className="text-white text-lg font-bold">אזל מהמלאי</p>
+                    {/* Decorative Tags Container (Now on the right) */}
+                    <div className="flex flex-1 justify-end">
+                        <div className="flex flex-row-reverse gap-1.5 overflow-hidden">
+                            {(dish.tags || [])
+                            .filter((tag) => tagIconMap[tag])
+                            .map((tag) => {
+                                const { icon: Icon, className } = tagIconMap[tag];
+                                return (
+                                <div
+                                    key={tag}
+                                    className={cn(
+                                    'flex h-6 w-6 items-center justify-center rounded-full shadow',
+                                    className
+                                    )}
+                                >
+                                    <Icon className="h-3.5 w-3.5" />
+                                </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                </div>
+
+                {/* Desktop-only top-of-card overlay */}
+                <div className="absolute top-2 left-2 right-4 hidden md:flex justify-between items-start pointer-events-none">
+                     <div className="flex gap-1 flex-nowrap justify-start overflow-hidden">
+                        {renderTags(dish.tags)}
+                    </div>
+                     {isClient && cartItem && (
+                        <div className="bg-primary text-primary-foreground rounded-full h-7 w-7 flex items-center justify-center text-sm font-bold z-10">
+                            {cartItem.quantity || 0}
                         </div>
                     )}
                 </div>
+                
+                {!dish.is_available && (
+                    <div className="absolute inset-0 bg-black/50 flex items-center justify-center rounded-lg pointer-events-none">
+                        <p className="text-white text-lg font-bold">אזל מהמלאי</p>
+                    </div>
+                )}
             </div>
-        </DialogTrigger>
+        </div>
 
         <div className="mt-2 flex-grow flex flex-col">
              <div className="flex items-start justify-between gap-4">
-                 <DialogTrigger asChild>
-                    <div className="flex-1 min-w-0 cursor-pointer">
-                         <h3 className={cn("font-headline font-bold", nameFontSizeClass)}>{dish.name}</h3>
-                    </div>
-                 </DialogTrigger>
+                <div onClick={handleOpenDialog} className="flex-1 min-w-0 cursor-pointer">
+                     <h3 className={cn("font-headline font-bold", nameFontSizeClass)}>{dish.name}</h3>
+                </div>
                 <div className="flex-shrink-0">
                      <TooltipProvider>
                         <Tooltip>
@@ -285,11 +297,9 @@ export function DishCard({ dish }: DishCardProps) {
                      </TooltipProvider>
                 </div>
             </div>
-             <DialogTrigger asChild>
-                <div className="flex-1 min-w-0 mt-1 cursor-pointer">
-                     <p className={cn("text-muted-foreground", descriptionFontSizeClass)}>{dish.short_description}</p>
-                </div>
-             </DialogTrigger>
+            <div onClick={handleOpenDialog} className="flex-1 min-w-0 mt-1 cursor-pointer">
+                 <p className={cn("text-muted-foreground", descriptionFontSizeClass)}>{dish.short_description}</p>
+            </div>
              <div className="text-right w-full mt-2">
                 <span className="text-md md:text-lg font-bold leading-tight">{dish.price} ₪</span>
                 {dish.price_subtitle && <p className="text-xs text-muted-foreground leading-tight">{dish.price_subtitle}</p>}

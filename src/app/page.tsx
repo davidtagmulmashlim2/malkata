@@ -10,7 +10,7 @@ import { Typewriter } from '@/components/typewriter';
 import { DishCard } from '@/components/dish-card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useRef } from 'react';
 import type { Testimonial, Feature, OptionalFeature } from '@/lib/types';
 import { AsyncImage } from '@/components/async-image';
 import { ChevronLeft, ChevronRight, ChefHat, Carrot, Bike, PartyPopper, Leaf, Rocket, Send, Smartphone } from 'lucide-react';
@@ -21,6 +21,7 @@ import { toast } from '@/hooks/use-toast';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import React from 'react';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import { usePathname, useRouter } from 'next/navigation';
 
 
 const subscriberSchema = z.object({
@@ -111,11 +112,45 @@ export default function Home() {
   const { hero, newsletter } = siteContent;
   const [typewriterKey, setTypewriterKey] = useState(0);
   const [currentTestimonialIndex, setCurrentTestimonialIndex] = useState(0);
+  const backPressCount = useRef(0);
+  const pathname = usePathname();
+  const router = useRouter();
+
 
   const form = useForm<z.infer<typeof subscriberSchema>>({
     resolver: zodResolver(subscriberSchema),
     defaultValues: { name: "", phone: "" },
   });
+
+  useEffect(() => {
+    const handlePopState = (event: PopStateEvent) => {
+      // This is specifically for handling the double-press-to-exit logic on mobile home page
+      if (window.innerWidth < 768 && pathname === '/') {
+        if (backPressCount.current === 0) {
+          backPressCount.current = 1;
+          toast({ description: "לחץ שוב כדי לצאת" });
+
+          // Prevent the default back navigation
+          history.pushState(null, '', location.href);
+
+          setTimeout(() => {
+            backPressCount.current = 0;
+          }, 2000); // Reset after 2 seconds
+        } else {
+          // Allow the second back press to go through
+          backPressCount.current = 0;
+          // We don't call router.back() here; we just let the default behavior happen.
+          // In some cases, a `history.back()` might be needed if the pushState creates issues.
+        }
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, [pathname]);
 
   const onSubscriberSubmit = (values: z.infer<typeof subscriberSchema>) => {
     dispatch({
