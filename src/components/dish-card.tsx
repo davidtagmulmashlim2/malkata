@@ -203,35 +203,32 @@ export function DishCard({ dish }: DishCardProps) {
                     </div>
                 </div>
 
-                {/* Mobile-only top-of-card overlay */}
-                 <div className="md:hidden absolute top-2 left-2 flex w-full justify-between items-start">
-                    {/* Cart Quantity Badge (Now on the left) */}
-                    {isClient && cartItem && (
-                      <div className="z-10 flex h-7 w-7 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground">
+                {/* Mobile-only cart quantity badge */}
+                {isClient && cartItem && (
+                    <div className="md:hidden absolute top-2 left-2 z-10 flex h-7 w-7 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground">
                         {cartItem.quantity || 0}
-                      </div>
-                    )}
-                    
-                    {/* Decorative Tags Container (Now on the right) */}
-                    <div className="flex flex-1 justify-end mr-2">
-                        <div className="flex flex-row-reverse gap-1.5 overflow-hidden">
-                            {(dish.tags || [])
-                            .filter((tag) => tagIconMap[tag])
-                            .map((tag) => {
-                                const { icon: Icon, className } = tagIconMap[tag];
-                                return (
-                                <div
-                                    key={tag}
-                                    className={cn(
-                                    'flex h-6 w-6 items-center justify-center rounded-full shadow',
-                                    className
-                                    )}
-                                >
-                                    <Icon className="h-3.5 w-3.5" />
-                                </div>
-                                );
-                            })}
-                        </div>
+                    </div>
+                )}
+                
+                {/* Mobile-only dish tags */}
+                <div className="md:hidden absolute top-2 right-2">
+                    <div className="flex flex-row-reverse gap-1.5 overflow-hidden">
+                        {(dish.tags || [])
+                        .filter((tag) => tagIconMap[tag])
+                        .map((tag) => {
+                            const { icon: Icon, className } = tagIconMap[tag];
+                            return (
+                            <div
+                                key={tag}
+                                className={cn(
+                                'flex h-6 w-6 items-center justify-center rounded-full shadow',
+                                className
+                                )}
+                            >
+                                <Icon className="h-3.5 w-3.5" />
+                            </div>
+                            );
+                        })}
                     </div>
                 </div>
 
