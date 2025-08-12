@@ -58,6 +58,17 @@ function CartSheetLogic() {
 
   const isCartOpen = searchParams.get('cart') === 'open';
 
+  // Effect to sync URL with cart state
+  useEffect(() => {
+    const params = new URLSearchParams(searchParams.toString());
+    if (isCartOpen) {
+      if (params.get('cart') !== 'open') {
+        params.set('cart', 'open');
+        router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+      }
+    }
+  }, [isCartOpen, searchParams, pathname, router]);
+
   const handleOpenChange = (open: boolean) => {
     const params = new URLSearchParams(searchParams.toString());
     if (open) {
@@ -65,7 +76,6 @@ function CartSheetLogic() {
     } else {
       params.delete('cart');
     }
-    // Using `replace` to avoid adding to history stack
     router.replace(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
@@ -174,11 +184,11 @@ function CartSheetLogic() {
                         <p className="text-sm text-muted-foreground">{item!.price} ₪</p>
                       </div>
                       <div className="flex shrink-0 items-center gap-0.5 rounded-md border">
-                          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => updateCartQuantity(item!.id, Math.max(1, item!.quantity - 1))}>
+                          <Button variant="ghost" className="h-7 w-7" onClick={() => updateCartQuantity(item!.id, Math.max(1, item!.quantity - 1))}>
                               <Minus className="h-3 w-3" />
                           </Button>
-                          <span className="w-6 text-center text-sm font-bold">{item!.quantity}</span>
-                          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => updateCartQuantity(item!.id, item!.quantity + 1)}>
+                          <span className="w-5 text-center text-sm font-bold">{item!.quantity}</span>
+                          <Button variant="ghost" className="h-7 w-7" onClick={() => updateCartQuantity(item!.id, item!.quantity + 1)}>
                               <Plus className="h-3 w-3" />
                           </Button>
                       </div>
