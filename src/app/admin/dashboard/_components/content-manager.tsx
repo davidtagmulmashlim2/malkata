@@ -141,6 +141,7 @@ const contentSchema = z.object({
       headline: z.string().min(1, 'חובה'),
       subheadline: z.string().min(1, 'חובה'),
       image: z.string().optional(),
+      image_brightness: z.coerce.number().min(0).max(100).optional(),
   }),
   testimonials: z.object({
     headline: z.string().min(1, 'חובה'),
@@ -843,6 +844,13 @@ export default function ContentManager() {
                        </FormItem>
                     )}
                   />
+                  <FormField name="newsletter.image_brightness" control={form.control} render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>בהירות תמונת רקע ({field.value ?? 100}%)</FormLabel>
+                      <FormControl><Slider value={[field.value ?? 100]} min={0} max={100} step={5} onValueChange={(v) => field.onChange(v[0])} /></FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )} />
                 </AccordionContent>
               </AccordionItem>
 

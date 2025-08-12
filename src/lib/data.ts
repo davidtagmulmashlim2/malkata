@@ -55,6 +55,8 @@ export const DEFAULT_APP_STATE: AppState = {
     newsletter: {
       headline: 'הצטרפו למועדון הלקוחות שלנו',
       subheadline: 'הישארו מעודכנים במבצעים, מנות חדשות ואירועים מיוחדים!',
+      image: '',
+      image_brightness: 50,
     },
     testimonials: {
       headline: "מה אומרים עלינו"

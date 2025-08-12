@@ -376,7 +376,8 @@ export default function Home() {
               alt="רקע מועדון לקוחות"
               layout="fill"
               objectFit="cover"
-              className="z-0 brightness-50"
+              className="z-0"
+              style={{ filter: `brightness(${(newsletter.image_brightness ?? 50) / 100})` }}
               data-ai-hint="community people"
             />
             <div className="absolute inset-0 bg-black/50 z-0"></div>

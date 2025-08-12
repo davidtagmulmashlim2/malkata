@@ -120,6 +120,7 @@ export interface SiteContent {
     headline: string;
     subheadline: string;
     image?: string;
+    image_brightness?: number;
   };
   testimonials: {
     headline: string;
