@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Trash2, Plus, Minus } from 'lucide-react';
@@ -169,37 +170,35 @@ function CartSheetLogic() {
               <ScrollArea className="flex-grow pr-4 -mr-6" viewportRef={viewportRef}>
                 <div className="flex flex-col gap-4 py-4">
                   {cartDetails.map(item => (
-                    <div key={item!.id} className="flex justify-between items-center gap-4">
-                        <div className="flex items-center gap-4 flex-1 min-w-0 flex-row-reverse">
-                          <div className="shrink-0">
-                             <AsyncImage 
-                                imageKey={item!.main_image} 
-                                alt={item!.name} 
-                                width={64}
-                                height={64}
-                                className="rounded-md object-cover h-16 w-16"
-                                data-ai-hint="food dish"
-                            />
-                          </div>
-                          <div className="flex-1 min-w-0 text-right">
-                            <h4 className="font-semibold truncate" style={{direction: 'rtl', textAlign: 'right'}}>{item!.name}</h4>
-                            <p className="text-sm text-muted-foreground">{item!.price} ₪</p>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-1 shrink-0">
-                             <div className="flex items-center gap-0.5 rounded-md border">
-                                  <Button variant="ghost" className="h-7 w-7" onClick={() => updateCartQuantity(item!.id, Math.max(1, item!.quantity - 1))}>
-                                      <Minus className="h-3 w-3" />
-                                  </Button>
-                                  <span className="w-5 text-center text-sm font-bold">{item!.quantity}</span>
-                                  <Button variant="ghost" className="h-7 w-7" onClick={() => updateCartQuantity(item!.id, item!.quantity + 1)}>
-                                      <Plus className="h-3 w-3" />
-                                  </Button>
-                              </div>
-                              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => removeFromCart(item!.id)}>
-                                <Trash2 className="h-4 w-4 text-destructive" />
-                              </Button>
-                        </div>
+                    <div key={item!.id} className="flex flex-row-reverse items-center gap-4">
+                      <div className="shrink-0">
+                         <AsyncImage 
+                            imageKey={item!.main_image} 
+                            alt={item!.name} 
+                            width={64}
+                            height={64}
+                            className="rounded-md object-cover h-16 w-16"
+                            data-ai-hint="food dish"
+                        />
+                      </div>
+                      <div className="flex-1 min-w-0 text-right">
+                        <h4 className="font-semibold truncate" style={{direction: 'rtl', textAlign: 'right'}}>{item!.name}</h4>
+                        <p className="text-sm text-muted-foreground">{item!.price} ₪</p>
+                      </div>
+                      <div className="flex shrink-0 items-center gap-0.5 rounded-md border">
+                          <Button variant="ghost" className="h-7 w-7" onClick={() => updateCartQuantity(item!.id, Math.max(1, item!.quantity - 1))}>
+                              <Minus className="h-3 w-3" />
+                          </Button>
+                          <span className="w-5 text-center text-sm font-bold">{item!.quantity}</span>
+                          <Button variant="ghost" className="h-7 w-7" onClick={() => updateCartQuantity(item!.id, item!.quantity + 1)}>
+                              <Plus className="h-3 w-3" />
+                          </Button>
+                      </div>
+                      <div className="shrink-0">
+                          <Button variant="ghost" size="icon" onClick={() => removeFromCart(item!.id)}>
+                            <Trash2 className="h-4 w-4 text-destructive" />
+                          </Button>
+                      </div>
                     </div>
                   ))}
                 </div>
