@@ -1,4 +1,3 @@
-
 'use client';
 
 import { Trash2, Plus, Minus } from 'lucide-react';
@@ -60,8 +59,8 @@ function CartSheetLogic() {
 
   // Effect to sync URL with cart state
   useEffect(() => {
+    const params = new URLSearchParams(searchParams.toString());
     if (isCartOpen) {
-      const params = new URLSearchParams(searchParams.toString());
       if (params.get('cart') !== 'open') {
         params.set('cart', 'open');
         router.push(`${pathname}?${params.toString()}`, { scroll: false });
@@ -72,10 +71,8 @@ function CartSheetLogic() {
   const handleOpenChange = (open: boolean) => {
     const params = new URLSearchParams(searchParams.toString());
     if (open) {
-        if (!isCartOpen) {
-           params.set('cart', 'open');
-           router.push(`${pathname}?${params.toString()}`, { scroll: false });
-        }
+      params.set('cart', 'open');
+      router.push(`${pathname}?${params.toString()}`, { scroll: false });
     } else {
         if (isCartOpen) {
             router.back();
