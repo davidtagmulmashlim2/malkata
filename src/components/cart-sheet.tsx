@@ -191,12 +191,12 @@ function CartSheetLogic() {
                         </div>
                         <div className="flex items-center gap-1 shrink-0">
                              <div className="flex items-center gap-0.5 rounded-md border">
-                                  <Button variant="ghost" className="h-6 w-6" onClick={() => updateCartQuantity(item!.id, Math.max(1, item!.quantity - 1))}>
-                                      <Minus className="h-2.5 w-2.5" />
+                                  <Button variant="ghost" className="h-7 w-7" onClick={() => updateCartQuantity(item!.id, Math.max(1, item!.quantity - 1))}>
+                                      <Minus className="h-3 w-3" />
                                   </Button>
-                                  <span className="w-4 text-center text-sm font-bold">{item!.quantity}</span>
-                                  <Button variant="ghost" className="h-6 w-6" onClick={() => updateCartQuantity(item!.id, item!.quantity + 1)}>
-                                      <Plus className="h-2.5 w-2.5" />
+                                  <span className="w-5 text-center text-sm font-bold">{item!.quantity}</span>
+                                  <Button variant="ghost" className="h-7 w-7" onClick={() => updateCartQuantity(item!.id, item!.quantity + 1)}>
+                                      <Plus className="h-3 w-3" />
                                   </Button>
                               </div>
                               <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => removeFromCart(item!.id)}>
