@@ -81,13 +81,13 @@ function DishCardLogic({ dish }: DishCardProps) {
   const handleOpenDialog = () => {
     const params = new URLSearchParams(searchParams.toString());
     params.set('dish', dish.id!);
-    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+    router.push(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
   const handleCloseDialog = () => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.delete('dish');
-    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+    // router.back() will handle removing the 'dish' param from the URL
+    // and closing the dialog via onOpenChange.
+    router.back();
     setCurrentImageIndex(0);
   };
   
@@ -300,7 +300,11 @@ function DishCardLogic({ dish }: DishCardProps) {
 
       <Dialog open={isDialogOpen} onOpenChange={(open) => { 
         if (!open) {
-            handleCloseDialog();
+            // We only need to handle closing via the 'X' or overlay click.
+            // The back button is handled by router.back()
+            if (isDialogOpen) {
+                handleCloseDialog();
+            }
         }
       }}>
           <DialogContent className="sm:max-w-4xl max-h-[90vh] overflow-y-auto">
