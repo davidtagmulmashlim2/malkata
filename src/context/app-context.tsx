@@ -88,7 +88,7 @@ const appReducer = (state: AppState, action: Action): AppState => {
 
 
 const LS_CART_KEY = 'malkata_cart';
-const ADMIN_PASSWORD = 'admin';
+const ADMIN_PASSWORD = 'AZU1';
 
 export const AppProvider: React.FC<{ children: React.ReactNode, initialAppState: AppState }> = ({ children, initialAppState }) => {
   const [state, dispatch] = React.useReducer(appReducer, initialAppState);
