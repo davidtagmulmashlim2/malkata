@@ -60,8 +60,8 @@ function CartSheetLogic() {
 
   // Effect to sync URL with cart state
   useEffect(() => {
-    const params = new URLSearchParams(searchParams.toString());
     if (isCartOpen) {
+      const params = new URLSearchParams(searchParams.toString());
       if (params.get('cart') !== 'open') {
         params.set('cart', 'open');
         router.push(`${pathname}?${params.toString()}`, { scroll: false });
@@ -72,8 +72,10 @@ function CartSheetLogic() {
   const handleOpenChange = (open: boolean) => {
     const params = new URLSearchParams(searchParams.toString());
     if (open) {
-      params.set('cart', 'open');
-      router.push(`${pathname}?${params.toString()}`, { scroll: false });
+        if (!isCartOpen) {
+           params.set('cart', 'open');
+           router.push(`${pathname}?${params.toString()}`, { scroll: false });
+        }
     } else {
         if (isCartOpen) {
             router.back();
@@ -186,12 +188,12 @@ function CartSheetLogic() {
                         <p className="text-sm text-muted-foreground">{item!.price} ₪</p>
                       </div>
                       <div className="flex shrink-0 items-center gap-0.5 rounded-md border">
-                          <Button variant="ghost" className="h-7 w-7" onClick={() => updateCartQuantity(item!.id, Math.max(1, item!.quantity - 1))}>
-                              <Minus className="h-3 w-3" />
+                          <Button variant="ghost" className="h-6 w-6" onClick={() => updateCartQuantity(item!.id, Math.max(1, item!.quantity - 1))}>
+                              <Minus className="h-2.5 w-2.5" />
                           </Button>
-                          <span className="w-5 text-center text-sm font-bold">{item!.quantity}</span>
-                          <Button variant="ghost" className="h-7 w-7" onClick={() => updateCartQuantity(item!.id, item!.quantity + 1)}>
-                              <Plus className="h-3 w-3" />
+                          <span className="w-4 text-center text-sm font-bold">{item!.quantity}</span>
+                          <Button variant="ghost" className="h-6 w-6" onClick={() => updateCartQuantity(item!.id, item!.quantity + 1)}>
+                              <Plus className="h-2.5 w-2.5" />
                           </Button>
                       </div>
                       <div className="shrink-0">
@@ -302,3 +304,5 @@ export function CartSheet() {
   // On the client, render the component that uses the hooks
   return <CartSheetLogic />;
 }
+
+    
