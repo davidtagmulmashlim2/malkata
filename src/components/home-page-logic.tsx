@@ -191,8 +191,7 @@ export default function HomePageClient() {
 
   const recommendedDishes = useMemo(() => {
     if (isLoading) return [];
-    const recommended = dishes.filter(d => d.is_recommended);
-    return recommended.length > 0 ? recommended : dishes.slice(0, 4);
+    return dishes.filter(d => d.is_recommended);
   }, [dishes, isLoading]);
 
   const textSizeClasses: { [key: string]: string } = {
@@ -296,13 +295,15 @@ export default function HomePageClient() {
                 opts={{
                     align: "start",
                     loop: true,
+                    direction: 'rtl',
                 }}
                  className="w-full"
+                 dir="rtl"
             >
-                <CarouselContent>
+                <CarouselContent className="-mr-4">
                     {recommendedDishes.map((dish, i) => (
-                        <CarouselItem key={dish ? dish.id : i} className="basis-full sm:basis-1/2 lg:basis-1/4">
-                             <div className="p-1">
+                        <CarouselItem key={dish ? dish.id : i} className="basis-full sm:basis-1/2 lg:basis-1/4 pr-4">
+                             <div className="p-1 h-full">
                                 {dish ? <DishCard dish={dish} /> : <Skeleton className="h-96 w-full" />}
                             </div>
                         </CarouselItem>
