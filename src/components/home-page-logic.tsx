@@ -293,7 +293,7 @@ export default function HomePageClient() {
         <div className="container">
             <h2 className="text-3xl md:text-4xl font-headline font-bold text-right mb-10">המומלצים שלנו</h2>
         </div>
-        <div className="w-full px-4 sm:px-6 lg:px-28">
+        <div className="w-full px-4 sm:px-6 lg:px-32">
             {recommendedDishes.length > 0 && (
                  <Carousel
                     opts={{
