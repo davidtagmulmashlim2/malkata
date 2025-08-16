@@ -191,9 +191,9 @@ export default function HomePageClient() {
   }, [testimonials.length, currentTestimonialIndex]);
 
   const recommendedDishes = useMemo(() => {
-    if (isLoading) return Array(3).fill(null);
+    if (isLoading) return Array(4).fill(null);
     const recommended = dishes.filter(d => d.is_recommended);
-    return recommended.length > 0 ? recommended : dishes.slice(0, 3);
+    return recommended.length > 0 ? recommended : dishes.slice(0, 4);
   }, [dishes, isLoading]);
 
   const textSizeClasses: { [key: string]: string } = {
@@ -228,8 +228,8 @@ export default function HomePageClient() {
              </section>
              <section className="container py-16 md:py-24">
                 <h2 className="text-3xl md:text-4xl font-headline font-bold text-right mb-10">המומלצים שלנו</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                  {Array(3).fill(null).map((dish, i) => <Skeleton key={i} className="h-96 w-full" />)}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                  {Array(4).fill(null).map((dish, i) => <Skeleton key={i} className="h-96 w-full" />)}
                 </div>
               </section>
         </div>
@@ -290,32 +290,17 @@ export default function HomePageClient() {
       </section>
 
       {/* Recommended Dishes Section */}
-      <section className="container py-16 md:py-24">
-        <h2 className="text-3xl md:text-4xl font-headline font-bold text-right mb-10">המומלצים שלנו</h2>
-        <Carousel
-          opts={{
-            align: "start",
-            loop: true,
-            direction: 'rtl',
-          }}
-          className="w-full"
-        >
-          <CarouselContent>
-            {recommendedDishes.map((dish, i) => (
-              <CarouselItem key={dish ? dish.id : i} className="md:basis-1/2 lg:basis-1/3">
-                <div className="p-1">
-                  {dish ? <DishCard dish={dish} /> : <Skeleton className="h-96 w-full" />}
-                </div>
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-           <CarouselPrevious variant="outline" size="icon" className="absolute top-[35%] -translate-y-1/2 left-2 z-10 h-12 w-12 bg-black/30 hover:bg-black/50 text-white border-white/50 hover:border-white">
-            <ThickChevronLeft className="h-8 w-8" />
-          </CarouselPrevious>
-          <CarouselNext variant="outline" size="icon" className="absolute top-[35%] -translate-y-1/2 right-2 z-10 h-12 w-12 bg-black/30 hover:bg-black/50 text-white border-white/50 hover:border-white">
-            <ThickChevronRight className="h-8 w-8" />
-          </CarouselNext>
-        </Carousel>
+      <section className="py-16 md:py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 className="text-3xl md:text-4xl font-headline font-bold text-right mb-10">המומלצים שלנו</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                 {recommendedDishes.map((dish, i) => (
+                    <div key={dish ? dish.id : i} className="p-1">
+                      {dish ? <DishCard dish={dish} /> : <Skeleton className="h-96 w-full" />}
+                    </div>
+                ))}
+            </div>
+        </div>
       </section>
 
       {/* About Us Section */}
