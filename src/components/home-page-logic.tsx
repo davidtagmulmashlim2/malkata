@@ -190,7 +190,7 @@ export default function HomePageClient() {
   }, [testimonials.length, currentTestimonialIndex]);
 
   const recommendedDishes = useMemo(() => {
-    if (isLoading) return Array(4).fill(null);
+    if (isLoading) return [];
     const recommended = dishes.filter(d => d.is_recommended);
     return recommended.length > 0 ? recommended : dishes.slice(0, 4);
   }, [dishes, isLoading]);
@@ -301,7 +301,7 @@ export default function HomePageClient() {
             >
                 <CarouselContent>
                     {recommendedDishes.map((dish, i) => (
-                        <CarouselItem key={dish ? dish.id : i} className="md:basis-1/2 lg:basis-1/4">
+                        <CarouselItem key={dish ? dish.id : i} className="basis-full sm:basis-1/2 lg:basis-1/4">
                              <div className="p-1">
                                 {dish ? <DishCard dish={dish} /> : <Skeleton className="h-96 w-full" />}
                             </div>
