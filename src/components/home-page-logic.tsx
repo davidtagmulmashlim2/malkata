@@ -1,3 +1,4 @@
+
 'use client';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -297,7 +298,7 @@ export default function HomePageClient() {
                     loop: true,
                     direction: 'rtl',
                 }}
-                 className="w-full"
+                className="w-full px-12"
                  dir="rtl"
             >
                 <CarouselContent className="-mr-4">
