@@ -290,8 +290,10 @@ export default function HomePageClient() {
 
       {/* Recommended Dishes Section */}
       <section className="py-16 md:py-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="container">
             <h2 className="text-3xl md:text-4xl font-headline font-bold text-right mb-10">המומלצים שלנו</h2>
+        </div>
+        <div className="w-full md:px-12">
             {recommendedDishes.length > 0 && (
                  <Carousel
                     opts={{
@@ -311,8 +313,8 @@ export default function HomePageClient() {
                             </CarouselItem>
                         ))}
                     </CarouselContent>
-                    <CarouselPrevious className="hidden md:flex" />
-                    <CarouselNext className="hidden md:flex" />
+                    <CarouselPrevious />
+                    <CarouselNext />
                 </Carousel>
             )}
         </div>
