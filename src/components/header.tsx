@@ -196,7 +196,7 @@ export function Header() {
             <div className="flex justify-start">
                 {!isLoading && <Logo />}
             </div>
-            <div className="flex-1 flex justify-center">
+            <div className="flex-1 flex justify-center items-center">
                 <NavLinks />
             </div>
             <div className="flex justify-end">
