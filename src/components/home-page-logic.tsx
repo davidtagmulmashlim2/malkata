@@ -60,6 +60,11 @@ const CategoryGridSection = () => {
   }
   
   if(categoriesToShow.length === 0) return null;
+  
+  const getSquareImageKey = (category: Category) => {
+      const tag = category.tags?.find(t => t.startsWith('sq-img-'));
+      return tag ? tag.replace('sq-img-', '') : category.image;
+  };
 
   return (
     <section className="container py-16 md:py-24">
@@ -70,7 +75,7 @@ const CategoryGridSection = () => {
             <Card className="overflow-hidden aspect-square">
               <div className="relative w-full h-full">
                 <AsyncImage
-                  imageKey={category.square_image || category.image}
+                  imageKey={getSquareImageKey(category)}
                   alt={category.name}
                   layout="fill"
                   objectFit="cover"

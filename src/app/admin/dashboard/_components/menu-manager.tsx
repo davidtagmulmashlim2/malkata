@@ -108,13 +108,16 @@ const dishSchema = z.object({
   description_font_size: z.string().optional(),
 })
 
+const SQUARE_IMAGE_TAG_PREFIX = 'sq-img-';
+
 const categorySchema = z.object({
   id: z.string().uuid().optional(),
   name: z.string().min(1, 'שם הקטגוריה הוא שדה חובה'),
   description: z.string().min(1, 'תיאור הוא שדה חובה'),
   image: z.string().min(1, 'חובה להעלות תמונת באנר'),
-  square_image: z.string().optional().nullable(),
+  square_image_key: z.string().optional().nullable(), // Form-only field
   slug: z.string().optional(), // Slug is generated, so optional in form
+  tags: z.array(z.string()).optional(),
   title_color: z.string().optional(),
   title_font_size: z.string().optional(),
   title_font: z.string().optional(),
@@ -174,7 +177,7 @@ export default function MenuManager() {
   const categoryForm = useForm<z.infer<typeof categorySchema>>({ 
       resolver: zodResolver(categorySchema),
       defaultValues: { 
-          name: '', description: '', image: '', square_image: null,
+          name: '', description: '', image: '', tags: [], square_image_key: null,
           title_color: '#FFFFFF', title_font_size: '5xl', title_font: 'default', 
           title_opacity: 1, 
           image_brightness: 50, show_description: true, show_description_below_banner: false,
@@ -211,15 +214,20 @@ export default function MenuManager() {
     if (!isCategoryDialogOpen) {
         setEditingCategory(null);
         categoryForm.reset({ 
-            name: '', description: '', image: '', square_image: null,
+            name: '', description: '', image: '', tags: [], square_image_key: null,
             title_color: '#FFFFFF', title_font_size: '5xl', title_font: 'default',
             title_opacity: 1,
             image_brightness: 50, show_description: true,
             show_description_below_banner: false,
         });
     } else if (editingCategory) {
+        const squareImageTag = editingCategory.tags?.find(t => t.startsWith(SQUARE_IMAGE_TAG_PREFIX));
+        const squareImageKey = squareImageTag ? squareImageTag.replace(SQUARE_IMAGE_TAG_PREFIX, '') : null;
+        
         categoryForm.reset({
             ...editingCategory,
+            square_image_key: squareImageKey,
+            tags: editingCategory.tags || [],
             title_color: editingCategory.title_color ?? '#FFFFFF',
             title_font_size: editingCategory.title_font_size ?? '5xl',
             title_font: editingCategory.title_font || 'default',
@@ -268,17 +276,26 @@ export default function MenuManager() {
   }
 
   const handleCategorySubmit = (values: z.infer<typeof categorySchema>) => {
-    const categoryData = {
-      ...values,
+    const { square_image_key, ...categoryData } = values;
+
+    // Prepare tags
+    let finalTags = categoryData.tags?.filter(t => !t.startsWith(SQUARE_IMAGE_TAG_PREFIX)) || [];
+    if (square_image_key) {
+        finalTags.push(`${SQUARE_IMAGE_TAG_PREFIX}${square_image_key}`);
+    }
+
+    const finalCategoryPayload = {
+      ...categoryData,
       slug: slugify(values.name),
+      tags: finalTags,
     };
     
     if (editingCategory) {
-      const updatedCategory = { ...categoryData, id: editingCategory.id };
+      const updatedCategory = { ...finalCategoryPayload, id: editingCategory.id };
       dispatch({ type: 'UPDATE_CATEGORY', payload: updatedCategory as Category });
       toast({ title: 'קטגוריה עודכנה בהצלחה' })
     } else {
-      dispatch({ type: 'ADD_CATEGORY', payload: categoryData as Category });
+      dispatch({ type: 'ADD_CATEGORY', payload: finalCategoryPayload as Category });
       toast({ title: 'קטגוריה נוספה בהצלחה' })
     }
     setIsCategoryDialogOpen(false)
@@ -287,7 +304,7 @@ export default function MenuManager() {
   const handleFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>, 
     form: typeof dishForm | typeof categoryForm,
-    fieldName: 'main_image' | 'image' | 'square_image'
+    fieldName: 'main_image' | 'image' | 'square_image_key'
   ) => {
     const file = event.target.files?.[0];
     if (!file) return;
@@ -313,11 +330,11 @@ export default function MenuManager() {
   };
 
   const handleRemoveCategorySquareImage = async () => {
-    const imageKey = categoryForm.getValues('square_image');
+    const imageKey = categoryForm.getValues('square_image_key');
     if (imageKey) {
         try {
             await deleteImage(imageKey);
-            categoryForm.setValue('square_image', null, { shouldValidate: true });
+            categoryForm.setValue('square_image_key', null, { shouldValidate: true });
             toast({ title: 'התמונה הריבועית הוסרה' });
         } catch(e) {
             toast({ title: 'שגיאה במחיקת תמונה', variant: 'destructive' });
@@ -379,7 +396,7 @@ export default function MenuManager() {
   const dishMainImageValue = dishForm.watch('main_image');
   const dishGalleryImagesValue = dishForm.watch('gallery_images');
   const categoryImageValue = categoryForm.watch('image');
-  const categorySquareImageValue = categoryForm.watch('square_image');
+  const categorySquareImageValue = categoryForm.watch('square_image_key');
 
   const { fields, append, remove } = useFieldArray({
       control: dishForm.control,
@@ -780,7 +797,7 @@ export default function MenuManager() {
                         )}
                      />
                       <FormField
-                        name="square_image"
+                        name="square_image_key"
                         control={categoryForm.control}
                         render={({ field }) => (
                            <FormItem>
@@ -790,7 +807,7 @@ export default function MenuManager() {
                                 <Input 
                                     type="file" 
                                     accept="image/*" 
-                                    onChange={(e) => handleFileChange(e, categoryForm, 'square_image')}
+                                    onChange={(e) => handleFileChange(e, categoryForm, 'square_image_key')}
                                 />
                              </FormControl>
                              <FormMessage />

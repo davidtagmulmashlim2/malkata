@@ -22,7 +22,7 @@ export interface Category {
   slug: string;
   description: string;
   image: string; // Will store banner image key
-  square_image?: string | null; // Will store the new square image key for the homepage
+  tags?: string[]; // Using tags to store the square image key, e.g. "sq-img-key"
   title_color?: string;
   title_font_size?: string;
   title_font?: string;
