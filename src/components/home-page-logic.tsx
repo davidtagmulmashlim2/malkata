@@ -1,4 +1,3 @@
-
 'use client';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -184,7 +183,7 @@ const ThickChevronRight = (props: React.SVGProps<SVGSVGElement>) => (
 
 export default function HomePageClient() {
   const { state, dispatch, isLoading } = useApp();
-  const { siteContent, dishes, testimonials } = state;
+  const { siteContent, dishes, testimonials, gallery, categories } = state;
   const { hero, newsletter } = siteContent;
   const [typewriterKey, setTypewriterKey] = useState(0);
   const [currentTestimonialIndex, setCurrentTestimonialIndex] = useState(0);
@@ -367,9 +366,10 @@ export default function HomePageClient() {
       {/* Recommended Dishes Section */}
       <section className="py-16 md:py-24">
         <div className="container">
-            <h2 className="text-3xl md:text-4xl font-headline font-bold text-right mb-10">המומלצים שלנו</h2>
+          <h2 className="text-3xl md:text-4xl font-headline font-bold text-right mb-10">המומלצים שלנו</h2>
         </div>
         <div className="w-full px-4 sm:px-6 lg:px-48">
+          <div className="relative">
             {recommendedDishes.length > 0 && (
                  <Carousel
                     opts={{
@@ -393,6 +393,7 @@ export default function HomePageClient() {
                     <CarouselNext />
                 </Carousel>
             )}
+          </div>
         </div>
       </section>
 
