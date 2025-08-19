@@ -737,16 +737,19 @@ export default function MenuManager() {
                         <FormMessage />
                       </FormItem>
                     )} />
-                    <FormField name="slug" control={categoryForm.control} render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>מזהה לקישור (Slug)</FormLabel>
-                            <FormControl><Input disabled {...field} value={editingCategory ? editingCategory.slug : slugify(categoryForm.watch('name'))} /></FormControl>
-                            <FormDescription>
-                                המזהה נוצר אוטומטית. השתמש בו בגלריה כדי לקשר תמונה (`grid:slug`).
-                            </FormDescription>
-                            <FormMessage />
-                        </FormItem>
-                    )} />
+                    <FormItem>
+                        <FormLabel>טקסט לקישור מהגלריה</FormLabel>
+                        <FormControl>
+                            <Input 
+                                readOnly 
+                                value={`grid:${editingCategory ? editingCategory.slug : slugify(categoryForm.watch('name'))}`} 
+                                className="text-muted-foreground"
+                            />
+                        </FormControl>
+                        <FormDescription>
+                           העתק את הטקסט המלא והדבק אותו בשדה "תיאור תמונה" בגלריה כדי לקשר אותה לקטגוריה זו.
+                        </FormDescription>
+                    </FormItem>
                     <FormField name="description" control={categoryForm.control} render={({ field }) => (
                       <FormItem>
                         <FormLabel>תיאור</FormLabel>
@@ -871,7 +874,7 @@ export default function MenuManager() {
                 <TableRow key={category.id}>
                   <TableCell>{category.name}</TableCell>
                   <TableCell>
-                    <Badge variant="outline">{category.slug}</Badge>
+                    <Badge variant="outline" className="font-mono">{category.slug}</Badge>
                   </TableCell>
                   <TableCell className="text-right">
                      <div className="flex gap-2 justify-end">
@@ -897,3 +900,5 @@ export default function MenuManager() {
     </div>
   )
 }
+
+    
