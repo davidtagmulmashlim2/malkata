@@ -371,30 +371,30 @@ export default function HomePageClient() {
       <section className="py-16 md:py-24">
         <div className="container">
             <h2 className="text-3xl md:text-4xl font-headline font-bold text-right mb-10">המומלצים שלנו</h2>
+            {recommendedDishes.length > 0 && (
+                 <Carousel
+                    opts={{
+                        align: "start",
+                        loop: recommendedDishes.length > 4,
+                        direction: 'rtl',
+                    }}
+                    className="w-full"
+                    dir="rtl"
+                >
+                    <CarouselContent className="-ml-2">
+                        {recommendedDishes.map((dish, i) => (
+                            <CarouselItem key={dish ? dish.id : i} className="basis-1/2 md:basis-1/3 lg:basis-1/4 pl-2">
+                                 <div className="p-1 h-full">
+                                    {dish ? <DishCard dish={dish} /> : <Skeleton className="h-96 w-full" />}
+                                </div>
+                            </CarouselItem>
+                        ))}
+                    </CarouselContent>
+                    <CarouselPrevious />
+                    <CarouselNext />
+                </Carousel>
+            )}
         </div>
-        {recommendedDishes.length > 0 && (
-             <Carousel
-                opts={{
-                    align: "start",
-                    loop: recommendedDishes.length > 4,
-                    direction: 'rtl',
-                }}
-                className="w-full"
-                dir="rtl"
-            >
-                <CarouselContent className="-mr-1">
-                    {recommendedDishes.map((dish, i) => (
-                        <CarouselItem key={dish ? dish.id : i} className="basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 pl-1 pr-3">
-                             <div className="p-1 h-full">
-                                {dish ? <DishCard dish={dish} /> : <Skeleton className="h-96 w-full" />}
-                            </div>
-                        </CarouselItem>
-                    ))}
-                </CarouselContent>
-                <CarouselPrevious />
-                <CarouselNext />
-            </Carousel>
-        )}
       </section>
 
       {/* Category Grid Section */}
