@@ -59,7 +59,7 @@ export default function CategoryPage() {
                     data-ai-hint="food category"
                     skeletonClassName="w-full h-full"
                 />
-                <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-4">
+                <div className="absolute inset-0 flex flex-col items-center justify-end pb-8 text-center p-4">
                     <h1 
                         className={cn(
                             "font-bold text-white drop-shadow-lg",
