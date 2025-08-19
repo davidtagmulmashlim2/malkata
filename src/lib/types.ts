@@ -29,6 +29,7 @@ export interface Category {
   image_brightness?: number;
   show_description?: boolean;
   show_description_below_banner?: boolean;
+  banner_height?: number;
 }
 
 export interface GalleryImage {
@@ -178,7 +179,8 @@ export interface DesignSettings {
   logo_color?: string;
   logo_image?: string;
   logo_image_mobile?: string;
-  logo_width?: number;
+  logo_width_desktop?: number;
+  logo_width_mobile?: number;
   featured_category_id?: string | null;
   favicon?: string;
 }

@@ -1,3 +1,4 @@
+
 'use client';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -25,7 +26,8 @@ const designSchema = z.object({
   logo_color: z.string().optional(),
   logo_image: z.string().optional(),
   logo_image_mobile: z.string().optional(),
-  logo_width: z.coerce.number().min(50).max(300).optional(),
+  logo_width_desktop: z.coerce.number().min(50).max(300).optional(),
+  logo_width_mobile: z.coerce.number().min(30).max(200).optional(),
   featured_category_id: z.string().optional().nullable(),
   favicon: z.string().optional(),
 });
@@ -149,7 +151,7 @@ export default function DesignManager() {
   
   const logoImagePreview = form.watch('logo_image');
   const logoImageMobilePreview = form.watch('logo_image_mobile');
-  const logoWidthPreview = form.watch('logo_width');
+  const logoWidthDesktopPreview = form.watch('logo_width_desktop');
   const faviconPreview = form.watch('favicon');
 
 
@@ -327,18 +329,27 @@ export default function DesignManager() {
                         />
                       </FormControl>
                      <FormMessage />
-                     <ImagePreview imageKey={logoImagePreview} alt="תצוגה מקדימה של לוגו" onRemove={() => handleRemoveImage('logo_image')} width={logoWidthPreview} />
+                     <ImagePreview imageKey={logoImagePreview} alt="תצוגה מקדימה של לוגו" onRemove={() => handleRemoveImage('logo_image')} width={logoWidthDesktopPreview} />
                    </FormItem>
                 )}
               />
               {logoImagePreview && (
-                <FormField name="logo_width" control={form.control} render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>רוחב הלוגו ({field.value || 120}px)</FormLabel>
-                    <FormControl><Slider value={[field.value || 120]} min={50} max={300} step={5} onValueChange={(v) => field.onChange(v[0])} /></FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )} />
+                <div className="space-y-4">
+                  <FormField name="logo_width_desktop" control={form.control} render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>רוחב הלוגו (דסקטופ) ({field.value || 120}px)</FormLabel>
+                      <FormControl><Slider value={[field.value || 120]} min={50} max={300} step={5} onValueChange={(v) => field.onChange(v[0])} /></FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )} />
+                   <FormField name="logo_width_mobile" control={form.control} render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>רוחב הלוגו (מובייל) ({field.value || 90}px)</FormLabel>
+                      <FormControl><Slider value={[field.value || 90]} min={30} max={200} step={5} onValueChange={(v) => field.onChange(v[0])} /></FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )} />
+                </div>
               )}
 
              <Controller

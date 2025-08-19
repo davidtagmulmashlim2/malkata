@@ -96,7 +96,7 @@ export function Header() {
   }, [isLoading, state.design, state.categories]);
 
 
-  const Logo = ({ isMobile = false }: { isMobile?: boolean }) => {
+  const Logo = ({ isMobile = false, isSheet = false }: { isMobile?: boolean, isSheet?: boolean }) => {
     if (isLoading) {
         return (
             <div className="flex items-center gap-2 font-headline text-2xl font-bold text-primary">
@@ -106,16 +106,29 @@ export function Header() {
         )
     }
     
-    const desktopLogoImage = state.design.logo_image;
-    const mobileLogoImage = state.design.logo_image_mobile;
-
-    // Use mobile logo if available and in mobile context, otherwise use desktop logo.
-    const imageKey = isMobile && mobileLogoImage ? mobileLogoImage : desktopLogoImage;
+    const { logo_image, logo_image_mobile, logo_width_desktop, logo_width_mobile } = state.design;
+    
+    // Determine which image key and width to use
+    let imageKey;
+    let width;
+    
+    if (isSheet) {
+        // Inside the mobile sheet, use the dedicated mobile logo, or fallback to the main one.
+        imageKey = logo_image_mobile || logo_image;
+    } else if (isMobile) {
+        // In the mobile header bar, use the main logo with mobile width.
+        imageKey = logo_image;
+        width = logo_width_mobile || 90;
+    } else {
+        // In the desktop header bar, use the main logo with desktop width.
+        imageKey = logo_image;
+        width = logo_width_desktop || 120;
+    }
 
     return (
       <Link href="/" className="flex items-center gap-2 font-headline text-2xl font-bold text-primary" style={logoStyle}>
         {imageKey ? (
-            isMobile ? (
+            isSheet ? (
                  <div className="relative w-full h-24">
                     <AsyncImage 
                         imageKey={imageKey}
@@ -130,8 +143,8 @@ export function Header() {
                         imageKey={imageKey} 
                         alt="לוגו" 
                         height={40} 
-                        width={state.design.logo_width || 120} 
-                        style={{width: `${state.design.logo_width || 120}px`, height: 'auto'}}
+                        width={width}
+                        style={{width: `${width}px`, height: 'auto'}}
                         className="object-contain" 
                      />
                  </div>
@@ -162,7 +175,7 @@ export function Header() {
                                 key={link.href}
                                 href={link.href}
                                 className={cn(
-                                    'transition-colors hover:text-primary no-underline md:text-base relative md:top-1',
+                                    'transition-colors hover:text-primary no-underline md:text-base md:top-1',
                                     link.isFeatured 
                                         ? 'bg-primary text-primary-foreground hover:bg-primary/90 rounded-full text-xs font-medium px-4 h-8 flex items-center' 
                                         : (isActive ? 'text-primary font-bold' : 'text-muted-foreground')
@@ -206,7 +219,7 @@ export function Header() {
         
         {/* Mobile Layout */}
         <div className="md:hidden flex w-full justify-between items-center">
-          {!isLoading && <Logo />}
+          {!isLoading && <Logo isMobile={true} />}
           <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon">
@@ -218,7 +231,7 @@ export function Header() {
                   <SheetHeader className="p-6 pb-0 text-right">
                       <SheetTitle>
                           <span onClick={() => setIsMobileMenuOpen(false)}>
-                              <Logo isMobile={true} />
+                              <Logo isSheet={true} />
                           </span>
                       </SheetTitle>
                   </SheetHeader>
