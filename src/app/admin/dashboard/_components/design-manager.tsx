@@ -152,6 +152,7 @@ export default function DesignManager() {
   const logoImagePreview = form.watch('logo_image');
   const logoImageMobilePreview = form.watch('logo_image_mobile');
   const logoWidthDesktopPreview = form.watch('logo_width_desktop');
+  const logoWidthMobilePreview = form.watch('logo_width_mobile');
   const faviconPreview = form.watch('favicon');
 
 
@@ -479,7 +480,5 @@ export default function DesignManager() {
     </Card>
   );
 }
-
-    
 
     
