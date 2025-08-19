@@ -19,7 +19,7 @@ import { z } from 'zod';
 import { toast } from '@/hooks/use-toast';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import React from 'react';
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, CarouselDots } from "@/components/ui/carousel";
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 
@@ -72,7 +72,7 @@ const CategoryGridSection = () => {
 
   if (isLoading) {
     return (
-      <section className="container py-8 md:py-12">
+      <section className="py-8 md:py-12 px-4 sm:px-6 lg:px-48">
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 justify-center">
           {Array(5).fill(0).map((_, i) => (
             <div key={i} className="aspect-square">
@@ -391,6 +391,7 @@ export default function HomePageClient() {
                     </CarouselContent>
                     <CarouselPrevious />
                     <CarouselNext />
+                    <CarouselDots className="hidden md:flex" />
                 </Carousel>
             )}
           </div>
