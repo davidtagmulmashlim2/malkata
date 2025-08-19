@@ -870,7 +870,9 @@ export default function MenuManager() {
               {categories.map((category) => (
                 <TableRow key={category.id}>
                   <TableCell>{category.name}</TableCell>
-                  <TableCell><Badge variant="outline">{category.slug}</Badge></TableCell>
+                  <TableCell>
+                    <Badge variant="outline">{category.slug}</Badge>
+                  </TableCell>
                   <TableCell className="text-right">
                      <div className="flex gap-2 justify-end">
                         <Button variant="ghost" size="icon" onClick={() => openCategoryDialog(category)}><Edit className="h-4 w-4" /></Button>
