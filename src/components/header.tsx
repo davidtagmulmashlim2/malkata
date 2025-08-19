@@ -162,7 +162,7 @@ export function Header() {
                                 key={link.href}
                                 href={link.href}
                                 className={cn(
-                                    'transition-colors hover:text-primary no-underline md:text-base md:pt-1',
+                                    'transition-colors hover:text-primary no-underline md:text-base relative md:top-1',
                                     link.isFeatured 
                                         ? 'bg-primary text-primary-foreground hover:bg-primary/90 rounded-full text-xs font-medium px-4 h-8 flex items-center' 
                                         : (isActive ? 'text-primary font-bold' : 'text-muted-foreground')
@@ -196,7 +196,7 @@ export function Header() {
             <div className="flex justify-start">
                 {!isLoading && <Logo />}
             </div>
-            <div className="flex-1 flex justify-center">
+            <div className="flex-1 flex justify-center items-center">
                 <NavLinks />
             </div>
             <div className="flex justify-end">
