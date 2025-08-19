@@ -11,7 +11,7 @@ import { DishCard } from '@/components/dish-card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 import { useEffect, useMemo, useState, useRef } from 'react';
-import type { Testimonial, Feature, OptionalFeature, Category } from '@/lib/types';
+import type { Testimonial, Feature, OptionalFeature, Category, GalleryImage } from '@/lib/types';
 import { AsyncImage } from '@/components/async-image';
 import { ChevronLeft, ChevronRight, ChefHat, Carrot, Bike, PartyPopper, Leaf, Rocket, Send, Smartphone } from 'lucide-react';
 import { useForm } from 'react-hook-form';
@@ -40,15 +40,42 @@ const iconMap: { [key: string]: React.ElementType } = {
   Smartphone
 };
 
+interface GridImage {
+    src: string;
+    categorySlug: string;
+    categoryName: string;
+}
+
 const CategoryGridSection = () => {
   const { state, isLoading } = useApp();
-  const { categories } = state;
-  const categoriesToShow = useMemo(() => categories.slice(0, 12), [categories]);
+  const { gallery, categories } = state;
+
+  const gridImages: GridImage[] = useMemo(() => {
+    if (isLoading) return [];
+    
+    return gallery
+      .filter(image => image.alt?.startsWith('grid:'))
+      .map(image => {
+        const categorySlug = image.alt!.replace('grid:', '').trim();
+        const category = categories.find(c => c.slug === categorySlug);
+        if (category) {
+          return {
+            src: image.src,
+            categorySlug: category.slug,
+            categoryName: category.name,
+          };
+        }
+        return null;
+      })
+      .filter((item): item is GridImage => item !== null)
+      .slice(0, 12); // Limit to 12 images max
+
+  }, [isLoading, gallery, categories]);
 
   if (isLoading) {
     return (
       <section className="container py-16 md:py-24">
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 justify-center">
           {Array(6).fill(0).map((_, i) => (
             <div key={i} className="aspect-square">
               <Skeleton className="w-full h-full" />
@@ -59,19 +86,18 @@ const CategoryGridSection = () => {
     );
   }
   
-  if(categoriesToShow.length === 0) return null;
+  if(gridImages.length === 0) return null;
   
   return (
     <section className="container py-16 md:py-24">
-       <h2 className="text-3xl md:text-4xl font-headline font-bold text-right mb-10">הקטגוריות שלנו</h2>
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-        {categoriesToShow.map((category) => (
-          <Link href={`/menu/${category.slug}`} key={category.id} className="group">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 justify-center">
+        {gridImages.map((image) => (
+          <Link href={`/menu/${image.categorySlug}`} key={image.categorySlug} className="group">
             <Card className="overflow-hidden aspect-square">
               <div className="relative w-full h-full">
                 <AsyncImage
-                  imageKey={category.image}
-                  alt={category.name}
+                  imageKey={image.src}
+                  alt={image.categoryName}
                   layout="fill"
                   objectFit="cover"
                   className="transition-transform duration-300 group-hover:scale-110"
@@ -79,7 +105,7 @@ const CategoryGridSection = () => {
                 />
                 <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/70 to-transparent" />
                 <div className="absolute inset-0 flex items-end justify-center p-4">
-                  <h3 className="text-white text-lg font-bold text-center drop-shadow-md">{category.name}</h3>
+                  <h3 className="text-white text-lg font-bold text-center drop-shadow-md">{image.categoryName}</h3>
                 </div>
               </div>
             </Card>

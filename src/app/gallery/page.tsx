@@ -8,15 +8,17 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 export default function GalleryPage() {
     const { state, isLoading } = useApp();
-    const { gallery } = state;
     
+    // Filter images to show only those that are NOT for the homepage grid.
+    const galleryImages = isLoading ? [] : state.gallery.filter(image => !image.alt?.startsWith('grid:'));
+
     return (
         <div className="container py-12 md:py-20">
             <h1 className="text-4xl md:text-5xl font-headline font-bold text-center mb-12 text-primary">
                 גלריית תמונות
             </h1>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                {(isLoading ? Array(8).fill(null) : gallery).map((image, index) => (
+                {(isLoading ? Array(8).fill(null) : galleryImages).map((image, index) => (
                     <Card key={isLoading ? index : image.id} className="overflow-hidden group aspect-square">
                         {isLoading ? (
                             <Skeleton className="w-full h-full"/>
@@ -40,6 +42,11 @@ export default function GalleryPage() {
                     </Card>
                 ))}
             </div>
+            {!isLoading && galleryImages.length === 0 && (
+                <div className="text-center py-10">
+                    <p className="text-muted-foreground">לא נמצאו תמונות להצגה בגלריה.</p>
+                </div>
+            )}
         </div>
     );
 }
