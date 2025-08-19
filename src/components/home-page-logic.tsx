@@ -89,28 +89,30 @@ const CategoryGridSection = () => {
   if(gridImages.length === 0) return null;
   
   return (
-    <section className="container py-8 md:py-12">
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 justify-center">
-        {gridImages.map((image) => (
-          <Link href={`/menu/${image.categorySlug}`} key={image.categorySlug} className="group">
-            <Card className="overflow-hidden aspect-square">
-              <div className="relative w-full h-full">
-                <AsyncImage
-                  imageKey={image.src}
-                  alt={image.categoryName}
-                  layout="fill"
-                  objectFit="cover"
-                  className="transition-transform duration-300 group-hover:scale-110"
-                  data-ai-hint="food category plate"
-                />
-                <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/70 to-transparent" />
-                <div className="absolute inset-0 flex items-end justify-center p-4">
-                  <h3 className="text-white text-lg font-bold text-center drop-shadow-md">{image.categoryName}</h3>
+    <section className="py-8 md:py-16">
+      <div className="container">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 justify-center">
+          {gridImages.map((image) => (
+            <Link href={`/menu/${image.categorySlug}`} key={image.categorySlug} className="group">
+              <Card className="overflow-hidden aspect-square">
+                <div className="relative w-full h-full">
+                  <AsyncImage
+                    imageKey={image.src}
+                    alt={image.categoryName}
+                    layout="fill"
+                    objectFit="cover"
+                    className="transition-transform duration-300 group-hover:scale-110"
+                    data-ai-hint="food category plate"
+                  />
+                  <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/70 to-transparent" />
+                  <div className="absolute inset-0 flex items-end justify-center p-4">
+                    <h3 className="text-white text-lg font-bold text-center drop-shadow-md">{image.categoryName}</h3>
+                  </div>
                 </div>
-              </div>
-            </Card>
-          </Link>
-        ))}
+              </Card>
+            </Link>
+          ))}
+        </div>
       </div>
     </section>
   );
@@ -369,30 +371,30 @@ export default function HomePageClient() {
       <section className="py-16 md:py-24">
         <div className="container">
             <h2 className="text-3xl md:text-4xl font-headline font-bold text-right mb-10">המומלצים שלנו</h2>
-            {recommendedDishes.length > 0 && (
-                 <Carousel
-                    opts={{
-                        align: "start",
-                        loop: recommendedDishes.length > 4,
-                        direction: 'rtl',
-                    }}
-                    className="w-full"
-                    dir="rtl"
-                >
-                    <CarouselContent className="-mr-1">
-                        {recommendedDishes.map((dish, i) => (
-                            <CarouselItem key={dish ? dish.id : i} className="basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 pl-1 pr-3">
-                                 <div className="p-1 h-full">
-                                    {dish ? <DishCard dish={dish} /> : <Skeleton className="h-96 w-full" />}
-                                </div>
-                            </CarouselItem>
-                        ))}
-                    </CarouselContent>
-                    <CarouselPrevious />
-                    <CarouselNext />
-                </Carousel>
-            )}
         </div>
+        {recommendedDishes.length > 0 && (
+             <Carousel
+                opts={{
+                    align: "start",
+                    loop: recommendedDishes.length > 4,
+                    direction: 'rtl',
+                }}
+                className="w-full"
+                dir="rtl"
+            >
+                <CarouselContent className="-mr-1">
+                    {recommendedDishes.map((dish, i) => (
+                        <CarouselItem key={dish ? dish.id : i} className="basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 pl-1 pr-3">
+                             <div className="p-1 h-full">
+                                {dish ? <DishCard dish={dish} /> : <Skeleton className="h-96 w-full" />}
+                            </div>
+                        </CarouselItem>
+                    ))}
+                </CarouselContent>
+                <CarouselPrevious />
+                <CarouselNext />
+            </Carousel>
+        )}
       </section>
 
       {/* Category Grid Section */}
