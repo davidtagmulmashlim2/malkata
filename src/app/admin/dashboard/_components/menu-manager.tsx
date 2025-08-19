@@ -14,7 +14,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from '@/components/ui/dialog'
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from '@/components/ui/form'
 import { PlusCircle, Edit, Trash2, X, ChevronsUpDown, Check, Eye, CakeSlice, Salad, Fish, Soup, Beef, GlassWater, Wheat, Carrot, Utensils, Crown, UtensilsCrossed, Pizza } from 'lucide-react'
 import { toast } from '@/hooks/use-toast'
 import type { Dish, Category } from '@/lib/types'
@@ -737,6 +737,16 @@ export default function MenuManager() {
                         <FormMessage />
                       </FormItem>
                     )} />
+                    <FormField name="slug" control={categoryForm.control} render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>מזהה לקישור (Slug)</FormLabel>
+                            <FormControl><Input disabled {...field} value={editingCategory ? editingCategory.slug : slugify(categoryForm.watch('name'))} /></FormControl>
+                            <FormDescription>
+                                המזהה נוצר אוטומטית. השתמש בו בגלריה כדי לקשר תמונה (`grid:slug`).
+                            </FormDescription>
+                            <FormMessage />
+                        </FormItem>
+                    )} />
                     <FormField name="description" control={categoryForm.control} render={({ field }) => (
                       <FormItem>
                         <FormLabel>תיאור</FormLabel>
@@ -852,6 +862,7 @@ export default function MenuManager() {
             <TableHeader>
               <TableRow>
                 <TableHead>שם</TableHead>
+                <TableHead>מזהה לקישור (Slug)</TableHead>
                 <TableHead className="text-right">פעולות</TableHead>
               </TableRow>
             </TableHeader>
@@ -859,6 +870,7 @@ export default function MenuManager() {
               {categories.map((category) => (
                 <TableRow key={category.id}>
                   <TableCell>{category.name}</TableCell>
+                  <TableCell><Badge variant="outline">{category.slug}</Badge></TableCell>
                   <TableCell className="text-right">
                      <div className="flex gap-2 justify-end">
                         <Button variant="ghost" size="icon" onClick={() => openCategoryDialog(category)}><Edit className="h-4 w-4" /></Button>
