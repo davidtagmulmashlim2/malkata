@@ -1,5 +1,4 @@
 
-
 // All `id` fields are now optional for creation, but will be present when fetched from DB.
 export interface Dish {
   id?: string;
@@ -22,7 +21,6 @@ export interface Category {
   slug: string;
   description: string;
   image: string; // Will store banner image key
-  tags?: string[]; // Using tags to store the square image key, e.g. "sq-img-key"
   title_color?: string;
   title_font_size?: string;
   title_font?: string;
