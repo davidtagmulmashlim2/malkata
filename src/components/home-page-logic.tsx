@@ -183,7 +183,7 @@ const ThickChevronRight = (props: React.SVGProps<SVGSVGElement>) => (
 
 export default function HomePageClient() {
   const { state, dispatch, isLoading } = useApp();
-  const { siteContent, dishes, testimonials, gallery, categories } = state;
+  const { siteContent, dishes, testimonials } = state;
   const { hero, newsletter } = siteContent;
   const [typewriterKey, setTypewriterKey] = useState(0);
   const [currentTestimonialIndex, setCurrentTestimonialIndex] = useState(0);
@@ -396,7 +396,7 @@ export default function HomePageClient() {
           </div>
         </div>
       </section>
-
+      
       {/* Category Grid Section */}
       <CategoryGridSection />
 
