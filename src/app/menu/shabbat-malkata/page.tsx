@@ -24,13 +24,13 @@ export default function ShabbatMalkataPage() {
     const textSizeClasses: { [key: string]: string } = {
         'text-xs': 'text-xs', 'text-sm': 'text-sm', 'text-base': 'text-base', 'text-lg': 'text-lg', 'text-xl': 'text-xl', 
         'text-2xl': 'text-2xl', 'text-3xl': 'text-3xl', 'text-4xl': 'text-4xl', '5xl': 'text-5xl', 
-        '6xl': 'text-6xl', '7xl': 'text-7xl', 'text-8xl': 'text-8xl', 'text-9xl': 'text-9xl',
+        '6xl': 'text-6xl', '7xl': 'text-7xl', 'text-8xl': 'text-8xl', '9xl': 'text-9xl',
     };
 
     if (isLoading || !category) {
         return (
             <div>
-                 <Skeleton className="w-full" style={{ height: '256px' }} />
+                 <Skeleton className="w-full h-64" />
                 <div className="container py-12 md:py-20">
                     <Skeleton className="h-10 w-1/3 mb-8" />
                     <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
@@ -43,7 +43,7 @@ export default function ShabbatMalkataPage() {
 
     return (
         <div>
-            <div className="relative w-full" style={{ height: `${category.banner_height || 256}px` }}>
+            <div className="relative w-full h-64">
                 <AsyncImage
                     imageKey={category.image}
                     alt={category.name}

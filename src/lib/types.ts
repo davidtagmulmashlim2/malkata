@@ -29,7 +29,6 @@ export interface Category {
   image_brightness?: number;
   show_description?: boolean;
   show_description_below_banner?: boolean;
-  banner_height?: number;
 }
 
 export interface GalleryImage {

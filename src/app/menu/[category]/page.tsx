@@ -33,7 +33,7 @@ export default function CategoryPage() {
     if (isLoading || !category) {
         return (
             <div>
-                <Skeleton className="w-full" style={{ height: '256px' }} />
+                <Skeleton className="w-full h-64" />
                 <div className="container py-12 md:py-20">
                     <Skeleton className="h-10 w-1/3 mb-8" />
                     <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
@@ -49,7 +49,7 @@ export default function CategoryPage() {
     // This is the final state, rendered only on the client after isLoading is false
     return (
         <div>
-            <div className="relative w-full" style={{ height: `${category.banner_height || 256}px` }}>
+            <div className="relative w-full h-64">
                 <AsyncImage
                     imageKey={category.image}
                     alt={category.name}
