@@ -112,7 +112,8 @@ const categorySchema = z.object({
   id: z.string().uuid().optional(),
   name: z.string().min(1, 'שם הקטגוריה הוא שדה חובה'),
   description: z.string().min(1, 'תיאור הוא שדה חובה'),
-  image: z.string().min(1, 'חובה להעלות תמונה'),
+  image: z.string().min(1, 'חובה להעלות תמונת באנר'),
+  square_image: z.string().optional().nullable(),
   slug: z.string().optional(), // Slug is generated, so optional in form
   title_color: z.string().optional(),
   title_font_size: z.string().optional(),
@@ -132,9 +133,24 @@ const fileToDataUrl = (file: File): Promise<string> => {
     });
 };
 
-const ImagePreview = ({ imageKey, alt }: { imageKey: string, alt: string }) => {
+const ImagePreview = ({ imageKey, alt, onRemove }: { imageKey?: string | null, alt: string, onRemove?: () => void }) => {
     if (!imageKey) return null;
-    return <AsyncImage imageKey={imageKey} alt={alt} width={96} height={96} className="h-24 w-24 rounded-md object-cover" />;
+    return (
+        <div className="mt-2 relative w-fit">
+            <AsyncImage imageKey={imageKey} alt={alt} width={96} height={96} className="h-24 w-24 rounded-md object-cover" />
+            {onRemove && (
+                 <Button 
+                    type="button" 
+                    variant="destructive" 
+                    size="icon" 
+                    className="absolute -top-2 -right-2 h-6 w-6"
+                    onClick={onRemove}
+                >
+                    <Trash2 className="h-3 w-3" />
+                </Button>
+            )}
+        </div>
+    );
 };
 
 
@@ -158,7 +174,7 @@ export default function MenuManager() {
   const categoryForm = useForm<z.infer<typeof categorySchema>>({ 
       resolver: zodResolver(categorySchema),
       defaultValues: { 
-          name: '', description: '', image: '',
+          name: '', description: '', image: '', square_image: null,
           title_color: '#FFFFFF', title_font_size: '5xl', title_font: 'default', 
           title_opacity: 1, 
           image_brightness: 50, show_description: true, show_description_below_banner: false,
@@ -195,7 +211,7 @@ export default function MenuManager() {
     if (!isCategoryDialogOpen) {
         setEditingCategory(null);
         categoryForm.reset({ 
-            name: '', description: '', image: '',
+            name: '', description: '', image: '', square_image: null,
             title_color: '#FFFFFF', title_font_size: '5xl', title_font: 'default',
             title_opacity: 1,
             image_brightness: 50, show_description: true,
@@ -268,11 +284,14 @@ export default function MenuManager() {
     setIsCategoryDialogOpen(false)
   }
   
-  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>, fieldName: 'main_image' | 'image') => {
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>, 
+    form: typeof dishForm | typeof categoryForm,
+    fieldName: 'main_image' | 'image' | 'square_image'
+  ) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    const form = fieldName === 'main_image' ? dishForm : categoryForm;
     const oldImageKey = form.getValues(fieldName as any);
 
     try {
@@ -280,7 +299,6 @@ export default function MenuManager() {
         const newImageKey = await storeImage(dataUrl);
         form.setValue(fieldName as any, newImageKey, { shouldValidate: true });
 
-        // If there was an old image, delete it from storage after the new one is uploaded.
         if (oldImageKey) {
             await deleteImage(oldImageKey);
         }
@@ -293,6 +311,19 @@ export default function MenuManager() {
         });
     }
   };
+
+  const handleRemoveCategorySquareImage = async () => {
+    const imageKey = categoryForm.getValues('square_image');
+    if (imageKey) {
+        try {
+            await deleteImage(imageKey);
+            categoryForm.setValue('square_image', null, { shouldValidate: true });
+            toast({ title: 'התמונה הריבועית הוסרה' });
+        } catch(e) {
+            toast({ title: 'שגיאה במחיקת תמונה', variant: 'destructive' });
+        }
+    }
+  }
 
 
   const deleteDish = (id: string) => {
@@ -348,6 +379,7 @@ export default function MenuManager() {
   const dishMainImageValue = dishForm.watch('main_image');
   const dishGalleryImagesValue = dishForm.watch('gallery_images');
   const categoryImageValue = categoryForm.watch('image');
+  const categorySquareImageValue = categoryForm.watch('square_image');
 
   const { fields, append, remove } = useFieldArray({
       control: dishForm.control,
@@ -422,7 +454,7 @@ export default function MenuManager() {
                                 <Input 
                                     type="file" 
                                     accept="image/*" 
-                                    onChange={(e) => handleFileChange(e, 'main_image')}
+                                    onChange={(e) => handleFileChange(e, dishForm, 'main_image')}
                                 />
                              </FormControl>
                              <FormMessage />
@@ -733,12 +765,13 @@ export default function MenuManager() {
                         control={categoryForm.control}
                         render={({ field }) => (
                            <FormItem>
-                             <FormLabel>תמונת באנר</FormLabel>
+                             <FormLabel>תמונת באנר (חובה)</FormLabel>
+                              <p className="text-xs text-muted-foreground pb-2">תמונה זו תשמש בראש עמוד הקטגוריה.</p>
                              <FormControl>
                                 <Input 
                                     type="file" 
                                     accept="image/*" 
-                                    onChange={(e) => handleFileChange(e, 'image')}
+                                    onChange={(e) => handleFileChange(e, categoryForm, 'image')}
                                 />
                              </FormControl>
                              <FormMessage />
@@ -746,6 +779,32 @@ export default function MenuManager() {
                            </FormItem>
                         )}
                      />
+                      <FormField
+                        name="square_image"
+                        control={categoryForm.control}
+                        render={({ field }) => (
+                           <FormItem>
+                             <FormLabel>תמונה ריבועית (עמוד הבית)</FormLabel>
+                             <p className="text-xs text-muted-foreground pb-2">אופציונלי. אם לא תועלה תמונה, המערכת תשתמש בתמונת הבאנר.</p>
+                             <FormControl>
+                                <Input 
+                                    type="file" 
+                                    accept="image/*" 
+                                    onChange={(e) => handleFileChange(e, categoryForm, 'square_image')}
+                                />
+                             </FormControl>
+                             <FormMessage />
+                             {categorySquareImageValue && (
+                                <ImagePreview 
+                                    imageKey={categorySquareImageValue} 
+                                    alt="תמונה ריבועית" 
+                                    onRemove={handleRemoveCategorySquareImage}
+                                />
+                             )}
+                           </FormItem>
+                        )}
+                     />
+
                     <div className="border p-4 rounded-md space-y-4">
                         <h3 className="text-lg font-medium">הגדרות עיצוב באנר ונייד</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -865,5 +924,3 @@ export default function MenuManager() {
     </div>
   )
 }
-
-    

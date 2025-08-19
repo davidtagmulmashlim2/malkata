@@ -21,7 +21,8 @@ export interface Category {
   name: string;
   slug: string;
   description: string;
-  image: string;
+  image: string; // Will store banner image key
+  square_image?: string | null; // Will store the new square image key for the homepage
   title_color?: string;
   title_font_size?: string;
   title_font?: string;
@@ -29,7 +30,6 @@ export interface Category {
   image_brightness?: number;
   show_description?: boolean;
   show_description_below_banner?: boolean;
-  banner_height?: number;
 }
 
 export interface GalleryImage {
@@ -237,5 +237,3 @@ export type Action =
   | { type: 'DELETE_SUBMISSION', payload: string }
   | { type: 'UPDATE_DESIGN'; payload: DesignSettings }
   | { type: 'REMOVE_ITEM_FROM_CART', payload: string };
-
-    
