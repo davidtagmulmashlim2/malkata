@@ -74,7 +74,7 @@ const CategoryGridSection = () => {
 
   if (isLoading) {
     return (
-      <section className="container py-16 md:py-24">
+      <section className="container py-8 md:py-12">
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 justify-center">
           {Array(6).fill(0).map((_, i) => (
             <div key={i} className="aspect-square">
@@ -89,7 +89,7 @@ const CategoryGridSection = () => {
   if(gridImages.length === 0) return null;
   
   return (
-    <section className="container py-16 md:py-24">
+    <section className="container py-8 md:py-12">
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 justify-center">
         {gridImages.map((image) => (
           <Link href={`/menu/${image.categorySlug}`} key={image.categorySlug} className="group">
@@ -369,8 +369,6 @@ export default function HomePageClient() {
       <section className="py-16 md:py-24">
         <div className="container">
             <h2 className="text-3xl md:text-4xl font-headline font-bold text-right mb-10">המומלצים שלנו</h2>
-        </div>
-        <div className="w-full px-4 sm:px-6 lg:px-48">
             {recommendedDishes.length > 0 && (
                  <Carousel
                     opts={{
@@ -383,7 +381,7 @@ export default function HomePageClient() {
                 >
                     <CarouselContent className="-mr-1">
                         {recommendedDishes.map((dish, i) => (
-                            <CarouselItem key={dish ? dish.id : i} className="basis-full sm:basis-1/2 lg:basis-1/4 pl-1 pr-3">
+                            <CarouselItem key={dish ? dish.id : i} className="basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 pl-1 pr-3">
                                  <div className="p-1 h-full">
                                     {dish ? <DishCard dish={dish} /> : <Skeleton className="h-96 w-full" />}
                                 </div>
