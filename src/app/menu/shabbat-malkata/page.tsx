@@ -30,7 +30,7 @@ export default function ShabbatMalkataPage() {
     if (isLoading || !category) {
         return (
             <div>
-                 <Skeleton className="w-full h-64" />
+                 <Skeleton className="w-full h-80" />
                 <div className="container py-12 md:py-20">
                     <Skeleton className="h-10 w-1/3 mb-8" />
                     <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
@@ -43,7 +43,7 @@ export default function ShabbatMalkataPage() {
 
     return (
         <div>
-            <div className="relative w-full h-64">
+            <div className="relative w-full h-80">
                 <AsyncImage
                     imageKey={category.image}
                     alt={category.name}
