@@ -67,16 +67,15 @@ const CategoryGridSection = () => {
         }
         return null;
       })
-      .filter((item): item is GridImage => item !== null)
-      .slice(0, 12); // Limit to 12 images max
+      .filter((item): item is GridImage => item !== null);
 
   }, [isLoading, gallery, categories]);
 
   if (isLoading) {
     return (
       <section className="container py-8 md:py-12">
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 justify-center">
-          {Array(6).fill(0).map((_, i) => (
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 justify-center">
+          {Array(5).fill(0).map((_, i) => (
             <div key={i} className="aspect-square">
               <Skeleton className="w-full h-full" />
             </div>
@@ -89,9 +88,8 @@ const CategoryGridSection = () => {
   if(gridImages.length === 0) return null;
   
   return (
-    <section className="py-8 md:pt-0 md:pb-16">
-      <div className="container">
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 justify-center">
+    <section className="py-8 md:pt-0 md:pb-16 w-full px-4 sm:px-6 lg:px-48">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 justify-center">
           {gridImages.map((image) => (
             <Link href={`/menu/${image.categorySlug}`} key={image.categorySlug} className="group">
               <Card className="overflow-hidden aspect-square">
@@ -113,7 +111,6 @@ const CategoryGridSection = () => {
             </Link>
           ))}
         </div>
-      </div>
     </section>
   );
 };
