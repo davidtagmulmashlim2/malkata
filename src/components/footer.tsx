@@ -1,5 +1,4 @@
 
-
 'use client';
 
 import { useApp } from "@/context/app-context";
@@ -77,8 +76,8 @@ export function Footer() {
                         imageKey={design.logo_image} 
                         alt="לוגו" 
                         height={40} 
-                        width={design.logo_width || 120} 
-                        style={{width: `${design.logo_width || 120}px`, height: 'auto'}}
+                        width={design.logo_width_desktop || 120} 
+                        style={{width: `${design.logo_width_desktop || 120}px`, height: 'auto'}}
                         className="object-contain" 
                      />
                  </div>
@@ -102,9 +101,11 @@ export function Footer() {
                         <div className="flex gap-4">
                             {isLoading ? <Skeleton className="h-7 w-28" /> : (
                                 <>
-                                    <a href={`https://wa.me/${contact.whatsapp}`} target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp">
-                                        <WhatsappIcon className="h-7 w-7 text-green-500 transition-opacity hover:opacity-80" />
-                                    </a>
+                                    {contact.show_whatsapp && contact.whatsapp && (
+                                        <a href={`https://wa.me/${contact.whatsapp}`} target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp">
+                                            <WhatsappIcon className="h-7 w-7 text-green-500 transition-opacity hover:opacity-80" />
+                                        </a>
+                                    )}
                                     {contact.show_instagram && contact.instagram && (
                                         <a href={contact.instagram} target="_blank" rel="noopener noreferrer" aria-label="Visit our Instagram">
                                             <InstagramIcon className="h-7 w-7 text-pink-600 transition-opacity hover:opacity-80" />
@@ -178,7 +179,10 @@ export function Footer() {
                 </div>
                 <div className="mt-12 border-t pt-8 text-center text-sm text-muted-foreground">
                     {isLoading ? <Skeleton className="h-4 w-1/2 mx-auto" /> : (
-                        footer?.copyright && <p>&copy; {new Date().getFullYear()} {footer.copyright}</p>
+                        <div className="space-y-2">
+                            {footer?.copyright && <p>&copy; {new Date().getFullYear()} {footer.copyright}</p>}
+                            <Link href="/admin" className="text-xs hover:text-primary hover:underline">כניסת מנהל</Link>
+                        </div>
                     )}
                 </div>
             </div>

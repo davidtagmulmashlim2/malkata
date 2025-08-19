@@ -12,6 +12,9 @@ import React, { useMemo, useState } from 'react';
 import { Skeleton } from './ui/skeleton';
 import { AsyncImage } from './async-image';
 import { MobileMenuNavigation } from './mobile-menu-navigation';
+import { WhatsappIcon } from "./icons/whatsapp-icon";
+import { InstagramIcon } from "./icons/instagram-icon";
+import { FacebookIcon } from "./icons/facebook-icon";
 
 
 const Crown2 = (props: React.SVGProps<SVGSVGElement>) => (
@@ -58,6 +61,7 @@ export function Header() {
   const pathname = usePathname();
   const { state, isLoading } = useApp();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { contact } = state.siteContent;
 
   const IconComponent = useMemo(() => iconMap[state.design.logo_icon] || UtensilsCrossed, [state.design.logo_icon]);
   const logoStyle = useMemo(() => state.design.logo_color ? { color: state.design.logo_color } : {}, [state.design.logo_color]);
@@ -192,14 +196,31 @@ export function Header() {
     );
   }
   
-  const AdminButton = () => (
-     <Link href="/admin">
-        <Button variant="ghost" size="icon">
-            <User className="h-5 w-5" />
-            <span className="sr-only">Admin</span>
-        </Button>
-    </Link>
-  );
+  const SocialIcons = () => {
+    if (isLoading) {
+        return <Skeleton className="h-7 w-28" />
+    }
+    
+    return (
+        <div className="flex gap-4">
+            {contact.show_whatsapp && contact.whatsapp && (
+                <a href={`https://wa.me/${contact.whatsapp}`} target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp">
+                    <WhatsappIcon className="h-6 w-6 text-muted-foreground transition-colors hover:text-primary" />
+                </a>
+            )}
+            {contact.show_instagram && contact.instagram && (
+                <a href={contact.instagram} target="_blank" rel="noopener noreferrer" aria-label="Visit our Instagram">
+                    <InstagramIcon className="h-6 w-6 text-muted-foreground transition-colors hover:text-primary" />
+                </a>
+            )}
+             {contact.show_facebook && contact.facebook && (
+                <a href={contact.facebook} target="_blank" rel="noopener noreferrer" aria-label="Visit our Facebook">
+                    <FacebookIcon className="h-6 w-6 text-muted-foreground transition-colors hover:text-primary" />
+                </a>
+            )}
+        </div>
+    )
+  }
   
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background/80 backdrop-blur-sm">
@@ -213,7 +234,7 @@ export function Header() {
                 <NavLinks />
             </div>
             <div className="flex justify-end">
-                <AdminButton />
+                <SocialIcons />
             </div>
         </div>
         
