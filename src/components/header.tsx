@@ -162,7 +162,7 @@ export function Header() {
                                 key={link.href}
                                 href={link.href}
                                 className={cn(
-                                    'transition-colors hover:text-primary no-underline',
+                                    'transition-colors hover:text-primary no-underline md:text-base',
                                     link.isFeatured 
                                         ? 'bg-primary text-primary-foreground hover:bg-primary/90 rounded-full text-xs font-medium px-4 h-8 flex items-center' 
                                         : (isActive ? 'text-primary font-bold' : 'text-muted-foreground')
