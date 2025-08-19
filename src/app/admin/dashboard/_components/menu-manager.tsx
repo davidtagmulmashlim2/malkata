@@ -121,6 +121,7 @@ const categorySchema = z.object({
   image_brightness: z.coerce.number().min(0).max(100).optional(),
   show_description: z.boolean().optional(),
   show_description_below_banner: z.boolean().optional(),
+  banner_height: z.coerce.number().min(200).max(600).optional(),
 })
 
 const fileToDataUrl = (file: File): Promise<string> => {
@@ -162,6 +163,7 @@ export default function MenuManager() {
           title_color: '#FFFFFF', title_font_size: '5xl', title_font: 'default', 
           title_opacity: 1, 
           image_brightness: 50, show_description: true, show_description_below_banner: false,
+          banner_height: 256,
       } 
     })
 
@@ -200,6 +202,7 @@ export default function MenuManager() {
             title_opacity: 1,
             image_brightness: 50, show_description: true,
             show_description_below_banner: false,
+            banner_height: 256,
         });
     } else if (editingCategory) {
         categoryForm.reset({
@@ -211,6 +214,7 @@ export default function MenuManager() {
             image_brightness: editingCategory.image_brightness ?? 50,
             show_description: editingCategory.show_description ?? true,
             show_description_below_banner: editingCategory.show_description_below_banner ?? false,
+            banner_height: editingCategory.banner_height ?? 256,
         });
     }
   }, [isCategoryDialogOpen, editingCategory, categoryForm]);
@@ -748,6 +752,13 @@ export default function MenuManager() {
                      />
                     <div className="border p-4 rounded-md space-y-4">
                         <h3 className="text-lg font-medium">הגדרות עיצוב באנר ונייד</h3>
+                        <FormField name="banner_height" control={categoryForm.control} render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>גובה הבאנר ({field.value ?? 256}px)</FormLabel>
+                            <FormControl><Slider value={[field.value ?? 256]} min={200} max={600} step={10} onValueChange={(v) => field.onChange(v[0])} /></FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )} />
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                            <FormField name="title_color" control={categoryForm.control} render={({ field }) => (
                               <FormItem>
