@@ -40,7 +40,7 @@ const iconMap: { [key: string]: React.ElementType } = {
 };
 
 interface GridImage {
-    id: string; // Add id for unique key
+    id: string; 
     src: string;
     categorySlug: string;
     categoryName: string;
@@ -60,7 +60,7 @@ const CategoryGridSection = () => {
         const category = categories.find(c => c.slug === categorySlug);
         if (category && image.id) {
           return {
-            id: image.id, // Pass the unique image ID
+            id: image.id,
             src: image.src,
             categorySlug: category.slug,
             categoryName: category.name,
@@ -75,12 +75,14 @@ const CategoryGridSection = () => {
   if (isLoading) {
     return (
       <section className="py-8 md:py-12 px-4 sm:px-6 lg:px-48">
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 justify-items-center">
-          {Array(5).fill(0).map((_, i) => (
-            <div key={i} className="aspect-square w-full">
-              <Skeleton className="w-full h-full" />
+        <div className="flex justify-center">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+              {Array(5).fill(0).map((_, i) => (
+                <div key={i} className="aspect-square w-full">
+                  <Skeleton className="w-full h-full" />
+                </div>
+              ))}
             </div>
-          ))}
         </div>
       </section>
     );
@@ -90,27 +92,29 @@ const CategoryGridSection = () => {
   
   return (
     <section className="py-8 md:pt-0 md:pb-16 w-full px-4 sm:px-6 lg:px-48">
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 justify-items-center">
-          {gridImages.map((image) => (
-            <Link href={`/menu/${image.categorySlug}`} key={image.id} className="group w-full">
-              <Card className="overflow-hidden aspect-square">
-                <div className="relative w-full h-full">
-                  <AsyncImage
-                    imageKey={image.src}
-                    alt={image.categoryName}
-                    layout="fill"
-                    objectFit="cover"
-                    className="transition-transform duration-300 group-hover:scale-110"
-                    data-ai-hint="food category plate"
-                  />
-                  <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/70 to-transparent" />
-                  <div className="absolute inset-0 flex items-end justify-center p-4">
-                    <h3 className="text-white text-lg font-bold text-center drop-shadow-md">{image.categoryName}</h3>
-                  </div>
-                </div>
-              </Card>
-            </Link>
-          ))}
+        <div className="flex justify-center">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+              {gridImages.map((image) => (
+                <Link href={`/menu/${image.categorySlug}`} key={image.id} className="group w-full">
+                  <Card className="overflow-hidden aspect-square">
+                    <div className="relative w-full h-full">
+                      <AsyncImage
+                        imageKey={image.src}
+                        alt={image.categoryName}
+                        layout="fill"
+                        objectFit="cover"
+                        className="transition-transform duration-300 group-hover:scale-110"
+                        data-ai-hint="food category plate"
+                      />
+                      <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/70 to-transparent" />
+                      <div className="absolute inset-0 flex items-end justify-center p-4">
+                        <h3 className="text-white text-lg font-bold text-center drop-shadow-md">{image.categoryName}</h3>
+                      </div>
+                    </div>
+                  </Card>
+                </Link>
+              ))}
+            </div>
         </div>
     </section>
   );
