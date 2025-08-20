@@ -40,6 +40,7 @@ const iconMap: { [key: string]: React.ElementType } = {
 };
 
 interface GridImage {
+    id: string;
     src: string;
     categorySlug: string;
     categoryName: string;
@@ -53,12 +54,13 @@ const CategoryGridSection = () => {
     if (isLoading) return [];
     
     return gallery
-      .filter(image => image.alt?.startsWith('grid:'))
+      .filter(image => image.alt?.startsWith('grid:') && image.id)
       .map(image => {
         const categorySlug = image.alt!.replace('grid:', '').trim();
         const category = categories.find(c => c.slug === categorySlug);
         if (category) {
           return {
+            id: image.id!,
             src: image.src,
             categorySlug: category.slug,
             categoryName: category.name,
@@ -88,27 +90,29 @@ const CategoryGridSection = () => {
   
   return (
     <section className="py-8 md:pt-0 md:pb-16 w-full px-4 sm:px-6 lg:px-48">
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 justify-center">
-          {gridImages.map((image) => (
-            <Link href={`/menu/${image.categorySlug}`} key={image.categorySlug} className="group">
-              <Card className="overflow-hidden aspect-square">
-                <div className="relative w-full h-full">
-                  <AsyncImage
-                    imageKey={image.src}
-                    alt={image.categoryName}
-                    layout="fill"
-                    objectFit="cover"
-                    className="transition-transform duration-300 group-hover:scale-110"
-                    data-ai-hint="food category plate"
-                  />
-                  <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/70 to-transparent" />
-                  <div className="absolute inset-0 flex items-end justify-center p-4">
-                    <h3 className="text-white text-lg font-bold text-center drop-shadow-md">{image.categoryName}</h3>
-                  </div>
-                </div>
-              </Card>
-            </Link>
-          ))}
+        <div className="flex justify-center">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+              {gridImages.map((image) => (
+                <Link href={`/menu/${image.categorySlug}`} key={image.id} className="group">
+                  <Card className="overflow-hidden aspect-square">
+                    <div className="relative w-full h-full">
+                      <AsyncImage
+                        imageKey={image.src}
+                        alt={image.categoryName}
+                        layout="fill"
+                        objectFit="cover"
+                        className="transition-transform duration-300 group-hover:scale-110"
+                        data-ai-hint="food category plate"
+                      />
+                      <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/70 to-transparent" />
+                      <div className="absolute inset-0 flex items-end justify-center p-4">
+                        <h3 className="text-white text-lg font-bold text-center drop-shadow-md">{image.categoryName}</h3>
+                      </div>
+                    </div>
+                  </Card>
+                </Link>
+              ))}
+            </div>
         </div>
     </section>
   );
@@ -357,7 +361,7 @@ export default function HomePageClient() {
                   <Link href="/menu">׳¦׳₪׳” ׳‘׳×׳₪׳¨׳™׳˜</Link>
                </Button>
                <Button asChild size="lg" variant="outline" className="font-bold border-2 border-white text-white bg-transparent hover:bg-white hover:text-black">
-                   <Link href="/menu">׳”׳–׳׳ ׳׳©׳׳•׳—</Link>
+                   <Link href="/menu">׳”׳–׳׳ ׳׳©׳׳•׳—</Link>
                </Button>
             </div>
         </>
@@ -522,7 +526,7 @@ export default function HomePageClient() {
                         render={({ field }) => (
                             <FormItem className="flex-1">
                                 <FormControl>
-                                    <Input type="tel" placeholder="׳”׳˜׳׳₪׳•׳ ׳©׳׳" className="text-foreground" {...field} />
+                                    <Input type="tel" placeholder="׳”׳˜׳׳₪׳•׳ ׳©׳׳" className="text-foreground" {...field} />
                                 </FormControl>
                                 <FormMessage className="text-secondary" />
                             </FormItem>
