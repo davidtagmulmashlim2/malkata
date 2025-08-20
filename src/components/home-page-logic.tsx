@@ -405,7 +405,7 @@ export default function HomePageClient() {
       <CategoryGridSection />
 
       {/* About Us Section */}
-      <section className="bg-card py-16 md:py-24">
+      <section className="hidden md:block bg-card py-16 md:py-24">
         <div className="container grid lg:grid-cols-2 gap-12 items-center">
           <div>
             <h2 className="text-3xl md:text-4xl font-headline font-bold mb-4">הסיפור שלנו</h2>
@@ -540,5 +540,3 @@ export default function HomePageClient() {
     </div>
   );
 }
-
-    
