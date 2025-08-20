@@ -178,7 +178,7 @@ export function Header() {
                                 key={link.href}
                                 href={link.href}
                                 className={cn(
-                                    'transition-colors hover:text-primary no-underline md:text-base md:top-1',
+                                    'transition-colors hover:text-primary no-underline md:text-lg md:top-1',
                                     link.isFeatured 
                                         ? 'bg-primary text-primary-foreground hover:bg-primary/90 rounded-full text-xs font-medium px-4 h-8 flex items-center' 
                                         : (isActive ? 'text-primary font-bold' : 'text-muted-foreground')
@@ -204,17 +204,17 @@ export function Header() {
         <div className="flex gap-4">
             {contact.show_whatsapp && contact.whatsapp && (
                 <a href={`https://wa.me/${contact.whatsapp}`} target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp">
-                    <WhatsappIcon className="h-6 w-6 text-muted-foreground transition-colors hover:text-primary" />
+                    <WhatsappIcon className="h-7 w-7 text-muted-foreground transition-colors hover:text-primary" />
                 </a>
             )}
             {contact.show_instagram && contact.instagram && (
                 <a href={contact.instagram} target="_blank" rel="noopener noreferrer" aria-label="Visit our Instagram">
-                    <InstagramIcon className="h-6 w-6 text-muted-foreground transition-colors hover:text-primary" />
+                    <InstagramIcon className="h-7 w-7 text-muted-foreground transition-colors hover:text-primary" />
                 </a>
             )}
              {contact.show_facebook && contact.facebook && (
                 <a href={contact.facebook} target="_blank" rel="noopener noreferrer" aria-label="Visit our Facebook">
-                    <FacebookIcon className="h-6 w-6 text-muted-foreground transition-colors hover:text-primary" />
+                    <FacebookIcon className="h-7 w-7 text-muted-foreground transition-colors hover:text-primary" />
                 </a>
             )}
         </div>
@@ -223,7 +223,7 @@ export function Header() {
   
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background/80 backdrop-blur-sm">
-      <div className="container flex h-16 md:h-28 items-center">
+      <div className="container flex h-18 md:h-28 items-center">
         {/* Desktop Layout */}
         <div className="hidden md:flex w-full items-center">
             <div className="flex justify-start">
