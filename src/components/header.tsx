@@ -224,7 +224,7 @@ export function Header() {
   
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background/80 backdrop-blur-sm">
-      <div className="container flex h-16 md:h-24 items-center">
+      <div className="container flex h-18 md:h-28 items-center">
         {/* Desktop Layout */}
         <div className="hidden md:flex w-full items-center">
             <div className="flex justify-start">
