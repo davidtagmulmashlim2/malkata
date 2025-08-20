@@ -1,4 +1,3 @@
-
 'use client';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -25,8 +24,8 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 
 const subscriberSchema = z.object({
-    name: z.string().min(2, "שם חייב להכיל לפחות 2 תווים."),
-    phone: z.string().min(9, "מספר טלפון לא חוקי."),
+    name: z.string().min(2, "׳©׳ ׳—׳™׳™׳‘ ׳׳”׳›׳™׳ ׳׳₪׳—׳•׳× 2 ׳×׳•׳•׳™׳."),
+    phone: z.string().min(9, "׳׳¡׳₪׳¨ ׳˜׳׳₪׳•׳ ׳׳ ׳—׳•׳§׳™."),
 });
 
 const iconMap: { [key: string]: React.ElementType } = {
@@ -41,7 +40,6 @@ const iconMap: { [key: string]: React.ElementType } = {
 };
 
 interface GridImage {
-    id: string; 
     src: string;
     categorySlug: string;
     categoryName: string;
@@ -59,9 +57,8 @@ const CategoryGridSection = () => {
       .map(image => {
         const categorySlug = image.alt!.replace('grid:', '').trim();
         const category = categories.find(c => c.slug === categorySlug);
-        if (category && image.id) {
+        if (category) {
           return {
-            id: image.id,
             src: image.src,
             categorySlug: category.slug,
             categoryName: category.name,
@@ -76,14 +73,12 @@ const CategoryGridSection = () => {
   if (isLoading) {
     return (
       <section className="py-8 md:py-12 px-4 sm:px-6 lg:px-48">
-        <div className="flex justify-center">
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-              {Array(5).fill(0).map((_, i) => (
-                <div key={i} className="aspect-square w-full">
-                  <Skeleton className="w-full h-full" />
-                </div>
-              ))}
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 justify-center">
+          {Array(5).fill(0).map((_, i) => (
+            <div key={i} className="aspect-square">
+              <Skeleton className="w-full h-full" />
             </div>
+          ))}
         </div>
       </section>
     );
@@ -93,29 +88,27 @@ const CategoryGridSection = () => {
   
   return (
     <section className="py-8 md:pt-0 md:pb-16 w-full px-4 sm:px-6 lg:px-48">
-        <div className="flex justify-center">
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-              {gridImages.map((image) => (
-                <Link href={`/menu/${image.categorySlug}`} key={image.id} className="group w-full">
-                  <Card className="overflow-hidden aspect-square">
-                    <div className="relative w-full h-full">
-                      <AsyncImage
-                        imageKey={image.src}
-                        alt={image.categoryName}
-                        layout="fill"
-                        objectFit="cover"
-                        className="transition-transform duration-300 group-hover:scale-110"
-                        data-ai-hint="food category plate"
-                      />
-                      <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/70 to-transparent" />
-                      <div className="absolute inset-0 flex items-end justify-center p-4">
-                        <h3 className="text-white text-lg font-bold text-center drop-shadow-md">{image.categoryName}</h3>
-                      </div>
-                    </div>
-                  </Card>
-                </Link>
-              ))}
-            </div>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 justify-center">
+          {gridImages.map((image) => (
+            <Link href={`/menu/${image.categorySlug}`} key={image.categorySlug} className="group">
+              <Card className="overflow-hidden aspect-square">
+                <div className="relative w-full h-full">
+                  <AsyncImage
+                    imageKey={image.src}
+                    alt={image.categoryName}
+                    layout="fill"
+                    objectFit="cover"
+                    className="transition-transform duration-300 group-hover:scale-110"
+                    data-ai-hint="food category plate"
+                  />
+                  <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/70 to-transparent" />
+                  <div className="absolute inset-0 flex items-end justify-center p-4">
+                    <h3 className="text-white text-lg font-bold text-center drop-shadow-md">{image.categoryName}</h3>
+                  </div>
+                </div>
+              </Card>
+            </Link>
+          ))}
         </div>
     </section>
   );
@@ -212,7 +205,7 @@ export default function HomePageClient() {
       if (window.innerWidth < 768 && pathname === '/' && !isDishModalOpen) {
         if (backPressCount.current === 0) {
           backPressCount.current = 1;
-          toast({ description: "לחץ שוב כדי לצאת" });
+          toast({ description: "׳׳—׳¥ ׳©׳•׳‘ ׳›׳“׳™ ׳׳¦׳׳×" });
           history.pushState(null, '', location.href);
 
           setTimeout(() => {
@@ -241,7 +234,7 @@ export default function HomePageClient() {
             date: new Date().toISOString(),
         }
     });
-    toast({ title: "נרשמת בהצלחה!", description: "נעדכן אותך בקרוב." });
+    toast({ title: "׳ ׳¨׳©׳׳× ׳‘׳”׳¦׳׳—׳”!", description: "׳ ׳¢׳“׳›׳ ׳׳•׳×׳ ׳‘׳§׳¨׳•׳‘." });
     form.reset();
   };
 
@@ -308,7 +301,7 @@ export default function HomePageClient() {
                  <Skeleton className="w-full h-full" />
              </section>
              <section className="container py-16 md:py-24">
-                <h2 className="text-3xl md:text-4xl font-headline font-bold text-right mb-10">המומלצים שלנו</h2>
+                <h2 className="text-3xl md:text-4xl font-headline font-bold text-right mb-10">׳”׳׳•׳׳׳¦׳™׳ ׳©׳׳ ׳•</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                   {Array(4).fill(null).map((dish, i) => <Skeleton key={i} className="h-96 w-full" />)}
                 </div>
@@ -324,7 +317,7 @@ export default function HomePageClient() {
         <>
             <AsyncImage
               imageKey={siteContent.hero.image}
-              alt="רקע של אוכל ביתי"
+              alt="׳¨׳§׳¢ ׳©׳ ׳׳•׳›׳ ׳‘׳™׳×׳™"
               layout="fill"
               objectFit="cover"
               className="z-0 animation-slow-zoom-in"
@@ -361,10 +354,10 @@ export default function HomePageClient() {
 
             <div className="absolute bottom-12 left-0 right-0 z-10 flex justify-center gap-4 px-4">
                <Button asChild size="lg" className="font-bold">
-                  <Link href="/menu">צפה בתפריט</Link>
+                  <Link href="/menu">׳¦׳₪׳” ׳‘׳×׳₪׳¨׳™׳˜</Link>
                </Button>
                <Button asChild size="lg" variant="outline" className="font-bold border-2 border-white text-white bg-transparent hover:bg-white hover:text-black">
-                   <Link href="/menu">הזמן משלוח</Link>
+                   <Link href="/menu">׳”׳–׳׳ ׳׳©׳׳•׳—</Link>
                </Button>
             </div>
         </>
@@ -373,7 +366,7 @@ export default function HomePageClient() {
       {/* Recommended Dishes Section */}
       <section className="py-16 md:py-24">
         <div className="container">
-          <h2 className="text-3xl md:text-4xl font-headline font-bold text-right mb-10">המומלצים שלנו</h2>
+          <h2 className="text-3xl md:text-4xl font-headline font-bold text-right mb-10">׳”׳׳•׳׳׳¦׳™׳ ׳©׳׳ ׳•</h2>
         </div>
         <div className="w-full px-4 sm:px-6 lg:px-48">
           <div className="relative">
@@ -412,18 +405,18 @@ export default function HomePageClient() {
       <section className="bg-card py-16 md:py-24">
         <div className="container grid lg:grid-cols-2 gap-12 items-center">
           <div>
-            <h2 className="text-3xl md:text-4xl font-headline font-bold mb-4">הסיפור שלנו</h2>
+            <h2 className="text-3xl md:text-4xl font-headline font-bold mb-4">׳”׳¡׳™׳₪׳•׳¨ ׳©׳׳ ׳•</h2>
             <div className="text-muted-foreground mb-6">
               {isLoading ? <div className="space-y-2"><Skeleton className="h-4 w-full" /><Skeleton className="h-4 w-11/12" /><Skeleton className="h-4 w-3/4" /></div> : <p>{siteContent.about.short}</p>}
             </div>
             <Button asChild variant="outline">
-              <Link href="/about">קראו עוד</Link>
+              <Link href="/about">׳§׳¨׳׳• ׳¢׳•׳“</Link>
             </Button>
           </div>
           <div className="w-full h-80 relative rounded-lg overflow-hidden shadow-xl">
              <AsyncImage
                 imageKey={siteContent.about.image}
-                alt="אודות מסעדת מלכתא"
+                alt="׳׳•׳“׳•׳× ׳׳¡׳¢׳“׳× ׳׳׳›׳×׳"
                 layout="fill"
                 objectFit="cover"
                 data-ai-hint="cozy restaurant"
@@ -482,7 +475,7 @@ export default function HomePageClient() {
                 <div className="p-1">
                     <Card className="w-full">
                     <CardContent className="flex flex-col items-center justify-center p-6 text-center h-40">
-                        <p>עדיין אין המלצות.</p>
+                        <p>׳¢׳“׳™׳™׳ ׳׳™׳ ׳”׳׳׳¦׳•׳×.</p>
                     </CardContent>
                     </Card>
                 </div>
@@ -496,7 +489,7 @@ export default function HomePageClient() {
           <>
             <AsyncImage
               imageKey={newsletter.image}
-              alt="רקע מועדון לקוחות"
+              alt="׳¨׳§׳¢ ׳׳•׳¢׳“׳•׳ ׳׳§׳•׳—׳•׳×"
               layout="fill"
               objectFit="cover"
               className="z-0"
@@ -517,7 +510,7 @@ export default function HomePageClient() {
                         render={({ field }) => (
                             <FormItem className="flex-1">
                                 <FormControl>
-                                    <Input placeholder="השם שלך" className="text-foreground" {...field} />
+                                    <Input placeholder="׳”׳©׳ ׳©׳׳" className="text-foreground" {...field} />
                                 </FormControl>
                                 <FormMessage className="text-secondary" />
                             </FormItem>
@@ -529,13 +522,13 @@ export default function HomePageClient() {
                         render={({ field }) => (
                             <FormItem className="flex-1">
                                 <FormControl>
-                                    <Input type="tel" placeholder="הטלפון שלך" className="text-foreground" {...field} />
+                                    <Input type="tel" placeholder="׳”׳˜׳׳₪׳•׳ ׳©׳׳" className="text-foreground" {...field} />
                                 </FormControl>
                                 <FormMessage className="text-secondary" />
                             </FormItem>
                         )}
                     />
-                    <Button type="submit" variant="secondary" disabled={form.formState.isSubmitting}>הרשמה</Button>
+                    <Button type="submit" variant="secondary" disabled={form.formState.isSubmitting}>׳”׳¨׳©׳׳”</Button>
                 </form>
             </Form>
         </div>
