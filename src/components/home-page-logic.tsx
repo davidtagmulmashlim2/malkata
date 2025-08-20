@@ -40,6 +40,7 @@ const iconMap: { [key: string]: React.ElementType } = {
 };
 
 interface GridImage {
+    id: string; // Add id for unique key
     src: string;
     categorySlug: string;
     categoryName: string;
@@ -57,8 +58,9 @@ const CategoryGridSection = () => {
       .map(image => {
         const categorySlug = image.alt!.replace('grid:', '').trim();
         const category = categories.find(c => c.slug === categorySlug);
-        if (category) {
+        if (category && image.id) {
           return {
+            id: image.id, // Pass the unique image ID
             src: image.src,
             categorySlug: category.slug,
             categoryName: category.name,
@@ -75,7 +77,7 @@ const CategoryGridSection = () => {
       <section className="py-8 md:py-12 px-4 sm:px-6 lg:px-48">
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 justify-items-center">
           {Array(5).fill(0).map((_, i) => (
-            <div key={i} className="aspect-square">
+            <div key={i} className="aspect-square w-full">
               <Skeleton className="w-full h-full" />
             </div>
           ))}
@@ -90,7 +92,7 @@ const CategoryGridSection = () => {
     <section className="py-8 md:pt-0 md:pb-16 w-full px-4 sm:px-6 lg:px-48">
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 justify-items-center">
           {gridImages.map((image) => (
-            <Link href={`/menu/${image.categorySlug}`} key={image.categorySlug} className="group">
+            <Link href={`/menu/${image.categorySlug}`} key={image.id} className="group w-full">
               <Card className="overflow-hidden aspect-square">
                 <div className="relative w-full h-full">
                   <AsyncImage
@@ -537,5 +539,3 @@ export default function HomePageClient() {
     </div>
   );
 }
-
-    
