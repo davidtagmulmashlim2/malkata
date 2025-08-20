@@ -1,3 +1,4 @@
+
 'use client';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -88,7 +89,7 @@ const CategoryGridSection = () => {
   
   return (
     <section className="py-8 md:pt-0 md:pb-16 w-full px-4 sm:px-6 lg:px-48">
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 justify-center">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:justify-center">
           {gridImages.map((image) => (
             <Link href={`/menu/${image.categorySlug}`} key={image.categorySlug} className="group">
               <Card className="overflow-hidden aspect-square">
