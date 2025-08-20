@@ -81,19 +81,17 @@ export default function GalleryManager() {
     }
   };
   
-  const publicGalleryImages = gallery.filter(img => !img.alt?.startsWith('grid:'));
-
   return (
     <div className="grid md:grid-cols-3 gap-8">
       <div className="md:col-span-2">
         <Card>
           <CardHeader>
-            <CardTitle>תמונות בגלריה</CardTitle>
-            <CardDescription>נהל את התמונות המוצגות בעמוד הגלריה. תמונות שנועדו להצגה רק בעמוד הבית (עם תיאור "grid:") יסוננו מרשימה זו.</CardDescription>
+            <CardTitle>כל התמונות</CardTitle>
+            <CardDescription>כאן ניתן לנהל את כל התמונות שהועלו, כולל תמונות הגלריה והתמונות המוצגות בעמוד הבית (עם תג grid:).</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-              {publicGalleryImages.map((image: GalleryImage) => (
+              {gallery.map((image: GalleryImage) => (
                 <div key={image.id} className="relative group">
                   <GalleryImagePreview imageKey={image.src} alt={image.alt} />
                   <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
@@ -115,8 +113,8 @@ export default function GalleryManager() {
                 </div>
               ))}
             </div>
-             {publicGalleryImages.length === 0 && (
-                <p className="text-center text-muted-foreground mt-4">אין תמונות להצגה בגלריה הציבורית.</p>
+             {gallery.length === 0 && (
+                <p className="text-center text-muted-foreground mt-4">עדיין לא הועלו תמונות.</p>
             )}
           </CardContent>
         </Card>
@@ -127,7 +125,7 @@ export default function GalleryManager() {
           <CardHeader>
             <CardTitle>הוספת תמונה חדשה</CardTitle>
              <CardDescription>
-                כדי להציג תמונה ריבועית בעמוד הבית שתקשר לקטגוריה, העלה אותה כאן ובשדה "תיאור תמונה" כתוב: <code>grid:SLUG</code>. החלף את SLUG במזהה הייחודי של הקטגוריה (לדוגמה: <code>grid:salads</code>). תמונה כזו לא תופיע בעמוד הגלריה.
+                כדי להציג תמונה ריבועית בעמוד הבית שתקשר לקטגוריה, העלה אותה כאן ובשדה "תיאור תמונה" כתוב: <code>grid:SLUG</code>. החלף את SLUG במזהה הייחודי של הקטגוריה (לדוגמה: <code>grid:salads</code>). תמונה כזו לא תופיע בעמוד הגלריה הציבורי.
             </CardDescription>
           </CardHeader>
           <CardContent>
