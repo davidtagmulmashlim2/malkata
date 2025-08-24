@@ -13,6 +13,7 @@ import { useApp } from '@/context/app-context';
 import { WhatsappIcon } from '@/components/icons/whatsapp-icon';
 import Link from 'next/link';
 import { useIsClient } from '@/hooks/use-is-client';
+import { AnnouncementBar } from './announcement-bar';
 
 const FloatingWhatsAppButton = () => {
     const { state } = useApp();
@@ -40,6 +41,7 @@ export function AppProviderClient({ children, initialAppState }: { children: Rea
   return (
     <AppProvider initialAppState={initialAppState}>
         <DynamicThemeLoader>
+            <AnnouncementBar />
             <Header />
             <main className="flex-grow">{children}</main>
             <Footer />

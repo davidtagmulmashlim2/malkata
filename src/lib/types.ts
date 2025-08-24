@@ -169,6 +169,14 @@ export interface SiteContent {
     quick_view_font?: string;
     quick_view_color?: string;
   };
+  announcement_bar?: {
+    enabled?: boolean;
+    text?: string;
+    button_text?: string;
+    button_link?: string;
+    bg_color?: string;
+    text_color?: string;
+  };
 }
 
 export interface DesignSettings {

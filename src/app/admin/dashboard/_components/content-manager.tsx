@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from '@/components/ui/form';
 import { toast } from '@/hooks/use-toast';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -190,6 +190,14 @@ const contentSchema = z.object({
     quick_view_font: z.string().optional(),
     quick_view_color: z.string().optional(),
   }).optional(),
+  announcement_bar: z.object({
+    enabled: z.boolean().optional(),
+    text: z.string().optional(),
+    button_text: z.string().optional(),
+    button_link: z.string().optional(),
+    bg_color: z.string().optional(),
+    text_color: z.string().optional(),
+  }).optional(),
 });
 
 type ContentFormValues = z.infer<typeof contentSchema>;
@@ -307,7 +315,66 @@ export default function ContentManager() {
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            <Accordion type="multiple" defaultValue={['hero', 'about', 'contact', 'menu', 'shabbat-notice', 'newsletter', 'testimonials', 'features', 'cart', 'footer', 'seo', 'dish_card']} className="w-full">
+            <Accordion type="multiple" defaultValue={['hero', 'about', 'contact', 'menu', 'shabbat-notice', 'newsletter', 'testimonials', 'features', 'cart', 'footer', 'seo', 'dish_card', 'announcement_bar']} className="w-full">
+              <AccordionItem value="announcement_bar">
+                <AccordionTrigger className="font-headline text-xl">פס הודעות עליון</AccordionTrigger>
+                <AccordionContent className="space-y-4 pt-4">
+                    <FormField
+                        control={form.control}
+                        name="announcement_bar.enabled"
+                        render={({ field }) => (
+                            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                                <div className="space-y-0.5">
+                                    <FormLabel>הפעל פס הודעות</FormLabel>
+                                    <FormDescription>
+                                        כאשר מופעל, הפס יופיע בראש כל עמודי האתר.
+                                    </FormDescription>
+                                </div>
+                                <FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl>
+                            </FormItem>
+                        )}
+                    />
+                    <FormField name="announcement_bar.text" control={form.control} render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>תוכן ההודעה</FormLabel>
+                            <FormControl><Input {...field} value={field.value ?? ''} /></FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )} />
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <FormField name="announcement_bar.button_text" control={form.control} render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>טקסט כפתור (אופציונלי)</FormLabel>
+                                <FormControl><Input {...field} value={field.value ?? ''} /></FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )} />
+                        <FormField name="announcement_bar.button_link" control={form.control} render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>קישור כפתור (אופציונלי)</FormLabel>
+                                <FormControl><Input {...field} value={field.value ?? ''} placeholder="/menu" /></FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )} />
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <FormField name="announcement_bar.bg_color" control={form.control} render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>צבע רקע</FormLabel>
+                                <FormControl><Input type="color" {...field} className="p-1 h-10 w-full" value={field.value ?? '#000000'} /></FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )} />
+                        <FormField name="announcement_bar.text_color" control={form.control} render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>צבע טקסט</FormLabel>
+                                <FormControl><Input type="color" {...field} className="p-1 h-10 w-full" value={field.value ?? '#FFFFFF'} /></FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )} />
+                    </div>
+                </AccordionContent>
+              </AccordionItem>
               <AccordionItem value="hero">
                 <AccordionTrigger className="font-headline text-xl">עמוד הבית (אזור עליון)</AccordionTrigger>
                 <AccordionContent className="space-y-4 pt-4">
@@ -983,8 +1050,3 @@ export default function ContentManager() {
     </Card>
   );
 }
-
-    
-
-    
-

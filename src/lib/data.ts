@@ -120,6 +120,14 @@ export const DEFAULT_APP_STATE: AppState = {
         quick_view_overlay_opacity: 40,
         quick_view_font: 'default',
         quick_view_color: '#FFFFFF',
+    },
+    announcement_bar: {
+      enabled: false,
+      text: 'מבצע מיוחד לסוף השבוע!',
+      button_text: 'לפרטים',
+      button_link: '/menu',
+      bg_color: '#000000',
+      text_color: '#FFFFFF'
     }
   },
   // These arrays are intentionally empty.
