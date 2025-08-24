@@ -103,6 +103,7 @@ const dishSchema = z.object({
   is_available: z.boolean(),
   is_recommended: z.boolean().optional(),
   tags: z.array(z.string()),
+  notes: z.array(z.string()).optional(),
   // These are not real DB columns anymore, just for form state
   name_font_size: z.string().optional(),
   description_font_size: z.string().optional(),
@@ -166,10 +167,16 @@ export default function MenuManager() {
     resolver: zodResolver(dishSchema),
     defaultValues: {
         name: '', short_description: '', full_description: '', price: 0, category_ids: [],
-        is_available: true, is_recommended: false, tags: [], main_image: '', gallery_images: [],
+        is_available: true, is_recommended: false, tags: [], notes: [], main_image: '', gallery_images: [],
         price_subtitle: '', name_font_size: 'default', description_font_size: 'default'
     }
   })
+  
+  const { fields: noteFields, append: appendNote, remove: removeNote } = useFieldArray({
+      control: dishForm.control,
+      name: "notes"
+  });
+
 
   const categoryForm = useForm<z.infer<typeof categorySchema>>({ 
       resolver: zodResolver(categorySchema),
@@ -186,7 +193,7 @@ export default function MenuManager() {
         setEditingDish(null);
         dishForm.reset({
             name: '', short_description: '', full_description: '', price: 0, category_ids: [],
-            is_available: true, is_recommended: false, tags: [], main_image: '', gallery_images: [],
+            is_available: true, is_recommended: false, tags: [], notes: [], main_image: '', gallery_images: [],
             price_subtitle: '', name_font_size: 'default', description_font_size: 'default',
         });
     } else if (editingDish) {
@@ -200,6 +207,7 @@ export default function MenuManager() {
           price: editingDish.price || 0,
           price_subtitle: editingDish.price_subtitle || '',
           tags: tags,
+          notes: editingDish.notes || [],
           gallery_images: editingDish.gallery_images || [],
           name_font_size: nameSizeTag ? nameSizeTag.replace('n-fs-', '') : 'default',
           description_font_size: descSizeTag ? descSizeTag.replace('d-fs-', '') : 'default',
@@ -616,6 +624,41 @@ export default function MenuManager() {
                         <FormMessage />
                       </FormItem>
                     )} />
+
+                    <div className="border p-4 rounded-md space-y-4">
+                        <FormLabel>הערות / נקודות למנה</FormLabel>
+                        <div className="space-y-2">
+                           {noteFields.map((field, index) => (
+                                <div key={field.id} className="flex items-center gap-2">
+                                     <FormField
+                                        control={dishForm.control}
+                                        name={`notes.${index}`}
+                                        render={({ field }) => (
+                                            <FormItem className="flex-grow">
+                                                <FormControl>
+                                                    <Input {...field} placeholder={`הערה ${index + 1}`} />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <Button type="button" variant="destructive" size="icon" onClick={() => removeNote(index)}>
+                                        <Trash2 className="h-4 w-4" />
+                                    </Button>
+                                </div>
+                           ))}
+                        </div>
+                        <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => appendNote("")}
+                        >
+                            <PlusCircle className="mr-2 h-4 w-4" />
+                            הוסף הערה
+                        </Button>
+                    </div>
+
                      <div className="border p-4 rounded-md space-y-4">
                         <h3 className="text-lg font-medium">הגדרות עיצוב מנה</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

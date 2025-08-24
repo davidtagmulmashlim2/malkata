@@ -9,7 +9,7 @@ import { ShoppingBagIcon } from '@/components/icons/shopping-bag-icon';
 import { Badge } from './ui/badge';
 import { useApp } from '@/context/app-context';
 import { toast } from '@/hooks/use-toast';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { useEffect, useState, useMemo } from 'react';
 import { cn } from '@/lib/utils';
 import { useIsClient } from '@/hooks/use-is-client';
@@ -86,8 +86,6 @@ function DishCardLogic({ dish }: DishCardProps) {
   };
 
   const handleCloseDialog = () => {
-    // router.back() will handle removing the 'dish' param from the URL
-    // and closing the dialog via onOpenChange.
     router.back();
     setCurrentImageIndex(0);
   };
@@ -134,6 +132,23 @@ function DishCardLogic({ dish }: DishCardProps) {
   const prevImage = () => {
       setCurrentImageIndex((prevIndex) => (prevIndex - 1 + allImages.length) % allImages.length);
   };
+  
+  const renderNotes = (notes: Dish['notes']) => {
+      if (!notes || notes.length === 0) return null;
+      return (
+          <ul className="text-muted-foreground text-sm space-y-1 mt-4 text-right">
+              {notes.map((note, index) => (
+                  <li key={index} className="flex items-start gap-2">
+                      <span className="mt-1">
+                          <svg height="6" width="6" className="fill-current"><circle cx="3" cy="3" r="3" /></svg>
+                      </span>
+                      <span>{note}</span>
+                  </li>
+              ))}
+          </ul>
+      );
+  };
+
 
   const renderTags = (tags: Dish['tags']) => {
     if (!tags || tags.length === 0) return null;
@@ -299,10 +314,8 @@ function DishCardLogic({ dish }: DishCardProps) {
         </div>
       </div>
 
-      <Dialog open={isDialogOpen} onOpenChange={(open) => { 
+      <Dialog open={isDialogOpen} onOpenChange={(open) => {
         if (!open) {
-            // We only need to handle closing via the 'X' or overlay click.
-            // The back button is handled by router.back()
             if (isDialogOpen) {
                 handleCloseDialog();
             }
@@ -351,6 +364,7 @@ function DishCardLogic({ dish }: DishCardProps) {
                       <div className="flex gap-2 my-2 justify-end flex-wrap-reverse">
                           {renderTags(dish.tags)}
                       </div>
+                      {renderNotes(dish.notes)}
                       
                       <DialogFooter className="mt-4">
                           <div className="flex justify-between items-center w-full gap-2">
@@ -364,7 +378,7 @@ function DishCardLogic({ dish }: DishCardProps) {
                                           <Minus className="h-3 w-3" />
                                       </Button>
                                       <span className="w-6 text-center text-sm font-bold">{quantity}</span>
-                                      <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setQuantity(q => q + 1)}>
+                                      <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setQuantity(q => q + 1))}>
                                           <Plus className="h-3 w-3" />
                                       </Button>
                                   </div>
@@ -436,7 +450,7 @@ function DishCardLogic({ dish }: DishCardProps) {
                           <div className="flex gap-2 my-4 justify-end flex-wrap">
                               {renderTags(dish.tags)}
                           </div>
-                          
+                          {renderNotes(dish.notes)}
                       </div>
                       <DialogFooter className="mt-6">
                           <div className="flex justify-between items-center w-full gap-4">
@@ -450,7 +464,7 @@ function DishCardLogic({ dish }: DishCardProps) {
                                           <Minus className="h-4 w-4" />
                                       </Button>
                                       <span className="w-8 text-center text-md font-bold">{quantity}</span>
-                                      <Button variant="ghost" size="icon" className="h-9 w-9" onClick={() => setQuantity(q => q + 1)}>
+                                      <Button variant="ghost" size="icon" className="h-9 w-9" onClick={() => setQuantity(q => q + 1))}>
                                           <Plus className="h-4 w-4" />
                                       </Button>
                                   </div>
