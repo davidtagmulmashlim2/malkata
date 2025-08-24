@@ -25,24 +25,33 @@ export function AnnouncementBar() {
 
     return (
         <div 
-            className="relative z-50 flex items-center justify-between gap-x-6 px-6 py-2 sm:px-3.5 text-sm"
+            className="relative z-50 flex items-center justify-between gap-x-6 px-4 py-2 text-sm"
             style={{ 
                 backgroundColor: announcement_bar.bg_color || '#000000',
                 color: announcement_bar.text_color || '#FFFFFF'
             }}
         >
-             {/* Right Text */}
-            <div className="flex-1 text-right">
+            {/* Mobile View: Right text with optional link */}
+            <div className="flex-1 text-right sm:hidden">
+                 {hasButton && announcement_bar.text_right ? (
+                     <Link href={announcement_bar.button_link!} className="underline hover:no-underline">
+                        {announcement_bar.text_right}
+                     </Link>
+                 ) : hasRightText ? (
+                    <p>{announcement_bar.text_right}</p>
+                 ) : null}
+            </div>
+
+            {/* Desktop View */}
+            <div className="hidden sm:flex flex-1 text-right">
                 {hasRightText && <p>{announcement_bar.text_right}</p>}
             </div>
 
-            {/* Center Text */}
-            <div className="flex-1 text-center">
+            <div className="hidden sm:flex flex-1 text-center">
                  {hasCenterText && <p>{announcement_bar.text_center}</p>}
             </div>
 
-            {/* Left Button */}
-            <div className="flex-1 text-left">
+            <div className="hidden sm:flex flex-1 text-left">
                 {hasButton && (
                     <Link
                         href={announcement_bar.button_link!}
