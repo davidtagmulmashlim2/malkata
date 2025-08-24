@@ -39,13 +39,13 @@ export function AnnouncementBar() {
                     color: text_color || '#FFFFFF'
                 }}
             >
-                <div className="animate-marquee-continuous flex">
+                <div className="animate-marquee-continuous flex min-w-full shrink-0">
                     <span className="text-sm px-6">{scrolling_text}</span>
-                    <span className="text-sm px-6">{scrolling_text}</span>
+                    <span className="text-sm px-6" aria-hidden="true">{scrolling_text}</span>
                 </div>
-                 <div className="animate-marquee-continuous flex" aria-hidden="true">
+                 <div className="animate-marquee-continuous flex min-w-full shrink-0" aria-hidden="true">
                     <span className="text-sm px-6">{scrolling_text}</span>
-                    <span className="text-sm px-6">{scrolling_text}</span>
+                    <span className="text-sm px-6" aria-hidden="true">{scrolling_text}</span>
                 </div>
             </div>
         );
