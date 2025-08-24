@@ -252,7 +252,7 @@ function DishCardLogic({ dish }: DishCardProps) {
                      <h3 className={cn("font-headline font-bold", nameFontSizeClass)}>{dish.name}</h3>
                 </div>
                 <div className="flex-shrink-0">
-                     <TooltipProvider>
+                     <TooltipProvider delayDuration={0}>
                         <Tooltip>
                             <TooltipTrigger asChild>
                             <Button
