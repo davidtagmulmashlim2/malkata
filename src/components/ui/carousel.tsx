@@ -117,6 +117,8 @@ const Carousel = React.forwardRef<
         if (!api) {
             return
         }
+        
+        onSelect(api) // Call onSelect on initial load
         setScrollSnaps(api.scrollSnapList())
         api.on('select', onSelect)
         api.on('reInit', (api) => {
