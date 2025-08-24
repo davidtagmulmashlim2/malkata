@@ -89,7 +89,7 @@ function DishCardLogic({ dish }: DishCardProps) {
     setCurrentImageIndex(0);
   };
   
-  const handleUpdateCart = () => {
+    const handleUpdateCart = () => {
     if (cartItem) {
       updateCartQuantity(dish.id!, quantity);
       toast({
@@ -131,7 +131,7 @@ function DishCardLogic({ dish }: DishCardProps) {
   const prevImage = () => {
       setCurrentImageIndex((prevIndex) => (prevIndex - 1 + allImages.length) % allImages.length);
   };
-  
+
   const renderTags = (tags: Dish['tags']) => {
     if (!tags || tags.length === 0) return null;
     const standardTags = tags.filter(t => !t.startsWith('n-fs-') && !t.startsWith('d-fs-'));
@@ -149,7 +149,7 @@ function DishCardLogic({ dish }: DishCardProps) {
         </>
     );
   };
-
+  
   const buttonText = cartItem ? "עדכן כמות בסל" : "הוספה לסל";
   
   const nameFontSizeClass = useMemo(() => {
@@ -165,6 +165,7 @@ function DishCardLogic({ dish }: DishCardProps) {
     if(sizeKey === 'default') return 'text-sm';
     return textSizeClasses[sizeKey] || 'text-sm';
   }, [dish.tags]);
+
 
   return (
     <>
@@ -249,7 +250,7 @@ function DishCardLogic({ dish }: DishCardProps) {
                      <h3 className={cn("font-headline font-bold", nameFontSizeClass)}>{dish.name}</h3>
                 </div>
                 <div className="flex-shrink-0">
-                     <TooltipProvider delayDuration={0}>
+                     <TooltipProvider>
                         <Tooltip>
                             <TooltipTrigger asChild>
                             <Button
@@ -294,7 +295,8 @@ function DishCardLogic({ dish }: DishCardProps) {
             </div>
         </div>
       </div>
-      <Dialog open={isDialogOpen} onOpenChange={(open) => {
+
+      <Dialog open={isDialogOpen} onOpenChange={(open) => { 
         if (!open) {
             if (isDialogOpen) {
                 handleCloseDialog();
@@ -341,10 +343,10 @@ function DishCardLogic({ dish }: DishCardProps) {
                           <DialogTitle className="font-headline text-2xl mb-1 text-right">{dish.name}</DialogTitle>
                       </DialogHeader>
                       <p className="text-muted-foreground text-sm text-right mb-2">{dish.full_description}</p>
-                      <div className="flex gap-2 my-2 justify-end flex-wrap-reverse">
+                      <div className="flex gap-2 my-2 justify-start flex-wrap-reverse">
                           {renderTags(dish.tags)}
                       </div>
-                      
+
                       <DialogFooter className="mt-4">
                           <div className="flex justify-between items-center w-full gap-2">
                               <div>
@@ -357,7 +359,7 @@ function DishCardLogic({ dish }: DishCardProps) {
                                           <Minus className="h-3 w-3" />
                                       </Button>
                                       <span className="w-6 text-center text-sm font-bold">{quantity}</span>
-                                      <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setQuantity(q => q + 1))}>
+                                      <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setQuantity(q => q + 1)}>
                                           <Plus className="h-3 w-3" />
                                       </Button>
                                   </div>
@@ -426,7 +428,7 @@ function DishCardLogic({ dish }: DishCardProps) {
                               <DialogTitle className="font-headline text-3xl mb-2 text-right">{dish.name}</DialogTitle>
                           </DialogHeader>
                           <p className="text-muted-foreground text-right">{dish.full_description}</p>
-                          <div className="flex gap-2 my-4 justify-end flex-wrap">
+                          <div className="flex gap-2 my-4 justify-start flex-wrap">
                               {renderTags(dish.tags)}
                           </div>
                       </div>
@@ -442,7 +444,7 @@ function DishCardLogic({ dish }: DishCardProps) {
                                           <Minus className="h-4 w-4" />
                                       </Button>
                                       <span className="w-8 text-center text-md font-bold">{quantity}</span>
-                                      <Button variant="ghost" size="icon" className="h-9 w-9" onClick={() => setQuantity(q => q + 1))}>
+                                      <Button variant="ghost" size="icon" className="h-9 w-9" onClick={() => setQuantity(q => q + 1)}>
                                           <Plus className="h-4 w-4" />
                                       </Button>
                                   </div>
