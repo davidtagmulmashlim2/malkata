@@ -171,7 +171,8 @@ export interface SiteContent {
   };
   announcement_bar?: {
     enabled?: boolean;
-    text?: string;
+    text_center?: string;
+    text_right?: string;
     button_text?: string;
     button_link?: string;
     bg_color?: string;

@@ -1,4 +1,5 @@
 
+
 'use client';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -192,7 +193,8 @@ const contentSchema = z.object({
   }).optional(),
   announcement_bar: z.object({
     enabled: z.boolean().optional(),
-    text: z.string().optional(),
+    text_center: z.string().optional(),
+    text_right: z.string().optional(),
     button_text: z.string().optional(),
     button_link: z.string().optional(),
     bg_color: z.string().optional(),
@@ -334,13 +336,22 @@ export default function ContentManager() {
                             </FormItem>
                         )}
                     />
-                    <FormField name="announcement_bar.text" control={form.control} render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>תוכן ההודעה</FormLabel>
-                            <FormControl><Input {...field} value={field.value ?? ''} /></FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )} />
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <FormField name="announcement_bar.text_right" control={form.control} render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>טקסט ימין (אופציונלי)</FormLabel>
+                                <FormControl><Input {...field} value={field.value ?? ''} /></FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )} />
+                        <FormField name="announcement_bar.text_center" control={form.control} render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>טקסט מרכזי (אופציונלי)</FormLabel>
+                                <FormControl><Input {...field} value={field.value ?? ''} /></FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )} />
+                    </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <FormField name="announcement_bar.button_text" control={form.control} render={({ field }) => (
                             <FormItem>

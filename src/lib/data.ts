@@ -123,7 +123,8 @@ export const DEFAULT_APP_STATE: AppState = {
     },
     announcement_bar: {
       enabled: false,
-      text: 'מבצע מיוחד לסוף השבוע!',
+      text_center: 'מבצע מיוחד לסוף השבוע!',
+      text_right: 'משלוחים לכל הארץ',
       button_text: 'לפרטים',
       button_link: '/menu',
       bg_color: '#000000',
