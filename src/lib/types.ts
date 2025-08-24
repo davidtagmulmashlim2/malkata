@@ -171,6 +171,8 @@ export interface SiteContent {
   };
   announcement_bar?: {
     enabled?: boolean;
+    display_mode?: 'static' | 'scrolling';
+    scrolling_text?: string;
     text_center?: string;
     text_right?: string;
     button_text?: string;

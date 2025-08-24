@@ -22,6 +22,7 @@ import { Leaf, ChefHat, Bike, PartyPopper, Carrot, Rocket, Send, Smartphone, Eye
 import { Checkbox } from '@/components/ui/checkbox';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 
 const featureIcons = [
@@ -193,6 +194,8 @@ const contentSchema = z.object({
   }).optional(),
   announcement_bar: z.object({
     enabled: z.boolean().optional(),
+    display_mode: z.enum(['static', 'scrolling']).optional(),
+    scrolling_text: z.string().optional(),
     text_center: z.string().optional(),
     text_right: z.string().optional(),
     button_text: z.string().optional(),
@@ -250,10 +253,17 @@ export default function ContentManager() {
   const menuImage = form.watch('menu.main_image');
   const seoImage = form.watch('seo.image');
   const newsletterImage = form.watch('newsletter.image');
+  const announcementBarMode = form.watch('announcement_bar.display_mode');
 
   useEffect(() => {
     if (siteContent) {
-      form.reset(siteContent);
+      form.reset({
+        ...siteContent,
+        announcement_bar: {
+          display_mode: 'static',
+          ...siteContent.announcement_bar,
+        }
+      });
     }
   }, [siteContent, form]);
 
@@ -336,38 +346,78 @@ export default function ContentManager() {
                             </FormItem>
                         )}
                     />
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <FormField name="announcement_bar.text_right" control={form.control} render={({ field }) => (
+                    <FormField
+                        control={form.control}
+                        name="announcement_bar.display_mode"
+                        render={({ field }) => (
+                            <FormItem className="space-y-3">
+                                <FormLabel>מצב תצוגה</FormLabel>
+                                <FormControl>
+                                    <RadioGroup
+                                    onValueChange={field.onChange}
+                                    defaultValue={field.value}
+                                    className="flex flex-col space-y-1"
+                                    >
+                                    <FormItem className="flex items-center space-x-3 space-y-0">
+                                        <FormControl><RadioGroupItem value="static" /></FormControl>
+                                        <FormLabel className="font-normal">פריסה סטטית</FormLabel>
+                                    </FormItem>
+                                    <FormItem className="flex items-center space-x-3 space-y-0">
+                                        <FormControl><RadioGroupItem value="scrolling" /></FormControl>
+                                        <FormLabel className="font-normal">טקסט גולל (סרט נע)</FormLabel>
+                                    </FormItem>
+                                    </RadioGroup>
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+
+                    {announcementBarMode === 'scrolling' ? (
+                       <FormField name="announcement_bar.scrolling_text" control={form.control} render={({ field }) => (
                             <FormItem>
-                                <FormLabel>טקסט ימין (אופציונלי)</FormLabel>
-                                <FormControl><Input {...field} value={field.value ?? ''} /></FormControl>
+                                <FormLabel>תוכן לגלילה</FormLabel>
+                                <FormControl><Textarea {...field} value={field.value ?? ''} placeholder="המבצעים שלנו: מנה שנייה בחצי מחיר, משלוח חינם מעל 200 ש״ח, ועוד..." /></FormControl>
                                 <FormMessage />
                             </FormItem>
                         )} />
-                        <FormField name="announcement_bar.text_center" control={form.control} render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>טקסט מרכזי (אופציונלי)</FormLabel>
-                                <FormControl><Input {...field} value={field.value ?? ''} /></FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )} />
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <FormField name="announcement_bar.button_text" control={form.control} render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>טקסט כפתור (אופציונלי)</FormLabel>
-                                <FormControl><Input {...field} value={field.value ?? ''} /></FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )} />
-                        <FormField name="announcement_bar.button_link" control={form.control} render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>קישור כפתור (אופציונלי)</FormLabel>
-                                <FormControl><Input {...field} value={field.value ?? ''} placeholder="/menu" /></FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )} />
-                    </div>
+                    ) : (
+                        <>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <FormField name="announcement_bar.text_right" control={form.control} render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>טקסט ימין (אופציונלי)</FormLabel>
+                                        <FormControl><Input {...field} value={field.value ?? ''} /></FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )} />
+                                <FormField name="announcement_bar.text_center" control={form.control} render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>טקסט מרכזי (אופציונלי)</FormLabel>
+                                        <FormControl><Input {...field} value={field.value ?? ''} /></FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )} />
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <FormField name="announcement_bar.button_text" control={form.control} render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>טקסט כפתור (אופציונלי)</FormLabel>
+                                        <FormControl><Input {...field} value={field.value ?? ''} /></FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )} />
+                                <FormField name="announcement_bar.button_link" control={form.control} render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>קישור כפתור (אופציונלי)</FormLabel>
+                                        <FormControl><Input {...field} value={field.value ?? ''} placeholder="/menu" /></FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )} />
+                            </div>
+                        </>
+                    )}
+                    
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <FormField name="announcement_bar.bg_color" control={form.control} render={({ field }) => (
                             <FormItem>
