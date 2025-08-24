@@ -13,7 +13,6 @@ export interface Dish {
   category_ids: string[];
   is_available: boolean;
   tags: string[]; // Storing font sizes as tags, e.g., "n-fs-xl", "d-fs-sm"
-  notes?: string[]; // Optional array of strings for bullet points
   is_recommended?: boolean;
 }
 

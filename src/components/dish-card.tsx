@@ -351,16 +351,7 @@ function DishCardLogic({ dish }: DishCardProps) {
                       <div className="flex gap-2 my-2 justify-end flex-wrap-reverse">
                           {renderTags(dish.tags)}
                       </div>
-                       {dish.notes && dish.notes.length > 0 && (
-                          <ul className="space-y-1 text-sm text-muted-foreground text-right my-2">
-                              {dish.notes.map((note, index) => (
-                                  <li key={index} className="flex items-start text-right">
-                                      <span className="ml-2 mt-1">∙</span>
-                                      <span className="flex-1">{note}</span>
-                                  </li>
-                              ))}
-                          </ul>
-                      )}
+                      
                       <DialogFooter className="mt-4">
                           <div className="flex justify-between items-center w-full gap-2">
                               <div>
@@ -445,16 +436,7 @@ function DishCardLogic({ dish }: DishCardProps) {
                           <div className="flex gap-2 my-4 justify-end flex-wrap">
                               {renderTags(dish.tags)}
                           </div>
-                          {dish.notes && dish.notes.length > 0 && (
-                            <ul className="space-y-1 text-sm text-muted-foreground text-right my-4">
-                                {dish.notes.map((note, index) => (
-                                    <li key={index} className="flex items-start text-right">
-                                        <span className="ml-2 mt-1">∙</span>
-                                        <span className="flex-1">{note}</span>
-                                    </li>
-                                ))}
-                            </ul>
-                          )}
+                          
                       </div>
                       <DialogFooter className="mt-6">
                           <div className="flex justify-between items-center w-full gap-4">
