@@ -129,12 +129,12 @@
   }
 
   @keyframes marquee-continuous {
-    from { transform: translateX(-100%); }
-    to { transform: translateX(100%); }
+    from { transform: translateX(0); }
+    to { transform: translateX(-100%); }
   }
 
   .animate-marquee-continuous {
-    animation: marquee-continuous 20s linear infinite;
+    animation: marquee-continuous 40s linear infinite;
     display: inline-block;
   }
 }

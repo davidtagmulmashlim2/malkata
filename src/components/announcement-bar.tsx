@@ -39,9 +39,14 @@ export function AnnouncementBar() {
                     color: text_color || '#FFFFFF'
                 }}
             >
-                <p className="animate-marquee-continuous text-sm px-6">{scrolling_text}</p>
-                 {/* The duplicate is for the animation to look seamless */}
-                <p className="animate-marquee-continuous text-sm px-6" aria-hidden="true">{scrolling_text}</p>
+                <div className="animate-marquee-continuous flex">
+                    <span className="text-sm px-6">{scrolling_text}</span>
+                    <span className="text-sm px-6">{scrolling_text}</span>
+                </div>
+                 <div className="animate-marquee-continuous flex" aria-hidden="true">
+                    <span className="text-sm px-6">{scrolling_text}</span>
+                    <span className="text-sm px-6">{scrolling_text}</span>
+                </div>
             </div>
         );
     }
