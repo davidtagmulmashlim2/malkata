@@ -32,16 +32,14 @@ export function AnnouncementBar() {
         if (!scrolling_text) return null;
         return (
             <div 
-                className="relative z-50 flex items-center overflow-hidden whitespace-nowrap py-2"
+                className="relative z-50 flex overflow-hidden whitespace-nowrap py-2"
                 style={{ 
                     backgroundColor: bg_color || '#000000',
                     color: text_color || '#FFFFFF'
                 }}
             >
-                <div className="animate-marquee-rtl flex min-w-full shrink-0 items-center justify-around">
+                <div className="animate-marquee-rtl flex items-center">
                     <span className="text-sm px-6">{scrolling_text}</span>
-                </div>
-                 <div className="animate-marquee-rtl flex min-w-full shrink-0 items-center justify-around" aria-hidden="true">
                     <span className="text-sm px-6">{scrolling_text}</span>
                 </div>
             </div>
