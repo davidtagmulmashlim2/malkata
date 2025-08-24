@@ -481,5 +481,3 @@ export function DishCard({ dish }: DishCardProps) {
   // On the client, render the full component with hooks
   return <DishCardLogic dish={dish} />;
 }
-
-    
