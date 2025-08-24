@@ -89,7 +89,7 @@ function DishCardLogic({ dish }: DishCardProps) {
     setCurrentImageIndex(0);
   };
   
-    const handleUpdateCart = () => {
+  const handleUpdateCart = () => {
     if (cartItem) {
       updateCartQuantity(dish.id!, quantity);
       toast({
@@ -149,7 +149,7 @@ function DishCardLogic({ dish }: DishCardProps) {
         </>
     );
   };
-  
+
   const renderNotes = (notes?: string[]) => {
       if (!notes || notes.length === 0) return null;
       return (
@@ -165,7 +165,7 @@ function DishCardLogic({ dish }: DishCardProps) {
           </ul>
       );
   };
-
+  
   const buttonText = cartItem ? "עדכן כמות בסל" : "הוספה לסל";
   
   const nameFontSizeClass = useMemo(() => {
