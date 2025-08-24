@@ -31,15 +31,19 @@ export function AnnouncementBar() {
                 color: announcement_bar.text_color || '#FFFFFF'
             }}
         >
-            {/* Mobile View: Right text with optional link */}
-            <div className="flex-1 text-right sm:hidden">
-                 {hasButton && announcement_bar.text_right ? (
-                     <Link href={announcement_bar.button_link!} className="underline hover:no-underline">
-                        {announcement_bar.text_right}
-                     </Link>
-                 ) : hasRightText ? (
-                    <p>{announcement_bar.text_right}</p>
-                 ) : null}
+            {/* Mobile View */}
+             <div className="flex flex-1 items-center justify-between sm:hidden">
+                <div className="flex-1 text-right">
+                    {hasRightText && <p>{announcement_bar.text_right}</p>}
+                </div>
+                {hasButton && (
+                     <Link
+                        href={announcement_bar.button_link!}
+                        className="flex-shrink-0 whitespace-nowrap font-semibold underline hover:no-underline ml-4"
+                    >
+                        {announcement_bar.button_text}
+                    </Link>
+                )}
             </div>
 
             {/* Desktop View */}
@@ -47,11 +51,11 @@ export function AnnouncementBar() {
                 {hasRightText && <p>{announcement_bar.text_right}</p>}
             </div>
 
-            <div className="hidden sm:flex flex-1 text-center">
+            <div className="hidden sm:flex flex-1 justify-center text-center">
                  {hasCenterText && <p>{announcement_bar.text_center}</p>}
             </div>
 
-            <div className="hidden sm:flex flex-1 text-left">
+            <div className="hidden sm:flex flex-1 justify-end text-left">
                 {hasButton && (
                     <Link
                         href={announcement_bar.button_link!}
