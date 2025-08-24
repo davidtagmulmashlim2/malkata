@@ -128,12 +128,12 @@
     }
   }
 
-  @keyframes marquee-continuous {
-    from { transform: translateX(0); }
-    to { transform: translateX(-100%); }
+  @keyframes marquee-rtl {
+    from { transform: translateX(-100%); }
+    to { transform: translateX(100%); }
   }
 
-  .animate-marquee-continuous {
-    animation: marquee-continuous 40s linear infinite;
+  .animate-marquee-rtl {
+    animation: marquee-rtl 40s linear infinite;
   }
 }
