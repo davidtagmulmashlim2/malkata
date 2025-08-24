@@ -150,6 +150,22 @@ function DishCardLogic({ dish }: DishCardProps) {
     );
   };
   
+  const renderNotes = (notes?: string[]) => {
+      if (!notes || notes.length === 0) return null;
+      return (
+          <ul className="text-muted-foreground text-sm space-y-1 mt-4 text-right">
+              {notes.map((note, index) => (
+                  <li key={index} className="flex items-start gap-2">
+                      <span className="mt-1">
+                          <svg height="6" width="6" className="fill-current"><circle cx="3" cy="3" r="3" /></svg>
+                      </span>
+                      <span>{note}</span>
+                  </li>
+              ))}
+          </ul>
+      );
+  };
+
   const buttonText = cartItem ? "עדכן כמות בסל" : "הוספה לסל";
   
   const nameFontSizeClass = useMemo(() => {
@@ -165,22 +181,6 @@ function DishCardLogic({ dish }: DishCardProps) {
     if(sizeKey === 'default') return 'text-sm';
     return textSizeClasses[sizeKey] || 'text-sm';
   }, [dish.tags]);
-
-  const renderNotes = (notes: Dish['notes']) => {
-      if (!notes || notes.length === 0) return null;
-      return (
-          <ul className="text-muted-foreground text-sm space-y-1 mt-4 text-right">
-              {notes.map((note, index) => (
-                  <li key={index} className="flex items-start gap-2">
-                      <span className="mt-1">
-                          <svg height="6" width="6" className="fill-current"><circle cx="3" cy="3" r="3" /></svg>
-                      </span>
-                      <span>{note}</span>
-                  </li>
-              ))}
-          </ul>
-      );
-  };
 
   return (
     <>
@@ -500,3 +500,5 @@ export function DishCard({ dish }: DishCardProps) {
   // On the client, render the full component with hooks
   return <DishCardLogic dish={dish} />;
 }
+
+    
