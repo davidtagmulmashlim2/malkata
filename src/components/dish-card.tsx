@@ -8,7 +8,7 @@ import { ShoppingBagIcon } from '@/components/icons/shopping-bag-icon';
 import { Badge } from './ui/badge';
 import { useApp } from '@/context/app-context';
 import { toast } from '@/hooks/use-toast';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from '@/components/ui/dialog';
 import { useEffect, useState, useMemo } from 'react';
 import { cn } from '@/lib/utils';
 import { useIsClient } from '@/hooks/use-is-client';
@@ -349,7 +349,7 @@ function DishCardLogic({ dish }: DishCardProps) {
                       {dish.notes && dish.notes.length > 0 && (
                         <div className="mt-2 space-y-1 text-sm text-muted-foreground text-right">
                             {dish.notes.map((note, index) => (
-                                note && <p key={index}>• {note}</p>
+                                note && <p key={index} className="font-bold text-foreground">• {note}</p>
                             ))}
                         </div>
                       )}
@@ -439,9 +439,9 @@ function DishCardLogic({ dish }: DishCardProps) {
                               {renderTags(dish.tags)}
                           </div>
                            {dish.notes && dish.notes.length > 0 && (
-                            <div className="mt-4 space-y-1 text-sm text-muted-foreground text-right">
+                            <div className="mt-4 space-y-1 text-sm text-right">
                                 {dish.notes.map((note, index) => (
-                                    note && <p key={index}>• {note}</p>
+                                    note && <p key={index} className="font-bold text-foreground">• {note}</p>
                                 ))}
                             </div>
                           )}
