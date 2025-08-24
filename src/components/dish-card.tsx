@@ -250,7 +250,7 @@ function DishCardLogic({ dish }: DishCardProps) {
                      <h3 className={cn("font-headline font-bold", nameFontSizeClass)}>{dish.name}</h3>
                 </div>
                 <div className="flex-shrink-0">
-                     <TooltipProvider>
+                     <TooltipProvider delayDuration={0}>
                         <Tooltip>
                             <TooltipTrigger asChild>
                             <Button
@@ -346,6 +346,13 @@ function DishCardLogic({ dish }: DishCardProps) {
                       <div className="flex gap-2 my-2 justify-start flex-wrap-reverse">
                           {renderTags(dish.tags)}
                       </div>
+                      {dish.notes && dish.notes.length > 0 && (
+                        <div className="mt-2 space-y-1 text-sm text-muted-foreground text-right">
+                            {dish.notes.map((note, index) => (
+                                note && <p key={index}>• {note}</p>
+                            ))}
+                        </div>
+                      )}
 
                       <DialogFooter className="mt-4">
                           <div className="flex justify-between items-center w-full gap-2">
@@ -431,6 +438,13 @@ function DishCardLogic({ dish }: DishCardProps) {
                           <div className="flex gap-2 my-4 justify-start flex-wrap">
                               {renderTags(dish.tags)}
                           </div>
+                           {dish.notes && dish.notes.length > 0 && (
+                            <div className="mt-4 space-y-1 text-sm text-muted-foreground text-right">
+                                {dish.notes.map((note, index) => (
+                                    note && <p key={index}>• {note}</p>
+                                ))}
+                            </div>
+                          )}
                       </div>
                       <DialogFooter className="mt-6">
                           <div className="flex justify-between items-center w-full gap-4">
