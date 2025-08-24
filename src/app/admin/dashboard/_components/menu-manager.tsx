@@ -15,7 +15,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, Dialog
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from '@/components/ui/form'
-import { PlusCircle, Edit, Trash2, X, ChevronsUpDown, Check, Eye, CakeSlice, Salad, Fish, Soup, Beef, GlassWater, Wheat, Carrot, Utensils, Crown, UtensilsCrossed, Pizza } from 'lucide-react'
+import { PlusCircle, Edit, Trash2, X, ChevronsUpDown, Check, Eye, CakeSlice, Salad, Fish, Soup, Beef, GlassWater, Wheat, Carrot, Utensils, Crown, UtensilsCrossed, Pizza, Plus } from 'lucide-react'
 import { toast } from '@/hooks/use-toast'
 import type { Dish, Category } from '@/lib/types'
 import { storeImage, deleteImage } from '@/lib/image-store.client';
@@ -103,6 +103,7 @@ const dishSchema = z.object({
   is_available: z.boolean(),
   is_recommended: z.boolean().optional(),
   tags: z.array(z.string()),
+  notes: z.array(z.string()).optional(),
   // These are not real DB columns anymore, just for form state
   name_font_size: z.string().optional(),
   description_font_size: z.string().optional(),
@@ -168,8 +169,15 @@ export default function MenuManager() {
         name: '', short_description: '', full_description: '', price: 0, category_ids: [],
         is_available: true, is_recommended: false, tags: [], main_image: '', gallery_images: [],
         price_subtitle: '', name_font_size: 'default', description_font_size: 'default',
+        notes: [],
     }
   })
+  
+  const { fields: noteFields, append: appendNote, remove: removeNote } = useFieldArray({
+      control: dishForm.control,
+      name: "notes"
+  });
+
   const categoryForm = useForm<z.infer<typeof categorySchema>>({ 
       resolver: zodResolver(categorySchema),
       defaultValues: { 
@@ -187,6 +195,7 @@ export default function MenuManager() {
             name: '', short_description: '', full_description: '', price: 0, category_ids: [],
             is_available: true, is_recommended: false, tags: [], main_image: '', gallery_images: [],
             price_subtitle: '', name_font_size: 'default', description_font_size: 'default',
+            notes: [],
         });
     } else if (editingDish) {
         const tags = editingDish.tags || [];
@@ -199,6 +208,7 @@ export default function MenuManager() {
           price: editingDish.price || 0,
           price_subtitle: editingDish.price_subtitle || '',
           tags: tags,
+          notes: editingDish.notes || [],
           gallery_images: editingDish.gallery_images || [],
           name_font_size: nameSizeTag ? nameSizeTag.replace('n-fs-', '') : 'default',
           description_font_size: descSizeTag ? descSizeTag.replace('d-fs-', '') : 'default',
@@ -616,6 +626,29 @@ export default function MenuManager() {
                       </FormItem>
                     )} />
                      <div className="border p-4 rounded-md space-y-4">
+                        <h3 className="text-lg font-medium">הערות / נקודות למנה</h3>
+                        <div className="space-y-2">
+                            {noteFields.map((field, index) => (
+                                <div key={field.id} className="flex items-center gap-2">
+                                    <FormField
+                                        control={dishForm.control}
+                                        name={`notes.${index}`}
+                                        render={({ field }) => (
+                                            <Input {...field} placeholder={`הערה ${index + 1}`} />
+                                        )}
+                                    />
+                                    <Button type="button" variant="destructive" size="icon" onClick={() => removeNote(index)}>
+                                        <Trash2 className="h-4 w-4" />
+                                    </Button>
+                                </div>
+                            ))}
+                        </div>
+                        <Button type="button" variant="outline" size="sm" onClick={() => appendNote('')}>
+                            <Plus className="h-4 w-4 ml-1" />
+                            הוסף הערה
+                        </Button>
+                     </div>
+                     <div className="border p-4 rounded-md space-y-4">
                         <h3 className="text-lg font-medium">הגדרות עיצוב מנה</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                              <FormField name="name_font_size" control={dishForm.control} render={({ field }) => (
@@ -900,5 +933,3 @@ export default function MenuManager() {
     </div>
   )
 }
-
-    
