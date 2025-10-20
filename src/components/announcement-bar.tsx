@@ -40,9 +40,11 @@ export function AnnouncementBar() {
             >
                 <div className="animate-marquee-rtl flex min-w-full items-center">
                     <span className="text-sm px-6">{scrolling_text}</span>
+                    <span className="text-sm px-6" aria-hidden="true">{scrolling_text}</span>
                 </div>
                  <div className="animate-marquee-rtl flex min-w-full items-center" aria-hidden="true">
                     <span className="text-sm px-6">{scrolling_text}</span>
+                    <span className="text-sm px-6" aria-hidden="true">{scrolling_text}</span>
                 </div>
             </div>
         );
