@@ -129,8 +129,8 @@
   }
 
   @keyframes marquee-rtl {
-    0% { transform: translateX(0%); }
-    100% { transform: translateX(50%); }
+    from { transform: translateX(-100%); }
+    to { transform: translateX(100%); }
   }
 
   .animate-marquee-rtl {
