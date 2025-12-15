@@ -25,7 +25,7 @@ export default function ShabbatMalkataPage() {
     const textSizeClasses: { [key: string]: string } = {
         'text-xs': 'text-xs', 'text-sm': 'text-sm', 'text-base': 'text-base', 'text-lg': 'text-lg', 'text-xl': 'text-xl', 
         'text-2xl': 'text-2xl', 'text-3xl': 'text-3xl', 'text-4xl': 'text-4xl', '5xl': 'text-5xl', 
-        '6xl': 'text-6xl', '7xl': 'text-7xl', 'text-8xl': 'text-8xl', '9xl': 'text-9xl',
+        '6xl': 'text-6xl', '7xl': 'text-7xl', '8xl': 'text-8xl', '9xl': 'text-9xl',
     };
 
     if (isLoading || !category) {
