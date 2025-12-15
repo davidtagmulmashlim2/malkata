@@ -1,3 +1,4 @@
+
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { Buffer } from 'buffer';
@@ -30,9 +31,8 @@ export const revalidate = 0;
 
 export const runtime = 'nodejs';
 
-export const fetchCache = 'auto';
-
-export const maxDuration = 5;
+// Increase the maximum duration for this function
+export const maxDuration = 30;
 
 export async function POST(request: Request) {
     console.log('[DEBUG] Received POST request to /api/upload');
