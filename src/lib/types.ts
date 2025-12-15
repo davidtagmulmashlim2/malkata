@@ -229,6 +229,7 @@ export type AppContextType = {
 
 export type Action =
   | { type: 'SET_STATE'; payload: AppState }
+  | { type: 'SET_FULL_STATE'; payload: AppState }
   | { type: 'UPDATE_CONTENT'; payload: SiteContent }
   | { type: 'ADD_DISH'; payload: Dish }
   | { type: 'UPDATE_DISH'; payload: Dish }

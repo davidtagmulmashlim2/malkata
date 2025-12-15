@@ -35,6 +35,12 @@ const appReducer = (state: AppState, action: Action): AppState => {
   switch (action.type) {
     case 'SET_STATE':
         return action.payload;
+    case 'SET_FULL_STATE':
+        return {
+            ...state, // keep cart from local state
+            ...action.payload,
+            isLoading: false
+        };
     case 'UPDATE_CONTENT':
       debouncedUpdate('site_content', 'id', 1, { content: action.payload });
       return { ...state, siteContent: action.payload };
@@ -91,16 +97,17 @@ const LS_CART_KEY = 'malkata_cart';
 const ADMIN_PASSWORD = 'AZU1';
 
 export const AppProvider: React.FC<{ children: React.ReactNode, initialAppState: AppState }> = ({ children, initialAppState }) => {
-  const [state, dispatch] = React.useReducer(appReducer, initialAppState);
+  const [state, dispatch] = React.useReducer(appReducer, {...initialAppState, isLoading: true});
   const [cart, setCart] = React.useState<CartItem[]>([]);
   const [isAuthenticated, setIsAuthenticated] = React.useState(false);
-  const [isLoading, setIsLoading] = React.useState(true);
+  
+  // isLoading is now part of the reducer state
+  const isLoading = state.isLoading;
 
   // This effect runs ONLY on the client, after the initial render.
   React.useEffect(() => {
-    // Data is now passed via initialAppState from the server,
-    // so we don't need to fetch it again. We are no longer in a "loading" state.
-    setIsLoading(false);
+    // Data is now fetched by the AppDataFetcher component.
+    // We only need to load cart and auth status from local storage here.
     
     const storedCart = localStorage.getItem(LS_CART_KEY);
     if (storedCart) {
