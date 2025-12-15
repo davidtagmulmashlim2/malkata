@@ -133,7 +133,7 @@
     to { transform: translateX(100%); }
   }
 
-  .animate-marquee-rtl-disabled {
+  .animate-marquee-rtl {
     animation: marquee-rtl 40s linear infinite;
   }
 }
