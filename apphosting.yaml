@@ -10,3 +10,6 @@ runConfig:
 secrets:
   - name: NEXT_PUBLIC_SUPABASE_URL
   - name: NEXT_PUBLIC_SUPABASE_ANON_KEY
+# Set the body size limit to 10MB for file uploads
+ingressControls:
+  requestBodySize: '10m'
