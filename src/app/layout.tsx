@@ -1,5 +1,4 @@
 
-
 import type { AppState } from '@/lib/types';
 import { DEFAULT_APP_STATE } from '@/lib/data';
 import { getImage } from '@/lib/image-store';
@@ -19,22 +18,38 @@ import '../styles/themes/minimal.css';
 import '../styles/themes/biblical.css';
 import { AppProviderClient } from '@/components/app-provider';
 import { cn } from '@/lib/utils';
+import { supabase } from '@/lib/supabase';
 
-// We get a minimal initial state on the server to render metadata.
-// The full state will be fetched on the client.
 async function getInitialServerState(): Promise<AppState> {
-  return Promise.resolve(DEFAULT_APP_STATE);
+  try {
+    const [
+      siteContentRes,
+      designRes,
+    ] = await Promise.all([
+      supabase.from('site_content').select('content').limit(1).single(),
+      supabase.from('design').select('settings').limit(1).single(),
+    ]);
+
+    const siteContent = siteContentRes.data?.content ? { ...DEFAULT_APP_STATE.siteContent, ...siteContentRes.data.content } : DEFAULT_APP_STATE.siteContent;
+    const design = designRes.data?.settings ? { ...DEFAULT_APP_STATE.design, ...designRes.data.settings } : DEFAULT_APP_STATE.design;
+
+    // Return a minimal state for metadata, the client will fetch the rest.
+    return {
+      ...DEFAULT_APP_STATE,
+      siteContent,
+      design,
+    };
+  } catch (error) {
+    console.error("Failed to fetch initial state on server, using default.", error);
+    return DEFAULT_APP_STATE;
+  }
 }
 
 export const viewport: Viewport = {
   themeColor: '#8B0000',
 }
 
-export default async function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export async function generateMetadata(): Promise<Metadata> {
   const initialState = await getInitialServerState();
   const { seo, hero } = initialState.siteContent;
   const { logo_image, favicon } = initialState.design;
@@ -62,22 +77,40 @@ export default async function RootLayout({
   }
 
   const faviconUrl = favicon ? getImage(favicon) : '/favicon.ico';
+  
+  const metadata: Metadata = {
+    title: title,
+    description: description,
+    icons: faviconUrl ? [{ rel: 'icon', url: faviconUrl, sizes: 'any' }] : [],
+    openGraph: {
+      title: title,
+      description: description,
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: title,
+      description: description,
+    }
+  };
+
+  if (imageUrl) {
+    metadata.openGraph!.images = [imageUrl];
+    metadata.twitter!.images = [imageUrl];
+  }
+  
+  return metadata;
+}
+
+export default async function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  const initialState = await getInitialServerState();
 
   return (
     <html lang="he" dir="rtl">
-      <head>
-        <title>{title}</title>
-        <meta name="description" content={description} />
-        {faviconUrl && <link rel="icon" href={faviconUrl} sizes="any" />}
-        <meta property="og:title" content={title} />
-        <meta property="og:description" content={description} />
-        {imageUrl && <meta property="og:image" content={imageUrl} />}
-        <meta property="og:type" content="website" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={title} />
-        <meta name="twitter:description" content={description} />
-        {imageUrl && <meta name="twitter:image" content={imageUrl} />}
-      </head>
       <body>
           <AppProviderClient initialAppState={initialState}>
               {children}
