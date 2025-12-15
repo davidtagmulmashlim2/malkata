@@ -45,7 +45,7 @@ export default function ContactPage() {
                 phone: values.phone,
                 message: values.message,
                 date: new Date().toISOString(),
-                isRead: false,
+                is_read: false,
             }
         });
 
