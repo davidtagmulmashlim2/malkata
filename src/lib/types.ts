@@ -173,6 +173,7 @@ export interface SiteContent {
     enabled?: boolean;
     display_mode?: 'static' | 'scrolling';
     scrolling_text?: string;
+    scrolling_font_size?: string;
     text_center?: string;
     text_right?: string;
     button_text?: string;

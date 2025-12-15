@@ -194,6 +194,7 @@ const contentSchema = z.object({
     enabled: z.boolean().optional(),
     display_mode: z.enum(['static', 'scrolling']).optional(),
     scrolling_text: z.string().optional(),
+    scrolling_font_size: z.string().optional(),
     text_center: z.string().optional(),
     text_right: z.string().optional(),
     button_text: z.string().optional(),
@@ -259,6 +260,7 @@ export default function ContentManager() {
         ...siteContent,
         announcement_bar: {
           display_mode: 'static',
+          scrolling_font_size: 'sm',
           ...siteContent.announcement_bar,
         }
       });
@@ -372,13 +374,25 @@ export default function ContentManager() {
                     />
 
                     {announcementBarMode === 'scrolling' ? (
-                       <FormField name="announcement_bar.scrolling_text" control={form.control} render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>תוכן לגלילה</FormLabel>
-                                <FormControl><Textarea {...field} value={field.value ?? ''} placeholder="המבצעים שלנו: מנה שנייה בחצי מחיר, משלוח חינם מעל 200 ש״ח, ועוד..." /></FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )} />
+                        <div className="space-y-4">
+                            <FormField name="announcement_bar.scrolling_text" control={form.control} render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>תוכן לגלילה</FormLabel>
+                                    <FormControl><Textarea {...field} value={field.value ?? ''} placeholder="המבצעים שלנו: מנה שנייה בחצי מחיר, משלוח חינם מעל 200 ש״ח, ועוד..." /></FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )} />
+                             <FormField name="announcement_bar.scrolling_font_size" control={form.control} render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>גודל גופן טקסט גולל</FormLabel>
+                                  <Select onValueChange={field.onChange} value={field.value}>
+                                    <FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl>
+                                    <SelectContent>{fontSizes.map(s => <SelectItem key={s} value={`text-${s}`}>{s}</SelectItem>)}</SelectContent>
+                                  </Select>
+                                  <FormMessage />
+                                </FormItem>
+                              )} />
+                        </div>
                     ) : (
                         <>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

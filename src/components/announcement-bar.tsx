@@ -18,6 +18,7 @@ export function AnnouncementBar() {
     const {
         display_mode = 'static',
         scrolling_text,
+        scrolling_font_size,
         button_text,
         button_link,
         text_center,
@@ -39,10 +40,10 @@ export function AnnouncementBar() {
                 }}
             >
                 <div className="animate-marquee-rtl flex min-w-full shrink-0 items-center">
-                    <span className="text-sm px-6">{scrolling_text}</span>
+                    <span className={cn("px-6", scrolling_font_size || 'text-sm')}>{scrolling_text}</span>
                 </div>
                  <div className="animate-marquee-rtl flex min-w-full shrink-0 items-center" aria-hidden="true">
-                    <span className="text-sm px-6">{scrolling_text}</span>
+                    <span className={cn("px-6", scrolling_font_size || 'text-sm')}>{scrolling_text}</span>
                 </div>
             </div>
         );
