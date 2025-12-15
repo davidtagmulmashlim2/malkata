@@ -1,11 +1,19 @@
-
 'use client';
 import { supabase } from './supabase';
-import { getImage } from './image-store'; // We can still use the shared function
+import { Buffer } from 'buffer';
 
 const BUCKET_NAME = 'malakatatest';
 
-// This function now sends the image data URL to our own API route
+const generateFileKey = (mimeType: string) => {
+    const extension = mimeType.split('/')[1] || 'png';
+    const uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+    });
+    return `img-${Date.now()}-${uuid}.${extension}`;
+};
+
+// This function now uploads the image directly from the client to Supabase
 export async function storeImage(dataUrl: string): Promise<string> {
     // If it's not a data URL, it's probably an existing key or a placeholder. Don't re-upload.
     if (!dataUrl.startsWith('data:image')) {
@@ -13,32 +21,34 @@ export async function storeImage(dataUrl: string): Promise<string> {
     }
 
     try {
-        const apiResponse = await fetch('/api/upload', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ image: dataUrl }),
-        });
+        if (!supabase) {
+          throw new Error("Supabase client is not initialized.");
+        }
+        
+        const mimeType = dataUrl.substring(dataUrl.indexOf(':') + 1, dataUrl.indexOf(';'));
+        const base64Data = dataUrl.substring(dataUrl.indexOf(',') + 1);
+        
+        const fileBuffer = Buffer.from(base64Data, 'base64');
+        const fileKey = generateFileKey(mimeType);
 
-        if (!apiResponse.ok) {
-            let errorText = `Image upload failed with status: ${apiResponse.status}`;
-            try {
-                const errorData = await apiResponse.json();
-                errorText = errorData.error || JSON.stringify(errorData);
-            } catch (e) {
-                // If response is not JSON, use the status text.
-                errorText = apiResponse.statusText || errorText;
-            }
-            throw new Error(errorText);
+        const { data, error } = await supabase.storage
+            .from(BUCKET_NAME)
+            .upload(fileKey, fileBuffer, {
+                contentType: mimeType,
+                upsert: false,
+            });
+
+        if (error) {
+            console.error('Supabase upload error:', JSON.stringify(error, null, 2));
+            throw new Error(`Supabase upload error: ${error.message}`);
         }
 
-        const { key } = await apiResponse.json();
-        if (!key) {
-             throw new Error('Upload succeeded but no key was returned from API.');
+        if (!data?.path) {
+            console.error('Upload to Supabase succeeded but no path was returned. Full response:', JSON.stringify(data, null, 2));
+            throw new Error('Upload to Supabase succeeded but no path was returned.');
         }
-
-        return key;
+        
+        return data.path;
 
     } catch (error: any) {
         console.error('Error in storeImage:', error);
