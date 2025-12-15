@@ -22,6 +22,14 @@ const generateFileKey = (mimeType: string) => {
     return `img-${Date.now()}-${uuid}.${extension}`;
 };
 
+export const config = {
+    api: {
+        bodyParser: {
+            sizeLimit: '10mb',
+        },
+    },
+};
+
 export async function POST(request: Request) {
     console.log('[DEBUG] Received POST request to /api/upload');
     console.log('[DEBUG] Request URL:', request.url);
