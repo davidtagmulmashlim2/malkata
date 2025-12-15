@@ -1,3 +1,7 @@
-// This file is temporarily empty to resolve dependency conflicts.
-// We can re-add AI functionality later.
-export {};
+import {genkit} from 'genkit';
+import {googleAI} from '@genkit-ai/googleai';
+
+export const ai = genkit({
+  plugins: [googleAI()],
+  model: 'googleai/gemini-2.0-flash',
+});
