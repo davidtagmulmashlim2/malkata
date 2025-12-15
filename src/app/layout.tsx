@@ -1,7 +1,7 @@
 import type { AppState } from '@/lib/types';
 import { DEFAULT_APP_STATE } from '@/lib/data';
 import { getImage } from '@/lib/image-store';
-import React from 'react';
+import React, { Suspense } from 'react';
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import '../styles/themes/default.css';
@@ -129,9 +129,11 @@ export default async function RootLayout({
   return (
     <html lang="he" dir="rtl">
       <body>
-          <AppProviderClient initialAppState={initialState}>
-              {children}
-          </AppProviderClient>
+        <Suspense fallback={<div>Loading...</div>}>
+            <AppProviderClient initialAppState={initialState}>
+                {children}
+            </AppProviderClient>
+        </Suspense>
       </body>
     </html>
   );
