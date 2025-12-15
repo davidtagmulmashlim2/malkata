@@ -94,14 +94,14 @@ const LS_CART_KEY = 'malkata_cart';
 const ADMIN_PASSWORD = 'AZU1';
 
 export const AppProvider: React.FC<{ children: React.ReactNode, initialAppState: AppState }> = ({ children, initialAppState }) => {
-  const [state, dispatch] = React.useReducer(appReducer, {...initialAppState, isLoading: false});
+  const [state, dispatch] = React.useReducer(appReducer, initialAppState);
   const [cart, setCart] = React.useState<CartItem[]>([]);
   const [isAuthenticated, setIsAuthenticated] = React.useState(false);
-  const [isClient, setIsClient] = React.useState(false);
+  const [isLoading, setIsLoading] = React.useState(true);
 
   React.useEffect(() => {
-    setIsClient(true);
-
+    setIsLoading(false);
+    
     const storedCart = localStorage.getItem(LS_CART_KEY);
     if (storedCart) {
         try {
@@ -120,14 +120,14 @@ export const AppProvider: React.FC<{ children: React.ReactNode, initialAppState:
   }, []);
 
   React.useEffect(() => {
-    if (isClient) {
+    if (!isLoading) {
         try {
             localStorage.setItem(LS_CART_KEY, JSON.stringify(cart));
         } catch (error) {
              console.error("Failed to save cart to localStorage", error);
         }
     }
-  }, [cart, isClient]);
+  }, [cart, isLoading]);
   
   const enhancedDispatch = React.useCallback(async (action: Action) => {
     let error;
@@ -288,8 +288,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode, initialAppState:
     isAuthenticated,
     login,
     logout,
-    isLoading: !isClient || state.isLoading,
-  }), [state, cart, isAuthenticated, isClient, addToCart, updateCartQuantity, removeFromCart, clearCart, getDishById, login, logout, enhancedDispatch]);
+    isLoading,
+  }), [state, cart, isAuthenticated, isLoading, addToCart, updateCartQuantity, removeFromCart, clearCart, getDishById, login, logout, enhancedDispatch]);
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };

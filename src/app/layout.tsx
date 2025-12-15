@@ -1,4 +1,3 @@
-
 import type { AppState } from '@/lib/types';
 import { DEFAULT_APP_STATE } from '@/lib/data';
 import { getImage } from '@/lib/image-store';
@@ -20,28 +19,46 @@ import { AppProviderClient } from '@/components/app-provider';
 import { cn } from '@/lib/utils';
 import { supabase } from '@/lib/supabase';
 
-async function getInitialServerState(): Promise<AppState> {
+async function getInitialState(): Promise<AppState> {
   try {
-    const [
-      siteContentRes,
-      designRes,
-    ] = await Promise.all([
-      supabase.from('site_content').select('content').limit(1).single(),
-      supabase.from('design').select('settings').limit(1).single(),
-    ]);
+      const [
+          siteContentRes,
+          designRes,
+          dishesRes,
+          categoriesRes,
+          galleryRes,
+          testimonialsRes,
+          subscribersRes,
+          submissionsRes
+      ] = await Promise.all([
+          supabase.from('site_content').select('content').limit(1).single(),
+          supabase.from('design').select('settings').limit(1).single(),
+          supabase.from('dishes').select('*'),
+          supabase.from('categories').select('*'),
+          supabase.from('gallery').select('*').order('created_at', { ascending: false }),
+          supabase.from('testimonials').select('*').order('created_at', { ascending: false }),
+          supabase.from('subscribers').select('*').order('date', { ascending: false }),
+          supabase.from('submissions').select('*').order('date', { ascending: false })
+      ]);
+      
+      const siteContent = siteContentRes.data?.content ? { ...DEFAULT_APP_STATE.siteContent, ...siteContentRes.data.content } : DEFAULT_APP_STATE.siteContent;
+      const design = designRes.data?.settings ? { ...DEFAULT_APP_STATE.design, ...designRes.data.settings } : DEFAULT_APP_STATE.design;
 
-    const siteContent = siteContentRes.data?.content ? { ...DEFAULT_APP_STATE.siteContent, ...siteContentRes.data.content } : DEFAULT_APP_STATE.siteContent;
-    const design = designRes.data?.settings ? { ...DEFAULT_APP_STATE.design, ...designRes.data.settings } : DEFAULT_APP_STATE.design;
+      const loadedState: AppState = {
+          siteContent: siteContent,
+          design: design,
+          dishes: dishesRes.data || [],
+          categories: categoriesRes.data || [],
+          gallery: galleryRes.data || [],
+          testimonials: testimonialsRes.data || [],
+          subscribers: subscribersRes.data || [],
+          submissions: submissionsRes.data || [],
+      };
+      return loadedState;
 
-    // Return a minimal state for metadata, the client will fetch the rest.
-    return {
-      ...DEFAULT_APP_STATE,
-      siteContent,
-      design,
-    };
   } catch (error) {
-    console.error("Failed to fetch initial state on server, using default.", error);
-    return DEFAULT_APP_STATE;
+      console.error("Failed to fetch initial state from Supabase, using default.", error);
+      return DEFAULT_APP_STATE;
   }
 }
 
@@ -50,7 +67,7 @@ export const viewport: Viewport = {
 }
 
 export async function generateMetadata(): Promise<Metadata> {
-  const initialState = await getInitialServerState();
+  const initialState = await getInitialState();
   const { seo, hero } = initialState.siteContent;
   const { logo_image, favicon } = initialState.design;
   
@@ -107,7 +124,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const initialState = await getInitialServerState();
+  const initialState = await getInitialState();
 
   return (
     <html lang="he" dir="rtl">
