@@ -22,13 +22,17 @@ const generateFileKey = (mimeType: string) => {
     return `img-${Date.now()}-${uuid}.${extension}`;
 };
 
-export const config = {
-    api: {
-        bodyParser: {
-            sizeLimit: '10mb',
-        },
-    },
-};
+export const dynamic = 'force-dynamic'
+
+export const preferredRegion = 'auto';
+
+export const revalidate = 0;
+
+export const runtime = 'nodejs';
+
+export const fetchCache = 'auto';
+
+export const maxDuration = 5;
 
 export async function POST(request: Request) {
     console.log('[DEBUG] Received POST request to /api/upload');
