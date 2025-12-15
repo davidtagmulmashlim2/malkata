@@ -1,4 +1,3 @@
-
 import type { AppState } from './types';
 
 // This file now only contains the INITIAL/DEFAULT state for a new user.

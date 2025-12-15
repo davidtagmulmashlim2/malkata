@@ -1,4 +1,3 @@
-
 'use client';
 
 import { AppProvider } from '@/context/app-context';
