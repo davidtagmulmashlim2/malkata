@@ -33,13 +33,10 @@ const debouncedUpdate = debounce(async (table: string, idField: string, id: any,
 
 const appReducer = (state: AppState, action: Action): AppState => {
   switch (action.type) {
-    case 'SET_STATE':
-        return action.payload;
     case 'SET_FULL_STATE':
         return {
-            ...state, // keep cart from local state
+            ...state,
             ...action.payload,
-            isLoading: false
         };
     case 'UPDATE_CONTENT':
       debouncedUpdate('site_content', 'id', 1, { content: action.payload });
@@ -59,11 +56,11 @@ const appReducer = (state: AppState, action: Action): AppState => {
     case 'DELETE_CATEGORY':
         return { ...state, categories: state.categories.filter(c => c.id !== action.payload) };
     case 'ADD_GALLERY_IMAGE':
-        return { ...state, gallery: [...state.gallery, action.payload] };
+        return { ...state, gallery: [action.payload, ...state.gallery] };
     case 'DELETE_GALLERY_IMAGE':
         return { ...state, gallery: state.gallery.filter(img => img.id !== action.payload) };
     case 'ADD_TESTIMONIAL':
-        return { ...state, testimonials: [...state.testimonials, action.payload] };
+        return { ...state, testimonials: [action.payload, ...state.testimonials] };
     case 'UPDATE_TESTIMONIAL':
         debouncedUpdate('testimonials', 'id', action.payload.id, action.payload);
         return { ...state, testimonials: state.testimonials.map(t => t.id === action.payload.id ? action.payload : t) };
@@ -97,18 +94,14 @@ const LS_CART_KEY = 'malkata_cart';
 const ADMIN_PASSWORD = 'AZU1';
 
 export const AppProvider: React.FC<{ children: React.ReactNode, initialAppState: AppState }> = ({ children, initialAppState }) => {
-  const [state, dispatch] = React.useReducer(appReducer, {...initialAppState, isLoading: true});
+  const [state, dispatch] = React.useReducer(appReducer, {...initialAppState, isLoading: false});
   const [cart, setCart] = React.useState<CartItem[]>([]);
   const [isAuthenticated, setIsAuthenticated] = React.useState(false);
-  
-  // isLoading is now part of the reducer state
-  const isLoading = state.isLoading;
+  const [isClient, setIsClient] = React.useState(false);
 
-  // This effect runs ONLY on the client, after the initial render.
   React.useEffect(() => {
-    // Data is now fetched by the AppDataFetcher component.
-    // We only need to load cart and auth status from local storage here.
-    
+    setIsClient(true);
+
     const storedCart = localStorage.getItem(LS_CART_KEY);
     if (storedCart) {
         try {
@@ -126,29 +119,18 @@ export const AppProvider: React.FC<{ children: React.ReactNode, initialAppState:
     
   }, []);
 
-  // This effect runs ONLY on the client, and saves the cart state whenever it changes.
   React.useEffect(() => {
-    if (!isLoading) {
+    if (isClient) {
         try {
             localStorage.setItem(LS_CART_KEY, JSON.stringify(cart));
         } catch (error) {
              console.error("Failed to save cart to localStorage", error);
         }
     }
-  }, [cart, isLoading]);
+  }, [cart, isClient]);
   
   const enhancedDispatch = React.useCallback(async (action: Action) => {
     let error;
-
-    const insertAndRefresh = async (tableName: string, payload: any, actionType: Action['type']) => {
-        const { data, error } = await supabase.from(tableName).insert(payload).select().single();
-        if (error) {
-            toast({ title: `שגיאה בשמירת ${tableName}`, description: error.message, variant: 'destructive' });
-        } else if (data) {
-            dispatch({ type: actionType, payload: data });
-        }
-        return { data, error };
-    };
     
      const findItemToDelete = (collection: any[], id: string) => collection.find(item => item.id === id);
 
@@ -168,7 +150,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode, initialAppState:
                         await deleteImage(img);
                     }
                  }
-                 dispatch(action); // Update state only on successful deletion
+                 dispatch(action);
             }
             error = deleteDishError;
             break;
@@ -238,7 +220,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode, initialAppState:
              dispatch(action); // Let reducer handle other state changes if needed
              break;
         default:
-            // For updates or non-DB actions, dispatch directly for optimistic UI
             dispatch(action);
             break;
     }
@@ -307,8 +288,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode, initialAppState:
     isAuthenticated,
     login,
     logout,
-    isLoading,
-  }), [state, cart, isAuthenticated, isLoading, addToCart, updateCartQuantity, removeFromCart, clearCart, getDishById, login, logout, enhancedDispatch]);
+    isLoading: !isClient || state.isLoading,
+  }), [state, cart, isAuthenticated, isClient, addToCart, updateCartQuantity, removeFromCart, clearCart, getDishById, login, logout, enhancedDispatch]);
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };
